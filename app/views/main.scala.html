@@ -12,6 +12,7 @@
     <body>
         @content
 
+        <script src="@routes.WebJarAssets.at(WebJarAssets.locate("d3.js"))"></script>
         <script src="@routes.Assets.versioned("javascripts/d3pie.js")"></script>
         <script src="@routes.Assets.versioned("javascripts/main.js")"></script>
     </body>
