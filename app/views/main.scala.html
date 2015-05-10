@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String = "Verotutka")(content: Html)
 
 <!DOCTYPE html>
 
@@ -10,7 +10,13 @@
         <link rel="stylesheet" href="@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))">
     </head>
     <body>
-        @content
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    @content
+                </div>
+            </div>
+        </div>
 
         <script src="@routes.WebJarAssets.at(WebJarAssets.locate("d3.js"))"></script>
         <script src="@routes.Assets.versioned("javascripts/d3pie.js")"></script>

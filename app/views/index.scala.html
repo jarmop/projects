@@ -4,6 +4,21 @@
 
     <h1>Verotutka</h1>
 
+    <form method="POST" action="@routes.Application.calculate()" class="form-inline">
+        <label>Palkka</label>
+        <input name="salary" type="text" placeholder="Palkka" class="form-control">
+        <label>Kunta</label>
+        <select name="municipality" class="form-control">
+            <option value="{{municipality.name}}">{{municipality.name}}</option>
+        </select>
+        <input name="age" type="text" placeholder="Ikä" class="form-control">
+        <input class="btn btn-primary" type="submit" value="Laske vero">
+    </form>
+
+
+
+
     <div id="pie"></div>
 
 }
+
