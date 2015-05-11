@@ -2,6 +2,8 @@
 
 @main("Verotutka") {
 
+    <div ng-controller="TaxController">
+
     <h1>Verotutka</h1>
 
     <form ng-submit="calculateTaxPercentage()" class="ng-valid ng-dirty ng-submitted form-inline">
@@ -15,6 +17,8 @@
     </form>
 
     <div id="pie"></div>
+
+    </div>
 
 }
 

@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 
-<html ng-app>
+<html ng-app="myApp">
     <head>
         <title>@title</title>
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
@@ -21,6 +21,8 @@
         <script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular.js"))"></script>
         <script src="@routes.WebJarAssets.at(WebJarAssets.locate("d3.js"))"></script>
         <script src="@routes.Assets.versioned("javascripts/d3pie.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/app.js")"></script>
         <script src="@routes.Assets.versioned("javascripts/main.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/TaxService.js")"></script>
     </body>
 </html>
