@@ -1,6 +1,6 @@
 class TaxService
 
-  ###@headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+  @headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
   @defaultConfig = { headers: @headers }
 
   constructor: (@$log, @$http, @$q) ->
@@ -49,6 +49,6 @@ class TaxService
       @$log.error("Failed to update user - status #{status}")
       deferred.reject(data)
     )
-    deferred.promise###
+    deferred.promise
 
 servicesModule.service('TaxService', TaxService)
