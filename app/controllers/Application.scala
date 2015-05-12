@@ -11,6 +11,7 @@ import play.api.mvc._
 import scala.concurrent.Future
 
 import models.Book._
+import models.Taxen._
 
 
 object Application extends Controller {
@@ -35,8 +36,9 @@ object Application extends Controller {
   }
 
   def tax = Action {
-    Ok("gre");
-
+    var taxit = Tax(municipality = "Helsinkity", age = 30)
+    Ok(Json.toJson(taxit))
+    //Ok("erfer");
   }
 
   def listBooks = Action {
