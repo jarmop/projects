@@ -4,7 +4,7 @@ class TaxController
   constructor: (@$log, @TaxService) ->
   #constructor: () ->
     @$log.debug "constructing TaxController"
-    @users = []
+    @tax
     @getTax()
 
 
@@ -26,15 +26,15 @@ class TaxController
   getTax: () ->
     @$log.debug "getTax()"
 
-    ###@UserService.listUsers()
+    @TaxService.getTax()
     .then(
       (data) =>
-        @$log.debug "Promise returned #{data.length} Users"
-        @users = data
+        @$log.debug "Promise returned #{data.salary} Tax"
+        @tax = data
     ,
       (error) =>
-        @$log.error "Unable to get Users: #{error}"
-    )###
+        @$log.error "Unable to get Tax: #{error}"
+    )
 
 
 
