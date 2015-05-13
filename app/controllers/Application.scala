@@ -36,8 +36,8 @@ object Application extends Controller {
 
   def tax = Action {
     val tax = new Tax(salary = 30000, municipality = "Helsinkity", age = 30)
-    Ok(tax.toJson)
-    //Ok(Json.toJson(tax))
+    //Ok(tax.toJson)
+    Ok(Json.toJson(tax))
     //Ok(Json.toJson(taxit))
     //Ok("erfer");
   }
