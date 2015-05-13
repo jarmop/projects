@@ -1,7 +1,6 @@
 package models
 
-import play.api.libs.json.{Writes, Json}
-
+import play.api.libs.json.{Json, Writes}
 
 case class MunicipalityTax(salary: Float, municipality: String, age: Int)
 
@@ -11,8 +10,4 @@ object MunicipalityTax {
       "tax" -> 5000
     )
   }
-
-  //implicit val municipalityWrites = Json.writes[MunicipalityTax]
 }
-
-
