@@ -2,7 +2,6 @@ package models
 
 import play.api.libs.json._
 
-case class MunicipalityTax(salary: Float, municipality: String, age: Int)
 
 case class Tax(salary: Float, municipality: String, age: Int, municipalityTax: MunicipalityTax) {
   //var salary = salary
@@ -34,25 +33,26 @@ case class Tax(salary: Float, municipality: String, age: Int, municipalityTax: M
   }
 }
 
-object MunicipalityTax {
-  implicit val municipalityWrites = Json.writes[MunicipalityTax]
-}
+
 
 object Tax {
-  /*implicit val taxWrites = new Writes[Tax] {
+  implicit val taxWrites = new Writes[Tax] {
     def writes(tax: Tax) = Json.obj(
-      "salary" -> tax.salary,
+      /*"salary" -> tax.salary,
       "municipality" -> tax.municipality,
-      "age" -> tax.age,
-      "municipalityTax" -> Json.toJson(tax.municipalityTax)
+      "age" -> tax.age,*/
+      "municipalityTax" -> Json.toJson(tax.municipalityTax),
+      "governmentTax" -> Json.obj(
+        "tax" -> 3000
+      )
     )
-  }*/
+  }
 
 
 
   //implicit val municipalityWrites = Json.writes[MunicipalityTax]
 
-  implicit val taxWrites = Json.writes[Tax]
+  //implicit val taxWrites = Json.writes[Tax]
 
 }
 
