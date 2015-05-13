@@ -1,6 +1,6 @@
 package controllers
 
-import models.{Tax,Book}
+import models.{Tax,Book,MunicipalityTax}
 import play.api._
 import play.api.data._
 import play.api.data.Form
@@ -11,7 +11,6 @@ import play.api.mvc._
 import scala.concurrent.Future
 
 import models.Book._
-import models.Taxen._
 
 
 object Application extends Controller {
@@ -36,8 +35,10 @@ object Application extends Controller {
   }
 
   def tax = Action {
-    var taxit = Tax(municipality = "Helsinkity", age = 30)
-    Ok(Json.toJson(taxit))
+    val tax = new Tax(salary = 30000, municipality = "Helsinkity", age = 30)
+    Ok(tax.toJson)
+    //Ok(Json.toJson(tax))
+    //Ok(Json.toJson(taxit))
     //Ok("erfer");
   }
 

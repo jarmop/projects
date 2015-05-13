@@ -1,19 +1,33 @@
 package models
 
-import play.api.libs.json.Json
+import play.api.libs.json._
 
-case class Tax(salary: Float = 30000, municipality: String, age: Int)
+case class MunicipalityTax(salary: Float, municipality: String, age: Int)
 
-object Taxen {
+class Tax(salary: Float, municipality: String, age: Int, municipalityTax: MunicipalityTax) {
+  def toJson = {
+    JsObject(Seq(
+      "name" -> JsString("Watership Down"),
+      "location" -> JsObject(Seq("lat" -> JsNumber(51.235685), "long" -> JsNumber(-1.309197))),
+      "residents" -> JsArray(Seq(
+        JsObject(Seq(
+          "name" -> JsString("Fiver"),
+          "age" -> JsNumber(4),
+          "role" -> JsNull
+        )),
+        JsObject(Seq(
+          "name" -> JsString("Bigwig"),
+          "age" -> JsNumber(6),
+          "role" -> JsString("Owsla")
+        ))
+      ))
+    ))
+  }
 
-  //case class Book(name: String, author: String)
 
-  implicit val taxWrites = Json.writes[Tax]
-  //implicit val bookReads = Json.reads[Book]
-
-  //var books = List(Book("TAOCP", "Knuth"), Book("SICP", "Sussman, Abelson"))
-
-  //var taxip = Tax("Helsinki")
-
-  //def addBook(b: Book) = books = books ::: List(b)
+  def this(salary: Float, municipality: String, age: Int) {
+    this(salary, municipality, age, MunicipalityTax(salary, municipality, age))
+  }
 }
+
+
