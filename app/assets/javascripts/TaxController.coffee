@@ -1,14 +1,28 @@
 
 class TaxController
+  pie
 
   constructor: (@$log, @TaxService) ->
-  #constructor: () ->
     @$log.debug "constructing TaxController"
     @tax
     @getTax()
 
+  getTax: () ->
+    @$log.debug "getTax()"
 
-    pie = new d3pie("pie", {
+    @TaxService.getTax()
+    .then((response) =>
+        @$log.debug response
+        @updateView(response)
+    ,(error) =>
+        @$log.error "Unable to get Tax: #{error}"
+    )
+
+
+  updateView: (data) ->
+    if @pie then @pie.destroy()
+
+    @pie = new d3pie("pie", {
       header: {
         title: {
           text: "A very simple example pie"
@@ -16,27 +30,12 @@ class TaxController
       },
       data: {
         content: [
-          { label: "JavaScript", value: 264131 },
-          { label: "Ruby", value: 218812 },
-          { label: "Java", value: 157618},
+          { label: "Valtion vero", value: data.governmentTax.tax },
+          { label: "Kunnallisvero", value: data.municipalityTax.tax },
+          { label: "Netto", value: 22000},
         ]
       }
     });
-
-  getTax: () ->
-    @$log.debug "getTax()"
-
-    @TaxService.getTax()
-    .then(
-      (data) =>
-        @$log.debug "Promise returned #{data.salary} Tax"
-        @tax = data
-    ,
-      (error) =>
-        @$log.error "Unable to get Tax: #{error}"
-    )
-
-
 
 
 controllersModule.controller('TaxController', TaxController)
