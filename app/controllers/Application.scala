@@ -11,7 +11,7 @@ object Application extends Controller {
   }
 
   def tax = Action { request =>
-    val salary = request.getQueryString("salary").get.toDouble.toFloat
+    val salary = request.getQueryString("salary").get.toInt
     val municipality = request.getQueryString("municipality").get
     val age = request.getQueryString("age").get.toInt
 
