@@ -10,7 +10,11 @@ class TaxService
     @$log.debug "TaxService.getTax()"
     deferred = @$q.defer()
 
-    @$http.get("/tax", {params: form})
+    # create deep copy from form
+    params = $.extend(true, {}, form);
+    params.salary = params.salary * 100
+
+    @$http.get("/tax", {params: params})
     .success((data, status, headers) =>
       @$log.info("Successfully listed Users - status #{status}")
       deferred.resolve(data)

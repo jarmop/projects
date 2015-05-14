@@ -37,7 +37,7 @@ class TaxController
         content: [
           { label: "Valtion vero", value: data.governmentTax.tax },
           { label: "Kunnallisvero", value: data.municipalityTax.tax },
-          { label: "Netto", value: 22000},
+          { label: "Netto", value: @form.salary * 100 - data.governmentTax.tax - data.municipalityTax.tax},
         ]
       }
     });
