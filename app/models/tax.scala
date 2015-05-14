@@ -13,7 +13,7 @@ object Tax {
     def writes(tax: Tax) = Json.obj(
       "municipalityTax" -> Json.toJson(tax.municipalityTax),
       "governmentTax" -> Json.obj(
-        "tax" -> 3000
+        "tax" -> tax.salary / 5
       )
     )
   }

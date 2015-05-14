@@ -1,23 +1,21 @@
 class TaxController
-  pie
-
   constructor: ($scope, @$log, @TaxService) ->
     @$log.debug "constructing TaxController"
-    @tax
-    @getTax()
-
-    $scope.form = {
+    @form = {
       salary: 30000,
       municipality: 'Helsinki',
       age: 30
     }
 
+    $scope.form = @form
     $scope.municipalityOptions = ['Helsinki', 'Nivala']
 
-  getTax: () ->
+    @getTax($scope.form)
+
+  getTax: (form) ->
     @$log.debug "getTax()"
 
-    @TaxService.getTax()
+    @TaxService.getTax(form)
     .then((response) =>
         @$log.debug response
         @updateView(response)

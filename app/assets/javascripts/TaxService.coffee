@@ -6,11 +6,11 @@ class TaxService
   constructor: (@$log, @$http, @$q) ->
     @$log.debug "constructing UserService"
 
-  getTax: () ->
+  getTax: (form) ->
     @$log.debug "TaxService.getTax()"
     deferred = @$q.defer()
 
-    @$http.get("/tax")
+    @$http.get("/tax", {params: form})
     .success((data, status, headers) =>
       @$log.info("Successfully listed Users - status #{status}")
       deferred.resolve(data)
