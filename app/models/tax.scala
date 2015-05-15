@@ -9,15 +9,16 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private val unemploymentInsurancePercent = 0.0065
   private val allowancePaymentTyelPercent = 0.0078
 
-  private val commonDeduction = Map[String, Double](
+  private var commonDeduction = Map[String, Double](
     "incomeDeduction" -> this.incomeDeduction,
     "pensionContribution" -> this.salary * this.getPensionContributionTyelPercent(),
     "unemploymentInsurance" -> this.salary * this.unemploymentInsurancePercent,
     "allowancePayment" -> this.salary * this.allowancePaymentTyelPercent
   )
-  val totalCommonDeduction = commonDeduction.foldLeft(0.0){  case (a, (k, v)) => a+v  }
+  commonDeduction += "total" -> commonDeduction.foldLeft(0.0){  case (a, (k, v)) => a+v  }
 
-  private val municipalityTax: MunicipalityTax = MunicipalityTax(salary, municipality, age, this.incomeDeduction, this.totalCommonDeduction)
+  private val governmentTax: GovernmentTax = GovernmentTax(salary, this.incomeDeduction, this.commonDeduction.get("total").get)
+  private val municipalityTax: MunicipalityTax = MunicipalityTax(salary, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
 
   private def getPensionContributionTyelPercent(): Double = {
     if (this.age < 53) {
@@ -26,6 +27,8 @@ case class Tax(salary: Int, municipality: String, age: Int) {
       return this.pensionContributionTyel53Percent;
     }
   }
+
+
 }
 
 object Tax {
@@ -35,9 +38,7 @@ object Tax {
       "governmentTax" -> Json.obj(
         "tax" -> tax.salary / 5
       ),
-      "commonDeduction" -> tax.commonDeduction,
-      "totalCommonDeduction" -> tax.totalCommonDeduction,
-      "incomeDeduction" -> tax.incomeDeduction
+      "commonDeduction" -> tax.commonDeduction
     )
   }
 }

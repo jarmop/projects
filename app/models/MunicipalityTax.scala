@@ -3,6 +3,7 @@ package models
 import play.api.Logger
 import play.api.libs.json.{Json, Writes}
 import scala.util.control.Breaks._
+import scala.math._
 
 case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduction: Double, commonDeduction: Double) {
   val municipalityPercents = Map[String, Double]("Helsinki" -> 0.1850, "Nivala" -> 0.2150)
@@ -110,7 +111,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
 object MunicipalityTax {
   implicit val municipalityWrites = new Writes[MunicipalityTax] {
     def writes(municipalityTax: MunicipalityTax) = Json.obj(
-      "tax" -> municipalityTax.getTax(),
+      "tax" -> round(municipalityTax.getTax()),
       "earnedIncomeAllowance" -> municipalityTax.getIncomeDeduction(),
       "basicDeduction" -> municipalityTax.getExtraIncomeDeduction(),
       "totalDeduction" -> municipalityTax.getTotalTaxDeduction()
