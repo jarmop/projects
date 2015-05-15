@@ -4,8 +4,18 @@ import play.api.libs.json.{Json, Writes}
 import scala.util.control.Breaks._
 
 case class MunicipalityTax(salary: Int, municipality: String, age: Int) {
-  def getTax(): Int = {
-    500000
+  val municipalityPercents = Map[String, Double]("Helsinki" -> 0.1850, "Nivala" -> 0.2150)
+
+  def getTax(): Double = {
+    this.getDeductedSalary() * this.getMunicipalityPercent()
+  }
+
+  def getDeductedSalary(): Double = {
+    this.salary - this.getIncomeDeduction()
+  }
+
+  def getMunicipalityPercent(): Double = {
+    this.municipalityPercents.get(this.municipality).get
   }
 
   def getIncomeDeduction(): Double = {
