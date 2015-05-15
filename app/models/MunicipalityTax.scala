@@ -2,28 +2,27 @@ package models
 
 import play.api.libs.json.{Json, Writes}
 import scala.util.control.Breaks._
-//import scala.math._
 
 case class MunicipalityTax(salary: Int, municipality: String, age: Int) {
   def getTax(): Int = {
     500000
   }
 
-  def getIncomeDeduction(): Int = {
-    val municipalityDeductionTable = List[Map[String, Int]](
-      Map[String, Int]("minSalary" -> 250000, "maxSalary" -> 723000, "deductionPercent" -> 51),
-      Map[String, Int]("minSalary" -> 723000, "maxSalary" -> 1760000, "deductionPercent" -> 28)
+  def getIncomeDeduction(): Double = {
+    val municipalityDeductionTable = List[Map[String, Any]](
+      Map[String, Any]("minSalary" -> 250000, "maxSalary" -> 723000, "deductionPercent" -> 0.51),
+      Map[String, Any]("minSalary" -> 723000, "maxSalary" -> 1760000, "deductionPercent" -> 0.28)
     )
 
-    var deduction: Int = 0
+    var deduction: Double = 0
     breakable { for (deductionMap <- municipalityDeductionTable) {
       var minSalary = deductionMap.get("minSalary").get.asInstanceOf[Int]
       if (this.salary < minSalary)
         break
       var maxSalary = deductionMap.get("maxSalary").get.asInstanceOf[Int]
-      var deductionPercent = deductionMap.get("deductionPercent").get.asInstanceOf[Int]
-      var salary = if (this.salary > maxSalary) this.salary else maxSalary
-      deduction += (salary - minSalary) / deductionPercent
+      var deductionPercent = deductionMap.get("deductionPercent").get.asInstanceOf[Double]
+      var salaryTemp = if (this.salary < maxSalary) this.salary else maxSalary
+      deduction += (salaryTemp - minSalary) * deductionPercent
     }}
 
     deduction

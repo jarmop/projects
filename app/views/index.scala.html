@@ -8,6 +8,7 @@
     <input type="text" ng-model="form.salary" placeholder="Palkka" class="form-control">
     <label>Kunta</label>
     <select ng-model="form.municipality" ng-options="value for value in municipalityOptions" class="form-control"></select>
+    <label>Ikä</label>
     <input type="text" ng-model="form.age" placeholder="Ikä" class="form-control">
     <input ng-click="ctrl.getTax(form)" class="btn btn-primary" type="submit" value="Laske vero">
 </form>

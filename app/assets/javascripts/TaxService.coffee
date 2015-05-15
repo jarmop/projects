@@ -16,11 +16,11 @@ class TaxService
 
     @$http.get("/tax", {params: params})
     .success((data, status, headers) =>
-      @$log.info("Successfully listed Users - status #{status}")
+      @$log.info("Successfully got tax - status #{status}")
       deferred.resolve(data)
     )
     .error((data, status, headers) =>
-      @$log.error("Failed to list Users - status #{status}")
+      @$log.error("Failed to get tax - status #{status}")
       deferred.reject(data)
     )
 

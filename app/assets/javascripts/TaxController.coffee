@@ -28,11 +28,6 @@ class TaxController
     if @pie then @pie.destroy()
 
     @pie = new d3pie("pie", {
-      header: {
-        title: {
-          text: "A very simple example pie"
-        }
-      },
       data: {
         content: [
           { label: "Valtion vero", value: data.governmentTax.tax },
