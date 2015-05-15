@@ -5,7 +5,7 @@ import play.api.libs.json.{Json, Writes}
 case class Tax(salary: Int, municipality: String, age: Int, municipalityTax: MunicipalityTax) {
   def this(salary: Int, municipality: String, age: Int) {
     this(salary, municipality, age,
-      MunicipalityTax(salary, municipality, age)
+      MunicipalityTax(salary, municipality, age, 62000, 275900)
     )
   }
 

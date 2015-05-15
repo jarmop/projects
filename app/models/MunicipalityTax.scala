@@ -4,7 +4,7 @@ import play.api.Logger
 import play.api.libs.json.{Json, Writes}
 import scala.util.control.Breaks._
 
-case class MunicipalityTax(salary: Int, municipality: String, age: Int) {
+case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduction: Int, commonDeduction: Double) {
   val municipalityPercents = Map[String, Double]("Helsinki" -> 0.1850, "Nivala" -> 0.2150)
 
   var tax: Double = -1
@@ -31,7 +31,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int) {
   }
 
   private def getTotalTaxDeduction(): Double = {
-    return this.getIncomeDeduction() + this.getExtraIncomeDeduction() + this.getCommonDeduction()
+    return this.getIncomeDeduction() + this.getExtraIncomeDeduction() + this.commonDeduction
   }
 
   private def getIncomeDeduction(): Double = {
@@ -58,6 +58,25 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int) {
       deduction += (salaryTemp - minSalary) * deductionPercent
     }}
 
+    var maxDeduction = 357000;
+    if (deduction > maxDeduction) {
+      deduction = maxDeduction;
+    }
+
+    Logger.debug(deduction.toString)
+
+    var naturalSalary = this.salary - this.naturalDeduction;
+    Logger.debug(naturalSalary.toString)
+    if (naturalSalary > 1400000) {
+      deduction = deduction - 0.045 * (naturalSalary - 1400000);
+    }
+
+    Logger.debug(deduction.toString)
+
+    if (deduction < 0) {
+      deduction = 0;
+    }
+
     deduction
   }
 
@@ -70,7 +89,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int) {
 
   private def calculateExtraIncomeDeduction(): Double = {
     var deduction: Double = 0
-    var deductedSalary: Double = this.salary - (this.getIncomeDeduction() + this.getCommonDeduction());
+    var deductedSalary: Double = this.salary - (this.getIncomeDeduction() + this.commonDeduction);
     if (deductedSalary <= 19470) {
       var maxDeduction: Double = 2970.0;
       if (deductedSalary < maxDeduction) {
@@ -83,10 +102,6 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int) {
     deduction
   }
 
-  private def getCommonDeduction(): Int = {
-    620
-  }
-
   private def getMunicipalityPercent(): Double = {
     this.municipalityPercents.get(this.municipality).get
   }
@@ -96,7 +111,9 @@ object MunicipalityTax {
   implicit val municipalityWrites = new Writes[MunicipalityTax] {
     def writes(municipalityTax: MunicipalityTax) = Json.obj(
       "tax" -> municipalityTax.getTax(),
-      "deduction" -> municipalityTax.getIncomeDeduction()
+      "earnedIncomeAllowance" -> municipalityTax.getIncomeDeduction(),
+      "basicDeduction" -> municipalityTax.getExtraIncomeDeduction(),
+      "totalDeduction" -> municipalityTax.getTotalTaxDeduction()
     )
   }
 }
