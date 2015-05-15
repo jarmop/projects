@@ -4,7 +4,7 @@ import play.api.Logger
 import play.api.libs.json.{Json, Writes}
 import scala.util.control.Breaks._
 
-case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduction: Int, commonDeduction: Double) {
+case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduction: Double, commonDeduction: Double) {
   val municipalityPercents = Map[String, Double]("Helsinki" -> 0.1850, "Nivala" -> 0.2150)
 
   var tax: Double = -1
