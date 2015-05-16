@@ -34,6 +34,10 @@ class TaxController
     content = [
       { label: "Valtion vero", value: data.governmentTax.tax },
       { label: "Kunnallisvero", value: data.municipalityTax.tax }
+      { label: "YLE-vero", value: data.yleTax },
+      { label: "Sairaanhoitomaksu", value: data.medicalCareInsurance },
+      { label: "Päivärahamaksu", value: data.perDiemPayments },
+      #{ label: "Netto", value: @form.salary * 100 - data.governmentTax.tax - data.municipalityTax.tax}
     ]
 
     @createPie(content, null)
