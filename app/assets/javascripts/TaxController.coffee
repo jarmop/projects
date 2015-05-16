@@ -34,6 +34,11 @@ class TaxController
           { label: "Kunnallisvero", value: data.municipalityTax.tax },
           { label: "Netto", value: @form.salary * 100 - data.governmentTax.tax - data.municipalityTax.tax},
         ]
+      },
+      misc: {
+        pieCenterOffset: {
+          y: -50
+        }
       }
     });
 
