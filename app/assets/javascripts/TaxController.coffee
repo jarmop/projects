@@ -30,8 +30,9 @@ class TaxController
     @pie = new d3pie("pie", {
       data: {
         content: [
-          { label: "Valtion vero", value: data.governmentTax.tax },
-          { label: "Kunnallisvero", value: data.municipalityTax.tax },
+          #{ label: "Valtion vero", value: data.governmentTax.tax },
+          #{ label: "Kunnallisvero", value: data.municipalityTax.tax },
+          { label: "Vero", value: data.totalTax },
           { label: "Netto", value: @form.salary * 100 - data.governmentTax.tax - data.municipalityTax.tax},
         ]
       },

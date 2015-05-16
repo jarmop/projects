@@ -13,7 +13,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   var incomeDeduction: Double = -1
   var extraIncomeDeduction: Double = -1
 
-  private def getTax(): Double = {
+  def getTax(): Double = {
     if (this.tax < 0)
       this.tax = this.getDeductedSalary() * this.getMunicipalityPercent()
 

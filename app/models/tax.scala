@@ -28,7 +28,9 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     }
   }
 
-
+  private def getTotalTax(): Double = {
+    return this.municipalityTax.getTax() + this.governmentTax.getTax()
+  }
 }
 
 object Tax {
@@ -38,7 +40,8 @@ object Tax {
       "governmentTax" -> Json.obj(
         "tax" -> tax.salary / 5
       ),
-      "commonDeduction" -> tax.commonDeduction
+      "commonDeduction" -> tax.commonDeduction,
+      "totalTax" -> tax.getTotalTax()
     )
   }
 }
