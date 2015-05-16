@@ -40,6 +40,9 @@ class TaxController
           y: -50
         }
       }
+      size: {
+        canvasWidth: 540
+      }
     });
 
 
