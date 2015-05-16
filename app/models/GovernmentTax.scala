@@ -4,7 +4,7 @@ import play.api.libs.json.{Json, Writes}
 
 case class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction: Double) {
   def getTax(): Double = {
-    500000
+    98568
   }
 }
 

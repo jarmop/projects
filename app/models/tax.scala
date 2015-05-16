@@ -37,9 +37,10 @@ object Tax {
   implicit val taxWrites = new Writes[Tax] {
     def writes(tax: Tax) = Json.obj(
       "municipalityTax" -> Json.toJson(tax.municipalityTax),
-      "governmentTax" -> Json.obj(
-        "tax" -> tax.salary / 5
-      ),
+      "governmentTax" -> Json.toJson(tax.governmentTax),
+      "yleTax" -> 14300,
+      "medicalCareInsurance" -> 32159,
+      "perDiemPayments" -> 23400,
       "commonDeduction" -> tax.commonDeduction,
       "totalTax" -> tax.getTotalTax()
     )
