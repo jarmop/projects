@@ -1,5 +1,6 @@
 package models
 
+import play.api.Logger
 import play.api.libs.json.{Json, Writes}
 
 case class Tax(salary: Int, municipality: String, age: Int) {
@@ -92,13 +93,16 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     } else {
       val leftOverWorkIncomeDeduction = - totalTax
       totalTax = 0
-      val totalDeductableTax = this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax
-      val deductedMunicipalityTax = this.municipalityTax.getTax - this.municipalityTax.getTax / totalDeductableTax * leftOverWorkIncomeDeduction
-      val deductedMedicalCareInsurancePayment = this.getMedicalCareInsurancePayment - this.getMedicalCareInsurancePayment / totalDeductableTax * leftOverWorkIncomeDeduction
-      val deductedChurchTax = this.getChurchTax - this.getChurchTax / totalDeductableTax * leftOverWorkIncomeDeduction
+      var totalDeductableTax = this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax
+      var deductedMunicipalityTax = this.municipalityTax.getTax - this.municipalityTax.getTax / totalDeductableTax * leftOverWorkIncomeDeduction
+      deductedMunicipalityTax = if (deductedMunicipalityTax > 0) deductedMunicipalityTax else 0
+      var deductedMedicalCareInsurancePayment = this.getMedicalCareInsurancePayment - this.getMedicalCareInsurancePayment / totalDeductableTax * leftOverWorkIncomeDeduction
+      deductedMedicalCareInsurancePayment = if (deductedMedicalCareInsurancePayment > 0)  deductedMedicalCareInsurancePayment else 0
+      var deductedChurchTax = this.getChurchTax - this.getChurchTax / totalDeductableTax * leftOverWorkIncomeDeduction
+      deductedChurchTax = if (deductedChurchTax > 0)  deductedChurchTax else 0
       totalTax += deductedMunicipalityTax + deductedMedicalCareInsurancePayment + deductedChurchTax
     }
-    totalTax +=  this.getPerDiemPayments + this.getYleTax
+    totalTax += this.getPerDiemPayments + this.getYleTax
 
     totalTax
   }
