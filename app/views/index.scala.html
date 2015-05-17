@@ -11,13 +11,25 @@
     <label>Ikä</label>
     <input type="number" ng-model="form.age" placeholder="Ikä" class="form-control form-input-age">
     <input ng-click="ctrl.getTax(form)" class="btn btn-primary" type="submit" value="Laske vero">
+    <button ng-click="ctrl.test()"></button>
 </form>
 
 <hr>
 
-<div class="row">
+<ul class="nav nav-pills nav-pills-sm">
+    <li class="active"><a href="#">Tulot</a></li>
+    <li><a href="#">Vero</a></li>
+</ul>
+
+
+<div ng-show="showBasic" class="row">
     <div class="col-xs-12 col-md-6 col-lg-5">
-        <div id="pie"></div>
+        <div id="pie-basic" class="pie-chart"></div>
+    </div>
+</div>
+<div ng-show="showTax" class="row">
+    <div class="col-xs-12 col-md-6 col-lg-5">
+        <div id="pie-tax" class="pie-chart"></div>
     </div>
     <div class="col-xs-12 col-md-6 col-lg-7">
         <h2>Kunnallisvero</h2>

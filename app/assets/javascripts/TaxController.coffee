@@ -1,5 +1,5 @@
 class TaxController
-  constructor: ($scope, @$log, @TaxService) ->
+  constructor: (@$scope, @$log, @TaxService, PieModel) ->
     @$log.debug "constructing TaxController"
     @form = {
       salary: 30000,
@@ -7,20 +7,25 @@ class TaxController
       age: 30
     }
 
-    $scope.form = @form
-    $scope.municipalityOptions = ['Helsinki', 'Nivala']
+    @$scope.form = @form
+    @$scope.municipalityOptions = ['Helsinki', 'Nivala']
 
-    @getTax($scope.form)
+    @pie = PieModel
+    @$log.debug @$scope.firstTabActive
+    @$scope.showBasic = true
+    @$scope.showTax = false
+
+    @getTax(@$scope.form)
 
   getTax: (form) ->
     @$log.debug "getTax()"
-
     @TaxService.getTax(form)
     .then((response) =>
-        @$log.debug response
-        @updateView(response)
+      @$log.debug response
+      @pie.createBasicPie(response.totalTax, @form.salary * 100, @openTaxPie)
+      @pie.createTaxPie(response)
     ,(error) =>
-        @$log.error "Unable to get Tax: #{error}"
+      @$log.error "Unable to get Tax: #{error}"
     )
 
 
@@ -66,6 +71,25 @@ class TaxController
     if (segment.data.label == "Vero")
       @pie.destroy()
       @createPie(@subContent, null)###
+
+  test: ->
+    @$log.debug "testing"
+    @$scope.showBasic = ! @$scope.showBasic
+    @$scope.showTax = ! @$scope.showTax
+
+  openTaxPie: (segment) =>
+    @$log.debug this
+    @$log.debug @$scope
+    @$log.debug @$scope.showBasic
+    if (!segment.expanded && segment.data.label == "Vero")
+      @$log.debug @$scope.showBasic
+      @test()
+      @$scope.$apply()
+      #@$scope.showBasic = false
+      #@$scope.showTax = true
+
+      #@$scope.tabs[1].active = true
+      #@createPie(@subContent, null)
 
 
 
