@@ -82,8 +82,8 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   private def calculateExtraIncomeDeduction(): Double = {
     var deduction: Double = 0
     var deductedSalary: Double = this.salary - (this.getIncomeDeduction() + this.commonDeduction);
-    if (deductedSalary <= 19470) {
-      var maxDeduction: Double = 2970.0;
+    if (deductedSalary <= 1947000) {
+      var maxDeduction: Double = 297000;
       if (deductedSalary < maxDeduction) {
         deduction = deductedSalary;
       } else {
