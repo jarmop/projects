@@ -12,6 +12,9 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private val medicalCareInsurancePercent = 0.0132
 
   private var yleSalary: Double = -1
+  private var totalTax: Double = -1
+  private var churchTax: Double = -1
+  private var naturalSalary: Double = -1
 
   private var commonDeduction = Map[String, Double](
     "incomeDeduction" -> this.incomeDeduction,
@@ -55,17 +58,65 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     var salary = this.getYleSalary
 
     if (salary < 750000) {
-      0
+      return 0
     }
     if (salary >= 2102900) {
-      14300
+      return 14300
     }
 
     return salary * this.yleTaxPercent;
   }
 
+  private def getChurchTax: Double = {
+    if (this.churchTax < 0)
+      this.churchTax = 0 // TODO calculate actual church tax
+
+    this.churchTax
+  }
+
   private def getTotalTax(): Double = {
-    return this.municipalityTax.getTax() + this.governmentTax.getTax() + this.getMedicalCareInsurancePayment + this.getPerDiemPayments + this.getYleTax
+    if (this.totalTax < 0)
+      this.totalTax = this.calculateTotalTax()
+
+    this.totalTax
+  }
+
+  /**
+   * All taxes minus workincomeDeduction
+   */
+  private def calculateTotalTax(): Double = {
+    var totalTax = this.municipalityTax.getTax() + this.governmentTax.getTax() + this.getMedicalCareInsurancePayment + this.getPerDiemPayments + this.getYleTax
+
+    totalTax
+  }
+
+  private def getWorkIncomeDeduction(): Double = {
+    var deduction: Double = 0
+    if (this.salary > 250000) {
+      deduction = 0.086 * (this.salary - 250000)
+    }
+
+    var maxDeduction: Double = 102500
+    if (deduction > maxDeduction) {
+      deduction = maxDeduction
+    }
+
+    if (this.getNaturalSalary > 33000) {
+      deduction = deduction - (0.012 * (this.getNaturalSalary - 33000))
+    }
+
+    if (deduction < 0) {
+      deduction = 0
+    }
+
+    deduction
+  }
+
+  private def getNaturalSalary: Double = {
+    if (this.naturalSalary < 0)
+      this.naturalSalary = this.salary - this.incomeDeduction
+
+    this.naturalSalary
   }
 }
 
