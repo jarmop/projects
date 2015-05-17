@@ -59,12 +59,22 @@ case class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction:
   private def getDeduction: Double = {
     this.commonDeduction
   }
+
+  private def getTaxSectionHits: ListBuffer[Map[String, Double]] = {
+    if (this.taxSectionHits.isEmpty)
+      this.getTax
+
+    this.taxSectionHits
+  }
 }
 
 object GovernmentTax {
   implicit val governmentWrites = new Writes[GovernmentTax] {
     def writes(governmentTax: GovernmentTax) = Json.obj(
-      "tax" -> governmentTax.getTax
+      "sum" -> governmentTax.getTax,
+      "deduction" -> governmentTax.getDeduction,
+      "deductedSalary" -> governmentTax.getDeductedSalary,
+      "hits" -> governmentTax.getTaxSectionHits
     )
   }
 }

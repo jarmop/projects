@@ -12,7 +12,7 @@ class PieService
     if @taxPie then @taxPie.destroy()
 
     content = [
-      { label: "Valtion vero", value: data.governmentTax.tax },
+      { label: "Valtion vero", value: data.governmentTax.sum },
       { label: "Kunnallisvero", value: data.municipalityTax.tax }
       { label: "YLE-vero", value: data.yleTax },
       { label: "Sairaanhoitomaksu", value: data.medicalCareInsurancePayment },
