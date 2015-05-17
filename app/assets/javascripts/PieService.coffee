@@ -26,13 +26,8 @@ class PieService
       data: {
         content: content
       },
-      misc: {
-        pieCenterOffset: {
-          y: -40
-        }
-      }
       size: {
-        canvasHeight: 400,
+        canvasHeight: 300,
         canvasWidth: 250,
         pieOuterRadius: "80%"
       }

@@ -13,8 +13,6 @@
     <input ng-click="ctrl.getTax(form)" class="btn btn-primary btn-sm" type="submit" value="Laske vero">
 </form>
 
-<hr>
-
 <div class="row">
     <div class="col-xs-12 col-sm-6 col-lg-6">
         <div class="row">
@@ -27,26 +25,151 @@
         </div>
     </div>
     <div class="col-xs-12 col-sm-6 col-lg-6">
-        <h2>Kunnallisvero</h2>
+        <h2>Veroraportti</h2>
         <ul>
             <li>
-                Kunnallisverotuksen ansiotulovähennys 2877,90
+                <a href="">Valtion vero</a>
             </li>
             <li>
-                Kunnallisverotuksen perustulovähennys ,00
+                <a href="">Kunnallisvero</a>
             </li>
             <li>
-                Valtion veron ja kunnallisveron yhteinen vähennys: 2759,00
+                Sairausvakuutusmaksu
+                <ul>
+                    <li>
+                        <a href="">Sairaanhoitomaksu</a>
+                    </li>
+                    <li>
+                        <a href="">Päivärahamaksu</a>
+                    </li>
+                </ul>
             </li>
             <li>
-                Kunnallisverosta tehtävät vähennykset yhteensä: 2877,90 + ,00 + 2759,00 = 5636,90
-            </li>
-            <li>
-                Kunnallisverotuksessa huomioitava tulo: 30000,00 - 5636,90 = 24363,10
+                <a href="">Yle-vero</a>
             </li>
         </ul>
     </div>
 </div>
+
+
+<h2>Vähennykset valtion verossa ja kunnallisverossa</h2>
+
+
+<table class="table table-striped table-tax">
+    <tr>
+        <th>nimi</th>
+        <th>Laskukaava</th>
+        <th>tulos</th>
+    </tr>
+    <tr>
+        <td>Tulonhankkimisvähennys</td>
+        <td>Kiinteä summa</td>
+        <td>{{incomeDeduction}}</td>
+    </tr>
+    <tr>
+        <td>
+            Työeläkemaksut
+        </td>
+        <td>
+            {{pensionContributionPercent}} * {{salary}}<br>
+            (Osuus palkkatulosta alle 53v: {{pensionContributionTyelSub53Percent}} - väh. 53v: {{pensionContributionTyel53Percent}})
+        </td>
+        <td>
+            {{pensionContribution}}
+        </td>
+    </tr>
+    <tr>
+        <td>Työttömyysvakuutusmaksut</td>
+        <td>{{unemploymentInsurancePercent}} * {{salary}}</td>
+        <td>{{unemploymentInsurance}}</td>
+    </tr>
+    <tr>
+        <td>Päivärahamaksu</td>
+        <td>{{allowancePaymentTyelPercent}} * {{salary}}</td>
+        <td>{{allowancePayment}}</td>
+    </tr>
+    <tr>
+        <td colspan="2">Yhteensä</td>
+        <td>{{totalCommonDeduction}}</td>
+    </tr>
+</table>
+
+<h2>Valtion vero</h2>
+<h3>Vähennykset</h3>
+<p>
+    Valtion veron ja kunnallisveron yhteinen vähennys: {{totalCommonDeduction}}<br>
+    Valtion verosta tehtävät vähennykset yhteensä: {{totalGovernmentTaxDeduction}}
+</p>
+<p>
+    Valtionverotuksessa huomioitava tulo: {{salary}} - {{totalGovernmentTaxDeduction}} = {{governmentSalary}}
+</p>
+<h3>Verotus</h3>
+<table class="table table-striped table-tax">
+    <tr>
+        <th>Tuloalue</th>
+        <th>Veronalainen tulo</th>
+        <th>Veroprosentti</th>
+        <th>Verotettava summa</th>
+    </tr>
+
+    <tr ng-repeat="hit in hits">
+        <td>{{hit.minSalary}} - {{hit.maxSalary}}</td>
+        <td>{{formatCurrency(hit.taxedSalary)}}</td>
+        <td>{{formatPercent(hit.taxPercent)}}</td>
+        <td>{{formatCurrency(hit.tax)}}</td>
+    </tr>
+
+    <tr>
+        <td colspan="3">Yhteensä</td>
+        <td>{{governmentTax}}</td>
+    </tr>
+</table>
+
+<h2>Kunnallisvero</h2>
+
+<h3>Vähennykset</h3>
+<p>
+    Kunnallisverotuksen ansiotulovähennys {{municipalityIncomeDeduction}}<br>
+    Kunnallisverotuksen perustulovähennys {{extraMunicipalityIncomeDeduction}}<br>
+    Valtion veron ja kunnallisveron yhteinen vähennys: {{totalCommonDeduction}}<br>
+    Kunnallisverosta tehtävät vähennykset yhteensä: {{municipalityIncomeDeduction}} + {{extraMunicipalityIncomeDeduction}} + {{totalCommonDeduction}} = {{totalMunicipalityTaxDeduction}}
+</p>
+<p>
+    Kunnallisverotuksessa huomioitava tulo: {{salary}} - {{totalMunicipalityTaxDeduction}} = {{municipalitySalary}}
+</p>
+<h3>Verotus</h3>
+<p>
+    Kunnallisvero: {{municipalityPercent}} * {{municipalitySalary}} = {{municipalityTax}}<br>
+    Sairaanhoitomaksu: {{sickPercent}} * {{municipalitySalary}} = {{sickTax}}
+</p>
+
+<h2>Ylevero</h2>
+<h3>Vähennykset</h3>
+<p>
+    Tulonhankkimisvähennys: {{incomeDeduction}}<br>
+    Yleverosta tehtävät vähennykset yhteensä: {{totalYleTaxDeduction}}
+</p>
+<p>
+    Yle-verossa huomioitava tulo: {{salary}} - {{totalYleTaxDeduction}} = {{yleSalary}}
+</p>
+
+<h2>Vähennys verosta</h2>
+Työtulovähennys: {{workIncomeDeduction}}
+
+<h2>Yhteenveto</h2>
+Valtion vero: {{governmentTax}}
+<br>
+Kunnallisvero: {{municipalityTax}}
+<br>
+Yle-vero: {{yleTax}}
+<br>
+Sairaanhoitomaksu: {{sickTax}}
+<br>
+Päivärahamaksu: {{allowancePayment}}
+<br>
+Vero yhteensä: {{taxSum}}
+<br>
+Veroprosentti: {{taxPercentage}}
 
 
 }
