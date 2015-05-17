@@ -43,18 +43,18 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   }
 
   private def calculateIncomeDeduction(): Double = {
-    val municipalityDeductionTable = List[Map[String, Any]](
-      Map[String, Any]("minSalary" -> 250000, "maxSalary" -> 723000, "deductionPercent" -> 0.51),
-      Map[String, Any]("minSalary" -> 723000, "maxSalary" -> 1760000, "deductionPercent" -> 0.28)
+    val municipalityDeductionTable = List[Map[String, Double]](
+      Map[String, Double]("minSalary" -> 250000, "maxSalary" -> 723000, "deductionPercent" -> 0.51),
+      Map[String, Double]("minSalary" -> 723000, "maxSalary" -> 1760000, "deductionPercent" -> 0.28)
     )
 
     var deduction: Double = 0
     breakable { for (deductionMap <- municipalityDeductionTable) {
-      var minSalary = deductionMap.get("minSalary").get.asInstanceOf[Int]
+      var minSalary = deductionMap.get("minSalary").get
       if (this.salary < minSalary)
         break
-      var maxSalary = deductionMap.get("maxSalary").get.asInstanceOf[Int]
-      var deductionPercent = deductionMap.get("deductionPercent").get.asInstanceOf[Double]
+      var maxSalary = deductionMap.get("maxSalary").get
+      var deductionPercent = deductionMap.get("deductionPercent").get
       var salaryTemp = if (this.salary < maxSalary) this.salary else maxSalary
       deduction += (salaryTemp - minSalary) * deductionPercent
     }}
