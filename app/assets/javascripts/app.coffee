@@ -7,6 +7,7 @@ dependencies = [
   'myApp.controllers',
   'myApp.directives',
   'myApp.common',
+  'ui.bootstrap',
   #'myApp.routeConfig'
 ]
 
