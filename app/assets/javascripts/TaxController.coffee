@@ -42,6 +42,10 @@ class TaxController
       percent: @formatPercent(data.pensionContribution.percent),
       sum: @formatCurrencyCents(data.perDiemPayment.sum)
     }
+    @$scope.unemploymentInsurance = {
+      percent: @formatPercent(data.unemploymentInsurance.percent),
+      sum: @formatCurrencyCents(data.unemploymentInsurance.sum)
+    }
 
   formatCurrency: (currency) ->
     return (currency).toFixed(2).toString().replace('.', ',')

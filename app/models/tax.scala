@@ -160,6 +160,10 @@ object Tax {
         "tyelSub53Percent" -> tax.pensionContributionTyelSub53Percent,
         "percent" -> tax.getPensionContributionTyelPercent,
         "sum" -> tax.commonDeduction.get("pensionContribution").get
+      ),
+      "unemploymentInsurance" -> Json.obj(
+        "percent" -> tax.unemploymentInsurancePercent,
+        "sum" -> tax.commonDeduction.get("unemploymentInsurance").get
       )
     )
   }
