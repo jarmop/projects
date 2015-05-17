@@ -15,6 +15,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private var totalTax: Double = -1
   private var churchTax: Double = -1
   private var naturalSalary: Double = -1
+  private var workIncomeDeduction: Double = -1
 
   private var commonDeduction = Map[String, Double](
     "incomeDeduction" -> this.incomeDeduction,
@@ -85,42 +86,41 @@ case class Tax(salary: Int, municipality: String, age: Int) {
    * All taxes minus workincomeDeduction
    */
   private def calculateTotalTax(): Double = {
-    var deductedGovernmentTax = this.governmentTax.getTax() - this.getWorkIncomeDeduction()
-    var leftOverWorkIncomeDeduction: Double = 0
-    if (deductedGovernmentTax < 0) {
-      leftOverWorkIncomeDeduction = - deductedGovernmentTax
-      deductedGovernmentTax = 0
-    }
-
-    var totalTax: Double = 0
-    if (leftOverWorkIncomeDeduction == 0) {
-      totalTax = deductedGovernmentTax + this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax + this.getPerDiemPayments + this.getYleTax
+    var totalTax = this.governmentTax.getTax() - this.getWorkIncomeDeduction
+    if (totalTax >= 0) {
+      totalTax += this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax
     } else {
-      var totalDeductableTax = this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax
-      var deductedMunicipalityTax = this.municipalityTax.getTax - this.municipalityTax.getTax / totalDeductableTax * this.municipalityTax.getTax
-      var deductedMedicalCareInsurancePayment = this.getMedicalCareInsurancePayment - this.getMedicalCareInsurancePayment / totalDeductableTax * this.getMedicalCareInsurancePayment
-      var deductedChurchTax = this.getChurchTax - this.getChurchTax / totalDeductableTax * this.getChurchTax
-      totalTax = deductedGovernmentTax + deductedMunicipalityTax + deductedMedicalCareInsurancePayment + deductedChurchTax + this.getPerDiemPayments + this.getYleTax
+      val leftOverWorkIncomeDeduction = - totalTax
+      val totalDeductableTax = this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax
+      val deductedMunicipalityTax = this.municipalityTax.getTax - this.municipalityTax.getTax / totalDeductableTax * leftOverWorkIncomeDeduction
+      val deductedMedicalCareInsurancePayment = this.getMedicalCareInsurancePayment - this.getMedicalCareInsurancePayment / totalDeductableTax * leftOverWorkIncomeDeduction
+      val deductedChurchTax = this.getChurchTax - this.getChurchTax / totalDeductableTax * leftOverWorkIncomeDeduction
+      totalTax += deductedMunicipalityTax + deductedMedicalCareInsurancePayment + deductedChurchTax
     }
+    totalTax +=  this.getPerDiemPayments + this.getYleTax
 
     totalTax
   }
 
-  private def getWorkIncomeDeduction(): Double = {
+  private def getWorkIncomeDeduction: Double = {
+    if (this.workIncomeDeduction < 0)
+      this.workIncomeDeduction = this.calculateWorkIncomeDeduction
+
+    this.workIncomeDeduction
+  }
+
+  private def calculateWorkIncomeDeduction: Double = {
     var deduction: Double = 0
     if (this.salary > 250000) {
       deduction = 0.086 * (this.salary - 250000)
     }
-
     var maxDeduction: Double = 102500
     if (deduction > maxDeduction) {
       deduction = maxDeduction
     }
-
-    if (this.getNaturalSalary > 33000) {
-      deduction = deduction - (0.012 * (this.getNaturalSalary - 33000))
+    if (this.getNaturalSalary > 3300000) {
+      deduction = deduction - (0.012 * (this.getNaturalSalary - 3300000))
     }
-
     if (deduction < 0) {
       deduction = 0
     }
