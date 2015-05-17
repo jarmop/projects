@@ -32,7 +32,9 @@ class PieService
         }
       }
       size: {
-        canvasWidth: 540
+        canvasHeight: 400,
+        canvasWidth: 300,
+        pieOuterRadius: "80%"
       }
       callbacks: {
         onClickSegment: onClickCallback
