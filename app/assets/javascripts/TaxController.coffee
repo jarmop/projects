@@ -1,5 +1,5 @@
 class TaxController
-  constructor: (@$scope, @$log, @TaxService, PieModel) ->
+  constructor: (@$scope, @$log, @TaxService, PieService) ->
     @$log.debug "constructing TaxController"
     @form = {
       salary: 30000,
@@ -10,7 +10,7 @@ class TaxController
     @$scope.form = @form
     @$scope.municipalityOptions = ['Helsinki', 'Nivala']
 
-    @pie = PieModel
+    @pie = PieService
     @$log.debug @$scope.firstTabActive
     @$scope.showBasic = true
     @$scope.showTax = false
