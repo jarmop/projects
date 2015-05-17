@@ -74,9 +74,9 @@ object Tax {
     def writes(tax: Tax) = Json.obj(
       "municipalityTax" -> Json.toJson(tax.municipalityTax),
       "governmentTax" -> Json.toJson(tax.governmentTax),
-      "yleTax" -> 14300,
-      "medicalCareInsurancePayment" -> 32159,
-      "perDiemPayments" -> 23400,
+      "yleTax" -> tax.getYleTax,
+      "medicalCareInsurancePayment" -> tax.getMedicalCareInsurancePayment,
+      "perDiemPayments" -> tax.getPerDiemPayments,
       "commonDeduction" -> tax.commonDeduction,
       "totalTax" -> tax.getTotalTax()
     )

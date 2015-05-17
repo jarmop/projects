@@ -21,12 +21,8 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   }
 
   def getDeductedSalary(): Double = {
-    Logger.debug(this.deductedSalary.toString)
-    Logger.debug((this.deductedSalary < 0).toString)
     if (this.deductedSalary < 0)
       this.deductedSalary = this.salary - this.getTotalTaxDeduction()
-
-
 
     this.deductedSalary
   }
@@ -64,15 +60,10 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
       deduction = maxDeduction;
     }
 
-    Logger.debug(deduction.toString)
-
     var naturalSalary = this.salary - this.naturalDeduction;
-    Logger.debug(naturalSalary.toString)
     if (naturalSalary > 1400000) {
       deduction = deduction - 0.045 * (naturalSalary - 1400000);
     }
-
-    Logger.debug(deduction.toString)
 
     if (deduction < 0) {
       deduction = 0;
