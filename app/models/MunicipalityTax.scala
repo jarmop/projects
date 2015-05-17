@@ -20,7 +20,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
     this.tax
   }
 
-  private def getDeductedSalary(): Double = {
+  def getDeductedSalary(): Double = {
     Logger.debug(this.deductedSalary.toString)
     Logger.debug((this.deductedSalary < 0).toString)
     if (this.deductedSalary < 0)

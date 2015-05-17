@@ -7,13 +7,17 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private val pensionContributionTyelSub53Percent = 0.057
   private val pensionContributionTyel53Percent = 0.072
   private val unemploymentInsurancePercent = 0.0065
-  private val allowancePaymentTyelPercent = 0.0078
+  private val perDiemPaymentsTyelPercent = 0.0078
+  private val yleTaxPercent = 0.0068
+  private val medicalCareInsurancePercent = 0.0132
+
+  private var yleSalary: Double = -1
 
   private var commonDeduction = Map[String, Double](
     "incomeDeduction" -> this.incomeDeduction,
     "pensionContribution" -> this.salary * this.getPensionContributionTyelPercent(),
     "unemploymentInsurance" -> this.salary * this.unemploymentInsurancePercent,
-    "allowancePayment" -> this.salary * this.allowancePaymentTyelPercent
+    "perDiemPayments" -> this.getPerDiemPayments
   )
   commonDeduction += "total" -> commonDeduction.foldLeft(0.0){  case (a, (k, v)) => a+v  }
 
@@ -28,8 +32,40 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     }
   }
 
+  private def getPerDiemPayments: Double = {
+    this.salary * this.perDiemPaymentsTyelPercent
+  }
+
+  private def getMedicalCareInsurancePayment: Double = {
+    this.municipalityTax.getDeductedSalary * this.medicalCareInsurancePercent
+  }
+
+  private def getYleTaxDeduction: Double = {
+    return this.incomeDeduction
+  }
+
+  private def getYleSalary: Double = {
+    if (this.yleSalary < 0)
+      this.yleSalary = this.salary - this.getYleTaxDeduction
+
+    this.yleSalary
+  }
+
+  private def getYleTax: Double = {
+    var salary = this.getYleSalary
+
+    if (salary < 750000) {
+      0
+    }
+    if (salary >= 2102900) {
+      14300
+    }
+
+    return salary * this.yleTaxPercent;
+  }
+
   private def getTotalTax(): Double = {
-    return this.municipalityTax.getTax() + this.governmentTax.getTax()
+    return this.municipalityTax.getTax() + this.governmentTax.getTax() + this.getMedicalCareInsurancePayment + this.getPerDiemPayments + this.getYleTax
   }
 }
 
@@ -39,7 +75,7 @@ object Tax {
       "municipalityTax" -> Json.toJson(tax.municipalityTax),
       "governmentTax" -> Json.toJson(tax.governmentTax),
       "yleTax" -> 14300,
-      "medicalCareInsurance" -> 32159,
+      "medicalCareInsurancePayment" -> 32159,
       "perDiemPayments" -> 23400,
       "commonDeduction" -> tax.commonDeduction,
       "totalTax" -> tax.getTotalTax()
