@@ -103,9 +103,11 @@ object MunicipalityTax {
   implicit val municipalityWrites = new Writes[MunicipalityTax] {
     def writes(municipalityTax: MunicipalityTax) = Json.obj(
       "tax" -> round(municipalityTax.getTax),
-      "earnedIncomeAllowance" -> municipalityTax.getIncomeDeduction(),
-      "basicDeduction" -> municipalityTax.getExtraIncomeDeduction(),
-      "totalDeduction" -> municipalityTax.getTotalTaxDeduction()
+      "deductions" -> Json.obj(
+        "earnedIncomeAllowance" -> municipalityTax.getIncomeDeduction(),
+        "basicDeduction" -> municipalityTax.getExtraIncomeDeduction(),
+        "totalDeduction" -> municipalityTax.getTotalTaxDeduction()
+      )
     )
   }
 }

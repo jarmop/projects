@@ -33,7 +33,7 @@ class PieService
       }
       size: {
         canvasHeight: 400,
-        canvasWidth: 300,
+        canvasWidth: 250,
         pieOuterRadius: "80%"
       }
       callbacks: {
