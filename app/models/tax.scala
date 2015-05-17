@@ -85,7 +85,23 @@ case class Tax(salary: Int, municipality: String, age: Int) {
    * All taxes minus workincomeDeduction
    */
   private def calculateTotalTax(): Double = {
-    var totalTax = this.municipalityTax.getTax() + this.governmentTax.getTax() + this.getMedicalCareInsurancePayment + this.getPerDiemPayments + this.getYleTax
+    var deductedGovernmentTax = this.governmentTax.getTax() - this.getWorkIncomeDeduction()
+    var leftOverWorkIncomeDeduction: Double = 0
+    if (deductedGovernmentTax < 0) {
+      leftOverWorkIncomeDeduction = - deductedGovernmentTax
+      deductedGovernmentTax = 0
+    }
+
+    var totalTax: Double = 0
+    if (leftOverWorkIncomeDeduction == 0) {
+      totalTax = deductedGovernmentTax + this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax + this.getPerDiemPayments + this.getYleTax
+    } else {
+      var totalDeductableTax = this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax
+      var deductedMunicipalityTax = this.municipalityTax.getTax - this.municipalityTax.getTax / totalDeductableTax * this.municipalityTax.getTax
+      var deductedMedicalCareInsurancePayment = this.getMedicalCareInsurancePayment - this.getMedicalCareInsurancePayment / totalDeductableTax * this.getMedicalCareInsurancePayment
+      var deductedChurchTax = this.getChurchTax - this.getChurchTax / totalDeductableTax * this.getChurchTax
+      totalTax = deductedGovernmentTax + deductedMunicipalityTax + deductedMedicalCareInsurancePayment + deductedChurchTax + this.getPerDiemPayments + this.getYleTax
+    }
 
     totalTax
   }

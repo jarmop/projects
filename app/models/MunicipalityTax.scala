@@ -13,7 +13,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   var incomeDeduction: Double = -1
   var extraIncomeDeduction: Double = -1
 
-  def getTax(): Double = {
+  def getTax: Double = {
     if (this.tax < 0)
       this.tax = this.getDeductedSalary() * this.getMunicipalityPercent()
 
@@ -102,7 +102,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
 object MunicipalityTax {
   implicit val municipalityWrites = new Writes[MunicipalityTax] {
     def writes(municipalityTax: MunicipalityTax) = Json.obj(
-      "tax" -> round(municipalityTax.getTax()),
+      "tax" -> round(municipalityTax.getTax),
       "earnedIncomeAllowance" -> municipalityTax.getIncomeDeduction(),
       "basicDeduction" -> municipalityTax.getExtraIncomeDeduction(),
       "totalDeduction" -> municipalityTax.getTotalTaxDeduction()
