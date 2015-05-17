@@ -16,7 +16,7 @@ case class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction:
   }
 
   private def calculateTax: Double = {
-    var tax: Double = if (this.salary < 165000) 0 else 800
+    var tax: Double = if (this.salary < 1650000) 0 else 800
 
     val governmentTaxList = List[Map[String, Double]](
       Map[String, Double]("minSalary" -> 1650000, "maxSalary" -> 2470000, "taxPercent" -> 0.065),
