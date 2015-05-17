@@ -71,11 +71,11 @@
             Työeläkemaksut
         </td>
         <td>
-            {{pensionContributionPercent}} * {{salary}}<br>
-            (Osuus palkkatulosta alle 53v: {{pensionContributionTyelSub53Percent}} - väh. 53v: {{pensionContributionTyel53Percent}})
+            {{pensionContribution.percent}} * {{salary}}<br>
+            (Osuus palkkatulosta alle 53v: {{pensionContribution.tyelSub53Percent}} - väh. 53v: {{pensionContribution.tyel53Percent}})
         </td>
         <td>
-            {{pensionContribution}}
+            {{pensionContribution.sum}}
         </td>
     </tr>
     <tr>
@@ -85,7 +85,7 @@
     </tr>
     <tr>
         <td>Päivärahamaksu</td>
-        <td>{{allowancePaymentTyelPercent}} * {{salary}}</td>
+        <td>{{perDiemPayment.percent}} * {{salary}}</td>
         <td>{{perDiemPayment.sum}}</td>
     </tr>
     <tr>

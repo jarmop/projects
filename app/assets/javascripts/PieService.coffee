@@ -16,7 +16,7 @@ class PieService
       { label: "Kunnallisvero", value: data.municipalityTax.tax }
       { label: "YLE-vero", value: data.yleTax },
       { label: "Sairaanhoitomaksu", value: data.medicalCareInsurancePayment },
-      { label: "Päivärahamaksu", value: data.perDiemPayments }
+      { label: "Päivärahamaksu", value: data.perDiemPayment.sum }
     ]
 
     @taxPie = @createPie('pie-tax', content, null)

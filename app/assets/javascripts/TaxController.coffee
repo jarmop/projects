@@ -27,16 +27,30 @@ class TaxController
     )
 
   updateReport: (data) ->
-    @$log.debug data.commonDeduction.incomeDeduction
+    @$scope.salary = @formatCurrency(@form.salary)
     @$scope.commonDeduction = {}
     $.each(data.commonDeduction, (key, value) =>
-      @$scope.commonDeduction[key] = @formatCurrency(value)
+      @$scope.commonDeduction[key] = @formatCurrencyCents(value)
     )
-    perDiemPayment = { sum: @formatCurrency(data.perDiemPayments) }
-    @$scope.perDiemPayment = perDiemPayment
+    @$scope.perDiemPayment = {
+      percent: @formatPercent(data.perDiemPayment.percent),
+      sum: @formatCurrencyCents(data.perDiemPayment.sum)
+    }
+    @$scope.pensionContribution = {
+      tyel53Percent: @formatPercent(data.pensionContribution.tyel53Percent),
+      tyelSub53Percent: @formatPercent(data.pensionContribution.tyelSub53Percent),
+      percent: @formatPercent(data.pensionContribution.percent),
+      sum: @formatCurrencyCents(data.perDiemPayment.sum)
+    }
 
   formatCurrency: (currency) ->
-    return (currency / 100).toFixed(2).toString().replace('.', ',')
+    return (currency).toFixed(2).toString().replace('.', ',')
+
+  formatCurrencyCents: (currency) ->
+    return @formatCurrency(currency / 100)
+
+  formatPercent: (percent) ->
+    return (percent * 100).toFixed(2).toString().replace(/0$|\.00$/, '').replace('.', ',')
 
 controllersModule.controller('TaxController', TaxController)
 
