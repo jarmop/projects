@@ -75,9 +75,9 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     this.churchTax
   }
 
-  private def getTotalTax(): Double = {
+  private def getTotalTax: Double = {
     if (this.totalTax < 0)
-      this.totalTax = this.calculateTotalTax()
+      this.totalTax = this.calculateTotalTax
 
     this.totalTax
   }
@@ -85,12 +85,13 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   /**
    * All taxes minus workincomeDeduction
    */
-  private def calculateTotalTax(): Double = {
-    var totalTax = this.governmentTax.getTax() - this.getWorkIncomeDeduction
+  private def calculateTotalTax: Double = {
+    var totalTax = this.governmentTax.getTax - this.getWorkIncomeDeduction
     if (totalTax >= 0) {
       totalTax += this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax
     } else {
       val leftOverWorkIncomeDeduction = - totalTax
+      totalTax = 0
       val totalDeductableTax = this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax
       val deductedMunicipalityTax = this.municipalityTax.getTax - this.municipalityTax.getTax / totalDeductableTax * leftOverWorkIncomeDeduction
       val deductedMedicalCareInsurancePayment = this.getMedicalCareInsurancePayment - this.getMedicalCareInsurancePayment / totalDeductableTax * leftOverWorkIncomeDeduction
@@ -145,7 +146,8 @@ object Tax {
       "medicalCareInsurancePayment" -> tax.getMedicalCareInsurancePayment,
       "perDiemPayments" -> tax.getPerDiemPayments,
       "commonDeduction" -> tax.commonDeduction,
-      "totalTax" -> tax.getTotalTax()
+      "totalTax" -> tax.getTotalTax,
+      "workIncomeDeduction" -> tax.getWorkIncomeDeduction
     )
   }
 }

@@ -8,14 +8,14 @@ case class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction:
   var tax: Double = -1
   var taxSectionHits = new ListBuffer[Map[String, Double]]
 
-  def getTax(): Double = {
+  def getTax: Double = {
     if (this.tax < 0)
-      this.tax = this.calculateTax()
+      this.tax = this.calculateTax
 
     this.tax
   }
 
-  private def calculateTax(): Double = {
+  private def calculateTax: Double = {
     var tax: Double = if (this.salary < 165000) 0 else 800
 
     val governmentTaxList = List[Map[String, Double]](
@@ -64,7 +64,7 @@ case class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction:
 object GovernmentTax {
   implicit val governmentWrites = new Writes[GovernmentTax] {
     def writes(governmentTax: GovernmentTax) = Json.obj(
-      "tax" -> governmentTax.getTax()
+      "tax" -> governmentTax.getTax
     )
   }
 }
