@@ -129,18 +129,18 @@
 
 <h3>Vähennykset</h3>
 <p>
-    Kunnallisverotuksen ansiotulovähennys {{municipalityIncomeDeduction}}<br>
-    Kunnallisverotuksen perustulovähennys {{extraMunicipalityIncomeDeduction}}<br>
-    Valtion veron ja kunnallisveron yhteinen vähennys: {{totalCommonDeduction}}<br>
-    Kunnallisverosta tehtävät vähennykset yhteensä: {{municipalityIncomeDeduction}} + {{extraMunicipalityIncomeDeduction}} + {{totalCommonDeduction}} = {{totalMunicipalityTaxDeduction}}
+    Kunnallisverotuksen ansiotulovähennys {{municipalityTax.earnedIncomeAllowance}}<br>
+    Kunnallisverotuksen perustulovähennys {{municipalityTax.basicDeduction}}<br>
+    Valtion veron ja kunnallisveron yhteinen vähennys: {{commonDeduction.total}}<br>
+    Kunnallisverosta tehtävät vähennykset yhteensä: {{municipalityTax.earnedIncomeAllowance}} + {{municipalityTax.basicDeduction}} + {{commonDeduction.total}} = {{municipalityTax.totalDeduction}}
 </p>
 <p>
-    Kunnallisverotuksessa huomioitava tulo: {{salary}} - {{totalMunicipalityTaxDeduction}} = {{municipalitySalary}}
+    Kunnallisverotuksessa huomioitava tulo: {{salary}} - {{municipalityTax.totalDeduction}} = {{municipalityTax.deductedSalary}}
 </p>
 <h3>Verotus</h3>
 <p>
-    Kunnallisvero: {{municipalityPercent}} * {{municipalitySalary}} = {{municipalityTax}}<br>
-    Sairaanhoitomaksu: {{sickPercent}} * {{municipalitySalary}} = {{sickTax}}
+    Kunnallisvero: {{municipalityTax.percent}} * {{municipalityTax.deductedSalary}} = {{municipalityTax.sum}}<br>
+    Sairaanhoitomaksu: {{medicalCareInsurancePayment.percent}} * {{municipalityTax.deductedSalary}} = {{medicalCareInsurancePayment.sum}}
 </p>
 
 <h2>Ylevero</h2>

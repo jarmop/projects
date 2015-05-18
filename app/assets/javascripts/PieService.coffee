@@ -13,9 +13,9 @@ class PieService
 
     content = [
       { label: "Valtion vero", value: data.governmentTax.sum },
-      { label: "Kunnallisvero", value: data.municipalityTax.tax }
+      { label: "Kunnallisvero", value: data.municipalityTax.sum }
       { label: "YLE-vero", value: data.yleTax },
-      { label: "Sairaanhoitomaksu", value: data.medicalCareInsurancePayment },
+      { label: "Sairaanhoitomaksu", value: data.medicalCareInsurancePayment.sum },
       { label: "Päivärahamaksu", value: data.perDiemPayment.sum }
     ]
 

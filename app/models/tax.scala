@@ -147,7 +147,10 @@ object Tax {
       "municipalityTax" -> Json.toJson(tax.municipalityTax),
       "governmentTax" -> Json.toJson(tax.governmentTax),
       "yleTax" -> tax.getYleTax,
-      "medicalCareInsurancePayment" -> tax.getMedicalCareInsurancePayment,
+      "medicalCareInsurancePayment" -> Json.obj(
+        "percent" -> tax.medicalCareInsurancePercent,
+        "sum" -> tax.getMedicalCareInsurancePayment
+      ),
       "perDiemPayment" -> Json.obj(
         "percent" -> tax.perDiemPaymentsTyelPercent,
         "sum" -> tax.getPerDiemPayments

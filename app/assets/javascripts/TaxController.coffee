@@ -32,7 +32,6 @@ class TaxController
     $.each(data.commonDeduction, (key, value) =>
       @$scope.commonDeduction[key] = @formatCurrencyCents(value)
     )
-
     governmentTaxHits = []
     $.each(data.governmentTax.hits, (key, value) =>
       governmentTaxHits.push({
@@ -43,16 +42,23 @@ class TaxController
         minSalary: value.minSalary / 100,
       })
     )
-
     @$scope.governmentTax = {
       deduction: @formatCurrencyCents(data.governmentTax.deduction),
       deductedSalary: @formatCurrencyCents(data.governmentTax.deductedSalary),
       sum: @formatCurrencyCents(data.governmentTax.sum),
       hits: governmentTaxHits
     }
-
-    @$log.debug @$scope.governmentTax.hits
-
+    @$scope.municipalityTax = {
+      earnedIncomeAllowance: @formatCurrencyCents(data.municipalityTax.earnedIncomeAllowance),
+      basicDeduction: @formatCurrencyCents(data.municipalityTax.basicDeduction),
+      totalDeduction: @formatCurrencyCents(data.municipalityTax.basicDeduction),
+      deductedSalary: @formatCurrencyCents(data.municipalityTax.deductedSalary),
+      sum: @formatCurrencyCents(data.municipalityTax.sum)
+    }
+    @$scope.medicalCareInsurancePayment = {
+      percent: @formatPercent(data.medicalCareInsurancePayment.percent),
+      sum: @formatCurrencyCents(data.medicalCareInsurancePayment.sum)
+    }
     @$scope.perDiemPayment = {
       percent: @formatPercent(data.perDiemPayment.percent),
       sum: @formatCurrencyCents(data.perDiemPayment.sum)
