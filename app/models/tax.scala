@@ -22,7 +22,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     "incomeDeduction" -> this.incomeDeduction,
     "pensionContribution" -> this.salary * this.getPensionContributionTyelPercent,
     "unemploymentInsurance" -> this.salary * this.unemploymentInsurancePercent,
-    "perDiemPayments" -> this.getPerDiemPayments
+    "perDiemPayments" -> this.getPerDiemPayment
   )
   commonDeduction += "total" -> commonDeduction.foldLeft(0.0){  case (a, (k, v)) => a+v  }
 
@@ -37,7 +37,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     }
   }
 
-  private def getPerDiemPayments: Double = {
+  private def getPerDiemPayment: Double = {
     this.salary * this.perDiemPaymentsTyelPercent
   }
 
@@ -102,7 +102,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
       deductedChurchTax = if (deductedChurchTax > 0)  deductedChurchTax else 0
       totalTax += deductedMunicipalityTax + deductedMedicalCareInsurancePayment + deductedChurchTax
     }
-    totalTax += this.getPerDiemPayments + this.getYleTax
+    totalTax += this.getPerDiemPayment + this.getYleTax
 
     totalTax
   }
@@ -139,6 +139,26 @@ case class Tax(salary: Int, municipality: String, age: Int) {
 
     this.naturalSalary
   }
+
+  def getGovernmentTaxPercent: Double = {
+    this.governmentTax.getTax / this.salary
+  }
+
+  def getMunicipalityTaxPercent: Double = {
+    this.municipalityTax.getTax / this.salary
+  }
+
+  def getPerDiemPaymentPercent: Double = {
+    this.getPerDiemPayment / this.salary
+  }
+
+  def getMedicalCareInsurancePaymentPercent: Double = {
+    this.getMedicalCareInsurancePayment / this.salary
+  }
+
+  def getYleTaxPercent: Double = {
+    this.getYleTax / this.salary
+  }
 }
 
 object Tax {
@@ -153,7 +173,7 @@ object Tax {
       ),
       "perDiemPayment" -> Json.obj(
         "percent" -> tax.perDiemPaymentsTyelPercent,
-        "sum" -> tax.getPerDiemPayments
+        "sum" -> tax.getPerDiemPayment
       ),
       "commonDeduction" -> tax.commonDeduction,
       "totalTax" -> tax.getTotalTax,
