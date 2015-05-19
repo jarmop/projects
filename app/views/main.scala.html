@@ -1,4 +1,4 @@
-@(title: String, controller: String = "")(content: Html)
+@(title: String, controller: String = "", assets: List[String])(content: Html)
 
 <!DOCTYPE html>
 
@@ -8,6 +8,7 @@
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
         <link rel="stylesheet" href="@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))">
+        <link rel="stylesheet" href="@routes.WebJarAssets.at(WebJarAssets.locate("nv.d3.min.css"))">
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -73,10 +74,11 @@
         <script src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.js"))"></script>
         <script src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap-tpls.js"))"></script>
         <script src="@routes.WebJarAssets.at(WebJarAssets.locate("d3.js"))"></script>
-        <script src="@routes.Assets.versioned("javascripts/d3pie.js")"></script>
+        <script src="@routes.WebJarAssets.at(WebJarAssets.locate("nv.d3.js"))"></script>
+        <script src="@routes.WebJarAssets.at(WebJarAssets.locate("angularjs-nvd3-directives.js"))"></script>
         <script src="@routes.Assets.versioned("javascripts/app.js")"></script>
-        <script src="@routes.Assets.versioned("javascripts/TaxController.js")"></script>
-        <script src="@routes.Assets.versioned("javascripts/TaxService.js")"></script>
-        <script src="@routes.Assets.versioned("javascripts/PieService.js")"></script>
+        @for(asset <- assets) {
+            <script src="@routes.Assets.versioned(asset)"></script>
+        }
     </body>
 </html>

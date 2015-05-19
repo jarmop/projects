@@ -8,6 +8,7 @@ dependencies = [
   'myApp.directives',
   'myApp.common',
   'ui.bootstrap',
+  'nvd3ChartDirectives'
   #'myApp.routeConfig'
 ]
 

@@ -1,0 +1,30 @@
+@(title: String, assets: List[String])
+@main(title, "CompareController as ctrl", assets) {
+
+  <h1>@title</h1>
+
+    <nvd3-stacked-area-chart
+    data="exampleData"
+    id="exampleId"
+    height="400"
+    showXAxis="true"
+    showYAxis="true"
+    tooltips="true"
+    interactive="true"
+    useInteractiveGuideline="true"
+    toolTipContent="toolTipContentFunction()"
+    xAxisTickFormat="xAxisTickFormat()">
+      <svg></svg>
+    </nvd3-stacked-area-chart>
+
+    <nvd3-line-chart
+    data="exampleData2"
+    showXAxis="true"
+    showYAxis="true"
+    tooltips="true"
+    interactive="true">
+    </nvd3-line-chart>
+
+
+
+}
