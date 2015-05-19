@@ -2,16 +2,17 @@ class CompareController
   constructor: (@$scope, @$log, @CompareService) ->
     @$log.debug "constructing CompareControlleri"
 
-    @$scope.exampleData = [
-      {
-        key: "Series 1",
-        values: [ [ 1000, 10],[ 2000, 20],[ 3000, 30],[ 4000, 20],[ 5000, 50],[ 6000, 10] ]
-      },
-      {
-        key: "Series 2",
-        values: [ [ 1000, 10],[ 2000, 20],[ 3000, 30],[ 4000, 20],[ 5000, 50],[ 6000, 10] ]
-      },
-    ]
+    @getData()
+
+  getData: (form) ->
+    @$log.debug "getData"
+    @CompareService.getData()
+    .then((response) =>
+      @$log.debug response
+      @$scope.exampleData = response
+    ,(error) =>
+      @$log.error "Unable to get data: #{error}"
+    )
 
 
 controllersModule.controller('CompareController', CompareController)

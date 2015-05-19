@@ -73,9 +73,11 @@ class TaxController
       percent: @formatPercent(data.unemploymentInsurance.percent),
       sum: @formatCurrencyCents(data.unemploymentInsurance.sum)
     }
+    @$scope.totalTax = @formatCurrencyCents(data.totalTax)
+    @$scope.taxPercentage = @formatPercent(data.totalTax / 100 / @form.salary)
 
   formatCurrency: (currency) ->
-    return (currency).toFixed(2).toString().replace('.', ',')
+    return parseInt(currency).toFixed(2).toString().replace('.', ',')
 
   formatCurrencyCents: (currency) ->
     return @formatCurrency(currency / 100)

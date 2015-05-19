@@ -76,7 +76,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     this.churchTax
   }
 
-  private def getTotalTax: Double = {
+  def getTotalTax: Double = {
     if (this.totalTax < 0)
       this.totalTax = this.calculateTotalTax
 
