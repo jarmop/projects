@@ -10,7 +10,16 @@
     <select ng-model="form.municipality" ng-options="value for value in municipalityOptions" class="form-control input-sm"></select>
     <label>Ikä</label>
     <input type="number" ng-model="form.age" placeholder="Ikä" class="form-control form-input-age input-sm">
+    <div class="form-group">
+        <label>Ikä</label>
+        <div class="input-group">
+            <input type="number" ng-model="form.age" placeholder="Ikä" class="form-control form-input-age input-sm">
+            <div popover-placement="top" popover="On the Top!" class="input-group-addon"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+        </div>
+    </div>
     <input ng-click="ctrl.getTax(form)" class="btn btn-primary btn-sm" type="submit" value="Laske vero">
+
+    <button popover-placement="bottom" popover="On the Bottom!" class="btn btn-default">Bottom</button>
 </form>
 
 <div class="row">
