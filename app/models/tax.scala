@@ -37,11 +37,11 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     }
   }
 
-  private def getPerDiemPayment: Double = {
+  def getPerDiemPayment: Double = {
     this.salary * this.perDiemPaymentsTyelPercent
   }
 
-  private def getMedicalCareInsurancePayment: Double = {
+  def getMedicalCareInsurancePayment: Double = {
     this.municipalityTax.getDeductedSalary * this.medicalCareInsurancePercent
   }
 
@@ -56,7 +56,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     this.yleSalary
   }
 
-  private def getYleTax: Double = {
+  def getYleTax: Double = {
     var salary = this.getYleSalary
 
     if (salary < 750000) {
@@ -140,12 +140,20 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     this.naturalSalary
   }
 
+  def getGovernmentTax: Double = {
+    this.governmentTax.getTax
+  }
+
   def getGovernmentTaxPercent: Double = {
-    this.governmentTax.getTax / this.salary
+    this.getGovernmentTax / this.salary
+  }
+
+  def getMunicipalityTax: Double = {
+    this.municipalityTax.getTax
   }
 
   def getMunicipalityTaxPercent: Double = {
-    this.municipalityTax.getTax / this.salary
+    this.getMunicipalityTax / this.salary
   }
 
   def getPerDiemPaymentPercent: Double = {

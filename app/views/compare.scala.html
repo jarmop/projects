@@ -4,8 +4,21 @@
   <h1>@title</h1>
 
   <nvd3-stacked-area-chart
-  data="exampleData"
+  data="percentData"
   id="exampleId"
+  height="400"
+  showXAxis="true"
+  showYAxis="true"
+  tooltips="true"
+  interactive="true"
+  useInteractiveGuideline="true"
+  toolTipContent="toolTipContentFunction()">
+    <svg></svg>
+  </nvd3-stacked-area-chart>
+
+  <nvd3-stacked-area-chart
+  data="sumData"
+  id="exampleId2"
   height="400"
   showXAxis="true"
   showYAxis="true"
