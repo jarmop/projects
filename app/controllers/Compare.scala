@@ -1,7 +1,8 @@
 package controllers
 
 import controllers.Application._
-import models.Tax
+import controllers.MongoTest._
+import services.CompareService
 import play.api.libs.json.Json
 import play.api.mvc._
 
@@ -39,127 +40,66 @@ object Compare extends Controller with MongoController {
    */
   def collection: JSONCollection = db.collection[JSONCollection]("persons")
 
-  def percent = Action.async {
-    val municipality = "Helsinki"
-    val age = 30
+  def percent2 = Action.async {
 
-    val tax = new Tax(1000000, municipality, age)
-    var salary = 1000000
-    //var data = List[List[Double]](List[Double](salary / 100, tax.getTotalTax / salary * 100))
-    var dataGov = List[List[Double]](List[Double](salary / 100, tax.getGovernmentTaxPercent * 100))
-    var dataMun = List[List[Double]](List[Double](salary / 100, tax.getMunicipalityTaxPercent * 100))
-    var dataMed = List[List[Double]](List[Double](salary / 100, tax.getMedicalCareInsurancePaymentPercent * 100))
-    var dataPer = List[List[Double]](List[Double](salary / 100, tax.getPerDiemPaymentPercent * 100))
-    var dataYle = List[List[Double]](List[Double](salary / 100, tax.getYleTaxPercent * 100))
-    //var net = List[List[Double]](List[Double](salary / 100, (salary - tax.getTotalTax) / salary * 100))
+    val json = CompareService.getPercentData
 
-    for (salary <- 1100000 to 10000000 by 100000) {
-      val tax = new Tax(salary, municipality, age)
-      //data :+= List[Double](salary / 100, tax.getTotalTax / salary * 100)
-      dataGov :+= List[Double](salary / 100, tax.getGovernmentTaxPercent * 100)
-      dataMun :+= List[Double](salary / 100, tax.getMunicipalityTaxPercent * 100)
-      dataMed :+= List[Double](salary / 100, tax.getMedicalCareInsurancePaymentPercent * 100)
-      dataPer :+= List[Double](salary / 100, tax.getPerDiemPaymentPercent * 100)
-      dataYle :+= List[Double](salary / 100, tax.getYleTaxPercent * 100)
-      //net :+= List[Double](salary / 100, (salary - tax.getTotalTax) / salary * 100)
-    }
-
-    val json = Json.arr(
-      Json.obj(
-        "key" -> "Päivärahamaksu",
-        "values" -> Json.toJson(dataPer)
-      ),
-      Json.obj(
-        "key" -> "YLE-vero",
-        "values" -> Json.toJson(dataYle)
-      ),
-      Json.obj(
-        "key" -> "Sairaanhoitomaksu",
-        "values" -> Json.toJson(dataMed)
-      ),
-      Json.obj(
-        "key" -> "Kunnallisvero",
-        "values" -> Json.toJson(dataMun)
-      ),
-      Json.obj(
-        "key" -> "Valtion vero",
-        "values" -> Json.toJson(dataGov)
-      )
-    )
 
         collection.insert(Json.obj("_id" -> "jarmoid", "data" -> json)).map(lastError =>
           Ok("Mongo LastError: %s".format(lastError)))
 
-    /*Ok(Json.arr(
-      Json.obj(
-        "key" -> "Päivärahamaksu",
-        "values" -> Json.toJson(dataPer)
-      ),
-      Json.obj(
-        "key" -> "YLE-vero",
-        "values" -> Json.toJson(dataYle)
-      ),
-      Json.obj(
-        "key" -> "Sairaanhoitomaksu",
-        "values" -> Json.toJson(dataMed)
-      ),
-      Json.obj(
-        "key" -> "Kunnallisvero",
-        "values" -> Json.toJson(dataMun)
-      ),
-      Json.obj(
-        "key" -> "Valtion vero",
-        "values" -> Json.toJson(dataGov)
-      )
-    ))*/
+    //Ok(json)
   }
 
-  def sum = Action {
-    val municipality = "Helsinki"
-    val age = 30
+  def percent = Action.async {
+    // let's do our query
+    val cursor: Cursor[JsObject] = collection.
+      // find all people with name `name`
+      find(Json.obj("_id" -> "jarmoid"))
+        // sort them by creation date
+        //.sort(Json.obj("created" -> -1))
+        // perform the query and get a cursor of JsObject
+        .cursor[JsObject]
 
-    val tax = new Tax(1000000, municipality, age)
-    var salary = 1000000
-    //var data = List[List[Double]](List[Double](salary / 100, tax.getTotalTax / salary * 100))
-    var dataGov = List[List[Double]](List[Double](salary / 100, tax.getGovernmentTax / 100))
-    var dataMun = List[List[Double]](List[Double](salary / 100, tax.getMunicipalityTax / 100))
-    var dataMed = List[List[Double]](List[Double](salary / 100, tax.getMedicalCareInsurancePayment / 100))
-    var dataPer = List[List[Double]](List[Double](salary / 100, tax.getPerDiemPayment / 100))
-    var dataYle = List[List[Double]](List[Double](salary / 100, tax.getYleTax / 100))
-    //var net = List[List[Double]](List[Double](salary / 100, (salary - tax.getTotalTax) / salary * 100))
-
-    for (salary <- 1100000 to 10000000 by 100000) {
-      val tax = new Tax(salary, municipality, age)
-      //data :+= List[Double](salary / 100, tax.getTotalTax / salary * 100)
-      dataGov :+= List[Double](salary / 100, tax.getGovernmentTax / 100)
-      dataMun :+= List[Double](salary / 100, tax.getMunicipalityTax / 100)
-      dataMed :+= List[Double](salary / 100, tax.getMedicalCareInsurancePayment / 100)
-      dataPer :+= List[Double](salary / 100, tax.getPerDiemPayment / 100)
-      dataYle :+= List[Double](salary / 100, tax.getYleTax / 100)
-      //net :+= List[Double](salary / 100, (salary - tax.getTotalTax) / salary * 100)
+    cursor.collect[List]().map { persons =>
+      //Ok(Json.arr(persons))
+      Ok(persons.productElement(0).asInstanceOf[play.api.libs.json.JsObject] \ "data")
     }
 
-    Ok(Json.arr(
-      Json.obj(
-        "key" -> "Päivärahamaksu",
-        "values" -> Json.toJson(dataPer)
-      ),
-      Json.obj(
-        "key" -> "YLE-vero",
-        "values" -> Json.toJson(dataYle)
-      ),
-      Json.obj(
-        "key" -> "Sairaanhoitomaksu",
-        "values" -> Json.toJson(dataMed)
-      ),
-      Json.obj(
-        "key" -> "Kunnallisvero",
-        "values" -> Json.toJson(dataMun)
-      ),
-      Json.obj(
-        "key" -> "Valtion vero",
-        "values" -> Json.toJson(dataGov)
-      )
-    ))
+  }
+
+  /*
+   * Get a JSONCollection (a Collection implementation that is designed to work
+   * with JsObject, Reads and Writes.)
+   * Note that the `collection` is not a `val`, but a `def`. We do _not_ store
+   * the collection reference to avoid potential problems in development with
+   * Play hot-reloading.
+   */
+  //def sumCollection: JSONCollection = db.collection[JSONCollection]("persons")
+
+  def sum2 = Action.async {
+    val json = CompareService.getSumData
+
+    collection.insert(Json.obj("_id" -> "compareSum", "data" -> json)).map(lastError =>
+      Ok("Mongo LastError: %s".format(lastError)))
+
+    //Ok(json)
+  }
+
+  def sum = Action.async {
+    // let's do our query
+    val cursor: Cursor[JsObject] = collection.
+      // find all people with name `name`
+      find(Json.obj("_id" -> "compareSum"))
+      // sort them by creation date
+      //.sort(Json.obj("created" -> -1))
+      // perform the query and get a cursor of JsObject
+      .cursor[JsObject]
+
+    cursor.collect[List]().map { persons =>
+      //Ok(Json.arr(persons))
+      Ok(persons.productElement(0).asInstanceOf[play.api.libs.json.JsObject] \ "data")
+    }
+
   }
 }
