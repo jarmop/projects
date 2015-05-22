@@ -5,7 +5,21 @@ import models.Tax
 import play.api.libs.json.Json
 import play.api.mvc._
 
-object Compare extends Controller {
+import play.api._
+import play.api.mvc._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import scala.concurrent.Future
+
+// Reactive Mongo imports
+import reactivemongo.api._
+
+// Reactive Mongo plugin, including the JSON-specialized collection
+import play.modules.reactivemongo.MongoController
+import play.modules.reactivemongo.json.collection.JSONCollection
+
+object Compare extends Controller with MongoController {
 
   def index = Action {
     val assets = List[String](
@@ -16,7 +30,16 @@ object Compare extends Controller {
     Ok(views.html.compare("Vertaa", assets))
   }
 
-  def percent = Action {
+  /*
+   * Get a JSONCollection (a Collection implementation that is designed to work
+   * with JsObject, Reads and Writes.)
+   * Note that the `collection` is not a `val`, but a `def`. We do _not_ store
+   * the collection reference to avoid potential problems in development with
+   * Play hot-reloading.
+   */
+  def collection: JSONCollection = db.collection[JSONCollection]("persons")
+
+  def percent = Action.async {
     val municipality = "Helsinki"
     val age = 30
 
@@ -41,7 +64,7 @@ object Compare extends Controller {
       //net :+= List[Double](salary / 100, (salary - tax.getTotalTax) / salary * 100)
     }
 
-    Ok(Json.arr(
+    val json = Json.arr(
       Json.obj(
         "key" -> "Päivärahamaksu",
         "values" -> Json.toJson(dataPer)
@@ -62,7 +85,33 @@ object Compare extends Controller {
         "key" -> "Valtion vero",
         "values" -> Json.toJson(dataGov)
       )
-    ))
+    )
+
+        collection.insert(Json.obj("_id" -> "jarmoid", "data" -> json)).map(lastError =>
+          Ok("Mongo LastError: %s".format(lastError)))
+
+    /*Ok(Json.arr(
+      Json.obj(
+        "key" -> "Päivärahamaksu",
+        "values" -> Json.toJson(dataPer)
+      ),
+      Json.obj(
+        "key" -> "YLE-vero",
+        "values" -> Json.toJson(dataYle)
+      ),
+      Json.obj(
+        "key" -> "Sairaanhoitomaksu",
+        "values" -> Json.toJson(dataMed)
+      ),
+      Json.obj(
+        "key" -> "Kunnallisvero",
+        "values" -> Json.toJson(dataMun)
+      ),
+      Json.obj(
+        "key" -> "Valtion vero",
+        "values" -> Json.toJson(dataGov)
+      )
+    ))*/
   }
 
   def sum = Action {
