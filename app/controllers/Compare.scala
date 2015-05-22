@@ -88,7 +88,7 @@ object Compare extends Controller with MongoController {
 
   def sum = Action.async {
     // let's do our query
-    val cursor: Cursor[JsObject] = collection.
+    /*val cursor: Cursor[JsObject] = collection.
       // find all people with name `name`
       find(Json.obj("_id" -> "compareSum"))
       // sort them by creation date
@@ -99,7 +99,29 @@ object Compare extends Controller with MongoController {
     cursor.collect[List]().map { persons =>
       //Ok(Json.arr(persons))
       Ok(persons.productElement(0).asInstanceOf[play.api.libs.json.JsObject] \ "data")
-    }
+    }*/
 
+    collection
+      .find(Json.obj("_id" -> "compareSum"))
+      .one[JsObject]
+      .map { json =>
+        Ok(json.get)
+      }
+
+    /*val one: Future[Option[JsObject]] = collection
+      .find(Json.obj("_id" -> "compareSum"))
+      .one[JsObject]*/
+
+    /*one.collect[JsObject]({ case (v: Option[JsObject]) => v.asInstanceOf[JsObject] }).map { persons =>
+      Ok("grttg")
+    }*/
+
+    /*one.map { na =>
+      Ok(na.get)
+    }*/
+
+    /*one onSuccess {
+      Ok("vfve")
+    }*/
   }
 }
