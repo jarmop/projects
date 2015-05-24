@@ -45,7 +45,7 @@ object Compare extends Controller with MongoController {
     val json = CompareService.getPercentData
 
 
-        collection.insert(Json.obj("_id" -> "jarmoid", "data" -> json)).map(lastError =>
+        collection.insert(Json.obj("_id" -> "comparePercent", "data" -> json)).map(lastError =>
           Ok("Mongo LastError: %s".format(lastError)))
 
     //Ok(json)
@@ -55,7 +55,7 @@ object Compare extends Controller with MongoController {
     // let's do our query
     val cursor: Cursor[JsObject] = collection.
       // find all people with name `name`
-      find(Json.obj("_id" -> "jarmoid"))
+      find(Json.obj("_id" -> "comparePercent"))
         // sort them by creation date
         //.sort(Json.obj("created" -> -1))
         // perform the query and get a cursor of JsObject
@@ -80,10 +80,11 @@ object Compare extends Controller with MongoController {
   def sum2 = Action.async {
     val json = CompareService.getSumData
 
-    collection.insert(Json.obj("_id" -> "compareSum", "data" -> json)).map(lastError =>
-      Ok("Mongo LastError: %s".format(lastError)))
+    collection.update(Json.obj("_id" -> "compareSum"), Json.obj("data" -> json)).map(lastError =>
+      Ok(json))
+      //Ok("Mongo LastError: %s".format(lastError)))
 
-    //Ok(json)
+
   }
 
   def sum = Action.async {

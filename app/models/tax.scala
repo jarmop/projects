@@ -20,8 +20,8 @@ case class Tax(salary: Int, municipality: String, age: Int) {
 
   private var commonDeduction = Map[String, Double](
     "incomeDeduction" -> this.incomeDeduction,
-    "pensionContribution" -> this.salary * this.getPensionContributionTyelPercent,
-    "unemploymentInsurance" -> this.salary * this.unemploymentInsurancePercent,
+    "pensionContribution" -> this.getPensionContribution,
+    "unemploymentInsurance" -> this.getUnemploymentInsurance,
     "perDiemPayments" -> this.getPerDiemPayment
   )
   commonDeduction += "total" -> commonDeduction.foldLeft(0.0){  case (a, (k, v)) => a+v  }
@@ -166,6 +166,22 @@ case class Tax(salary: Int, municipality: String, age: Int) {
 
   def getYleTaxPercent: Double = {
     this.getYleTax / this.salary
+  }
+
+  def getPensionContribution: Double = {
+    this.salary * this.getPensionContributionTyelPercent
+  }
+
+  def getPensionContributionPercent: Double = {
+    this. getPensionContribution / this.salary
+  }
+
+  def getUnemploymentInsurance: Double = {
+    this.salary * this.unemploymentInsurancePercent
+  }
+
+  def getUnemploymentInsurancePercent: Double = {
+    this.getUnemploymentInsurance / this.salary
   }
 }
 
