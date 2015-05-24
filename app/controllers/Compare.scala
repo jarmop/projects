@@ -52,19 +52,22 @@ object Compare extends Controller with MongoController {
   }
 
   def percent = Action.async {
-    // let's do our query
-    val cursor: Cursor[JsObject] = collection.
-      // find all people with name `name`
-      find(Json.obj("_id" -> "comparePercent"))
-        // sort them by creation date
-        //.sort(Json.obj("created" -> -1))
-        // perform the query and get a cursor of JsObject
-        .cursor[JsObject]
+    collection
+      .find(Json.obj("_id" -> "comparePercent"))
+      .one[JsObject]
+      .map { json =>
+        if (json.nonEmpty) {
+          Ok(json.get \ "data")
+        } else {
+          Ok(Json.arr())
+        }
 
-    cursor.collect[List]().map { persons =>
-      //Ok(Json.arr(persons))
-      Ok(persons.productElement(0).asInstanceOf[play.api.libs.json.JsObject] \ "data")
-    }
+      }
+
+    /*val json = CompareService.getPercentData
+    collection.update(Json.obj("_id" -> "comparePercent"), Json.obj("data" -> json)).map(lastError =>
+      Ok(json)
+    )*/
 
   }
 
