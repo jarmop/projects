@@ -15,9 +15,9 @@ object CompareService {
     var dataMun = List[List[Double]](List[Double](salary / 100, tax.getMunicipalityTaxPercent * 100))
     var dataPen = List[List[Double]](List[Double](salary / 100, tax.getPensionContributionPercent * 100))
     var dataUnemp = List[List[Double]](List[Double](salary / 100, tax.getUnemploymentInsurancePercent * 100))
-    var dataMed = List[List[Double]](List[Double](salary / 100, tax.getMedicalCareInsurancePaymentPercent * 100))
+    var dataMed = List[List[Double]](List[Double](salary / 100, tax.getMedicalCareInsurancePaymentPercentage * 100))
     var dataPer = List[List[Double]](List[Double](salary / 100, tax.getPerDiemPaymentPercent * 100))
-    var dataYle = List[List[Double]](List[Double](salary / 100, tax.getYleTaxPercent * 100))
+    var dataYle = List[List[Double]](List[Double](salary / 100, tax.getYleTaxPercentage * 100))
     //var net = List[List[Double]](List[Double](salary / 100, (salary - tax.getTotalTax) / salary * 100))
 
     for (salary <- 1100000 to 10000000 by 100000) {
@@ -27,9 +27,9 @@ object CompareService {
       dataMun :+= List[Double](salary / 100, tax.getMunicipalityTaxPercent * 100)
       dataPen :+= List[Double](salary / 100, tax.getPensionContributionPercent * 100)
       dataUnemp :+= List[Double](salary / 100, tax.getUnemploymentInsurancePercent * 100)
-      dataMed :+= List[Double](salary / 100, tax.getMedicalCareInsurancePaymentPercent * 100)
+      dataMed :+= List[Double](salary / 100, tax.getMedicalCareInsurancePaymentPercentage * 100)
       dataPer :+= List[Double](salary / 100, tax.getPerDiemPaymentPercent * 100)
-      dataYle :+= List[Double](salary / 100, tax.getYleTaxPercent * 100)
+      dataYle :+= List[Double](salary / 100, tax.getYleTaxPercentage * 100)
       //net :+= List[Double](salary / 100, (salary - tax.getTotalTax) / salary * 100)
     }
 

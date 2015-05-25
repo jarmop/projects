@@ -8,7 +8,6 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private val pensionContributionTyel53Percent = 0.072
   private val unemploymentInsurancePercent = 0.0065
   private val perDiemPaymentsTyelPercent = 0.0078
-  private val medicalCareInsurancePercent = 0.0132
 
 
   private var totalTax: Double = -1
@@ -27,6 +26,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private val governmentTax: GovernmentTax = GovernmentTax(salary, this.incomeDeduction, this.commonDeduction.get("total").get)
   private val municipalityTax: MunicipalityTax = MunicipalityTax(salary, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
   private val YLETax: YLETax = new YLETax(salary, this.incomeDeduction)
+  private val medicalCareInsurancePayment = new MedicalCareInsurancePayment(this.municipalityTax.getDeductedSalary())
 
   private def getPensionContributionTyelPercent: Double = {
     if (this.age < 53) {
@@ -39,12 +39,6 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   def getPerDiemPayment: Double = {
     this.salary * this.perDiemPaymentsTyelPercent
   }
-
-  def getMedicalCareInsurancePayment: Double = {
-    this.municipalityTax.getDeductedSalary * this.medicalCareInsurancePercent
-  }
-
-
 
   private def getChurchTax: Double = {
     if (this.churchTax < 0)
@@ -137,15 +131,19 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     this.getPerDiemPayment / this.salary
   }
 
-  def getMedicalCareInsurancePaymentPercent: Double = {
-    this.getMedicalCareInsurancePayment / this.salary
+  def getMedicalCareInsurancePayment: Double = {
+    this.medicalCareInsurancePayment.getSum
+  }
+
+  def getMedicalCareInsurancePaymentPercentage: Double = {
+    this.medicalCareInsurancePayment.getSum / this.salary
   }
 
   def getYleTax: Double = {
     this.YLETax.getTax
   }
 
-  def getYleTaxPercent: Double = {
+  def getYleTaxPercentage: Double = {
     this.YLETax.getTax / this.salary
   }
 
@@ -172,10 +170,7 @@ object Tax {
       "municipalityTax" -> Json.toJson(tax.municipalityTax),
       "governmentTax" -> Json.toJson(tax.governmentTax),
       "yleTax" -> tax.YLETax.getJson,
-      "medicalCareInsurancePayment" -> Json.obj(
-        "percent" -> tax.medicalCareInsurancePercent,
-        "sum" -> tax.getMedicalCareInsurancePayment
-      ),
+      "medicalCareInsurancePayment" -> tax.medicalCareInsurancePayment.getJson,
       "perDiemPayment" -> Json.obj(
         "percent" -> tax.perDiemPaymentsTyelPercent,
         "sum" -> tax.getPerDiemPayment
