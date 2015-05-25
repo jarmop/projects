@@ -23,40 +23,11 @@
 </form>
 
 <div class="row">
-    <div class="col-xs-12 col-sm-6 col-lg-6">
-        <div class="row">
-            <div class="col-xs-6">
-                <div id="pie-basic" class="pie-chart"></div>
-            </div>
-            <div class="col-xs-6">
-                <div id="pie-tax" class="pie-chart"></div>
-            </div>
-        </div>
+    <div class="col-xs-6">
+        <div id="pie-basic" class="pie-chart"></div>
     </div>
-    <div class="col-xs-12 col-sm-6 col-lg-6">
-        <h2>Veroraportti</h2>
-        <ul>
-            <li>
-                <a href="">Valtion vero</a>
-            </li>
-            <li>
-                <a href="">Kunnallisvero</a>
-            </li>
-            <li>
-                Sairausvakuutusmaksu
-                <ul>
-                    <li>
-                        <a href="">Sairaanhoitomaksu</a>
-                    </li>
-                    <li>
-                        <a href="">Päivärahamaksu</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="">Yle-vero</a>
-            </li>
-        </ul>
+    <div class="col-xs-6">
+        <div id="pie-tax" class="pie-chart"></div>
     </div>
 </div>
 
@@ -156,10 +127,10 @@
 <h3>Vähennykset</h3>
 <p>
     Tulonhankkimisvähennys: {{incomeDeduction}}<br>
-    Yleverosta tehtävät vähennykset yhteensä: {{totalYleTaxDeduction}}
+    Yleverosta tehtävät vähennykset yhteensä: {{YLETax.deduction}}
 </p>
 <p>
-    Yle-verossa huomioitava tulo: {{salary}} - {{totalYleTaxDeduction}} = {{yleSalary}}
+    Yle-verossa huomioitava tulo: {{salary}} - {{YLETax.deduction}} = {{YLETax.deductedSalary}}
 </p>
 
 <h2>Vähennys verosta</h2>
@@ -170,11 +141,13 @@ Valtion vero: {{governmentTax.sum}}
 <br>
 Kunnallisvero: {{municipalityTax.sum}}
 <br>
-Yle-vero: {{yleTax}}
+Yle-vero: {{YLETax.sum}}
 <br>
 Sairaanhoitomaksu: {{medicalCareInsurancePayment.sum}}
 <br>
 Päivärahamaksu: {{perDiemPayment.sum}}
+<br>
+Kirkollisvero: {{churchTax.sum}}
 <br>
 Vero yhteensä: {{totalTax}}
 <br>

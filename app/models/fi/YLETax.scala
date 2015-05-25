@@ -10,9 +10,13 @@ class YLETax(salary: Int, incomeDeduction: Double) {
     return this.incomeDeduction
   }
 
+  private def getDeductedSalary: Double = {
+    this.salary - this.getDeduction
+  }
+
   private def getSalary: Double = {
     if (this.taxableSalary < 0)
-      this.taxableSalary = this.salary - this.getDeduction
+      this.taxableSalary = this.getDeductedSalary
 
     this.taxableSalary
   }
@@ -33,7 +37,9 @@ class YLETax(salary: Int, incomeDeduction: Double) {
   def getJson: JsObject = {
     Json.obj(
       "percent" -> this.taxPercent,
-      "sum" -> this.getTax
+      "sum" -> this.getTax,
+      "deduction" -> this.getDeduction,
+      "deductedSalary" -> this.getDeductedSalary
     )
   }
 

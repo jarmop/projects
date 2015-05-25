@@ -14,9 +14,12 @@ class PieService
     content = [
       { label: "Valtion vero", value: data.governmentTax.sum },
       { label: "Kunnallisvero", value: data.municipalityTax.sum }
-      { label: "YLE-vero", value: data.yleTax },
+      { label: "YLE-vero", value: data.YLETax.sum },
       { label: "Sairaanhoitomaksu", value: data.medicalCareInsurancePayment.sum },
-      { label: "Päivärahamaksu", value: data.perDiemPayment.sum }
+      { label: "Päivärahamaksu", value: data.perDiemPayment.sum },
+      { label: "Kirkollisvero", value: data.churchTax.sum },
+      { label: "Työttömyysvakuutusmaksu", value: data.unemploymentInsurance.sum },
+      { label: "Työeläkemaksu", value: data.pensionContribution.sum }
     ]
 
     @taxPie = @createPie('pie-tax', content, null)
@@ -27,9 +30,9 @@ class PieService
         content: content
       },
       size: {
-        canvasHeight: 300,
-        canvasWidth: 250,
-        pieOuterRadius: "80%"
+        #canvasHeight: 300,
+        #canvasWidth: 250,
+        pieOuterRadius: "50%"
       }
       callbacks: {
         onClickSegment: onClickCallback

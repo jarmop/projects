@@ -73,6 +73,14 @@ class TaxController
       percent: @formatPercent(data.unemploymentInsurance.percent),
       sum: @formatCurrencyCents(data.unemploymentInsurance.sum)
     }
+    @$scope.churchTax = {
+      percent: @formatPercent(data.churchTax.percent),
+      sum: @formatCurrencyCents(data.churchTax.sum)
+    }
+    @$scope.YLETax = {
+      percent: @formatPercent(data.YLETax.percent),
+      sum: @formatCurrencyCents(data.YLETax.sum)
+    }
     @$scope.totalTax = @formatCurrencyCents(data.totalTax)
     @$scope.taxPercentage = @formatPercent(data.totalTax / 100 / @form.salary)
 
