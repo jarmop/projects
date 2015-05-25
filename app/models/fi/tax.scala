@@ -25,12 +25,8 @@ class Tax(salary: Int, municipality: String, age: Int) {
   private val municipalityTax: MunicipalityTax = new MunicipalityTax(salary, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
   private val YLETax: YLETax = new YLETax(salary, this.incomeDeduction)
   private val medicalCareInsurancePayment = new MedicalCareInsurancePayment(this.municipalityTax.getDeductedSalary())
-  private val churchTax = new ChurchTax(salary)
+  private val churchTax = new ChurchTax(salary, municipality)
 
-
-  private def getChurchTax: Double = {
-    this.churchTax.getSum
-  }
 
   def getTotalTax: Double = {
     if (this.totalTax < 0)
@@ -148,22 +144,31 @@ class Tax(salary: Int, municipality: String, age: Int) {
     this.unemploymentInsurance.getSum
   }
 
-  def getUnemploymentInsurancePercent: Double = {
+  def getUnemploymentInsurancePercentage: Double = {
     this.getUnemploymentInsurance / this.salary
+  }
+
+  def getChurchTax: Double = {
+    this.churchTax.getSum
+  }
+
+  def getChurchTaxPercentage: Double = {
+    this.churchTax.getSum / this.salary
   }
   
   def getJson: JsObject = {
     Json.obj(
       "municipalityTax" -> this.municipalityTax.getJson,
       "governmentTax" -> this.governmentTax.getJson,
-      "yleTax" -> this.YLETax.getJson,
+      "YLETax" -> this.YLETax.getJson,
       "medicalCareInsurancePayment" -> this.medicalCareInsurancePayment.getJson,
       "perDiemPayment" -> this.perDiemPayment.getJson,
       "commonDeduction" -> this.commonDeduction,
       "totalTax" -> this.getTotalTax,
       "workIncomeDeduction" -> this.getWorkIncomeDeduction,
       "pensionContribution" -> this.pensionContribution.getJson,
-      "unemploymentInsurance" -> this.unemploymentInsurance.getJson
+      "unemploymentInsurance" -> this.unemploymentInsurance.getJson,
+      "churchTax" -> this.churchTax.getJson
     )
   }
 }

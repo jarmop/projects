@@ -98,5 +98,10 @@ object Compare extends Controller with MongoController {
         // if not found calculate
         Ok(json.get \ "data")
       }
+
+    /*val json = CompareService.getSumData
+    collection.update(Json.obj("_id" -> "compareSum"), Json.obj("data" -> json)).map(lastError =>
+      Ok(json)
+    )*/
   }
 }

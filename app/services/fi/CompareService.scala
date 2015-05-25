@@ -14,11 +14,11 @@ object CompareService {
     var dataGov = List[List[Double]](List[Double](salary / 100, tax.getGovernmentTaxPercent * 100))
     var dataMun = List[List[Double]](List[Double](salary / 100, tax.getMunicipalityTaxPercent * 100))
     var dataPen = List[List[Double]](List[Double](salary / 100, tax.getPensionContributionPercentage * 100))
-    var dataUnemp = List[List[Double]](List[Double](salary / 100, tax.getUnemploymentInsurancePercent * 100))
+    var dataUnemp = List[List[Double]](List[Double](salary / 100, tax.getUnemploymentInsurancePercentage * 100))
     var dataMed = List[List[Double]](List[Double](salary / 100, tax.getMedicalCareInsurancePaymentPercentage * 100))
     var dataPer = List[List[Double]](List[Double](salary / 100, tax.getPerDiemPaymentPercentage * 100))
     var dataYle = List[List[Double]](List[Double](salary / 100, tax.getYleTaxPercentage * 100))
-    //var net = List[List[Double]](List[Double](salary / 100, (salary - tax.getTotalTax) / salary * 100))
+    var dataChu = List[List[Double]](List[Double](salary / 100, tax.getChurchTaxPercentage * 100))
 
     for (salary <- 1100000 to 10000000 by 100000) {
       val tax = new Tax(salary, municipality, age)
@@ -26,14 +26,18 @@ object CompareService {
       dataGov :+= List[Double](salary / 100, tax.getGovernmentTaxPercent * 100)
       dataMun :+= List[Double](salary / 100, tax.getMunicipalityTaxPercent * 100)
       dataPen :+= List[Double](salary / 100, tax.getPensionContributionPercentage * 100)
-      dataUnemp :+= List[Double](salary / 100, tax.getUnemploymentInsurancePercent * 100)
+      dataUnemp :+= List[Double](salary / 100, tax.getUnemploymentInsurancePercentage * 100)
       dataMed :+= List[Double](salary / 100, tax.getMedicalCareInsurancePaymentPercentage * 100)
       dataPer :+= List[Double](salary / 100, tax.getPerDiemPaymentPercentage * 100)
       dataYle :+= List[Double](salary / 100, tax.getYleTaxPercentage * 100)
-      //net :+= List[Double](salary / 100, (salary - tax.getTotalTax) / salary * 100)
+      dataChu :+= List[Double](salary / 100, tax.getChurchTaxPercentage * 100)
     }
 
     Json.arr(
+      Json.obj(
+        "key" -> "Kirkollisvero",
+        "values" -> Json.toJson(dataChu)
+      ),
       Json.obj(
         "key" -> "Päivärahamaksu",
         "values" -> Json.toJson(dataPer)
@@ -79,7 +83,7 @@ object CompareService {
     var dataMed = List[List[Double]](List[Double](salary / 100, tax.getMedicalCareInsurancePayment / 100))
     var dataPer = List[List[Double]](List[Double](salary / 100, tax.getPerDiemPayment / 100))
     var dataYle = List[List[Double]](List[Double](salary / 100, tax.getYleTax / 100))
-    //var net = List[List[Double]](List[Double](salary / 100, (salary - tax.getTotalTax) / salary * 100))
+    var dataChu = List[List[Double]](List[Double](salary / 100, tax.getChurchTax / 100))
 
     for (salary <- 1100000 to 10000000 by 100000) {
       val tax = new Tax(salary, municipality, age)
@@ -91,10 +95,14 @@ object CompareService {
       dataMed :+= List[Double](salary / 100, tax.getMedicalCareInsurancePayment / 100)
       dataPer :+= List[Double](salary / 100, tax.getPerDiemPayment / 100)
       dataYle :+= List[Double](salary / 100, tax.getYleTax / 100)
-      //net :+= List[Double](salary / 100, (salary - tax.getTotalTax) / salary * 100)
+      dataChu :+= List[Double](salary / 100, tax.getChurchTax / 100)
     }
 
     Json.arr(
+      Json.obj(
+        "key" -> "Kirkollisvero",
+        "values" -> Json.toJson(dataChu)
+      ),
       Json.obj(
         "key" -> "Päivärahamaksu",
         "values" -> Json.toJson(dataPer)
