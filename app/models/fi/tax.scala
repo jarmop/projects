@@ -6,7 +6,6 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private val incomeDeduction: Double = 62000
 
   private var totalTax: Double = -1
-  private var churchTax: Double = -1
   private var naturalSalary: Double = -1
   private var workIncomeDeduction: Double = -1
 
@@ -26,14 +25,11 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private val municipalityTax: MunicipalityTax = MunicipalityTax(salary, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
   private val YLETax: YLETax = new YLETax(salary, this.incomeDeduction)
   private val medicalCareInsurancePayment = new MedicalCareInsurancePayment(this.municipalityTax.getDeductedSalary())
-
+  private val churchTax = new ChurchTax(salary)
 
 
   private def getChurchTax: Double = {
-    if (this.churchTax < 0)
-      this.churchTax = 0 // TODO calculate actual church tax
-
-    this.churchTax
+    this.churchTax.getSum
   }
 
   def getTotalTax: Double = {
