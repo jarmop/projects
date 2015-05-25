@@ -1,8 +1,7 @@
-package services
+package services.fi
 
-import models.Tax
-import play.api.Logger
-import play.api.libs.json.{Json, Writes}
+import models.fi.Tax
+import play.api.libs.json.Json
 
 object CompareService {
   def getPercentData: play.api.libs.json.JsArray = {

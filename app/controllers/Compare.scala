@@ -2,7 +2,6 @@ package controllers
 
 import controllers.Application._
 import controllers.MongoTest._
-import services.CompareService
 import play.api.libs.json.Json
 import play.api.mvc._
 
@@ -11,6 +10,7 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import services.fi.CompareService
 import scala.concurrent.Future
 
 // Reactive Mongo imports

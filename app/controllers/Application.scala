@@ -1,6 +1,6 @@
 package controllers
 
-import models.Tax
+import models.fi.Tax
 import play.api.libs.json.Json
 import play.api.mvc._
 

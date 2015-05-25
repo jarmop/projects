@@ -1,9 +1,9 @@
-package models
+package models.fi
 
-import play.api.Logger
 import play.api.libs.json.{Json, Writes}
-import scala.util.control.Breaks._
+
 import scala.math._
+import scala.util.control.Breaks._
 
 case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduction: Double, commonDeduction: Double) {
   val municipalityPercents = Map[String, Double]("Helsinki" -> 0.1850, "Nivala" -> 0.2150)

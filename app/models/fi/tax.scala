@@ -1,6 +1,5 @@
-package models
+package models.fi
 
-import play.api.Logger
 import play.api.libs.json.{Json, Writes}
 
 case class Tax(salary: Int, municipality: String, age: Int) {

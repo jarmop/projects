@@ -1,6 +1,7 @@
-package models
+package models.fi
 
 import play.api.libs.json.{Json, Writes}
+
 import scala.collection.mutable.ListBuffer
 import scala.util.control.Breaks._
 
