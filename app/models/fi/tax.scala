@@ -4,16 +4,15 @@ import play.api.libs.json.{Json, Writes}
 
 case class Tax(salary: Int, municipality: String, age: Int) {
   private val incomeDeduction: Double = 62000
-  private val unemploymentInsurancePercent = 0.0065
-
 
   private var totalTax: Double = -1
   private var churchTax: Double = -1
   private var naturalSalary: Double = -1
   private var workIncomeDeduction: Double = -1
 
-  private val perDiemPayment = new PerDiemPayment(salary)
   private val pensionContribution = new PensionContribution(salary, age)
+  private val unemploymentInsurance = new UnemploymentInsurance(salary)
+  private val perDiemPayment = new PerDiemPayment(salary)
 
   private var commonDeduction = Map[String, Double](
     "incomeDeduction" -> this.incomeDeduction,
@@ -150,7 +149,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getUnemploymentInsurance: Double = {
-    this.salary * this.unemploymentInsurancePercent
+    this.unemploymentInsurance.getSum
   }
 
   def getUnemploymentInsurancePercent: Double = {
@@ -170,10 +169,7 @@ object Tax {
       "totalTax" -> tax.getTotalTax,
       "workIncomeDeduction" -> tax.getWorkIncomeDeduction,
       "pensionContribution" -> tax.pensionContribution.getJson,
-      "unemploymentInsurance" -> Json.obj(
-        "percent" -> tax.unemploymentInsurancePercent,
-        "sum" -> tax.commonDeduction.get("unemploymentInsurance").get
-      )
+      "unemploymentInsurance" -> tax.unemploymentInsurance.getJson
     )
   }
 }
