@@ -7,13 +7,14 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private val pensionContributionTyelSub53Percent = 0.057
   private val pensionContributionTyel53Percent = 0.072
   private val unemploymentInsurancePercent = 0.0065
-  private val perDiemPaymentsTyelPercent = 0.0078
 
 
   private var totalTax: Double = -1
   private var churchTax: Double = -1
   private var naturalSalary: Double = -1
   private var workIncomeDeduction: Double = -1
+
+  private val perDiemPayment = new PerDiemPayment(salary)
 
   private var commonDeduction = Map[String, Double](
     "incomeDeduction" -> this.incomeDeduction,
@@ -34,10 +35,6 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     } else {
       return this.pensionContributionTyel53Percent;
     }
-  }
-
-  def getPerDiemPayment: Double = {
-    this.salary * this.perDiemPaymentsTyelPercent
   }
 
   private def getChurchTax: Double = {
@@ -73,7 +70,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
       deductedChurchTax = if (deductedChurchTax > 0)  deductedChurchTax else 0
       totalTax += deductedMunicipalityTax + deductedMedicalCareInsurancePayment + deductedChurchTax
     }
-    totalTax += this.getPerDiemPayment + this.YLETax.getTax
+    totalTax += this.getPerDiemPayment + this.getYleTax
 
     totalTax
   }
@@ -127,7 +124,11 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     this.getMunicipalityTax / this.salary
   }
 
-  def getPerDiemPaymentPercent: Double = {
+  def getPerDiemPayment: Double = {
+    this.perDiemPayment.getSum
+  }
+
+  def getPerDiemPaymentPercentage: Double = {
     this.getPerDiemPayment / this.salary
   }
 
@@ -171,10 +172,7 @@ object Tax {
       "governmentTax" -> Json.toJson(tax.governmentTax),
       "yleTax" -> tax.YLETax.getJson,
       "medicalCareInsurancePayment" -> tax.medicalCareInsurancePayment.getJson,
-      "perDiemPayment" -> Json.obj(
-        "percent" -> tax.perDiemPaymentsTyelPercent,
-        "sum" -> tax.getPerDiemPayment
-      ),
+      "perDiemPayment" -> tax.perDiemPayment.getJson,
       "commonDeduction" -> tax.commonDeduction,
       "totalTax" -> tax.getTotalTax,
       "workIncomeDeduction" -> tax.getWorkIncomeDeduction,
