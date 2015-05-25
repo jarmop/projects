@@ -4,8 +4,6 @@ import play.api.libs.json.{Json, Writes}
 
 case class Tax(salary: Int, municipality: String, age: Int) {
   private val incomeDeduction: Double = 62000
-  private val pensionContributionTyelSub53Percent = 0.057
-  private val pensionContributionTyel53Percent = 0.072
   private val unemploymentInsurancePercent = 0.0065
 
 
@@ -15,6 +13,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private var workIncomeDeduction: Double = -1
 
   private val perDiemPayment = new PerDiemPayment(salary)
+  private val pensionContribution = new PensionContribution(salary, age)
 
   private var commonDeduction = Map[String, Double](
     "incomeDeduction" -> this.incomeDeduction,
@@ -29,13 +28,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private val YLETax: YLETax = new YLETax(salary, this.incomeDeduction)
   private val medicalCareInsurancePayment = new MedicalCareInsurancePayment(this.municipalityTax.getDeductedSalary())
 
-  private def getPensionContributionTyelPercent: Double = {
-    if (this.age < 53) {
-      return this.pensionContributionTyelSub53Percent;
-    } else {
-      return this.pensionContributionTyel53Percent;
-    }
-  }
+
 
   private def getChurchTax: Double = {
     if (this.churchTax < 0)
@@ -149,10 +142,10 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getPensionContribution: Double = {
-    this.salary * this.getPensionContributionTyelPercent
+    this.pensionContribution.getSum
   }
 
-  def getPensionContributionPercent: Double = {
+  def getPensionContributionPercentage: Double = {
     this. getPensionContribution / this.salary
   }
 
@@ -176,12 +169,7 @@ object Tax {
       "commonDeduction" -> tax.commonDeduction,
       "totalTax" -> tax.getTotalTax,
       "workIncomeDeduction" -> tax.getWorkIncomeDeduction,
-      "pensionContribution" -> Json.obj(
-        "tyel53Percent" -> tax.pensionContributionTyel53Percent,
-        "tyelSub53Percent" -> tax.pensionContributionTyelSub53Percent,
-        "percent" -> tax.getPensionContributionTyelPercent,
-        "sum" -> tax.commonDeduction.get("pensionContribution").get
-      ),
+      "pensionContribution" -> tax.pensionContribution.getJson,
       "unemploymentInsurance" -> Json.obj(
         "percent" -> tax.unemploymentInsurancePercent,
         "sum" -> tax.commonDeduction.get("unemploymentInsurance").get
