@@ -8,10 +8,9 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   private val pensionContributionTyel53Percent = 0.072
   private val unemploymentInsurancePercent = 0.0065
   private val perDiemPaymentsTyelPercent = 0.0078
-  private val yleTaxPercent = 0.0068
   private val medicalCareInsurancePercent = 0.0132
 
-  private var yleSalary: Double = -1
+
   private var totalTax: Double = -1
   private var churchTax: Double = -1
   private var naturalSalary: Double = -1
@@ -27,6 +26,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
 
   private val governmentTax: GovernmentTax = GovernmentTax(salary, this.incomeDeduction, this.commonDeduction.get("total").get)
   private val municipalityTax: MunicipalityTax = MunicipalityTax(salary, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
+  private val YLETax: YLETax = new YLETax(salary, this.incomeDeduction)
 
   private def getPensionContributionTyelPercent: Double = {
     if (this.age < 53) {
@@ -44,29 +44,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     this.municipalityTax.getDeductedSalary * this.medicalCareInsurancePercent
   }
 
-  private def getYleTaxDeduction: Double = {
-    return this.incomeDeduction
-  }
 
-  private def getYleSalary: Double = {
-    if (this.yleSalary < 0)
-      this.yleSalary = this.salary - this.getYleTaxDeduction
-
-    this.yleSalary
-  }
-
-  def getYleTax: Double = {
-    var salary = this.getYleSalary
-
-    if (salary < 750000) {
-      return 0
-    }
-    if (salary >= 2102900) {
-      return 14300
-    }
-
-    return salary * this.yleTaxPercent;
-  }
 
   private def getChurchTax: Double = {
     if (this.churchTax < 0)
@@ -101,7 +79,7 @@ case class Tax(salary: Int, municipality: String, age: Int) {
       deductedChurchTax = if (deductedChurchTax > 0)  deductedChurchTax else 0
       totalTax += deductedMunicipalityTax + deductedMedicalCareInsurancePayment + deductedChurchTax
     }
-    totalTax += this.getPerDiemPayment + this.getYleTax
+    totalTax += this.getPerDiemPayment + this.YLETax.getTax
 
     totalTax
   }
@@ -163,8 +141,12 @@ case class Tax(salary: Int, municipality: String, age: Int) {
     this.getMedicalCareInsurancePayment / this.salary
   }
 
+  def getYleTax: Double = {
+    this.YLETax.getTax
+  }
+
   def getYleTaxPercent: Double = {
-    this.getYleTax / this.salary
+    this.YLETax.getTax / this.salary
   }
 
   def getPensionContribution: Double = {
@@ -189,7 +171,7 @@ object Tax {
     def writes(tax: Tax) = Json.obj(
       "municipalityTax" -> Json.toJson(tax.municipalityTax),
       "governmentTax" -> Json.toJson(tax.governmentTax),
-      "yleTax" -> tax.getYleTax,
+      "yleTax" -> tax.YLETax.getJson,
       "medicalCareInsurancePayment" -> Json.obj(
         "percent" -> tax.medicalCareInsurancePercent,
         "sum" -> tax.getMedicalCareInsurancePayment
