@@ -1,7 +1,6 @@
 package models.fi
 
-import play.api.libs.json.{Json, Writes}
-
+import play.api.libs.json.{JsObject, Json}
 import scala.collection.mutable.ListBuffer
 import scala.util.control.Breaks._
 
@@ -67,15 +66,13 @@ case class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction:
 
     this.taxSectionHits
   }
-}
 
-object GovernmentTax {
-  implicit val governmentWrites = new Writes[GovernmentTax] {
-    def writes(governmentTax: GovernmentTax) = Json.obj(
-      "sum" -> governmentTax.getTax,
-      "deduction" -> governmentTax.getDeduction,
-      "deductedSalary" -> governmentTax.getDeductedSalary,
-      "hits" -> governmentTax.getTaxSectionHits
+  def getJson: JsObject = {
+    Json.obj(
+      "sum" -> this.getTax,
+      "deduction" -> this.getDeduction,
+      "deductedSalary" -> this.getDeductedSalary,
+      "hits" -> this.getTaxSectionHits
     )
   }
 }

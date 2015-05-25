@@ -1,8 +1,8 @@
 package models.fi
 
-import play.api.libs.json.{Json, Writes}
+import play.api.libs.json.{JsObject, Json}
 
-case class Tax(salary: Int, municipality: String, age: Int) {
+class Tax(salary: Int, municipality: String, age: Int) {
   private val incomeDeduction: Double = 62000
 
   private var totalTax: Double = -1
@@ -21,8 +21,8 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   )
   commonDeduction += "total" -> commonDeduction.foldLeft(0.0){  case (a, (k, v)) => a+v  }
 
-  private val governmentTax: GovernmentTax = GovernmentTax(salary, this.incomeDeduction, this.commonDeduction.get("total").get)
-  private val municipalityTax: MunicipalityTax = MunicipalityTax(salary, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
+  private val governmentTax: GovernmentTax = new GovernmentTax(salary, this.incomeDeduction, this.commonDeduction.get("total").get)
+  private val municipalityTax: MunicipalityTax = new MunicipalityTax(salary, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
   private val YLETax: YLETax = new YLETax(salary, this.incomeDeduction)
   private val medicalCareInsurancePayment = new MedicalCareInsurancePayment(this.municipalityTax.getDeductedSalary())
   private val churchTax = new ChurchTax(salary)
@@ -151,21 +151,19 @@ case class Tax(salary: Int, municipality: String, age: Int) {
   def getUnemploymentInsurancePercent: Double = {
     this.getUnemploymentInsurance / this.salary
   }
-}
-
-object Tax {
-  implicit val taxWrites = new Writes[Tax] {
-    def writes(tax: Tax) = Json.obj(
-      "municipalityTax" -> Json.toJson(tax.municipalityTax),
-      "governmentTax" -> Json.toJson(tax.governmentTax),
-      "yleTax" -> tax.YLETax.getJson,
-      "medicalCareInsurancePayment" -> tax.medicalCareInsurancePayment.getJson,
-      "perDiemPayment" -> tax.perDiemPayment.getJson,
-      "commonDeduction" -> tax.commonDeduction,
-      "totalTax" -> tax.getTotalTax,
-      "workIncomeDeduction" -> tax.getWorkIncomeDeduction,
-      "pensionContribution" -> tax.pensionContribution.getJson,
-      "unemploymentInsurance" -> tax.unemploymentInsurance.getJson
+  
+  def getJson: JsObject = {
+    Json.obj(
+      "municipalityTax" -> this.municipalityTax.getJson,
+      "governmentTax" -> this.governmentTax.getJson,
+      "yleTax" -> this.YLETax.getJson,
+      "medicalCareInsurancePayment" -> this.medicalCareInsurancePayment.getJson,
+      "perDiemPayment" -> this.perDiemPayment.getJson,
+      "commonDeduction" -> this.commonDeduction,
+      "totalTax" -> this.getTotalTax,
+      "workIncomeDeduction" -> this.getWorkIncomeDeduction,
+      "pensionContribution" -> this.pensionContribution.getJson,
+      "unemploymentInsurance" -> this.unemploymentInsurance.getJson
     )
   }
 }

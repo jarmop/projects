@@ -1,7 +1,6 @@
 package models.fi
 
-import play.api.libs.json.{Json, Writes}
-
+import play.api.libs.json.{JsObject, Json}
 import scala.math._
 import scala.util.control.Breaks._
 
@@ -97,16 +96,14 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   private def getMunicipalityPercent(): Double = {
     this.municipalityPercents.get(this.municipality).get
   }
-}
 
-object MunicipalityTax {
-  implicit val municipalityWrites = new Writes[MunicipalityTax] {
-    def writes(municipalityTax: MunicipalityTax) = Json.obj(
-      "sum" -> round(municipalityTax.getTax),
-      "earnedIncomeAllowance" -> municipalityTax.getIncomeDeduction(),
-      "basicDeduction" -> municipalityTax.getExtraIncomeDeduction(),
-      "totalDeduction" -> municipalityTax.getTotalTaxDeduction(),
-      "deductedSalary" -> municipalityTax.getDeductedSalary()
+  def getJson: JsObject = {
+    Json.obj(
+      "sum" -> round(this.getTax),
+      "earnedIncomeAllowance" -> this.getIncomeDeduction(),
+      "basicDeduction" -> this.getExtraIncomeDeduction(),
+      "totalDeduction" -> this.getTotalTaxDeduction(),
+      "deductedSalary" -> this.getDeductedSalary()
     )
   }
 }

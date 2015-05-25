@@ -23,7 +23,7 @@ object Application extends Controller {
     val age = request.getQueryString("age").get.toInt
 
     val tax = new Tax(salary, municipality, age)
-    Ok(Json.toJson(tax))
+    Ok(tax.getJson)
   }
 
 }
