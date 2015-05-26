@@ -43,7 +43,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
 
   private def reduceWorkIncomeDeduction = {
     this.governmentTax.reduceWorkIncomeDeduction(this.getWorkIncomeDeduction)
-    var totalDeductableTax = this.municipalityTax.getTax + this.medicalCareInsurancePayment.getSum + this.churchTax.getSum
+    var totalDeductableTax = this.municipalityTax.getSum + this.medicalCareInsurancePayment.getSum + this.churchTax.getSum
     this.municipalityTax.reduceWorkIncomeDeduction(totalDeductableTax, this.governmentTax.getLeftOverWorkIncomeDeduction)
     this.medicalCareInsurancePayment.reduceWorkIncomeDeduction(totalDeductableTax, this.governmentTax.getLeftOverWorkIncomeDeduction)
     this.churchTax.reduceWorkIncomeDeduction(totalDeductableTax, this.governmentTax.getLeftOverWorkIncomeDeduction)

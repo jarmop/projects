@@ -12,7 +12,11 @@ class MedicalCareInsurancePayment(deductedMunicipalityTaxSalary: Double) {
   }
 
   def reduceWorkIncomeDeduction(totalDeductableTax: Double, leftOverWorkIncomeDeduction: Double) = {
-    if (totalDeductableTax * leftOverWorkIncomeDeduction > 0) {
+    if (totalDeductableTax == 0) {
+      this.deductedSum = 0
+    } else if (leftOverWorkIncomeDeduction == 0) {
+      this.deductedSum = this.getSum
+    } else {
       this.deductedSum = this.getSum - this.getSum / totalDeductableTax * leftOverWorkIncomeDeduction
       if (this.deductedSum < 0) {
         this.deductedSum = 0

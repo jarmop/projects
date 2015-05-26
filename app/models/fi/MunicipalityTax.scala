@@ -15,7 +15,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   var incomeDeduction: Double = -1
   var extraIncomeDeduction: Double = -1
 
-  def getTax: Double = {
+  def getSum: Double = {
     if (this.tax < 0)
       this.tax = this.getDeductedSalary * this.getMunicipalityPercent
 
@@ -105,8 +105,12 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   }
 
   def reduceWorkIncomeDeduction(totalDeductableTax: Double, leftOverWorkIncomeDeduction: Double) = {
-    if (totalDeductableTax * leftOverWorkIncomeDeduction > 0) {
-      this.deductedSum = this.getTax - this.getTax / totalDeductableTax * leftOverWorkIncomeDeduction
+    if (totalDeductableTax == 0) {
+      this.deductedSum = 0
+    } else if (leftOverWorkIncomeDeduction == 0) {
+      this.deductedSum = this.getSum
+    } else {
+      this.deductedSum = this.getSum - this.getSum / totalDeductableTax * leftOverWorkIncomeDeduction
       if (this.deductedSum < 0) {
         this.deductedSum = 0
       }
@@ -115,7 +119,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
 
   def getJson: JsObject = {
     Json.obj(
-      "sum" -> round(this.getTax),
+      "sum" -> round(this.getSum),
       "earnedIncomeAllowance" -> this.getIncomeDeduction,
       "basicDeduction" -> this.getExtraIncomeDeduction,
       "totalDeduction" -> this.getTotalTaxDeduction,
