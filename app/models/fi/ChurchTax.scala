@@ -19,9 +19,11 @@ class ChurchTax(salary: Int, municipality: String, municipalityDeduction: Double
   }
 
   def reduceWorkIncomeDeduction(totalDeductableTax: Double, leftOverWorkIncomeDeduction: Double) = {
-    this.deductedSum = this.getSum - this.getSum / totalDeductableTax * leftOverWorkIncomeDeduction
-    if (this.deductedSum < 0) {
-      this.deductedSum = 0
+    if (totalDeductableTax * leftOverWorkIncomeDeduction > 0) {
+      this.deductedSum = this.getSum - this.getSum / totalDeductableTax * leftOverWorkIncomeDeduction
+      if (this.deductedSum < 0) {
+        this.deductedSum = 0
+      }
     }
   }
 

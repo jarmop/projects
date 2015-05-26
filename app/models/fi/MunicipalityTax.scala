@@ -105,9 +105,11 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   }
 
   def reduceWorkIncomeDeduction(totalDeductableTax: Double, leftOverWorkIncomeDeduction: Double) = {
-    this.deductedSum = this.getTax - this.getTax / totalDeductableTax * leftOverWorkIncomeDeduction
-    if (this.deductedSum < 0) {
-      this.deductedSum = 0
+    if (totalDeductableTax * leftOverWorkIncomeDeduction > 0) {
+      this.deductedSum = this.getTax - this.getTax / totalDeductableTax * leftOverWorkIncomeDeduction
+      if (this.deductedSum < 0) {
+        this.deductedSum = 0
+      }
     }
   }
 
