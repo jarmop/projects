@@ -36,10 +36,6 @@ object CompareService {
 
     Json.arr(
       Json.obj(
-        "key" -> "Kirkollisvero",
-        "values" -> Json.toJson(dataChu)
-      ),
-      Json.obj(
         "key" -> "Päivärahamaksu",
         "values" -> Json.toJson(dataPer)
       ),
@@ -54,6 +50,10 @@ object CompareService {
       Json.obj(
         "key" -> "YLE-vero",
         "values" -> Json.toJson(dataYle)
+      ),
+      Json.obj(
+        "key" -> "Kirkollisvero",
+        "values" -> Json.toJson(dataChu)
       ),
       Json.obj(
         "key" -> "Sairaanhoitomaksu",
@@ -101,10 +101,6 @@ object CompareService {
 
     Json.arr(
       Json.obj(
-        "key" -> "Kirkollisvero",
-        "values" -> Json.toJson(dataChu)
-      ),
-      Json.obj(
         "key" -> "Päivärahamaksu",
         "values" -> Json.toJson(dataPer)
       ),
@@ -119,6 +115,10 @@ object CompareService {
       Json.obj(
         "key" -> "YLE-vero",
         "values" -> Json.toJson(dataYle)
+      ),
+      Json.obj(
+        "key" -> "Kirkollisvero",
+        "values" -> Json.toJson(dataChu)
       ),
       Json.obj(
         "key" -> "Sairaanhoitomaksu",
