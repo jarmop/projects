@@ -5,6 +5,19 @@ import play.api.libs.json.{Json, JsObject}
 class MedicalCareInsurancePayment(deductedMunicipalityTaxSalary: Double) {
   private val medicalCareInsurancePercent = 0.0132
 
+  var deductedSum: Double = 0
+
+  def getDeductedSum = {
+    this.deductedSum
+  }
+
+  def reduceWorkIncomeDeduction(totalDeductableTax: Double, leftOverWorkIncomeDeduction: Double) = {
+    this.deductedSum = this.getSum - this.getSum / totalDeductableTax * leftOverWorkIncomeDeduction
+    if (this.deductedSum < 0) {
+      this.deductedSum = 0
+    }
+  }
+
   def getSum: Double = {
     this.deductedMunicipalityTaxSalary * this.medicalCareInsurancePercent
   }

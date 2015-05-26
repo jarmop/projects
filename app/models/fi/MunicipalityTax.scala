@@ -1,5 +1,7 @@
 package models.fi
 
+import play.api
+import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import scala.math._
 import scala.util.control.Breaks._
@@ -8,6 +10,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   val municipalityPercents = Map[String, Double]("Helsinki" -> 0.1850, "Nivala" -> 0.2150)
 
   var tax: Double = -1
+  var deductedSum: Double = 0
   var deductedSalary: Double = -1
   var incomeDeduction: Double = -1
   var extraIncomeDeduction: Double = -1
@@ -95,6 +98,17 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
 
   private def getMunicipalityPercent: Double = {
     this.municipalityPercents.get(this.municipality).get
+  }
+
+  def getDeductedSum = {
+    this.deductedSum
+  }
+
+  def reduceWorkIncomeDeduction(totalDeductableTax: Double, leftOverWorkIncomeDeduction: Double) = {
+    this.deductedSum = this.getTax - this.getTax / totalDeductableTax * leftOverWorkIncomeDeduction
+    if (this.deductedSum < 0) {
+      this.deductedSum = 0
+    }
   }
 
   def getJson: JsObject = {

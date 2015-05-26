@@ -2,7 +2,7 @@ class TaxController
   constructor: (@$scope, @$log, @TaxService, PieService) ->
     @$log.debug "constructing TaxController"
     @form = {
-      salary: 30000,
+      salary: 10000,
       municipality: 'Helsinki',
       age: 30
     }

@@ -12,6 +12,19 @@ class ChurchTax(salary: Int, municipality: String, municipalityDeduction: Double
 
   val taxPercent = this.taxPercents.get(this.municipality).get.get(this.church).get
 
+  var deductedSum: Double = 0
+
+  def getDeductedSum = {
+    this.deductedSum
+  }
+
+  def reduceWorkIncomeDeduction(totalDeductableTax: Double, leftOverWorkIncomeDeduction: Double) = {
+    this.deductedSum = this.getSum - this.getSum / totalDeductableTax * leftOverWorkIncomeDeduction
+    if (this.deductedSum < 0) {
+      this.deductedSum = 0
+    }
+  }
+
   def getDeduction: Double = {
     this.municipalityDeduction
   }

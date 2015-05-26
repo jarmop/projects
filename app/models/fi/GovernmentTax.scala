@@ -5,8 +5,26 @@ import scala.collection.mutable.ListBuffer
 import scala.util.control.Breaks._
 
 case class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction: Double) {
+  var deductedSum: Double = 0
+  var leftOverWorkIncomeDeduction: Double = 0
   var tax: Double = -1
   var taxSectionHits = new ListBuffer[Map[String, Double]]
+
+  def reduceWorkIncomeDeduction(workIncomeDeduction: Double) = {
+    this.deductedSum = this.getTax - workIncomeDeduction
+    if (this.deductedSum < 0) {
+      this.leftOverWorkIncomeDeduction = -this.deductedSum
+      this.deductedSum = 0
+    }
+  }
+
+  def getLeftOverWorkIncomeDeduction: Double = {
+    this.leftOverWorkIncomeDeduction
+  }
+
+  def getDeductedSum: Double = {
+    this.deductedSum
+  }
 
   def getTax: Double = {
     if (this.tax < 0)

@@ -28,6 +28,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   private val medicalCareInsurancePayment = new MedicalCareInsurancePayment(this.municipalityTax.getDeductedSalary)
   private val churchTax = new ChurchTax(salary, municipality, this.municipalityTax.getTotalTaxDeduction)
 
+  this.reduceWorkIncomeDeduction
 
   def getTotalTax: Double = {
     if (this.totalTax < 0)
@@ -40,24 +41,15 @@ class Tax(salary: Int, municipality: String, age: Int) {
    * All taxes minus workincomeDeduction
    */
   private def calculateTotalTax: Double = {
-    var totalTax = this.governmentTax.getTax - this.getWorkIncomeDeduction
-    if (totalTax >= 0) {
-      totalTax += this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax
-    } else {
-      val leftOverWorkIncomeDeduction = - totalTax
-      totalTax = 0
-      var totalDeductableTax = this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax
-      var deductedMunicipalityTax = this.municipalityTax.getTax - this.municipalityTax.getTax / totalDeductableTax * leftOverWorkIncomeDeduction
-      deductedMunicipalityTax = if (deductedMunicipalityTax > 0) deductedMunicipalityTax else 0
-      var deductedMedicalCareInsurancePayment = this.getMedicalCareInsurancePayment - this.getMedicalCareInsurancePayment / totalDeductableTax * leftOverWorkIncomeDeduction
-      deductedMedicalCareInsurancePayment = if (deductedMedicalCareInsurancePayment > 0)  deductedMedicalCareInsurancePayment else 0
-      var deductedChurchTax = this.getChurchTax - this.getChurchTax / totalDeductableTax * leftOverWorkIncomeDeduction
-      deductedChurchTax = if (deductedChurchTax > 0)  deductedChurchTax else 0
-      totalTax += deductedMunicipalityTax + deductedMedicalCareInsurancePayment + deductedChurchTax
-    }
-    totalTax += this.getPerDiemPayment + this.getYleTax
+    this.governmentTax.getDeductedSum + this.municipalityTax.getDeductedSum + this.medicalCareInsurancePayment.getDeductedSum + this.churchTax.getDeductedSum + this.getPerDiemPayment + this.getYleTax
+  }
 
-    totalTax
+  private def reduceWorkIncomeDeduction = {
+    this.governmentTax.reduceWorkIncomeDeduction(this.getWorkIncomeDeduction)
+    var totalDeductableTax = this.municipalityTax.getTax + this.getMedicalCareInsurancePayment + this.getChurchTax
+    this.municipalityTax.reduceWorkIncomeDeduction(totalDeductableTax, this.governmentTax.getLeftOverWorkIncomeDeduction)
+    this.medicalCareInsurancePayment.reduceWorkIncomeDeduction(totalDeductableTax, this.governmentTax.getLeftOverWorkIncomeDeduction)
+    this.churchTax.reduceWorkIncomeDeduction(totalDeductableTax, this.governmentTax.getLeftOverWorkIncomeDeduction)
   }
 
   private def getWorkIncomeDeduction: Double = {
