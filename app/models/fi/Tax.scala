@@ -96,7 +96,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
     this.governmentTax.getTax
   }
 
-  def getGovernmentTaxPercent: Double = {
+  def getGovernmentTaxPercentage: Double = {
     this.getGovernmentTax / this.salary
   }
 
@@ -104,7 +104,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
     this.municipalityTax.getTax
   }
 
-  def getMunicipalityTaxPercent: Double = {
+  def getMunicipalityTaxPercentage: Double = {
     this.getMunicipalityTax / this.salary
   }
 
