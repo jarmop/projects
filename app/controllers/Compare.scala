@@ -40,17 +40,6 @@ object Compare extends Controller with MongoController {
    */
   def collection: JSONCollection = db.collection[JSONCollection]("persons")
 
-  def percent2 = Action.async {
-
-    val json = CompareService.getPercentData
-
-
-        collection.insert(Json.obj("_id" -> "comparePercent", "data" -> json)).map(lastError =>
-          Ok("Mongo LastError: %s".format(lastError)))
-
-    //Ok(json)
-  }
-
   def percent = Action.async {
     collection
       .find(Json.obj("_id" -> "comparePercent"))
@@ -66,27 +55,8 @@ object Compare extends Controller with MongoController {
 
     /*val json = CompareService.getPercentData
     collection.update(Json.obj("_id" -> "comparePercent"), Json.obj("data" -> json)).map(lastError =>
-      Ok(json)
+      Ok("updated percent json")
     )*/
-
-  }
-
-  /*
-   * Get a JSONCollection (a Collection implementation that is designed to work
-   * with JsObject, Reads and Writes.)
-   * Note that the `collection` is not a `val`, but a `def`. We do _not_ store
-   * the collection reference to avoid potential problems in development with
-   * Play hot-reloading.
-   */
-  //def sumCollection: JSONCollection = db.collection[JSONCollection]("persons")
-
-  def sum2 = Action.async {
-    val json = CompareService.getSumData
-
-    collection.update(Json.obj("_id" -> "compareSum"), Json.obj("data" -> json)).map(lastError =>
-      Ok(json))
-      //Ok("Mongo LastError: %s".format(lastError)))
-
 
   }
 
@@ -101,7 +71,7 @@ object Compare extends Controller with MongoController {
 
     /*val json = CompareService.getSumData
     collection.update(Json.obj("_id" -> "compareSum"), Json.obj("data" -> json)).map(lastError =>
-      Ok(json)
+      Ok("updated sum json")
     )*/
   }
 }

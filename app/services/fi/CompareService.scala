@@ -43,20 +43,20 @@ object CompareService {
         "values" -> Json.toJson(dataPer)
       ),
       Json.obj(
-        "key" -> "YLE-vero",
-        "values" -> Json.toJson(dataYle)
-      ),
-      Json.obj(
-        "key" -> "Sairaanhoitomaksu",
-        "values" -> Json.toJson(dataMed)
-      ),
-      Json.obj(
         "key" -> "Työttömyysvakuutusmaksut",
         "values" -> Json.toJson(dataUnemp)
       ),
       Json.obj(
         "key" -> "Työeläkemaksut",
         "values" -> Json.toJson(dataPen)
+      ),
+      Json.obj(
+        "key" -> "YLE-vero",
+        "values" -> Json.toJson(dataYle)
+      ),
+      Json.obj(
+        "key" -> "Sairaanhoitomaksu",
+        "values" -> Json.toJson(dataMed)
       ),
       Json.obj(
         "key" -> "Kunnallisvero",
@@ -108,20 +108,20 @@ object CompareService {
         "values" -> Json.toJson(dataPer)
       ),
       Json.obj(
-        "key" -> "YLE-vero",
-        "values" -> Json.toJson(dataYle)
-      ),
-      Json.obj(
-        "key" -> "Sairaanhoitomaksu",
-        "values" -> Json.toJson(dataMed)
-      ),
-      Json.obj(
         "key" -> "Työttömyysvakuutusmaksut",
         "values" -> Json.toJson(dataUnemp)
       ),
       Json.obj(
         "key" -> "Työeläkemaksut",
         "values" -> Json.toJson(dataPen)
+      ),
+      Json.obj(
+        "key" -> "YLE-vero",
+        "values" -> Json.toJson(dataYle)
+      ),
+      Json.obj(
+        "key" -> "Sairaanhoitomaksu",
+        "values" -> Json.toJson(dataMed)
       ),
       Json.obj(
         "key" -> "Kunnallisvero",
