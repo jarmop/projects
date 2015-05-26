@@ -1,5 +1,6 @@
 package models.fi
 
+import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 
 class Tax(salary: Int, municipality: String, age: Int) {
@@ -25,7 +26,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   private val municipalityTax: MunicipalityTax = new MunicipalityTax(salary, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
   private val YLETax: YLETax = new YLETax(salary, this.incomeDeduction)
   private val medicalCareInsurancePayment = new MedicalCareInsurancePayment(this.municipalityTax.getDeductedSalary())
-  private val churchTax = new ChurchTax(salary, municipality)
+  private val churchTax = new ChurchTax(salary, municipality, this.municipalityTax.getTotalTaxDeduction)
 
 
   def getTotalTax: Double = {

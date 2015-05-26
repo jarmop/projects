@@ -42,7 +42,7 @@ class CompareController
     )
 
   formatCurrency: (currency) =>
-    return parseInt(currency).toFixed()
+    return parseFloat(currency).toFixed()
 
   formatCurrencyCents: (currency) =>
     return @formatCurrency(currency / 100)

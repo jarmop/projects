@@ -21,16 +21,16 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
 
   def getDeductedSalary(): Double = {
     if (this.deductedSalary < 0)
-      this.deductedSalary = this.salary - this.getTotalTaxDeduction()
+      this.deductedSalary = this.salary - this.getTotalTaxDeduction
 
     this.deductedSalary
   }
 
-  private def getTotalTaxDeduction(): Double = {
-    return this.getIncomeDeduction() + this.getExtraIncomeDeduction() + this.commonDeduction
+  def getTotalTaxDeduction: Double = {
+    return this.getIncomeDeduction + this.getExtraIncomeDeduction() + this.commonDeduction
   }
 
-  private def getIncomeDeduction(): Double = {
+  private def getIncomeDeduction: Double = {
     if (this.incomeDeduction < 0)
       this.incomeDeduction = this.calculateIncomeDeduction()
 
@@ -80,7 +80,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
 
   private def calculateExtraIncomeDeduction(): Double = {
     var deduction: Double = 0
-    var deductedSalary: Double = this.salary - (this.getIncomeDeduction() + this.commonDeduction);
+    var deductedSalary: Double = this.salary - (this.getIncomeDeduction + this.commonDeduction);
     if (deductedSalary <= 1947000) {
       var maxDeduction: Double = 297000;
       if (deductedSalary < maxDeduction) {
@@ -100,10 +100,10 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   def getJson: JsObject = {
     Json.obj(
       "sum" -> round(this.getTax),
-      "earnedIncomeAllowance" -> this.getIncomeDeduction(),
-      "basicDeduction" -> this.getExtraIncomeDeduction(),
-      "totalDeduction" -> this.getTotalTaxDeduction(),
-      "deductedSalary" -> this.getDeductedSalary()
+      "earnedIncomeAllowance" -> this.getIncomeDeduction,
+      "basicDeduction" -> this.getExtraIncomeDeduction,
+      "totalDeduction" -> this.getTotalTaxDeduction,
+      "deductedSalary" -> this.getDeductedSalary
     )
   }
 }
