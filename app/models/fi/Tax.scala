@@ -155,7 +155,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   def getChurchTaxPercentage: Double = {
     this.churchTax.getSum / this.salary
   }
-  
+
   def getJson: JsObject = {
     Json.obj(
       "municipalityTax" -> this.municipalityTax.getJson,

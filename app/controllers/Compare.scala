@@ -40,11 +40,17 @@ object Compare extends Controller with MongoController {
    */
   def collection: JSONCollection = db.collection[JSONCollection]("persons")
 
-  def percent = Action.async {
-    collection
-      .find(Json.obj("_id" -> "comparePercent"))
-      .one[JsObject]
-      .map { json =>
+  def percent(update: Boolean) = Action.async {
+    if (update) {
+      val json = CompareService.getPercentData
+      collection.update(Json.obj("_id" -> "comparePercent"), Json.obj("data" -> json)).map(lastError =>
+        Ok("updated percent json")
+      )
+    } else {
+      collection
+        .find(Json.obj("_id" -> "comparePercent"))
+        .one[JsObject]
+        .map { json =>
         if (json.nonEmpty) {
           Ok(json.get \ "data")
         } else {
@@ -52,26 +58,29 @@ object Compare extends Controller with MongoController {
         }
 
       }
+    }
 
-    /*val json = CompareService.getPercentData
-    collection.update(Json.obj("_id" -> "comparePercent"), Json.obj("data" -> json)).map(lastError =>
-      Ok("updated percent json")
-    )*/
+
+
+    /**/
 
   }
 
-  def sum = Action.async {
-    collection
-      .find(Json.obj("_id" -> "compareSum"))
-      .one[JsObject]
-      .map { json =>
+  def sum(update: Boolean) = Action.async {
+    if (update) {
+      val json = CompareService.getSumData
+      collection.update(Json.obj("_id" -> "compareSum"), Json.obj("data" -> json)).map(lastError =>
+        Ok("updated sum json")
+      )
+    } else {
+      collection
+        .find(Json.obj("_id" -> "compareSum"))
+        .one[JsObject]
+        .map { json =>
         // if not found calculate
         Ok(json.get \ "data")
       }
+    }
 
-    /*val json = CompareService.getSumData
-    collection.update(Json.obj("_id" -> "compareSum"), Json.obj("data" -> json)).map(lastError =>
-      Ok("updated sum json")
-    )*/
   }
 }
