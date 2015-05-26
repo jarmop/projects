@@ -87,7 +87,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getGovernmentTaxPercentage: Double = {
-    this.getGovernmentTax / this.salary
+    if (this.salary > 0) this.getGovernmentTax / this.salary else 0
   }
 
   def getMunicipalityTax: Double = {
@@ -95,7 +95,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getMunicipalityTaxPercentage: Double = {
-    this.getMunicipalityTax / this.salary
+    if (this.salary > 0) this.getMunicipalityTax / this.salary else 0
   }
 
   def getPerDiemPayment: Double = {
@@ -103,7 +103,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getPerDiemPaymentPercentage: Double = {
-    this.getPerDiemPayment / this.salary
+    if (this.salary > 0) this.getPerDiemPayment / this.salary else 0
   }
 
   def getMedicalCareInsurancePayment: Double = {
@@ -111,7 +111,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getMedicalCareInsurancePaymentPercentage: Double = {
-    this.getMedicalCareInsurancePayment / this.salary
+    if (this.salary > 0) this.getMedicalCareInsurancePayment / this.salary else 0
   }
 
   def getYleTax: Double = {
@@ -119,7 +119,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getYleTaxPercentage: Double = {
-    this.YLETax.getTax / this.salary
+    if (this.salary > 0) this.getYleTax / this.salary else 0
   }
 
   def getPensionContribution: Double = {
@@ -127,7 +127,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getPensionContributionPercentage: Double = {
-    this. getPensionContribution / this.salary
+    if (this.salary > 0) this.getPensionContribution / this.salary else 0
   }
 
   def getUnemploymentInsurance: Double = {
@@ -135,7 +135,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getUnemploymentInsurancePercentage: Double = {
-    this.getUnemploymentInsurance / this.salary
+    if (this.salary > 0) this.getUnemploymentInsurance / this.salary else 0
   }
 
   def getChurchTax: Double = {
@@ -143,11 +143,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getChurchTaxPercentage: Double = {
-    this.getChurchTax / this.salary
-  }
-
-  def getDeductedChurchTaxPercentage: Double = {
-    this.churchTax.getDeductedSum / this.salary
+    if (this.salary > 0) this.getChurchTax / this.salary else 0
   }
 
   def getJson: JsObject = {

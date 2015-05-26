@@ -11,7 +11,6 @@ object CompareService {
 
     val tax = new Tax(100000, municipality, age)
     var salary = 100000
-    //var data = List[List[Double]](List[Double](salary, tax.getTotalTax / salary))
     var dataGov = List[List[Double]](List[Double](salary, tax.getGovernmentTaxPercentage))
     var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTaxPercentage))
     var dataPen = List[List[Double]](List[Double](salary, tax.getPensionContributionPercentage))
@@ -76,7 +75,6 @@ object CompareService {
 
     val tax = new Tax(100000, municipality, age)
     var salary = 100000
-    //var data = List[List[Double]](List[Double](salary), tax.getTotalTax / salary * 100))
     var dataGov = List[List[Double]](List[Double](salary, tax.getGovernmentTax))
     var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTax))
     var dataPen = List[List[Double]](List[Double](salary, tax.getPensionContribution))
