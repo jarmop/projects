@@ -37,9 +37,6 @@ class Tax(salary: Int, municipality: String, age: Int) {
     this.totalTax
   }
 
-  /**
-   * All taxes minus workincomeDeduction
-   */
   private def calculateTotalTax: Double = {
     this.governmentTax.getDeductedSum + this.municipalityTax.getDeductedSum + this.medicalCareInsurancePayment.getDeductedSum + this.churchTax.getDeductedSum + this.getPerDiemPayment + this.getYleTax
   }
