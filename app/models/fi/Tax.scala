@@ -25,7 +25,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   private val governmentTax: GovernmentTax = new GovernmentTax(salary, this.incomeDeduction, this.commonDeduction.get("total").get)
   private val municipalityTax: MunicipalityTax = new MunicipalityTax(salary, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
   private val YLETax: YLETax = new YLETax(salary, this.incomeDeduction)
-  private val medicalCareInsurancePayment = new MedicalCareInsurancePayment(this.municipalityTax.getDeductedSalary())
+  private val medicalCareInsurancePayment = new MedicalCareInsurancePayment(this.municipalityTax.getDeductedSalary)
   private val churchTax = new ChurchTax(salary, municipality, this.municipalityTax.getTotalTaxDeduction)
 
 

@@ -14,12 +14,12 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
 
   def getTax: Double = {
     if (this.tax < 0)
-      this.tax = this.getDeductedSalary() * this.getMunicipalityPercent()
+      this.tax = this.getDeductedSalary * this.getMunicipalityPercent
 
     this.tax
   }
 
-  def getDeductedSalary(): Double = {
+  def getDeductedSalary: Double = {
     if (this.deductedSalary < 0)
       this.deductedSalary = this.salary - this.getTotalTaxDeduction
 
@@ -27,17 +27,17 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
   }
 
   def getTotalTaxDeduction: Double = {
-    return this.getIncomeDeduction + this.getExtraIncomeDeduction() + this.commonDeduction
+    return this.getIncomeDeduction + this.getExtraIncomeDeduction + this.commonDeduction
   }
 
   private def getIncomeDeduction: Double = {
     if (this.incomeDeduction < 0)
-      this.incomeDeduction = this.calculateIncomeDeduction()
+      this.incomeDeduction = this.calculateIncomeDeduction
 
     return this.incomeDeduction
   }
 
-  private def calculateIncomeDeduction(): Double = {
+  private def calculateIncomeDeduction: Double = {
     val municipalityDeductionTable = List[Map[String, Double]](
       Map[String, Double]("minSalary" -> 250000, "maxSalary" -> 723000, "deductionPercent" -> 0.51),
       Map[String, Double]("minSalary" -> 723000, "maxSalary" -> 1760000, "deductionPercent" -> 0.28)
@@ -71,14 +71,14 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
     deduction
   }
 
-  private def getExtraIncomeDeduction(): Double = {
+  private def getExtraIncomeDeduction: Double = {
     if (this.extraIncomeDeduction < 0)
-      this.extraIncomeDeduction = this.calculateExtraIncomeDeduction()
+      this.extraIncomeDeduction = this.calculateExtraIncomeDeduction
 
     this.extraIncomeDeduction
   }
 
-  private def calculateExtraIncomeDeduction(): Double = {
+  private def calculateExtraIncomeDeduction: Double = {
     var deduction: Double = 0
     var deductedSalary: Double = this.salary - (this.getIncomeDeduction + this.commonDeduction);
     if (deductedSalary <= 1947000) {
@@ -93,7 +93,7 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
     deduction
   }
 
-  private def getMunicipalityPercent(): Double = {
+  private def getMunicipalityPercent: Double = {
     this.municipalityPercents.get(this.municipality).get
   }
 
