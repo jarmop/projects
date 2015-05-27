@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "angular-ui-bootstrap" % "0.13.0",
   "org.webjars" % "d3js" % "3.5.5",
   "org.webjars" % "jquery" % "2.1.4",
-  "org.webjars" % "angularjs-nvd3-directives" % "0.0.7-1"
+  "org.webjars" % "angularjs-nvd3-directives" % "0.0.7-1",
+  "org.seleniumhq.selenium" % "selenium-java" % "2.45.0" % "test"
 )
 
 
