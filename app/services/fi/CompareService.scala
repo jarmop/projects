@@ -35,10 +35,6 @@ object CompareService {
 
     Json.arr(
       Json.obj(
-        "key" -> "Päivärahamaksu",
-        "values" -> Json.toJson(dataPer)
-      ),
-      Json.obj(
         "key" -> "Työttömyysvakuutusmaksut",
         "values" -> Json.toJson(dataUnemp)
       ),
@@ -47,16 +43,20 @@ object CompareService {
         "values" -> Json.toJson(dataPen)
       ),
       Json.obj(
+        "key" -> "Päivärahamaksu",
+        "values" -> Json.toJson(dataPer)
+      ),
+      Json.obj(
+        "key" -> "Sairaanhoitomaksu",
+        "values" -> Json.toJson(dataMed)
+      ),
+      Json.obj(
         "key" -> "YLE-vero",
         "values" -> Json.toJson(dataYle)
       ),
       Json.obj(
         "key" -> "Kirkollisvero",
         "values" -> Json.toJson(dataChu)
-      ),
-      Json.obj(
-        "key" -> "Sairaanhoitomaksu",
-        "values" -> Json.toJson(dataMed)
       ),
       Json.obj(
         "key" -> "Kunnallisvero",
@@ -99,10 +99,6 @@ object CompareService {
 
     Json.arr(
       Json.obj(
-        "key" -> "Päivärahamaksu",
-        "values" -> Json.toJson(dataPer)
-      ),
-      Json.obj(
         "key" -> "Työttömyysvakuutusmaksut",
         "values" -> Json.toJson(dataUnemp)
       ),
@@ -111,16 +107,20 @@ object CompareService {
         "values" -> Json.toJson(dataPen)
       ),
       Json.obj(
+        "key" -> "Päivärahamaksu",
+        "values" -> Json.toJson(dataPer)
+      ),
+      Json.obj(
+        "key" -> "Sairaanhoitomaksu",
+        "values" -> Json.toJson(dataMed)
+      ),
+      Json.obj(
         "key" -> "YLE-vero",
         "values" -> Json.toJson(dataYle)
       ),
       Json.obj(
         "key" -> "Kirkollisvero",
         "values" -> Json.toJson(dataChu)
-      ),
-      Json.obj(
-        "key" -> "Sairaanhoitomaksu",
-        "values" -> Json.toJson(dataMed)
       ),
       Json.obj(
         "key" -> "Kunnallisvero",
