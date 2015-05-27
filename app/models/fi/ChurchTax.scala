@@ -58,6 +58,7 @@ class ChurchTax(salary: Int, municipality: String, municipalityDeduction: Double
     Json.obj(
       "percent" -> this.taxPercent,
       "sum" -> this.getSum,
+      "deductedSum" -> this.getDeductedSum,
       "deduction" -> this.getDeduction,
       "deductedSalary" -> this.getDeductedSalary
     )

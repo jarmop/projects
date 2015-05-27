@@ -31,7 +31,8 @@ class MedicalCareInsurancePayment(deductedMunicipalityTaxSalary: Double) {
   def getJson: JsObject = {
     Json.obj(
       "percent" -> this.medicalCareInsurancePercent,
-      "sum" -> this.getSum
+      "sum" -> this.getSum,
+      "deductedSum" -> this.getDeductedSum
     )
   }
 }

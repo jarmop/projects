@@ -119,7 +119,8 @@ case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalD
 
   def getJson: JsObject = {
     Json.obj(
-      "sum" -> round(this.getSum),
+      "sum" -> this.getSum,
+      "deductedSum" -> this.getDeductedSum,
       "earnedIncomeAllowance" -> this.getIncomeDeduction,
       "basicDeduction" -> this.getExtraIncomeDeduction,
       "totalDeduction" -> this.getTotalTaxDeduction,
