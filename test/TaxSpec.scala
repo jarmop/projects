@@ -4,7 +4,7 @@ import org.specs2.runner._
 import org.junit.runner._
 
 @RunWith(classOf[JUnitRunner])
-class TestSpec extends Specification {
+class TaxSpec extends Specification {
   val municipality = "Helsinki"
   val age = 30
 
