@@ -28,7 +28,7 @@ class TestSpec extends Specification {
       tax.getPerDiemPayment equals(23400.0)
     }
     "pensionContribution" in {
-      tax.getPensionContribution.pp equals(171000.0)
+      tax.getPensionContribution equals(171000.0)
     }
     "unemploymentInsurance" in {
       tax.getUnemploymentInsurance equals(19500.0)
