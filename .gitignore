@@ -2,6 +2,7 @@ logs
 project/project
 project/target
 project/inspect.sbt
+project/play-fork-run.sbt
 target
 tmp
 .history
