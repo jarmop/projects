@@ -26,6 +26,15 @@ class TaxSpecSv extends Specification {
       "earnedIncomeTax" -> 11340,
       "pensionContribution" -> 32800,
       "taxCredit" -> 24657
+    ),
+    700000 -> Map(
+      "municipalityTax" -> 121443.92000000001,
+      "countyTax" -> 83114.9,
+      "churchPayment" -> 6731.62,
+      "funeralPayment" -> 515.175,
+      "earnedIncomeTax" -> 54880,
+      "pensionContribution" -> 32800,
+      "taxCredit" -> 24657
     )
   )
 
@@ -43,6 +52,15 @@ class TaxSpecSv extends Specification {
       }
       "funeralPayment" in {
         tax.getFuneralPayment equals(v.get("funeralPayment").get)
+      }
+      "earnedIncomeTax" in {
+        tax.getEarnedIncomeTax equals(v.get("earnedIncomeTax").get)
+      }
+      "pensionContribution" in {
+        tax.getPensionContribution equals(v.get("pensionContribution").get)
+      }
+      "taxCredit" in {
+        tax.getTaxCredit equals(v.get("taxCredit").get)
       }
     }
   }

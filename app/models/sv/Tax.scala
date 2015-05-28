@@ -9,7 +9,8 @@ class Tax(earnedIncome: Int, municipality: String, age: Int) {
   def getTaxCredit: Double = {
     val m = Map[Int,Double](
       300000 -> 21163,
-      500000 -> 24657
+      500000 -> 24657,
+      700000 -> 24657
     )
     m.get(this.earnedIncome).get
   }
@@ -17,7 +18,8 @@ class Tax(earnedIncome: Int, municipality: String, age: Int) {
   def getPensionContribution: Double = {
     val m = Map[Int,Double](
       300000 -> 21000,
-      500000 -> 32800
+      500000 -> 32800,
+      700000 -> 32800
     )
     m.get(this.earnedIncome).get
   }
@@ -25,7 +27,8 @@ class Tax(earnedIncome: Int, municipality: String, age: Int) {
   def getEarnedIncomeTax: Double = {
     val m = Map[Int,Double](
       300000 -> 0,
-      500000 -> 11340
+      500000 -> 11340,
+      700000 -> 54880
     )
     m.get(this.earnedIncome).get
   }
@@ -40,6 +43,8 @@ class Tax(earnedIncome: Int, municipality: String, age: Int) {
     var taxableIncome = 486900
     if (this.earnedIncome == 300000) {
       taxableIncome = 281800
+    } else if (this.earnedIncome == 700000) {
+      taxableIncome = 686900
     }
     taxableIncome
   }
