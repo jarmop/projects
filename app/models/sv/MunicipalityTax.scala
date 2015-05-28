@@ -2,7 +2,7 @@ package models.sv
 
 import play.api.libs.json.{Json, JsObject}
 
-class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduction: Double, commonDeduction: Double) {
+class MunicipalityTax(salary: Int, municipality: String, age: Int) {
   val municipalityPercents = Map[String, Double]("Stockholm" -> 0.1768)
   val countyPercents = Map[String, Double]("Stockholm" -> 0.1210)
   val churchPercents = Map[String, Double]("Adolf Fred." -> 0.0098)
