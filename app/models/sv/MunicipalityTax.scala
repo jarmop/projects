@@ -2,7 +2,7 @@ package models.sv
 
 import play.api.libs.json.{Json, JsObject}
 
-class MunicipalityTax(salary: Int, municipality: String, age: Int) {
+class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
   val municipalityPercents = Map[String, Double]("Stockholm" -> 0.1768)
   val countyPercents = Map[String, Double]("Stockholm" -> 0.1210)
   val churchPercents = Map[String, Double]("Adolf Fred." -> 0.0098)
@@ -17,24 +17,20 @@ class MunicipalityTax(salary: Int, municipality: String, age: Int) {
 
   var totalTax: Double = -1
 
-  def getTaxableIncome: Double = {
-    281800.0
-  }
-
   def getMunicipalityTax: Double = {
-    this.municipalityPercent * this.getTaxableIncome
+    this.municipalityPercent * this.taxableIncome
   }
 
   def getCountyTax: Double = {
-    this.countyPercent * this.getTaxableIncome
+    this.countyPercent * this.taxableIncome
   }
 
   def getChurchPayment: Double = {
-    this.churchPercent * this.getTaxableIncome
+    this.churchPercent * this.taxableIncome
   }
 
   def getFuneralPayment: Double = {
-    this.funeralPercent * this.getTaxableIncome
+    this.funeralPercent * this.taxableIncome
   }
 
   def getTotalTax: Double = {
@@ -51,7 +47,6 @@ class MunicipalityTax(salary: Int, municipality: String, age: Int) {
 
   def getJson: JsObject = {
     Json.obj(
-      "taxableIncome" -> this.getTaxableIncome,
       "municipalityTax" -> this.getMunicipalityTax,
       "countyTax" -> this.getCountyTax,
       "churchPayment" -> this.getChurchPayment,
