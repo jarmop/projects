@@ -4,7 +4,7 @@ import play.api.libs.json.{JsObject, Json}
 import scala.collection.mutable.ListBuffer
 import scala.util.control.Breaks._
 
-case class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction: Double) {
+class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction: Double) {
   var deductedSum: Double = 0
   var leftOverWorkIncomeDeduction: Double = 0
   var tax: Double = -1

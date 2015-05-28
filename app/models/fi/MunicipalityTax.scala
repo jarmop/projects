@@ -6,7 +6,7 @@ import play.api.libs.json.{JsObject, Json}
 import scala.math._
 import scala.util.control.Breaks._
 
-case class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduction: Double, commonDeduction: Double) {
+class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduction: Double, commonDeduction: Double) {
   val municipalityPercents = Map[String, Double]("Helsinki" -> 0.1850, "Nivala" -> 0.2150)
 
   var tax: Double = -1
