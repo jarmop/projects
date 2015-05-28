@@ -4,6 +4,7 @@ import play.api.libs.json.{Json, JsObject}
 
 class Tax(earnedIncome: Int, municipality: String, age: Int) {
   val municipalityTax = new MunicipalityTax(this.getTaxableIncome, municipality, age)
+  val stateTax = new StateTax(this.getTaxableIncome)
 
   // Tax credit for income from work (earned income tax)
   def getTaxCredit: Double = {
@@ -25,12 +26,7 @@ class Tax(earnedIncome: Int, municipality: String, age: Int) {
   }
 
   def getEarnedIncomeTax: Double = {
-    val m = Map[Int,Double](
-      300000 -> 0,
-      500000 -> 11340,
-      700000 -> 54880
-    )
-    m.get(this.earnedIncome).get
+    this.stateTax.getEarnedIncomeTax
   }
 
   def getTaxableIncome: Double = {
