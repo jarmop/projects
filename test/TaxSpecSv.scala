@@ -10,24 +10,28 @@ class TaxSpecSv extends Specification {
 
   val taxes = Map[Int,Map[String, Double]](
     3000000 -> Map(
-      "employer" -> 1620537.5,
-      "municipalityAndChurch" -> 885900.0,
-      "earnedIncomeTaxCredit" -> 205500.0
+      "municipalityTax" -> 49822.240000000005,
+      "countyTax" -> 34097.799999999996,
+      "churchPayment" -> 2761.64,
+      "funeralPayment" -> 211.35
     )
   )
 
-  /*for ((k,v) <- taxes) {
+  for ((k,v) <- taxes) {
     var tax = new Tax(k, municipality, age)
     "Tax " + k should {
-      "employer" in {
-        tax.getEpmloyerTax equals(v.get("employer").get)
+      "municipalityTax" in {
+        tax.getMunicipalityTax equals(v.get("municipalityTax").get)
       }
-      "municipalityAndChurch" in {
-        tax.getMunicipalityAndChurch equals(v.get("municipalityAndChurch").get)
+      "countyTax" in {
+        tax.getCountyTax equals(v.get("countyTax").get)
       }
-      "earnedIncomeTaxCredit" in {
-        tax.getEarnedIncomeTaxCredit equals(v.get("earnedIncomeTaxCredit").get)
+      "churchPayment" in {
+        tax.getChurchPayment equals(v.get("churchPayment").get)
+      }
+      "funeralPayment" in {
+        tax.getFuneralPayment equals(v.get("funeralPayment").get)
       }
     }
-  }*/
+  }
 }

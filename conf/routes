@@ -2,19 +2,20 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET        /                          controllers.Application.index
-GET        /tax                       controllers.Application.tax
+GET        /                              controllers.Application.index
+GET        /tax                           controllers.Application.tax
+GET        /tax-sv                       controllers.Application.taxSV
 
-GET        /compare                   controllers.Compare.index
+GET        /compare                       controllers.Compare.index
 GET        /compare/percent               controllers.Compare.percent(update: Boolean ?= false)
 GET        /compare/percent/update        controllers.Compare.percent(update: Boolean ?= true)
-GET        /compare/sum               controllers.Compare.sum(update: Boolean ?= false)
-GET        /compare/sum/update        controllers.Compare.sum(update: Boolean ?= true)
+GET        /compare/sum                   controllers.Compare.sum(update: Boolean ?= false)
+GET        /compare/sum/update            controllers.Compare.sum(update: Boolean ?= true)
 
-GET        /mongo                     controllers.MongoTest.index
-GET        /mongo/create              controllers.MongoTest.create(name: String = "jarmo", age: Int = 30)
+GET        /mongo                         controllers.MongoTest.index
+GET        /mongo/create                  controllers.MongoTest.create(name: String = "jarmo", age: Int = 30)
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file              controllers.Assets.versioned(path="/public", file: Asset)
+GET        /assets/*file                  controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /webjars/*file             controllers.WebJarAssets.at(file)
+GET        /webjars/*file                 controllers.WebJarAssets.at(file)
