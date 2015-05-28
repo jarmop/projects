@@ -9,13 +9,34 @@ class MunicipalityTax(salary: Int, municipality: String, age: Int) {
   val churches = Map[String, List[String]]("Stockholm" -> List[String]("Adolf Fred."))
   val funeralPercents = Map[String, Double]("Stockholm" -> 0.1210)
 
-  def getSum: Double = {
-    0.0
+  val municipalityPercent = this.municipalityPercents.get(this.municipality).get
+  val countyPercent = this.countyPercents.get(this.municipality).get
+  val church = "Adolf Fred."
+  val churchPercent = this.churchPercents.get(this.church).get
+  val funeralPercent = this.funeralPercents.get(this.municipality).get
+
+  def getMunicipalityTax: Double = {
+    this.municipalityPercent * this.salary
+  }
+
+  def getCountyTax: Double = {
+    this.countyPercent * this.salary
+  }
+
+  def getChurchPayment: Double = {
+    this.churchPercent * this.salary
+  }
+
+  def getFuneralPayment: Double = {
+    this.funeralPercent * this.salary
   }
 
   def getJson: JsObject = {
     Json.obj(
-      "sum" -> this.getSum
+      "municipalityTax" -> this.getMunicipalityTax,
+      "countyTax" -> this.getCountyTax,
+      "churchPayment" -> this.getChurchPayment,
+      "funeralPayment" -> this.getFuneralPayment
     )
   }
 }
