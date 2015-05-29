@@ -35,8 +35,8 @@ class TaxableIncome(earnedIncome: Double) {
   }
 
   def calculateNonTaxable: Double = {
-    if (this.earnedIncome < 18700) {
-      return 0
+    if (this.earnedIncome < 19000) {
+      return this.earnedIncome
     }
     val minimumNonTaxable: Double = 18900
     val level1IncomeStart = 44500
