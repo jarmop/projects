@@ -21,12 +21,12 @@ class TaxableIncome(earnedIncome: Double) {
     0
   }
 
-  def getApprovedIncome: Double = {
+  def getTotalIncome: Double = {
     this.earnedIncome + this.getBusinessIncome - this.getGeneralDeductions
   }
 
   def getNonTaxable: Double = {
-    0
+    13100
   }
 
   // sjöinkomstavdrag = lake deductions ???
@@ -34,28 +34,35 @@ class TaxableIncome(earnedIncome: Double) {
     0
   }
 
+  def getTotalDeductions: Double = {
+    this.getGeneralDeductions + this.getNonTaxable + this.getLakeDeductions
+  }
+
   def calculateSum: Double = {
-    //this.getApprovedIncome - this.getNonTaxable - this.getLakeDeductions
-    var taxableIncome = 486900
+    this.getTotalIncome - this.getTotalDeductions
+    /*var taxableIncome = 486900
     if (this.earnedIncome == 300000) {
       taxableIncome = 281800
     } else if (this.earnedIncome == 700000) {
       taxableIncome = 686900
     }
-    taxableIncome
+    taxableIncome*/
   }
 
   def getJson: JsObject = {
     Json.obj(
       "sum" -> this.getSum,
-      "approvedIncome" -> Json.obj(
-        "sum" -> this.getApprovedIncome,
+      "income" -> Json.obj(
+        "total" -> this.getTotalIncome,
         "earnedIncome"-> this.earnedIncome,
-        "businessIncome" -> this.getBusinessIncome,
-        "generalDeductions" -> this.getGeneralDeductions
+        "businessIncome" -> this.getBusinessIncome
       ),
-      "nonTaxable" -> this.getNonTaxable,
-      "lakeDeductions" -> this.getLakeDeductions
+      "deductions" -> Json.obj(
+        "total" -> this.getTotalDeductions,
+        "generalDeductions" -> this.getGeneralDeductions,
+        "nonTaxable" -> this.getNonTaxable,
+        "lakeDeductions" -> this.getLakeDeductions
+      )
     )
   }
 }
