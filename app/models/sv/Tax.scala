@@ -3,6 +3,7 @@ package models.sv
 import play.api.libs.json.{Json, JsObject}
 
 class Tax(earnedIncome: Int, municipality: String, age: Int) {
+  val taxableIncome = new TaxableIncome(this.earnedIncome)
   val municipalityTax = new MunicipalityTax(this.getTaxableIncome, municipality, age)
   val stateTax = new StateTax(this.getTaxableIncome)
 
@@ -30,19 +31,7 @@ class Tax(earnedIncome: Int, municipality: String, age: Int) {
   }
 
   def getTaxableIncome: Double = {
-    // tests explode if using map here ????
-    /*val m = Map[Int,Double](
-      300000 -> 281800,
-      500000 -> 486900
-    )
-    m.get(this.earnedIncome).get*/
-    var taxableIncome = 486900
-    if (this.earnedIncome == 300000) {
-      taxableIncome = 281800
-    } else if (this.earnedIncome == 700000) {
-      taxableIncome = 686900
-    }
-    taxableIncome
+    this.taxableIncome.getSum
   }
 
   def getMunicipalityTax: Double = {
@@ -67,7 +56,7 @@ class Tax(earnedIncome: Int, municipality: String, age: Int) {
 
   def getJson: JsObject = {
     Json.obj(
-      "taxableIncome" -> this.getTaxableIncome,
+      "taxableIncome" -> this.taxableIncome.getJson,
       "municipalityTax" -> this.municipalityTax.getJson,
       "earnedIncomeTax" -> this.getEarnedIncomeTax,
       "pensionContribution" -> this.getPensionContribution,
