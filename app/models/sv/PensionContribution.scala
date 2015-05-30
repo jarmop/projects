@@ -29,9 +29,15 @@ class PensionContribution(earnedIncome: Int) {
     this.percent * approvedIncome
   }
 
+  def getDeduction: Double = {
+    // TODO pension contribution deduction
+    0
+  }
+
   def getJson: JsObject = {
     Json.obj(
-      "sum" -> this.getSum
+      "sum" -> this.getSum,
+      "deduction" -> this.getDeduction
     )
   }
 }
