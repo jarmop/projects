@@ -4,6 +4,7 @@ import play.api.libs.json.{Json, JsObject}
 
 class Tax(earnedIncome: Int, municipality: String, age: Int) {
   val taxableIncome = new TaxableIncome(this.earnedIncome)
+  val pensionContribution = new PensionContribution(this.earnedIncome)
   val municipalityTax = new MunicipalityTax(this.getTaxableIncome, municipality, age)
   val stateTax = new StateTax(this.getTaxableIncome)
   val taxCredit = new TaxCredit(this.earnedIncome, this.taxableIncome.getNonTaxable, this.municipalityTax.getMunicipalityPercent + this.municipalityTax.getCountyPercent, this.getPensionContribution)
@@ -14,13 +15,14 @@ class Tax(earnedIncome: Int, municipality: String, age: Int) {
   }
 
   def getPensionContribution: Double = {
+    this.pensionContribution.getSum
     /*val m = Map[Int,Double](
       300000 -> 21000,
       500000 -> 32800,
       700000 -> 32800
     )
     m.get(this.earnedIncome).get*/
-    2100
+    //2100
   }
 
   def getEarnedIncomeTax: Double = {
@@ -56,7 +58,7 @@ class Tax(earnedIncome: Int, municipality: String, age: Int) {
       "taxableIncome" -> this.taxableIncome.getJson,
       "municipalityTax" -> this.municipalityTax.getJson,
       "stateTax" -> this.stateTax.getJson,
-      "pensionContribution" -> this.getPensionContribution,
+      "pensionContribution" -> this.pensionContribution.getJson,
       "taxCredit" -> this.taxCredit.getJson,
       "totalTax" -> this.getTotalTax
     )
