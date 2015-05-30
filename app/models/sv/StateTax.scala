@@ -1,8 +1,7 @@
 package models.sv
 
 import play.api.libs.json.{Json, JsObject}
-
-import scala.util.control.Breaks._
+import scala.util.control.Breaks.{breakable, break}
 
 class StateTax(taxableIncome: Double) {
   var earnedIncomeTax: Double = -1

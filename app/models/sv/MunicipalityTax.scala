@@ -45,6 +45,14 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
     this.getMunicipalityTax + this.getCountyTax + this.getChurchPayment + this.getFuneralPayment
   }
 
+  def getMunicipalityPercent: Double = {
+    this.municipalityPercent
+  }
+
+  def getCountyPercent: Double = {
+    this.countyPercent
+  }
+
   def getJson: JsObject = {
     Json.obj(
       "municipalityTax" -> this.getMunicipalityTax,
