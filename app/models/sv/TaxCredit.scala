@@ -16,13 +16,20 @@ class TaxCredit(earnedIncome: Int, nonTaxable: Double, municipalityPercent: Doub
   }
 
   def calculateSum: Double = {
+    var approvedIncome = roundDownHundreds(this.earnedIncome)
+    if (approvedIncome >= 359600) {
+      return this.municipalityPercent * (95897 - this.nonTaxable)
+    }
+
     var sections = List[Section](
       Section(62699, 1, 0),
-      Section(130536, 0.332, 62699)
+      //Section(130536, 0.566, 62640)
+      Section(131650, 0.566, 62640),
+      Section(500000, 0.34, 101700)
     )
     var sum: Double = 0
     var previousSectionLimit = 0
-    var approvedIncome = roundDownHundreds(this.earnedIncome)
+
     breakable { for (section <- sections) {
       if (approvedIncome <= section.limit) {
         sum = this.municipalityPercent * (section.percent * (approvedIncome - previousSectionLimit) + section.addition - this.nonTaxable) - this.pensionContribution
