@@ -20,9 +20,12 @@ class TaxCredit(earnedIncome: Double, nonTaxable: Double, municipalityPercent: D
     if (approvedIncome >= 359600) {
       return this.municipalityPercent * (95897 - this.nonTaxable)
     }
+    if (approvedIncome < 62700) {
+      return this.municipalityPercent * (approvedIncome - this.nonTaxable) - this.pensionContribution
+    }
 
     var sections = List[Section](
-      Section(40495, 1, 0, this.pensionContribution),
+      Section(40495, 1, 0, 0),
       Section(130830, 0.332, 40495, 0),
       Section(359599, 0.111, 70488, 0)
     )
