@@ -19,6 +19,7 @@ object CompareService {
     var dataPer = List[List[Double]](List[Double](salary, tax.getPerDiemPaymentPercentage))
     var dataYle = List[List[Double]](List[Double](salary, tax.getYleTaxPercentage))
     var dataChu = List[List[Double]](List[Double](salary, tax.getChurchTaxPercentage))
+    var dataWor = List[List[Double]](List[Double](salary, tax.getWorkIncomeDeductionPercentage))
 
     for (salary <- 200000 to 10000000 by 100000) {
       val tax = new fi.Tax(salary, municipality, age)
@@ -31,6 +32,7 @@ object CompareService {
       dataPer :+= List[Double](salary, tax.getPerDiemPaymentPercentage)
       dataYle :+= List[Double](salary, tax.getYleTaxPercentage)
       dataChu :+= List[Double](salary, tax.getChurchTaxPercentage)
+      dataWor :+= List[Double](salary, tax.getWorkIncomeDeductionPercentage)
     }
 
     Json.arr(
@@ -65,6 +67,10 @@ object CompareService {
       Json.obj(
         "key" -> "Valtion vero",
         "values" -> Json.toJson(dataGov)
+      ),
+      Json.obj(
+        "key" -> "Työtulovähennys",
+        "values" -> Json.toJson(dataWor)
       )
     )
   }

@@ -53,11 +53,15 @@ class Tax(salary: Int, municipality: String, age: Int) {
     this.churchTax.reduceWorkIncomeDeduction(totalDeductableTax, this.governmentTax.getLeftOverWorkIncomeDeduction)
   }
 
-  private def getWorkIncomeDeduction: Double = {
+  def getWorkIncomeDeduction: Double = {
     if (this.workIncomeDeduction < 0)
       this.workIncomeDeduction = this.calculateWorkIncomeDeduction
 
     this.workIncomeDeduction
+  }
+
+  def getWorkIncomeDeductionPercentage: Double = {
+    if (this.salary > 0) this.getWorkIncomeDeduction / this.salary else 0
   }
 
   private def calculateWorkIncomeDeduction: Double = {
