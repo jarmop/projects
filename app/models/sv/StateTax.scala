@@ -31,6 +31,10 @@ class StateTax(taxableIncome: Double) {
     sum
   }
 
+  def deductTaxCredit(totalTax: Double, taxCredit: Double) = {
+    this.sum -= (this.getSum / totalTax * taxCredit)
+  }
+
   def getJson: JsObject = {
     Json.obj(
       "sum" -> this.getSum

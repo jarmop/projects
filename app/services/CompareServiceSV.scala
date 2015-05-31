@@ -53,11 +53,11 @@ object CompareServiceSV {
       Json.obj(
         "key" -> "Valtion vero",
         "values" -> Json.toJson(dataSta)
-      )/*,
+      ),
       Json.obj(
         "key" -> "Vähennys",
         "values" -> Json.toJson(dataCre)
-      )*/
+      )
     )
   }
 

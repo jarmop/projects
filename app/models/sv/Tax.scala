@@ -10,6 +10,8 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   val stateTax = new StateTax(this.getTaxableIncome)
   val taxCredit = new TaxCredit(this.earnedIncome, this.taxableIncome.getNonTaxable, this.municipalityTax.getMunicipalityPercent + this.municipalityTax.getCountyPercent, this.getPensionContribution)
 
+  this.deductTaxCredit
+
   // Tax credit for income from work (earned income tax)
   def getTaxCredit: Double = {
     this.taxCredit.getSum
@@ -77,6 +79,13 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
 
   def getTotalTaxPercentage: Double = {
     if (this.earnedIncome > 0) this.getTotalTax / this.earnedIncome else 0
+  }
+
+  def deductTaxCredit = {
+    if (this.getTaxCredit > 0) {
+      this.municipalityTax.deductTaxCredit(this.getTotalTax, this.getTaxCredit)
+      this.stateTax.deductTaxCredit(this.getTotalTax, this.getTaxCredit)
+    }
   }
 
   def getJson: JsObject = {

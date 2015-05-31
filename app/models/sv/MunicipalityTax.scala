@@ -14,15 +14,25 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
   val church = "Adolf Fred."
   val churchPercent = this.churchPercents.get(this.church).get
   val funeralPercent = this.funeralPercents.get(this.municipality).get
-
+  
+  var municipalityTax: Double = -1
+  var countyTax: Double = -1
+  var churchPayment: Double = -1
+  var funeralPayment: Double = -1
   var totalTax: Double = -1
 
   def getMunicipalityTax: Double = {
-    this.municipalityPercent * this.taxableIncome
+    if (this.municipalityTax < 0) {
+      this.municipalityTax = this.municipalityPercent * this.taxableIncome
+    }
+    this.municipalityTax
   }
 
   def getCountyTax: Double = {
-    this.countyPercent * this.taxableIncome
+    if (this.countyTax < 0) {
+      this.countyTax = this.countyPercent * this.taxableIncome
+    }
+    this.countyTax
   }
 
   def getMunicipalityAndCountyTax: Double = {
@@ -30,11 +40,17 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
   }
 
   def getChurchPayment: Double = {
-    this.churchPercent * this.taxableIncome
+    if (this.churchPayment < 0) {
+      this.churchPayment = this.churchPercent * this.taxableIncome
+    }
+    this.churchPayment
   }
 
   def getFuneralPayment: Double = {
-    this.funeralPercent * this.taxableIncome
+    if (this.funeralPayment < 0) {
+      this.funeralPayment = this.funeralPercent * this.taxableIncome
+    }
+    this.funeralPayment
   }
 
   def getTotalTax: Double = {
@@ -59,6 +75,13 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
 
   def getMunicipalityAndCountyPercent: Double = {
     this.getMunicipalityPercent + this.getCountyPercent
+  }
+  
+  def deductTaxCredit(totalTax: Double, taxCredit: Double) = {
+    this.municipalityTax -= (this.getMunicipalityTax / totalTax * taxCredit)
+    this.countyTax -= (this.getCountyTax / totalTax * taxCredit)
+    this.churchPayment -= (this.churchPayment / totalTax * taxCredit)
+    this.funeralPayment -= (this.funeralPayment / totalTax * taxCredit)
   }
 
   def getJson: JsObject = {
