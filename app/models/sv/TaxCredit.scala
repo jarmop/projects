@@ -23,9 +23,8 @@ class TaxCredit(earnedIncome: Int, nonTaxable: Double, municipalityPercent: Doub
 
     var sections = List[Section](
       Section(62699, 1, 0),
-      //Section(130536, 0.566, 62640)
-      Section(131650, 0.566, 62640),
-      Section(500000, 0.34, 101700)
+      Section(131650, 0.5665, 62640),
+      Section(359599, 0.3452, 101700)
     )
     var sum: Double = 0
     var previousSectionLimit = 0
