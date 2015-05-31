@@ -23,7 +23,6 @@ class TaxCredit(earnedIncome: Double, nonTaxable: Double, municipalityPercent: D
     if (approvedIncome < 62700) {
       return this.municipalityPercent * (approvedIncome - this.nonTaxable) - this.pensionContribution
     }
-
     var sections = List[Section](
       Section(40495, 1, 0, 0),
       Section(130830, 0.332, 40495, 0),
@@ -31,7 +30,6 @@ class TaxCredit(earnedIncome: Double, nonTaxable: Double, municipalityPercent: D
     )
     var sum: Double = 0
     var previousSectionLimit = 0
-
     breakable { for (section <- sections) {
       if (approvedIncome <= section.limit) {
         sum = this.municipalityPercent * (section.percent * (approvedIncome - previousSectionLimit) + section.addition - this.nonTaxable) - section.deduction
