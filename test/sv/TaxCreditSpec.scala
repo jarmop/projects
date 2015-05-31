@@ -11,6 +11,7 @@ class TaxCreditSpec extends Specification {
 
   val data = List[datum](
     datum(30000, 18900, 2100, 1205.58),
+    datum(62999, 22600, 4400, 7512),
     datum(90000, 28100, 6300, 8585.770548),
     datum(240000, 24200, 16800, 17393.268086)
   )
