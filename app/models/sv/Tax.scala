@@ -64,7 +64,8 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) {
       "stateTax" -> this.stateTax.getJson,
       "pensionContribution" -> this.pensionContribution.getJson,
       "taxCredit" -> this.taxCredit.getJson,
-      "totalTax" -> this.getTotalTax
+      "totalTax" -> this.getTotalTax,
+      "totalTaxPercentage" -> this.getTotalTaxPercentage
     )
   }
 }
