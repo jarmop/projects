@@ -1,8 +1,9 @@
 package models.sv
 
+import models.AbstractTax
 import play.api.libs.json.{Json, JsObject}
 
-class Tax(earnedIncome: Double, municipality: String, age: Int) {
+class Tax(earnedIncome: Double, municipality: String, age: Int) extends AbstractTax(earnedIncome) {
   val taxableIncome = new TaxableIncome(this.earnedIncome)
   val pensionContribution = new PensionContribution(this.earnedIncome)
   val municipalityTax = new MunicipalityTax(this.getTaxableIncome, municipality, age)
@@ -14,43 +15,60 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) {
     this.taxCredit.getSum
   }
 
-  def getPensionContribution: Double = {
-    this.pensionContribution.getSum
-    /*val m = Map[Int,Double](
-      300000 -> 21000,
-      500000 -> 32800,
-      700000 -> 32800
-    )
-    m.get(this.earnedIncome).get*/
-    //2100
-  }
-
-  def getEarnedIncomeTax: Double = {
-    this.stateTax.getEarnedIncomeTax
-  }
-
   def getTaxableIncome: Double = {
     this.taxableIncome.getSum
+  }
+
+  def getPensionContribution: Double = {
+    this.pensionContribution.getSum
+  }
+
+  def getPensionContributionPercentage: Double = {
+    this.getPercentage(this.getPensionContribution)
+  }
+
+  def getStateTax: Double = {
+    this.stateTax.getSum
+  }
+
+  def getStateTaxPercentage: Double = {
+    this.getPercentage(this.getStateTax)
   }
 
   def getMunicipalityTax: Double = {
     this.municipalityTax.getMunicipalityTax
   }
 
+  def getMunicipalityTaxPercentage: Double = {
+    this.getPercentage(this.getMunicipalityTax)
+  }
+
   def getCountyTax: Double = {
     this.municipalityTax.getCountyTax
+  }
+
+  def getCountyTaxPercentage: Double = {
+    if (this.earnedIncome > 0) this.getCountyTax / this.earnedIncome else 0
   }
 
   def getChurchPayment: Double = {
     this.municipalityTax.getChurchPayment
   }
 
+  def getChurchPaymentPercentage: Double = {
+    if (this.earnedIncome > 0) this.getChurchPayment / this.earnedIncome else 0
+  }
+
   def getFuneralPayment: Double = {
     this.municipalityTax.getFuneralPayment
   }
 
+  def getFuneralPaymentPercentage: Double = {
+    if (this.earnedIncome > 0) this.getFuneralPayment / this.earnedIncome else 0
+  }
+
   def getTotalTax: Double = {
-    this.municipalityTax.getTotalTax + this.getEarnedIncomeTax - this.getTaxCredit
+    this.municipalityTax.getTotalTax + this.getStateTax - this.getTaxCredit
   }
 
   def getTotalTaxPercentage: Double = {

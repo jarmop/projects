@@ -4,36 +4,36 @@ import play.api.libs.json.{Json, JsObject}
 import scala.util.control.Breaks.{breakable, break}
 
 class StateTax(taxableIncome: Double) {
-  var earnedIncomeTax: Double = -1
+  var sum: Double = -1
 
-  def getEarnedIncomeTax: Double = {
-    if (this.earnedIncomeTax < 0) {
-      this.earnedIncomeTax = this.calculateEarnedIncomeTax
+  def getSum: Double = {
+    if (this.sum < 0) {
+      this.sum = this.calculateSum
     }
 
-    this.earnedIncomeTax
+    this.sum
   }
 
-  def calculateEarnedIncomeTax: Double = {
+  def calculateSum: Double = {
     val taxTable = Map[Double,Double](
       430200.0 -> 0.20,
       616100.0 -> 0.05
     )
 
-    var earnedIncomeTax: Double = 0
+    var sum: Double = 0
     breakable { for ( (limit, taxPercent) <- taxTable) {
       if (this.taxableIncome < limit) {
         break
       }
-      earnedIncomeTax += taxPercent * (this.taxableIncome - limit)
+      sum += taxPercent * (this.taxableIncome - limit)
     }}
 
-    earnedIncomeTax
+    sum
   }
 
   def getJson: JsObject = {
     Json.obj(
-      "earnedIncomeTax" -> this.getEarnedIncomeTax
+      "sum" -> this.getSum
     )
   }
 }

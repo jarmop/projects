@@ -10,6 +10,7 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import services.CompareServiceSV
 import services.fi.CompareService
 import services.country.CountryComparison
 import scala.concurrent.Future
@@ -87,6 +88,12 @@ object Compare extends Controller with MongoController {
 
   def country = Action {
     val json = CountryComparison.getCountryData
+
+    Ok(json)
+  }
+
+  def svPercent = Action {
+    val json = CompareServiceSV.getPercentData
 
     Ok(json)
   }

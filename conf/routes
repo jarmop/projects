@@ -4,7 +4,7 @@
 
 GET        /                              controllers.Application.index
 GET        /tax                           controllers.Application.tax
-GET        /tax-sv                       controllers.Application.taxSV
+GET        /tax/sv                       controllers.Application.taxSV
 
 GET        /compare                       controllers.Compare.index
 GET        /compare/percent               controllers.Compare.percent(update: Boolean ?= false)
@@ -12,6 +12,7 @@ GET        /compare/percent/update        controllers.Compare.percent(update: Bo
 GET        /compare/sum                   controllers.Compare.sum(update: Boolean ?= false)
 GET        /compare/sum/update            controllers.Compare.sum(update: Boolean ?= true)
 
+GET        /compare/sv/percent            controllers.Compare.svPercent
 GET        /compare/country               controllers.Compare.country
 
 GET        /mongo                         controllers.MongoTest.index
