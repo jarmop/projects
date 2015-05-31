@@ -4,8 +4,8 @@ import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 
 class PensionContribution(earnedIncome: Int) {
-  val minIncome = 18782
-  val maxIncome = 459183
+  val minIncome = 18824
+  val maxIncome = 467900
   var sum: Double = -1
   val percent: Double = 0.07
 
@@ -24,7 +24,8 @@ class PensionContribution(earnedIncome: Int) {
     if (this.earnedIncome > this.maxIncome) {
       approvedIncome = this.maxIncome
     }
-    roundHundreds(this.percent * roundDownHundreds(approvedIncome))
+
+    roundHundredsSpecial50(this.percent * roundDownHundreds(approvedIncome))
   }
 
   def getDeduction: Double = {
