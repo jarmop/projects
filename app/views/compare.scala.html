@@ -3,6 +3,17 @@
 
   <h1>@title</h1>
 
+  <nvd3-line-chart
+  data="countryData"
+  height="350"
+  showXAxis="true"
+  showYAxis="true"
+  interactive="true"
+  useInteractiveGuideline="true"
+  xAxisTickFormat="xAxisTickFormatPercent()"
+  yAxisTickFormat="yAxisTickFormatPercent()">
+  </nvd3-line-chart>
+
   <nvd3-stacked-area-chart
   data="percentData"
   id="exampleId"

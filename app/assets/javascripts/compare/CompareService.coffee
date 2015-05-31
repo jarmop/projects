@@ -36,4 +36,19 @@ class CompareService
 
     deferred.promise
 
+  getCountry: () ->
+    @$log.debug "CompareService.getCountry"
+    deferred = @$q.defer()
+
+    @$http.get("/compare/country").success((data, status, headers) =>
+      @$log.info("Successfully got country data - status #{status}")
+      deferred.resolve(data)
+    )
+    .error((data, status, headers) =>
+      @$log.error("Failed to get country data - status #{status}")
+      deferred.reject(data)
+    )
+
+    deferred.promise
+
 servicesModule.service('CompareService', CompareService)

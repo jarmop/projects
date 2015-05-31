@@ -133,4 +133,31 @@ object CompareService {
     )
   }
 
+  def getCountryData: JsArray = {
+    val municipality = "Helsinki"
+    val age = 30
+
+    val tax = new Tax(1000000, municipality, age)
+    var salary = 1000000
+    var dataGov = List[List[Double]](List[Double](salary, tax.getGovernmentTaxPercentage))
+    var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTaxPercentage))
+
+    for (salary <- 2000000 to 10000000 by 1000000) {
+      val tax = new Tax(salary, municipality, age)
+      dataGov :+= List[Double](salary, tax.getGovernmentTaxPercentage)
+      dataMun :+= List[Double](salary, tax.getMunicipalityTaxPercentage)
+    }
+
+    Json.arr(
+      Json.obj(
+        "key" -> "Suomi",
+        "values" -> Json.toJson(dataGov)
+      ),
+      Json.obj(
+        "key" -> "Ruotsi",
+        "values" -> Json.toJson(dataMun)
+      )
+    )
+  }
+
 }

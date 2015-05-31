@@ -83,4 +83,10 @@ object Compare extends Controller with MongoController {
     }
 
   }
+
+  def country = Action {
+    val json = CompareService.getCountryData
+
+    Ok(json)
+  }
 }
