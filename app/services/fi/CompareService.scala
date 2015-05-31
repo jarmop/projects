@@ -1,6 +1,6 @@
 package services.fi
 
-import models.fi.Tax
+import models._
 import play.api.libs.json.{JsArray, Json}
 import scala.math._
 
@@ -9,7 +9,7 @@ object CompareService {
     val municipality = "Helsinki"
     val age = 30
 
-    val tax = new Tax(100000, municipality, age)
+    val tax = new fi.Tax(100000, municipality, age)
     var salary = 100000
     var dataGov = List[List[Double]](List[Double](salary, tax.getGovernmentTaxPercentage))
     var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTaxPercentage))
@@ -21,7 +21,7 @@ object CompareService {
     var dataChu = List[List[Double]](List[Double](salary, tax.getChurchTaxPercentage))
 
     for (salary <- 200000 to 10000000 by 100000) {
-      val tax = new Tax(salary, municipality, age)
+      val tax = new fi.Tax(salary, municipality, age)
       //data :+= List[Double](salary, tax.getTotalTax / salary))
       dataGov :+= List[Double](salary, tax.getGovernmentTaxPercentage)
       dataMun :+= List[Double](salary, tax.getMunicipalityTaxPercentage)
@@ -73,7 +73,7 @@ object CompareService {
     val municipality = "Helsinki"
     val age = 30
 
-    val tax = new Tax(100000, municipality, age)
+    val tax = new fi.Tax(100000, municipality, age)
     var salary = 100000
     var dataGov = List[List[Double]](List[Double](salary, tax.getGovernmentTax))
     var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTax))
@@ -85,7 +85,7 @@ object CompareService {
     var dataChu = List[List[Double]](List[Double](salary, tax.getChurchTax))
 
     for (salary <- 200000 to 10000000 by 100000) {
-      val tax = new Tax(salary, municipality, age)
+      val tax = new fi.Tax(salary, municipality, age)
       //data :+= List[Double](salary / 100, tax.getTotalTax / salary * 100)
       dataGov :+= List[Double](salary, tax.getGovernmentTax)
       dataMun :+= List[Double](salary, tax.getMunicipalityTax)
@@ -132,32 +132,4 @@ object CompareService {
       )
     )
   }
-
-  def getCountryData: JsArray = {
-    val municipality = "Helsinki"
-    val age = 30
-
-    val tax = new Tax(1000000, municipality, age)
-    var salary = 1000000
-    var dataGov = List[List[Double]](List[Double](salary, tax.getGovernmentTaxPercentage))
-    var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTaxPercentage))
-
-    for (salary <- 2000000 to 10000000 by 1000000) {
-      val tax = new Tax(salary, municipality, age)
-      dataGov :+= List[Double](salary, tax.getGovernmentTaxPercentage)
-      dataMun :+= List[Double](salary, tax.getMunicipalityTaxPercentage)
-    }
-
-    Json.arr(
-      Json.obj(
-        "key" -> "Suomi",
-        "values" -> Json.toJson(dataGov)
-      ),
-      Json.obj(
-        "key" -> "Ruotsi",
-        "values" -> Json.toJson(dataMun)
-      )
-    )
-  }
-
 }

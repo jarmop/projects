@@ -4,7 +4,7 @@ import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 import scala.util.control.Breaks.{breakable, break}
 
-class TaxCredit(earnedIncome: Int, nonTaxable: Double, municipalityPercent: Double, pensionContribution: Double) {
+class TaxCredit(earnedIncome: Double, nonTaxable: Double, municipalityPercent: Double, pensionContribution: Double) {
   case class Section(limit: Int, percent: Double, addition: Int, deduction: Double)
   var sum: Double = -1
 

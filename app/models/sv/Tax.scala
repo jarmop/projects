@@ -2,7 +2,7 @@ package models.sv
 
 import play.api.libs.json.{Json, JsObject}
 
-class Tax(earnedIncome: Int, municipality: String, age: Int) {
+class Tax(earnedIncome: Double, municipality: String, age: Int) {
   val taxableIncome = new TaxableIncome(this.earnedIncome)
   val pensionContribution = new PensionContribution(this.earnedIncome)
   val municipalityTax = new MunicipalityTax(this.getTaxableIncome, municipality, age)
@@ -51,6 +51,10 @@ class Tax(earnedIncome: Int, municipality: String, age: Int) {
 
   def getTotalTax: Double = {
     this.municipalityTax.getTotalTax + this.getEarnedIncomeTax - this.getTaxCredit
+  }
+
+  def getTotalTaxPercentage: Double = {
+    if (this.earnedIncome > 0) this.getTotalTax / this.earnedIncome else 0
   }
 
   def getJson: JsObject = {

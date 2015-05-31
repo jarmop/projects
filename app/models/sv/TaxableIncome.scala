@@ -4,7 +4,7 @@ import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 import scala.math.floor
 
-class TaxableIncome(earnedIncome: Int) {
+class TaxableIncome(earnedIncome: Double) {
   var sum: Double = -1
   var nonTaxable: Double = -1
 

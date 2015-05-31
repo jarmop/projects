@@ -3,7 +3,7 @@ package models.sv
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 
-class PensionContribution(earnedIncome: Int) {
+class PensionContribution(earnedIncome: Double) {
   val minIncome = 18824
   val maxIncome = 467900
   var sum: Double = -1
