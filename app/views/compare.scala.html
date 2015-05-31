@@ -16,6 +16,21 @@
   </nvd3-line-chart>
 
   <nvd3-stacked-area-chart
+  data="svPercentData"
+  id="svComparePercent"
+  height="400"
+  showXAxis="true"
+  showYAxis="true"
+  tooltips="true"
+  interactive="true"
+  useInteractiveGuideline="true"
+  toolTipContent="toolTipContentFunction()"
+  xAxisTickFormat="xAxisTickFormatPercent()"
+  yAxisTickFormat="yAxisTickFormatPercent()">
+    <svg></svg>
+  </nvd3-stacked-area-chart>
+
+  <nvd3-stacked-area-chart
   data="percentData"
   id="exampleId"
   height="400"

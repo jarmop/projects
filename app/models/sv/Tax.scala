@@ -15,6 +15,10 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
     this.taxCredit.getSum
   }
 
+  def getTaxCreditPercentage: Double = {
+    this.getPercentage(this.getTaxCredit)
+  }
+
   def getTaxableIncome: Double = {
     this.taxableIncome.getSum
   }
@@ -68,7 +72,7 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   }
 
   def getTotalTax: Double = {
-    this.municipalityTax.getTotalTax + this.getStateTax - this.getTaxCredit
+    this.municipalityTax.getTotalTax + this.getStateTax// - this.getTaxCredit
   }
 
   def getTotalTaxPercentage: Double = {

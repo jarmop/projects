@@ -5,6 +5,7 @@ class CompareController
     @getPercent()
     @getSum()
     @getCountry()
+    @getSvPercent()
 
     @$scope.xAxisTickFormatPercent = () =>
       return (salary) =>
@@ -48,6 +49,16 @@ class CompareController
     .then((response) =>
       @$log.debug response
       @$scope.countryData = response
+    ,(error) =>
+      @$log.error "Unable to get data: #{error}"
+    )
+
+  getSvPercent: (form) ->
+    @$log.debug "getSvPercent"
+    @CompareService.getSvPercent()
+    .then((response) =>
+      @$log.debug response
+      @$scope.svPercentData = response
     ,(error) =>
       @$log.error "Unable to get data: #{error}"
     )

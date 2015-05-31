@@ -51,4 +51,19 @@ class CompareService
 
     deferred.promise
 
+  getSvPercent: () ->
+    @$log.debug "CompareService.getSvPercent"
+    deferred = @$q.defer()
+
+    @$http.get("/compare/sv/percent").success((data, status, headers) =>
+      @$log.info("Successfully got percent - status #{status}")
+      deferred.resolve(data)
+    )
+    .error((data, status, headers) =>
+      @$log.error("Failed to get percent - status #{status}")
+      deferred.reject(data)
+    )
+
+    deferred.promise
+
 servicesModule.service('CompareService', CompareService)
