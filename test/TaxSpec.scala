@@ -62,16 +62,16 @@ class TaxSpec extends Specification {
         tax.getGovernmentTax equals(v.get("government").get)
       }
       "municipality" in {
-        tax.getMunicipalityTax.pp equals(v.get("municipality").get)
+        tax.getMunicipalityTax equals(v.get("municipality").get)
       }
       "YLETax" in {
         tax.getYleTax equals(v.get("YLETax").get)
       }
       "MedicalCareInsurancePayment" in {
-        tax.getMedicalCareInsurancePayment.pp equals(v.get("MedicalCareInsurancePayment").get)
+        tax.getMedicalCareInsurancePayment equals(v.get("MedicalCareInsurancePayment").get)
       }
       "perDiemPayment" in {
-        tax.getPerDiemPayment.pp equals(v.get("perDiemPayment").get)
+        tax.getPerDiemPayment equals(v.get("perDiemPayment").get)
       }
       "pensionContribution" in {
         tax.getPensionContribution equals(v.get("pensionContribution").get)
@@ -80,7 +80,7 @@ class TaxSpec extends Specification {
         tax.getUnemploymentInsurance equals(v.get("unemploymentInsurance").get)
       }
       "churchTax" in {
-        tax.getChurchTax.pp equals(v.get("churchTax").get)
+        tax.getChurchTax equals(v.get("churchTax").get)
       }
       "totalTax" in {
         tax.getTotalTax equals(v.get("totalTax").get)
