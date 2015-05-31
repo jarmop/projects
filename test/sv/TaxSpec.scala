@@ -7,7 +7,6 @@ import org.specs2.runner._
 
 @RunWith(classOf[JUnitRunner])
 class TaxSpec extends Specification {
-  //this.skipAll
   val municipality = "Stockholm"
   val age = 30
 
@@ -19,7 +18,7 @@ class TaxSpec extends Specification {
       "funeralPayment" -> 211.35,
       "earnedIncomeTax" -> 0,
       "pensionContribution" -> 21000,
-      "taxCredit" -> 21163
+      "taxCredit" -> 21163.416085999997
     ),
     500000 -> Map(
       "municipalityTax" -> 86083.92000000001,
@@ -28,7 +27,7 @@ class TaxSpec extends Specification {
       "funeralPayment" -> 365.175,
       "earnedIncomeTax" -> 11340,
       "pensionContribution" -> 32800,
-      "taxCredit" -> 24657
+      "taxCredit" -> 24656.9466
     ),
     700000 -> Map(
       "municipalityTax" -> 121443.92000000001,
@@ -37,7 +36,7 @@ class TaxSpec extends Specification {
       "funeralPayment" -> 515.175,
       "earnedIncomeTax" -> 54880,
       "pensionContribution" -> 32800,
-      "taxCredit" -> 24657
+      "taxCredit" -> 24656.9466
     )
   )
 

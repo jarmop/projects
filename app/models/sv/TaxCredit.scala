@@ -5,7 +5,7 @@ import play.api.libs.json.{Json, JsObject}
 import scala.util.control.Breaks.{breakable, break}
 
 class TaxCredit(earnedIncome: Int, nonTaxable: Double, municipalityPercent: Double, pensionContribution: Double) {
-  case class Section(limit: Int, percent: Double, addition: Int)
+  case class Section(limit: Int, percent: Double, addition: Int, deduction: Double)
   var sum: Double = -1
 
   def getSum: Double = {
@@ -22,16 +22,16 @@ class TaxCredit(earnedIncome: Int, nonTaxable: Double, municipalityPercent: Doub
     }
 
     var sections = List[Section](
-      Section(62699, 1, 0),
-      Section(131650, 0.5665, 62640),
-      Section(359599, 0.3452, 101700)
+      Section(40495, 1, 0, this.pensionContribution),
+      Section(130830, 0.332, 40495, 0),
+      Section(359599, 0.111, 70488, 0)
     )
     var sum: Double = 0
     var previousSectionLimit = 0
 
     breakable { for (section <- sections) {
       if (approvedIncome <= section.limit) {
-        sum = this.municipalityPercent * (section.percent * (approvedIncome - previousSectionLimit) + section.addition - this.nonTaxable) - this.pensionContribution
+        sum = this.municipalityPercent * (section.percent * (approvedIncome - previousSectionLimit) + section.addition - this.nonTaxable) - section.deduction
         if (sum < 0) sum = 0
         break
       }
