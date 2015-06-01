@@ -12,29 +12,29 @@ class TaxSpec extends Specification {
 
   val taxes = Map[Int,Map[String, Double]](
     300000 -> Map(
-      "municipalityTax" -> 49822.240000000005,
-      "countyTax" -> 34097.799999999996,
-      "churchPayment" -> 2761.64,
-      "funeralPayment" -> 211.35,
-      "earnedIncomeTax" -> 0,
+      "municipalityTax" -> 37687.67874167408,
+      "countyTax" -> 25793.03805284255,
+      "churchPayment" -> 2089.022916676504,
+      "funeralPayment" -> 159.8742028068753,
+      "stateTax" -> 0,
       "pensionContribution" -> 21000,
       "taxCredit" -> 21163.416085999997
     ),
     500000 -> Map(
-      "municipalityTax" -> 86083.92000000001,
-      "countyTax" -> 58914.9,
-      "churchPayment" -> 4771.62,
-      "funeralPayment" -> 365.175,
-      "earnedIncomeTax" -> 11340,
+      "municipalityTax" -> 72939.10789596391,
+      "countyTax" -> 49918.73334508842,
+      "churchPayment" -> 4043.0048494369134,
+      "funeralPayment" -> 309.4136364364985,
+      "stateTax" -> 9321.889207605283,
       "pensionContribution" -> 32800,
       "taxCredit" -> 24656.9466
     ),
     700000 -> Map(
-      "municipalityTax" -> 121443.92000000001,
-      "countyTax" -> 83114.9,
-      "churchPayment" -> 6731.62,
-      "funeralPayment" -> 515.175,
-      "earnedIncomeTax" -> 54880,
+      "municipalityTax" -> 110215.58190484377,
+      "countyTax" -> 75430.34734437836,
+      "churchPayment" -> 6109.23474359428,
+      "funeralPayment" -> 467.54347527507247,
+      "stateTax" -> 49403.84296686536,
       "pensionContribution" -> 32800,
       "taxCredit" -> 24656.9466
     )
@@ -42,7 +42,7 @@ class TaxSpec extends Specification {
 
   for ((k,v) <- taxes) {
     var tax = new Tax(k, municipality, age)
-    "Tax " + k should {
+    "SV Tax " + k should {
       "municipalityTax" in {
         tax.getMunicipalityTax equals(v.get("municipalityTax").get)
       }
@@ -55,8 +55,8 @@ class TaxSpec extends Specification {
       "funeralPayment" in {
         tax.getFuneralPayment equals(v.get("funeralPayment").get)
       }
-      "earnedIncomeTax" in {
-        tax.getEarnedIncomeTax equals(v.get("earnedIncomeTax").get)
+      "stateTax" in {
+        tax.getStateTax equals(v.get("stateTax").get)
       }
       "pensionContribution" in {
         tax.getPensionContribution equals(v.get("pensionContribution").get)

@@ -18,7 +18,7 @@ class TaxSpec extends Specification {
       "pensionContribution" -> 5700.0,
       "unemploymentInsurance" -> 650.0,
       "churchTax" -> 0.0,
-      "totalTax" -> 780.0
+      "totalTax" -> 7130
     ),
     1000000 -> Map(
       "government" -> 0.0,
@@ -29,7 +29,7 @@ class TaxSpec extends Specification {
       "pensionContribution" -> 57000.0,
       "unemploymentInsurance" -> 6500.0,
       "churchTax" -> 0.0,
-      "totalTax" -> 14178.4
+      "totalTax" -> 77678.4
     ),
     3000000 -> Map(
       "government" -> 98567.5,
@@ -40,7 +40,7 @@ class TaxSpec extends Specification {
       "pensionContribution" -> 171000.0,
       "unemploymentInsurance" -> 19500.0,
       "churchTax" -> 24174.21911623439,
-      "totalTax" -> 541007.242
+      "totalTax" -> 731507.242
     ),
     10000000 -> Map(
       "government" -> 1620537.5,
@@ -51,13 +51,13 @@ class TaxSpec extends Specification {
       "pensionContribution" -> 570000.0,
       "unemploymentInsurance" -> 65000.0,
       "churchTax" -> 92250.0,
-      "totalTax" -> 3610638.5
+      "totalTax" -> 4245638.5
     )
   )
 
   for ((k,v) <- taxes) {
     var tax = new Tax(k, municipality, age)
-    "Tax " + k should {
+    "FI Tax " + k should {
       "government" in {
         tax.getGovernmentTax equals(v.get("government").get)
       }
