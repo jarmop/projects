@@ -36,14 +36,14 @@ object CompareService {
     }
 
     Json.arr(
-      /*Json.obj(
+      Json.obj(
         "key" -> "Työttömyysvakuutusmaksut",
         "values" -> Json.toJson(dataUnemp)
       ),
       Json.obj(
         "key" -> "Työeläkemaksut",
         "values" -> Json.toJson(dataPen)
-      ),*/
+      ),
       Json.obj(
         "key" -> "Päivärahamaksu",
         "values" -> Json.toJson(dataPer)

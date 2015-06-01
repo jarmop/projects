@@ -1,6 +1,7 @@
 package models.sv
 
 import models.AbstractTax
+import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 
 class Tax(earnedIncome: Double, municipality: String, age: Int) extends AbstractTax(earnedIncome) {

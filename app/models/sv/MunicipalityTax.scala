@@ -1,5 +1,6 @@
 package models.sv
 
+import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 
 class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
@@ -65,6 +66,10 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
     this.getMunicipalityTax + this.getCountyTax + this.getChurchPayment + this.getFuneralPayment
   }
 
+  def updateTotalTax = {
+    this.totalTax = this.calculateTotalTax
+  }
+
   def getMunicipalityPercent: Double = {
     this.municipalityPercent
   }
@@ -82,6 +87,7 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
     this.countyTax -= (this.getCountyTax / totalTax * taxCredit)
     this.churchPayment -= (this.churchPayment / totalTax * taxCredit)
     this.funeralPayment -= (this.funeralPayment / totalTax * taxCredit)
+    this.updateTotalTax
   }
 
   def getJson: JsObject = {
