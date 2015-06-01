@@ -3,6 +3,7 @@ package models.sv
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 import scala.math.floor
+import models.substractUntilZero
 
 class TaxableIncome(earnedIncome: Double) {
   var sum: Double = -1
@@ -25,7 +26,7 @@ class TaxableIncome(earnedIncome: Double) {
 
   def getTotalIncome: Double = {
     // round total to nearest 100
-    floor((this.earnedIncome + this.getBusinessIncome - this.getGeneralDeductions) / 100) * 100
+    roundHundreds(this.earnedIncome + this.getBusinessIncome - this.getGeneralDeductions)
   }
 
   def getNonTaxable: Double = {
@@ -79,7 +80,7 @@ class TaxableIncome(earnedIncome: Double) {
   }
 
   def calculateSum: Double = {
-    this.getTotalIncome - this.getTotalDeductions
+    substractUntilZero(this.getTotalIncome, this.getTotalDeductions)
   }
 
   def getJson: JsObject = {

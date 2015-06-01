@@ -1,6 +1,6 @@
 package models.sv
 
-import models._
+import models.substractUntilZero
 
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
