@@ -1,7 +1,7 @@
 package object services {
   val SVkronaRate = 9.3272
 
-  def EuroToSVKrona(value: Double): Double = {
+  def euroToSVKrona(value: Double): Double = {
     SVkronaRate * value
   }
 

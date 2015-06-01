@@ -2,7 +2,7 @@ package services.country
 
 import play.api.libs.json.{JsArray, Json}
 import models.{fi,sv}
-import services.CurrencyConverter
+import services.euroToSVKrona
 
 object CountryComparison {
   def getCountryData: JsArray = {
@@ -10,13 +10,13 @@ object CountryComparison {
 
     var salary = 100000
     val taxFI = new models.fi.Tax(salary, "Helsinki", age)
-    val taxSV = new sv.Tax(CurrencyConverter.EuroToSVKrona(salary / 100), "Stockholm", age)
+    val taxSV = new sv.Tax(euroToSVKrona(salary / 100), "Stockholm", age)
     var dataFI = List[List[Double]](List[Double](salary, taxFI.getTotalTaxPercentage))
     var dataSV = List[List[Double]](List[Double](salary, taxSV.getTotalTaxPercentage))
 
     for (salary <- 200000 to 10000000 by 100000) {
       val taxFI = new fi.Tax(salary, "Helsinki", age)
-      val taxSV = new sv.Tax(CurrencyConverter.EuroToSVKrona(salary / 100), "Stockholm", age)
+      val taxSV = new sv.Tax(euroToSVKrona(salary / 100), "Stockholm", age)
       dataFI :+= List[Double](salary, taxFI.getTotalTaxPercentage)
       dataSV :+= List[Double](salary, taxSV.getTotalTaxPercentage)
     }
