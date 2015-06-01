@@ -26,7 +26,7 @@ class TaxableIncome(earnedIncome: Double) {
 
   def getTotalIncome: Double = {
     // round total to nearest 100
-    roundHundreds(this.earnedIncome + this.getBusinessIncome - this.getGeneralDeductions)
+    roundDownHundreds(this.earnedIncome + this.getBusinessIncome - this.getGeneralDeductions)
   }
 
   def getNonTaxable: Double = {

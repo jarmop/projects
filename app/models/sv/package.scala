@@ -8,7 +8,7 @@ package object sv {
   }
 
   def roundHundredsSpecial50(value: Double): Double = {
-    if (value % 50 == 0) {
+    if (value.toInt % 50 == 0) {
       return roundDownHundreds(value)
     }
     roundHundreds(value)
