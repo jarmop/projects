@@ -2,9 +2,11 @@ package models.sv
 
 import play.api.libs.json.{Json, JsObject}
 import scala.util.control.Breaks.{breakable, break}
+import models._
 
 class StateTax(taxableIncome: Double) {
   var sum: Double = -1
+  var sumDeduction: Double = -1
 
   def getSum: Double = {
     if (this.sum < 0) {
@@ -32,7 +34,8 @@ class StateTax(taxableIncome: Double) {
   }
 
   def deductTaxCredit(totalTax: Double, taxCredit: Double) = {
-    this.sum -= (this.getSum / totalTax * taxCredit)
+    this.sumDeduction = (this.getSum / totalTax * taxCredit)
+    this.sum = substractUntilZero(this.sum, this.sumDeduction)
   }
 
   def getJson: JsObject = {

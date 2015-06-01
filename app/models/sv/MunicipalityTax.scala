@@ -1,5 +1,7 @@
 package models.sv
 
+import models._
+
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 
@@ -21,6 +23,12 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
   var churchPayment: Double = -1
   var funeralPayment: Double = -1
   var totalTax: Double = -1
+
+  var municipalityTaxDeduction: Double = -1
+  var countyTaxDeduction: Double = -1
+  var churchPaymentDeduction: Double = -1
+  var funeralPaymentDeduction: Double = -1
+  var totalTaxDeduction: Double = -1
 
   def getMunicipalityTax: Double = {
     if (this.municipalityTax < 0) {
@@ -83,10 +91,14 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
   }
   
   def deductTaxCredit(totalTax: Double, taxCredit: Double) = {
-    this.municipalityTax -= (this.getMunicipalityTax / totalTax * taxCredit)
-    this.countyTax -= (this.getCountyTax / totalTax * taxCredit)
-    this.churchPayment -= (this.churchPayment / totalTax * taxCredit)
-    this.funeralPayment -= (this.funeralPayment / totalTax * taxCredit)
+    this.municipalityTaxDeduction = (this.getMunicipalityTax / totalTax * taxCredit)
+    this.municipalityTax = substractUntilZero(this.municipalityTax, this.municipalityTaxDeduction)
+    this.countyTaxDeduction = (this.getCountyTax / totalTax * taxCredit)
+    this.countyTax = substractUntilZero(this.countyTax, this.countyTaxDeduction)
+    this.churchPaymentDeduction = (this.churchPayment / totalTax * taxCredit)
+    this.churchPayment = substractUntilZero(this.churchPayment, this.churchPaymentDeduction)
+    this.funeralPaymentDeduction = (this.funeralPayment / totalTax * taxCredit)
+    this.funeralPayment = substractUntilZero(this.funeralPayment, this.funeralPaymentDeduction)
     this.updateTotalTax
   }
 

@@ -3,6 +3,7 @@ package models.sv
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 import scala.util.control.Breaks.{breakable, break}
+import models._
 
 class TaxCredit(earnedIncome: Double, nonTaxable: Double, municipalityPercent: Double, pensionContribution: Double) {
   case class Section(limit: Int, percent: Double, addition: Int, deduction: Double)
@@ -21,7 +22,7 @@ class TaxCredit(earnedIncome: Double, nonTaxable: Double, municipalityPercent: D
       return this.municipalityPercent * (95897 - this.nonTaxable)
     }
     if (approvedIncome < 62700) {
-      return this.municipalityPercent * (approvedIncome - this.nonTaxable) - this.pensionContribution
+      return substractUntilZero(this.municipalityPercent * (approvedIncome - this.nonTaxable), this.pensionContribution)
     }
     var sections = List[Section](
       Section(40495, 1, 0, 0),
