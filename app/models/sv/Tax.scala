@@ -75,7 +75,7 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   }
 
   def getTotalTax: Double = {
-    this.municipalityTax.getTotalTax + this.getStateTax// - this.getTaxCredit
+    this.municipalityTax.getTotalTax + this.getStateTax + this.getPensionContribution
   }
 
   def getTotalTaxPercentage: Double = {
@@ -84,8 +84,8 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
 
   def deductTaxCredit = {
     if (this.getTaxCredit > 0) {
-      this.municipalityTax.deductTaxCredit(this.getTotalTax, this.getTaxCredit)
-      this.stateTax.deductTaxCredit(this.getTotalTax, this.getTaxCredit)
+      this.municipalityTax.deductTaxCredit(this.getTotalTax, this.getTaxCredit + this.getPensionContribution)
+      this.stateTax.deductTaxCredit(this.getTotalTax, this.getTaxCredit + this.getPensionContribution)
     }
   }
 

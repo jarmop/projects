@@ -43,13 +43,13 @@ object CompareServiceSV {
         "values" -> Json.toJson(dataCou)
       ),
       Json.obj(
+        "key" -> "Eläkemaksu",
+        "values" -> Json.toJson(dataPen)
+      ),
+      Json.obj(
         "key" -> "Kunnallisvero",
         "values" -> Json.toJson(dataMun)
       ),
-      /*Json.obj(
-        "key" -> "Eläkemaksu",
-        "values" -> Json.toJson(dataPen)
-      ),*/
       Json.obj(
         "key" -> "Valtion vero",
         "values" -> Json.toJson(dataSta)
