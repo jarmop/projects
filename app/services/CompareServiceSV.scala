@@ -68,16 +68,24 @@ object CompareServiceSV {
     var salary = 10000
     val tax = new Tax(salary, municipality, age)
     var dataNet = List[List[Double]](List[Double](salary, tax.getNetIncome))
+    var dataTax = List[List[Double]](List[Double](salary, tax.getTotalTax))
+
 
     for (salary <- 11000 to 100000 by 1000) {
       val tax = new Tax(salary, municipality, age)
       dataNet :+= List[Double](salary, tax.getNetIncome)
+      dataTax :+= List[Double](salary, tax.getTotalTax)
+
     }
 
     Json.arr(
       Json.obj(
         "key" -> "Nettotulot",
         "values" -> Json.toJson(dataNet)
+      ),
+      Json.obj(
+        "key" -> "Vero",
+        "values" -> Json.toJson(dataTax)
       )
     )
   }
