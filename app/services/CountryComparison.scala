@@ -1,8 +1,7 @@
-package services.country
+package services
 
 import play.api.libs.json.{JsArray, Json}
 import models.{fi,sv}
-import services.euroToSVKrona
 
 object CountryComparison {
   def getCountryData: JsArray = {

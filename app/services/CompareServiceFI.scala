@@ -1,15 +1,14 @@
-package services.fi
+package services
 
-import models._
 import play.api.libs.json.{JsArray, Json}
-import scala.math._
+import models.fi.Tax
 
-object CompareService {
+object CompareServiceFI {
   def getPercentData: JsArray = {
     val municipality = "Helsinki"
     val age = 30
 
-    val tax = new fi.Tax(100000, municipality, age)
+    val tax = new Tax(100000, municipality, age)
     var salary = 100000
     var dataGov = List[List[Double]](List[Double](salary, tax.getGovernmentTaxPercentage))
     var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTaxPercentage))
@@ -22,7 +21,7 @@ object CompareService {
     var dataWor = List[List[Double]](List[Double](salary, tax.getWorkIncomeDeductionPercentage))
 
     for (salary <- 200000 to 10000000 by 100000) {
-      val tax = new fi.Tax(salary, municipality, age)
+      val tax = new Tax(salary, municipality, age)
       //data :+= List[Double](salary, tax.getTotalTax / salary))
       dataGov :+= List[Double](salary, tax.getGovernmentTaxPercentage)
       dataMun :+= List[Double](salary, tax.getMunicipalityTaxPercentage)
@@ -79,7 +78,7 @@ object CompareService {
     val municipality = "Helsinki"
     val age = 30
 
-    val tax = new fi.Tax(100000, municipality, age)
+    val tax = new Tax(100000, municipality, age)
     var salary = 100000
     var dataGov = List[List[Double]](List[Double](salary, tax.getGovernmentTax))
     var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTax))
@@ -91,7 +90,7 @@ object CompareService {
     var dataChu = List[List[Double]](List[Double](salary, tax.getChurchTax))
 
     for (salary <- 200000 to 10000000 by 100000) {
-      val tax = new fi.Tax(salary, municipality, age)
+      val tax = new Tax(salary, municipality, age)
       //data :+= List[Double](salary / 100, tax.getTotalTax / salary * 100)
       dataGov :+= List[Double](salary, tax.getGovernmentTax)
       dataMun :+= List[Double](salary, tax.getMunicipalityTax)
