@@ -59,11 +59,6 @@ object Compare extends Controller with MongoController {
 
       }
     }
-
-
-
-    /**/
-
   }
 
   def sum(update: Boolean) = Action.async {
@@ -77,28 +72,53 @@ object Compare extends Controller with MongoController {
         .find(Json.obj("_id" -> "compareSum"))
         .one[JsObject]
         .map { json =>
-        // if not found calculate
-        Ok(json.get \ "data")
-      }
+          Ok(json.get \ "data")
+        }
     }
-
   }
 
-  def country = Action {
-    val json = CountryComparison.getCountryData
-
-    Ok(json)
+  def country(update: Boolean) = Action.async {
+    val id = "compareCountry"
+    if (update) {
+      val data = CountryComparison.getCountryData
+      this.update(id, data)
+    } else {
+      this.load(id)
+    }
   }
 
-  def svPercent = Action {
-    val json = CompareServiceSV.getPercentData
-
-    Ok(json)
+  def svPercent(update: Boolean) = Action.async {
+    val id = "svComparePercent"
+    if (update) {
+      val json = CompareServiceSV.getPercentData
+      this.update(id, json)
+    } else {
+      this.load(id)
+    }
   }
 
-  def svNetIncome = Action {
-    val json = CompareServiceSV.getNetIncomeData
+  def svNetIncome(update: Boolean) = Action.async {
+    val id = "svCompareNetIncome"
+    if (update) {
+      val json = CompareServiceSV.getNetIncomeData
+      this.update(id, json)
+    } else {
+      this.load(id)
+    }
+  }
 
-    Ok(json)
+  def update(id: String, data: JsArray) = {
+    collection.update(Json.obj("_id" -> id), Json.obj("data" -> data)).map(lastError =>
+      Ok("updated " + id)
+    )
+  }
+
+  def load(id: String) = {
+    collection
+      .find(Json.obj("_id" -> id))
+      .one[JsObject]
+      .map { json =>
+      Ok(json.get \ "data")
+    }
   }
 }
