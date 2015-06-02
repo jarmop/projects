@@ -31,6 +31,10 @@ object CompareServiceSV {
 
     Json.arr(
       Json.obj(
+        "key" -> "Eläkemaksu",
+        "values" -> Json.toJson(dataPen)
+      ),
+      Json.obj(
         "key" -> "Kirkollisvero",
         "values" -> Json.toJson(dataChu)
       ),
@@ -41,10 +45,6 @@ object CompareServiceSV {
       Json.obj(
         "key" -> "Maakuntavero",
         "values" -> Json.toJson(dataCou)
-      ),
-      Json.obj(
-        "key" -> "Eläkemaksu",
-        "values" -> Json.toJson(dataPen)
       ),
       Json.obj(
         "key" -> "Kunnallisvero",
