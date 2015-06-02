@@ -90,10 +90,12 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
     this.getMunicipalityPercent + this.getCountyPercent
   }
   
-  def deductTaxCredit(totalTax: Double, taxCredit: Double) = {
-    this.municipalityTaxDeduction = (this.getMunicipalityTax / totalTax * taxCredit)
+  def deductTaxCredit(totalTax: Double, taxCredit: Double, pensionContribution: Double) = {
+    Logger.debug("deducting muni")
+    Logger.debug(pensionContribution.toString)
+    this.municipalityTaxDeduction = this.getMunicipalityTax / totalTax * taxCredit + this.getMunicipalityTax / this.getMunicipalityAndCountyTax * pensionContribution
     this.municipalityTax = substractUntilZero(this.municipalityTax, this.municipalityTaxDeduction)
-    this.countyTaxDeduction = (this.getCountyTax / totalTax * taxCredit)
+    this.countyTaxDeduction = this.getCountyTax / totalTax * taxCredit + this.getCountyTax / this.getMunicipalityAndCountyTax * pensionContribution
     this.countyTax = substractUntilZero(this.countyTax, this.countyTaxDeduction)
     this.churchPaymentDeduction = (this.churchPayment / totalTax * taxCredit)
     this.churchPayment = substractUntilZero(this.churchPayment, this.churchPaymentDeduction)
