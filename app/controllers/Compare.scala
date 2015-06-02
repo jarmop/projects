@@ -95,4 +95,10 @@ object Compare extends Controller with MongoController {
 
     Ok(json)
   }
+
+  def svNetIncome = Action {
+    val json = CompareServiceSV.getNetIncomeData
+
+    Ok(json)
+  }
 }

@@ -66,4 +66,19 @@ class CompareService
 
     deferred.promise
 
+  getSvNetIncome: () ->
+    @$log.debug "CompareService.getSvNetIncome"
+    deferred = @$q.defer()
+
+    @$http.get("/compare/sv/net-income").success((data, status, headers) =>
+      @$log.info("Successfully got net income - status #{status}")
+      deferred.resolve(data)
+    )
+    .error((data, status, headers) =>
+      @$log.error("Failed to get net income - status #{status}")
+      deferred.reject(data)
+    )
+
+    deferred.promise
+
 servicesModule.service('CompareService', CompareService)

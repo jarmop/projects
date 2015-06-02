@@ -3,6 +3,8 @@
 
   <h1>@title</h1>
 
+  <h2>Suomi ja Ruotsi</h2>
+  <h3>Kokonaisveron osuus bruttotuloista</h3>
   <nvd3-line-chart
   data="countryData"
   height="350"
@@ -15,6 +17,8 @@
   yAxisTickFormat="yAxisTickFormatPercent()">
   </nvd3-line-chart>
 
+  <h2>Ruotsi</h2>
+  <h3>Verojen osuus bruttotuloista</h3>
   <nvd3-stacked-area-chart
   data="svPercentData"
   id="svComparePercent"
@@ -30,6 +34,24 @@
     <svg></svg>
   </nvd3-stacked-area-chart>
 
+  <h3>Nettotulon määrä</h3>
+  <nvd3-stacked-area-chart
+  data="svNetIncomeData"
+  id="svCompareNetIncome"
+  height="400"
+  showXAxis="true"
+  showYAxis="true"
+  tooltips="true"
+  interactive="true"
+  useInteractiveGuideline="true"
+  toolTipContent="toolTipContentFunction()"
+  xAxisTickFormat="xAxisTickFormatSum()"
+  yAxisTickFormat="yAxisTickFormatSum()">
+    <svg></svg>
+  </nvd3-stacked-area-chart>
+
+  <h2>Suomi</h2>
+  <h3>Verojen osuus bruttotuloista</h3>
   <nvd3-stacked-area-chart
   data="percentData"
   id="exampleId"
@@ -45,6 +67,7 @@
     <svg></svg>
   </nvd3-stacked-area-chart>
 
+  <h3>Verojen määrä</h3>
   <nvd3-stacked-area-chart
   data="sumData"
   id="exampleId2"

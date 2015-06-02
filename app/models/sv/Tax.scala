@@ -89,6 +89,10 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
     }
   }
 
+  def getNetIncome = {
+    this.earnedIncome - this.getTotalTax
+  }
+
   def getJson: JsObject = {
     Json.obj(
       "taxableIncome" -> this.taxableIncome.getJson,

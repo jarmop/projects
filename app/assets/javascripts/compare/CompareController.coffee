@@ -6,6 +6,7 @@ class CompareController
     @getSum()
     @getCountry()
     @getSvPercent()
+    @getSvNetIncome()
 
     @$scope.xAxisTickFormatPercent = () =>
       return (salary) =>
@@ -23,7 +24,7 @@ class CompareController
       return (sum) =>
         return @formatCurrencyCents(sum)
 
-  getPercent: (form) ->
+  getPercent: ->
     @$log.debug "getPercent"
     @CompareService.getPercent()
     .then((response) =>
@@ -33,7 +34,7 @@ class CompareController
       @$log.error "Unable to get data: #{error}"
     )
 
-  getSum: (form) ->
+  getSum: ->
     @$log.debug "getSum"
     @CompareService.getSum()
     .then((response) =>
@@ -43,7 +44,7 @@ class CompareController
       @$log.error "Unable to get data: #{error}"
     )
 
-  getCountry: (form) ->
+  getCountry: ->
     @$log.debug "getCountry"
     @CompareService.getCountry()
     .then((response) =>
@@ -53,12 +54,22 @@ class CompareController
       @$log.error "Unable to get data: #{error}"
     )
 
-  getSvPercent: (form) ->
+  getSvPercent: ->
     @$log.debug "getSvPercent"
     @CompareService.getSvPercent()
     .then((response) =>
       @$log.debug response
       @$scope.svPercentData = response
+    ,(error) =>
+      @$log.error "Unable to get data: #{error}"
+    )
+
+  getSvNetIncome: ->
+    @$log.debug "getNetIncome"
+    @CompareService.getSvNetIncome()
+    .then((response) =>
+      @$log.debug response
+      @$scope.svNetIncomeData = response
     ,(error) =>
       @$log.error "Unable to get data: #{error}"
     )
