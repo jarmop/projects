@@ -5,7 +5,7 @@ package object services {
     SVkronaRate * value
   }
 
-  def SVKronaToEuro(value: Double): Double = {
+  def svKronaToEuro(value: Double): Double = {
     value / SVkronaRate
   }
 }

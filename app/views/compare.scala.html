@@ -3,10 +3,10 @@
 
   <h1>@title</h1>
 
+  <h2>Kokonaisveron osuus bruttotuloista</h2>
   <div class="row">
-    <div class="col-md-12">
-      <h2>Suomi ja Ruotsi</h2>
-      <h3>Kokonaisveron osuus bruttotuloista</h3>
+    <div class="col-md-6">
+      <h3>Suomi</h3>
       <nvd3-line-chart
       data="percentData"
       height="350"
@@ -17,6 +17,20 @@
       useInteractiveGuideline="true"
       xAxisTickFormat="xAxisTickFormatPercent()"
       yAxisTickFormat="yAxisTickFormatPercent()">
+      </nvd3-line-chart>
+    </div>
+    <div class="col-md-6">
+      <h3>Ruotsi</h3>
+      <nvd3-line-chart
+      data="netIncomeData"
+      height="350"
+      showXAxis="true"
+      showYAxis="true"
+      tooltips="true"
+      interactive="true"
+      useInteractiveGuideline="true"
+      xAxisTickFormat="xAxisTickFormatSum()"
+      yAxisTickFormat="yAxisTickFormatSum()">
       </nvd3-line-chart>
     </div>
   </div>

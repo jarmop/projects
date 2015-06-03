@@ -10,7 +10,7 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import services.{CompareServiceFI, CountryComparison, CompareServiceSV}
+import services.{CompareServiceFI, compareService, CompareServiceSV}
 import scala.concurrent.Future
 
 // Reactive Mongo imports
@@ -92,7 +92,7 @@ object Compare extends Controller with MongoController {
   def percent(update: Boolean) = Action.async {
     val id = "comparePercent"
     if (update) {
-      val data = CountryComparison.getPercentData
+      val data = compareService.getPercentData
       this.update(id, data)
     } else {
       this.load(id)
@@ -102,7 +102,7 @@ object Compare extends Controller with MongoController {
   def netIncome(update: Boolean) = Action.async {
     val id = "compareNetIncome"
     if (update) {
-      val data = CountryComparison.getNetIncomeData
+      val data = compareService.getNetIncomeData
       this.update(id, data)
     } else {
       this.load(id)

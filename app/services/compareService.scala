@@ -3,7 +3,7 @@ package services
 import play.api.libs.json.{JsArray, Json}
 import models.{fi,sv}
 
-object CountryComparison {
+object compareService {
   def getPercentData: JsArray = {
     val age = 30
 
@@ -39,13 +39,13 @@ object CountryComparison {
     val taxFI = new models.fi.Tax(salary, "Helsinki", age)
     val taxSV = new sv.Tax(euroToSVKrona(salary / 100), "Stockholm", age)
     var dataFI = List[List[Double]](List[Double](salary, taxFI.getNetIncome))
-    var dataSV = List[List[Double]](List[Double](salary, taxSV.getNetIncome))
+    var dataSV = List[List[Double]](List[Double](salary, svKronaToEuro(taxSV.getNetIncome) * 100))
 
     for (salary <- 200000 to 10000000 by 100000) {
       val taxFI = new fi.Tax(salary, "Helsinki", age)
       val taxSV = new sv.Tax(euroToSVKrona(salary / 100), "Stockholm", age)
       dataFI :+= List[Double](salary, taxFI.getNetIncome)
-      dataSV :+= List[Double](salary, taxSV.getNetIncome)
+      dataSV :+= List[Double](salary, svKronaToEuro(taxSV.getNetIncome) * 100)
     }
 
     Json.arr(
