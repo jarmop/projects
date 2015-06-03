@@ -6,11 +6,11 @@ class CompareService
   constructor: (@$log, @$http, @$q) ->
     @$log.debug "constructing CompareService"
 
-  getPercent: () ->
-    @$log.debug "CompareService.getPercent"
+  getFIPercent: () ->
+    @$log.debug "CompareService.getFIPercent"
     deferred = @$q.defer()
 
-    @$http.get("/compare/percent").success((data, status, headers) =>
+    @$http.get("/compare/fi/percent").success((data, status, headers) =>
       @$log.info("Successfully got percent - status #{status}")
       deferred.resolve(data)
     )
@@ -21,11 +21,11 @@ class CompareService
 
     deferred.promise
 
-  getSum: () ->
-    @$log.debug "CompareService.getSum"
+  getFISum: () ->
+    @$log.debug "CompareService.getFISum"
     deferred = @$q.defer()
 
-    @$http.get("/compare/sum").success((data, status, headers) =>
+    @$http.get("/compare/fi/sum").success((data, status, headers) =>
       @$log.info("Successfully got sum - status #{status}")
       deferred.resolve(data)
     )
@@ -36,16 +36,31 @@ class CompareService
 
     deferred.promise
 
-  getCountry: () ->
-    @$log.debug "CompareService.getCountry"
+  getPercent: () ->
+    @$log.debug "CompareService.getPercent"
     deferred = @$q.defer()
 
-    @$http.get("/compare/country").success((data, status, headers) =>
-      @$log.info("Successfully got country data - status #{status}")
+    @$http.get("/compare/percent").success((data, status, headers) =>
+      @$log.info("Successfully got data - status #{status}")
       deferred.resolve(data)
     )
     .error((data, status, headers) =>
-      @$log.error("Failed to get country data - status #{status}")
+      @$log.error("Failed to get data - status #{status}")
+      deferred.reject(data)
+    )
+
+    deferred.promise
+
+  getNetIncome: () ->
+    @$log.debug "CompareService.getNetIncome"
+    deferred = @$q.defer()
+
+    @$http.get("/compare/net-income").success((data, status, headers) =>
+      @$log.info("Successfully got data - status #{status}")
+      deferred.resolve(data)
+    )
+    .error((data, status, headers) =>
+      @$log.error("Failed to get data - status #{status}")
       deferred.reject(data)
     )
 

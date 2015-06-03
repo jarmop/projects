@@ -7,10 +7,10 @@ GET        /tax                                 controllers.Application.tax
 GET        /tax/sv                              controllers.Application.taxSV
 
 GET        /compare                             controllers.Compare.index
-GET        /compare/percent                     controllers.Compare.percent(update: Boolean ?= false)
-GET        /compare/percent/update              controllers.Compare.percent(update: Boolean ?= true)
-GET        /compare/sum                         controllers.Compare.sum(update: Boolean ?= false)
-GET        /compare/sum/update                  controllers.Compare.sum(update: Boolean ?= true)
+GET        /compare/fi/percent                     controllers.Compare.fiPercent(update: Boolean ?= false)
+GET        /compare/fi/percent/update              controllers.Compare.fiPercent(update: Boolean ?= true)
+GET        /compare/fi/sum                         controllers.Compare.fiSum(update: Boolean ?= false)
+GET        /compare/fi/sum/update                  controllers.Compare.fiSum(update: Boolean ?= true)
 GET        /compare/fi/net-income               controllers.Compare.fiNetIncome(update: Boolean ?= false)
 GET        /compare/fi/net-income/update        controllers.Compare.fiNetIncome(update: Boolean ?= true)
 
@@ -19,8 +19,10 @@ GET        /compare/sv/percent/update           controllers.Compare.svPercent(up
 GET        /compare/sv/net-income               controllers.Compare.svNetIncome(update: Boolean ?= false)
 GET        /compare/sv/net-income/update        controllers.Compare.svNetIncome(update: Boolean ?= true)
 
-GET        /compare/country                     controllers.Compare.country(update: Boolean ?= false)
-GET        /compare/country/update              controllers.Compare.country(update: Boolean ?= true)
+GET        /compare/percent             controllers.Compare.percent(update: Boolean ?= false)
+GET        /compare/percent/update      controllers.Compare.percent(update: Boolean ?= true)
+GET        /compare/net-income          controllers.Compare.netIncome(update: Boolean ?= false)
+GET        /compare/net-income/update   controllers.Compare.netIncome(update: Boolean ?= true)
 
 GET        /mongo                               controllers.MongoTest.index
 GET        /mongo/create                        controllers.MongoTest.create(name: String = "jarmo", age: Int = 30)

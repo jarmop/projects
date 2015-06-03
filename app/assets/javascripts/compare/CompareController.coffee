@@ -3,11 +3,12 @@ class CompareController
     @$log.debug "constructing CompareControlleri"
 
     @getPercent()
-    @getSum()
-    @getCountry()
-    @getSvPercent()
-    @getSvNetIncome()
+    @getNetIncome()
+    @getFIPercent()
+    @getFISum()
     @getFINetIncome()
+    @getSVPercent()
+    @getSVNetIncome()
 
     @$scope.xAxisTickFormatPercent = () =>
       return (salary) =>
@@ -35,42 +36,32 @@ class CompareController
       @$log.error "Unable to get data: #{error}"
     )
 
-  getSum: ->
-    @$log.debug "getSum"
-    @CompareService.getSum()
+  getNetIncome: ->
+    @$log.debug "getNetIncome"
+    @CompareService.getNetIncome()
     .then((response) =>
       @$log.debug response
-      @$scope.sumData = response
+      @$scope.netIncomeData = response
     ,(error) =>
       @$log.error "Unable to get data: #{error}"
     )
 
-  getCountry: ->
-    @$log.debug "getCountry"
-    @CompareService.getCountry()
+  getFIPercent: ->
+    @$log.debug "getFIPercent"
+    @CompareService.getFIPercent()
     .then((response) =>
       @$log.debug response
-      @$scope.countryData = response
+      @$scope.fiPercentData = response
     ,(error) =>
       @$log.error "Unable to get data: #{error}"
     )
 
-  getSvPercent: ->
-    @$log.debug "getSvPercent"
-    @CompareService.getSvPercent()
+  getFISum: ->
+    @$log.debug "getFISum"
+    @CompareService.getFISum()
     .then((response) =>
       @$log.debug response
-      @$scope.svPercentData = response
-    ,(error) =>
-      @$log.error "Unable to get data: #{error}"
-    )
-
-  getSvNetIncome: ->
-    @$log.debug "getSVNetIncome"
-    @CompareService.getSvNetIncome()
-    .then((response) =>
-      @$log.debug response
-      @$scope.svNetIncomeData = response
+      @$scope.fiSumData = response
     ,(error) =>
       @$log.error "Unable to get data: #{error}"
     )
@@ -81,6 +72,26 @@ class CompareController
     .then((response) =>
       @$log.debug response
       @$scope.fiNetIncomeData = response
+    ,(error) =>
+      @$log.error "Unable to get data: #{error}"
+    )
+
+  getSVPercent: ->
+    @$log.debug "getSVPercent"
+    @CompareService.getSvPercent()
+    .then((response) =>
+      @$log.debug response
+      @$scope.svPercentData = response
+    ,(error) =>
+      @$log.error "Unable to get data: #{error}"
+    )
+
+  getSVNetIncome: ->
+    @$log.debug "getSVNetIncome"
+    @CompareService.getSvNetIncome()
+    .then((response) =>
+      @$log.debug response
+      @$scope.svNetIncomeData = response
     ,(error) =>
       @$log.error "Unable to get data: #{error}"
     )

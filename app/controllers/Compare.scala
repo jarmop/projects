@@ -42,7 +42,7 @@ object Compare extends Controller with MongoController {
    */
   def collection: JSONCollection = db.collection[JSONCollection]("persons")
 
-  def percent(update: Boolean) = Action.async {
+  def fiPercent(update: Boolean) = Action.async {
     if (update) {
       val json = CompareServiceFI.getPercentData
       collection.update(Json.obj("_id" -> "comparePercent"), Json.obj("data" -> json)).map(lastError =>
@@ -63,7 +63,7 @@ object Compare extends Controller with MongoController {
     }
   }
 
-  def sum(update: Boolean) = Action.async {
+  def fiSum(update: Boolean) = Action.async {
     if (update) {
       val json = CompareServiceFI.getSumData
       collection.update(Json.obj("_id" -> "compareSum"), Json.obj("data" -> json)).map(lastError =>
@@ -89,10 +89,20 @@ object Compare extends Controller with MongoController {
     }
   }
 
-  def country(update: Boolean) = Action.async {
-    val id = "compareCountry"
+  def percent(update: Boolean) = Action.async {
+    val id = "comparePercent"
     if (update) {
-      val data = CountryComparison.getCountryData
+      val data = CountryComparison.getPercentData
+      this.update(id, data)
+    } else {
+      this.load(id)
+    }
+  }
+
+  def netIncome(update: Boolean) = Action.async {
+    val id = "compareNetIncome"
+    if (update) {
+      val data = CountryComparison.getNetIncomeData
       this.update(id, data)
     } else {
       this.load(id)
