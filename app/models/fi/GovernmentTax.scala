@@ -1,5 +1,6 @@
 package models.fi
 
+import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import scala.collection.mutable.ListBuffer
 import scala.util.control.Breaks._
@@ -34,7 +35,7 @@ class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction: Doub
   }
 
   private def calculateTax: Double = {
-    var tax: Double = if (this.salary < 16500) 0 else 800
+    var tax: Double = if (this.salary < 16500) 0 else 8
 
     val governmentTaxList = List[Map[String, Double]](
       Map[String, Double]("minSalary" -> 16500, "maxSalary" -> 24700, "taxPercent" -> 0.065),
