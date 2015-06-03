@@ -14,9 +14,11 @@ import services.{CompareServiceFI, CountryComparison, CompareServiceSV}
 import scala.concurrent.Future
 
 // Reactive Mongo imports
+
 import reactivemongo.api._
 
 // Reactive Mongo plugin, including the JSON-specialized collection
+
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
 
@@ -72,8 +74,8 @@ object Compare extends Controller with MongoController {
         .find(Json.obj("_id" -> "compareSum"))
         .one[JsObject]
         .map { json =>
-          Ok(json.get \ "data")
-        }
+        Ok(json.get \ "data")
+      }
     }
   }
 
