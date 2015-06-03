@@ -54,6 +54,10 @@ class Tax(salary: Int, municipality: String, age: Int) {
     // update total tax?
   }
 
+  private def updateTotalTax = {
+    this.totalTax = this.calculateTotalTax
+  }
+
   def getWorkIncomeDeduction: Double = {
     if (this.workIncomeDeduction < 0)
       this.workIncomeDeduction = this.calculateWorkIncomeDeduction
@@ -92,7 +96,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getGovernmentTax: Double = {
-    this.governmentTax.getTax
+    this.governmentTax.getDeductedSum
   }
 
   def getGovernmentTaxPercentage: Double = {

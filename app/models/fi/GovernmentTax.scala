@@ -87,7 +87,7 @@ class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction: Doub
 
   def getJson: JsObject = {
     Json.obj(
-      "sum" -> this.getTax,
+      "sum" -> this.getDeductedSum,
       "deduction" -> this.getDeduction,
       "deductedSalary" -> this.getDeductedSalary,
       "hits" -> this.getTaxSectionHits
