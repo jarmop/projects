@@ -5,7 +5,7 @@ import play.api.libs.json.{JsObject, Json}
 import scala.collection.mutable.ListBuffer
 import scala.util.control.Breaks._
 
-class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction: Double) {
+class GovernmentTax(earnedIncome: Double, naturalDeduction: Double, commonDeduction: Double) {
   var deductedSum: Double = 0
   var leftOverWorkIncomeDeduction: Double = 0
   var tax: Double = -1
@@ -35,7 +35,7 @@ class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction: Doub
   }
 
   private def calculateTax: Double = {
-    var tax: Double = if (this.salary < 16500) 0 else 8
+    var tax: Double = if (this.earnedIncome < 16500) 0 else 8
 
     val governmentTaxList = List[Map[String, Double]](
       Map[String, Double]("minSalary" -> 16500, "maxSalary" -> 24700, "taxPercent" -> 0.065),
@@ -72,7 +72,7 @@ class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction: Doub
   }
 
   private def getDeductedSalary: Double = {
-    this.salary - this.getDeduction
+    this.earnedIncome - this.getDeduction
   }
 
   private def getDeduction: Double = {

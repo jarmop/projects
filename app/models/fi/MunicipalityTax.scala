@@ -6,7 +6,7 @@ import play.api.libs.json.{JsObject, Json}
 import scala.math._
 import scala.util.control.Breaks._
 
-class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduction: Double, commonDeduction: Double) {
+class MunicipalityTax(earnedIncome: Double, municipality: String, age: Int, naturalDeduction: Double, commonDeduction: Double) {
   val municipalityPercents = Map[String, Double]("Helsinki" -> 0.1850, "Nivala" -> 0.2150)
 
   var tax: Double = -1
@@ -24,7 +24,7 @@ class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduct
 
   def getDeductedSalary: Double = {
     if (this.deductedSalary < 0)
-      this.deductedSalary = this.salary - this.getTotalTaxDeduction
+      this.deductedSalary = this.earnedIncome - this.getTotalTaxDeduction
 
     this.deductedSalary
   }
@@ -49,11 +49,11 @@ class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduct
     var deduction: Double = 0
     breakable { for (deductionMap <- municipalityDeductionTable) {
       var minSalary = deductionMap.get("minSalary").get
-      if (this.salary < minSalary)
+      if (this.earnedIncome < minSalary)
         break
       var maxSalary = deductionMap.get("maxSalary").get
       var deductionPercent = deductionMap.get("deductionPercent").get
-      var salaryTemp = if (this.salary < maxSalary) this.salary else maxSalary
+      var salaryTemp = if (this.earnedIncome < maxSalary) this.earnedIncome else maxSalary
       deduction += (salaryTemp - minSalary) * deductionPercent
     }}
 
@@ -62,7 +62,7 @@ class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduct
       deduction = maxDeduction;
     }
 
-    var naturalSalary = this.salary - this.naturalDeduction;
+    var naturalSalary = this.earnedIncome - this.naturalDeduction;
     if (naturalSalary > 14000) {
       deduction = deduction - 0.045 * (naturalSalary - 14000);
     }
@@ -83,7 +83,7 @@ class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduct
 
   private def calculateExtraIncomeDeduction: Double = {
     var deduction: Double = 0
-    var deductedSalary: Double = this.salary - (this.getIncomeDeduction + this.commonDeduction);
+    var deductedSalary: Double = this.earnedIncome - (this.getIncomeDeduction + this.commonDeduction);
     if (deductedSalary <= 19470) {
       var maxDeduction: Double = 2970;
       if (deductedSalary < maxDeduction) {

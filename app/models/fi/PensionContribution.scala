@@ -2,7 +2,7 @@ package models.fi
 
 import play.api.libs.json.{Json, JsObject}
 
-class PensionContribution(salary: Double, age: Int) {
+class PensionContribution(earnedIncome: Double, age: Int) {
   private val pensionContributionTyelSub53Percent = 0.057
   private val pensionContributionTyel53Percent = 0.072
 
@@ -15,7 +15,7 @@ class PensionContribution(salary: Double, age: Int) {
   }
 
   def getSum: Double = {
-    this.salary * this.getPensionContributionTyelPercent
+    this.earnedIncome * this.getPensionContributionTyelPercent
   }
 
   def getJson: JsObject = {

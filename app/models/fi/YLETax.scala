@@ -2,7 +2,7 @@ package models.fi
 
 import play.api.libs.json.{Json, JsObject}
 
-class YLETax(salary: Int, incomeDeduction: Double) {
+class YLETax(earnedIncome: Double, incomeDeduction: Double) {
   private val taxPercent = 0.0068
   private var taxableSalary: Double = -1
 
@@ -11,7 +11,7 @@ class YLETax(salary: Int, incomeDeduction: Double) {
   }
 
   private def getDeductedSalary: Double = {
-    this.salary - this.getDeduction
+    this.earnedIncome - this.getDeduction
   }
 
   private def getSalary: Double = {

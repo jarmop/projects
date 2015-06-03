@@ -2,7 +2,7 @@ package models.fi
 
 import play.api.libs.json.{Json, JsObject}
 
-class ChurchTax(salary: Int, municipality: String, municipalityDeduction: Double, church: String = "evangelicLutheran") {
+class ChurchTax(earnedIncome: Double, municipality: String, municipalityDeduction: Double, church: String = "evangelicLutheran") {
   var deductedSalary: Double = -1
 
   val taxPercents = Map[String, Map[String, Double]](
@@ -43,7 +43,7 @@ class ChurchTax(salary: Int, municipality: String, municipalityDeduction: Double
   }
 
   def calculateDeductedSalary: Double = {
-    var deductedSalary = this.salary - this.municipalityDeduction
+    var deductedSalary = this.earnedIncome - this.municipalityDeduction
     if (deductedSalary < 0) {
       deductedSalary = 0
     }

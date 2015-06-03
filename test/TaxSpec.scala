@@ -9,81 +9,81 @@ class TaxSpec extends Specification {
   val age = 30
 
   val taxes = Map[Int,Map[String, Double]](
-    100000 -> Map(
+    /*1000 -> Map(
       "government" -> 0.0,
       "municipality" -> 0.0,
       "YLETax" -> 0.0,
       "MedicalCareInsurancePayment" -> 0.0,
+      "perDiemPayment" -> 7.8,
+      "pensionContribution" -> 57.0,
+      "unemploymentInsurance" -> 6.5,
+      "churchTax" -> 0.0,
+      "totalTax" -> 71.3
+    ),
+    10000 -> Map(
+      "government" -> 0.0,
+      "municipality" -> 0.0,
+      "YLETax" -> 63.784,
+      "MedicalCareInsurancePayment" -> 0.0,
+      "perDiemPayment" -> 78.0,
+      "pensionContribution" -> 570.0,
+      "unemploymentInsurance" -> 65.0,
+      "churchTax" -> 0.0,
+      "totalTax" -> 776.784
+    ),*/
+    30000 -> Map(
+      "government" -> 985.675,
+      "municipality" -> 4472.2305365033617,
+      "YLETax" -> 143.0,
+      "MedicalCareInsurancePayment" -> 319.09969233429398,
+      "perDiemPayment" -> 234.0,
+      "pensionContribution" -> 1710.0,
+      "unemploymentInsurance" -> 195.0,
+      "churchTax" -> 241.7421911623439,
+      "totalTax" -> 7315.07242
+    )/*,
+    100000 -> Map(
+      "government" -> 16205.375,
+      "municipality" -> 17066.25,
+      "YLETax" -> 143.0,
+      "MedicalCareInsurancePayment" -> 1217.70,
       "perDiemPayment" -> 780.0,
       "pensionContribution" -> 5700.0,
       "unemploymentInsurance" -> 650.0,
-      "churchTax" -> 0.0,
-      "totalTax" -> 7130
-    ),
-    1000000 -> Map(
-      "government" -> 0.0,
-      "municipality" -> 0.0,
-      "YLETax" -> 6378.4,
-      "MedicalCareInsurancePayment" -> 0.0,
-      "perDiemPayment" -> 7800.0,
-      "pensionContribution" -> 57000.0,
-      "unemploymentInsurance" -> 6500.0,
-      "churchTax" -> 0.0,
-      "totalTax" -> 77678.4
-    ),
-    3000000 -> Map(
-      "government" -> 98567.5,
-      "municipality" -> 447223.05365033617,
-      "YLETax" -> 14300.0,
-      "MedicalCareInsurancePayment" -> 31909.969233429398,
-      "perDiemPayment" -> 23400.0,
-      "pensionContribution" -> 171000.0,
-      "unemploymentInsurance" -> 19500.0,
-      "churchTax" -> 24174.21911623439,
-      "totalTax" -> 731507.242
-    ),
-    10000000 -> Map(
-      "government" -> 1620537.5,
-      "municipality" -> 1706625.0,
-      "YLETax" -> 14300.0,
-      "MedicalCareInsurancePayment" -> 121770.0,
-      "perDiemPayment" -> 78000.0,
-      "pensionContribution" -> 570000.0,
-      "unemploymentInsurance" -> 65000.0,
-      "churchTax" -> 92250.0,
-      "totalTax" -> 4245638.5
-    )
+      "churchTax" -> 922.50,
+      "totalTax" -> 42456.385
+    )*/
   )
 
   for ((k,v) <- taxes) {
     var tax = new Tax(k, municipality, age)
     "FI Tax " + k should {
       "government" in {
-        tax.getGovernmentTax equals(v.get("government").get)
+        tax.getGovernmentTax.pp equals(v.get("government").get)
       }
       "municipality" in {
-        tax.getMunicipalityTax equals(v.get("municipality").get)
+        tax.getMunicipalityTax.pp equals(v.get("municipality").get)
       }
       "YLETax" in {
-        tax.getYleTax equals(v.get("YLETax").get)
+        tax.getYleTax.pp equals(v.get("YLETax").get)
       }
       "MedicalCareInsurancePayment" in {
-        tax.getMedicalCareInsurancePayment equals(v.get("MedicalCareInsurancePayment").get)
+        tax.getMedicalCareInsurancePayment.pp equals(v.get("MedicalCareInsurancePayment").get)
       }
       "perDiemPayment" in {
-        tax.getPerDiemPayment equals(v.get("perDiemPayment").get)
+        tax.getPerDiemPayment.pp equals(v.get("perDiemPayment").get)
       }
       "pensionContribution" in {
-        tax.getPensionContribution equals(v.get("pensionContribution").get)
+        tax.getPensionContribution.pp equals(v.get("pensionContribution").get)
       }
       "unemploymentInsurance" in {
-        tax.getUnemploymentInsurance equals(v.get("unemploymentInsurance").get)
+        tax.getUnemploymentInsurance.pp equals(v.get("unemploymentInsurance").get)
       }
       "churchTax" in {
-        tax.getChurchTax equals(v.get("churchTax").get)
+        tax.getChurchTax.pp equals(v.get("churchTax").get)
       }
       "totalTax" in {
-        tax.getTotalTax equals(v.get("totalTax").get)
+        tax.getTotalTax.pp equals(v.get("totalTax").get)
       }
     }
   }

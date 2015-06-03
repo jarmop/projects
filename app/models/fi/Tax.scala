@@ -3,16 +3,16 @@ package models.fi
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 
-class Tax(salary: Int, municipality: String, age: Int) {
+class Tax(earnedIncome: Double, municipality: String, age: Int) {
   private val incomeDeduction: Double = 620
 
   private var totalTax: Double = -1
   private var naturalSalary: Double = -1
   private var workIncomeDeduction: Double = -1
 
-  private val pensionContribution = new PensionContribution(salary, age)
-  private val unemploymentInsurance = new UnemploymentInsurance(salary)
-  private val perDiemPayment = new PerDiemPayment(salary)
+  private val pensionContribution = new PensionContribution(earnedIncome, age)
+  private val unemploymentInsurance = new UnemploymentInsurance(earnedIncome)
+  private val perDiemPayment = new PerDiemPayment(earnedIncome)
 
   private var commonDeduction = Map[String, Double](
     "incomeDeduction" -> this.incomeDeduction,
@@ -22,11 +22,11 @@ class Tax(salary: Int, municipality: String, age: Int) {
   )
   commonDeduction += "total" -> commonDeduction.foldLeft(0.0){  case (a, (k, v)) => a+v  }
 
-  private val governmentTax: GovernmentTax = new GovernmentTax(salary, this.incomeDeduction, this.commonDeduction.get("total").get)
-  private val municipalityTax: MunicipalityTax = new MunicipalityTax(salary, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
-  private val YLETax: YLETax = new YLETax(salary, this.incomeDeduction)
+  private val governmentTax: GovernmentTax = new GovernmentTax(earnedIncome, this.incomeDeduction, this.commonDeduction.get("total").get)
+  private val municipalityTax: MunicipalityTax = new MunicipalityTax(earnedIncome, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
+  private val YLETax: YLETax = new YLETax(earnedIncome, this.incomeDeduction)
   private val medicalCareInsurancePayment = new MedicalCareInsurancePayment(this.municipalityTax.getDeductedSalary)
-  private val churchTax = new ChurchTax(salary, municipality, this.municipalityTax.getTotalTaxDeduction)
+  private val churchTax = new ChurchTax(earnedIncome, municipality, this.municipalityTax.getTotalTaxDeduction)
 
   this.reduceWorkIncomeDeduction
 
@@ -38,7 +38,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getTotalTaxPercentage: Double = {
-    if (this.salary > 0) this.getTotalTax / this.salary else 0
+    if (this.earnedIncome > 0) this.getTotalTax / this.earnedIncome else 0
   }
 
   private def calculateTotalTax: Double = {
@@ -66,13 +66,13 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getWorkIncomeDeductionPercentage: Double = {
-    if (this.salary > 0) this.getWorkIncomeDeduction / this.salary else 0
+    if (this.earnedIncome > 0) this.getWorkIncomeDeduction / this.earnedIncome else 0
   }
 
   private def calculateWorkIncomeDeduction: Double = {
     var deduction: Double = 0
-    if (this.salary > 2500) {
-      deduction = 0.086 * (this.salary - 2500)
+    if (this.earnedIncome > 2500) {
+      deduction = 0.086 * (this.earnedIncome - 2500)
     }
     var maxDeduction: Double = 1025
     if (deduction > maxDeduction) {
@@ -90,7 +90,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
 
   private def getNaturalSalary: Double = {
     if (this.naturalSalary < 0)
-      this.naturalSalary = this.salary - this.incomeDeduction
+      this.naturalSalary = this.earnedIncome - this.incomeDeduction
 
     this.naturalSalary
   }
@@ -100,7 +100,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getGovernmentTaxPercentage: Double = {
-    if (this.salary > 0) this.getGovernmentTax / this.salary else 0
+    if (this.earnedIncome > 0) this.getGovernmentTax / this.earnedIncome else 0
   }
 
   def getMunicipalityTax: Double = {
@@ -108,7 +108,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getMunicipalityTaxPercentage: Double = {
-    if (this.salary > 0) this.getMunicipalityTax / this.salary else 0
+    if (this.earnedIncome > 0) this.getMunicipalityTax / this.earnedIncome else 0
   }
 
   def getPerDiemPayment: Double = {
@@ -116,7 +116,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getPerDiemPaymentPercentage: Double = {
-    if (this.salary > 0) this.getPerDiemPayment / this.salary else 0
+    if (this.earnedIncome > 0) this.getPerDiemPayment / this.earnedIncome else 0
   }
 
   def getMedicalCareInsurancePayment: Double = {
@@ -124,7 +124,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getMedicalCareInsurancePaymentPercentage: Double = {
-    if (this.salary > 0) this.getMedicalCareInsurancePayment / this.salary else 0
+    if (this.earnedIncome > 0) this.getMedicalCareInsurancePayment / this.earnedIncome else 0
   }
 
   def getYleTax: Double = {
@@ -132,7 +132,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getYleTaxPercentage: Double = {
-    if (this.salary > 0) this.getYleTax / this.salary else 0
+    if (this.earnedIncome > 0) this.getYleTax / this.earnedIncome else 0
   }
 
   def getPensionContribution: Double = {
@@ -140,7 +140,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getPensionContributionPercentage: Double = {
-    if (this.salary > 0) this.getPensionContribution / this.salary else 0
+    if (this.earnedIncome > 0) this.getPensionContribution / this.earnedIncome else 0
   }
 
   def getUnemploymentInsurance: Double = {
@@ -148,7 +148,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getUnemploymentInsurancePercentage: Double = {
-    if (this.salary > 0) this.getUnemploymentInsurance / this.salary else 0
+    if (this.earnedIncome > 0) this.getUnemploymentInsurance / this.earnedIncome else 0
   }
 
   def getChurchTax: Double = {
@@ -156,11 +156,11 @@ class Tax(salary: Int, municipality: String, age: Int) {
   }
 
   def getChurchTaxPercentage: Double = {
-    if (this.salary > 0) this.getChurchTax / this.salary else 0
+    if (this.earnedIncome > 0) this.getChurchTax / this.earnedIncome else 0
   }
 
   def getNetIncome: Double = {
-    this.salary - this.getTotalTax
+    this.earnedIncome - this.getTotalTax
   }
 
   def getJson: JsObject = {
