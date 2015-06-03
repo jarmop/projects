@@ -42,53 +42,6 @@ object Compare extends Controller with MongoController {
    */
   def collection: JSONCollection = db.collection[JSONCollection]("persons")
 
-  def fiPercent(update: Boolean) = Action.async {
-    if (update) {
-      val json = CompareServiceFI.getPercentData
-      collection.update(Json.obj("_id" -> "comparePercent"), Json.obj("data" -> json)).map(lastError =>
-        Ok("updated percent json")
-      )
-    } else {
-      collection
-        .find(Json.obj("_id" -> "comparePercent"))
-        .one[JsObject]
-        .map { json =>
-        if (json.nonEmpty) {
-          Ok(json.get \ "data")
-        } else {
-          Ok(Json.arr())
-        }
-
-      }
-    }
-  }
-
-  def fiSum(update: Boolean) = Action.async {
-    if (update) {
-      val json = CompareServiceFI.getSumData
-      collection.update(Json.obj("_id" -> "compareSum"), Json.obj("data" -> json)).map(lastError =>
-        Ok("updated sum json")
-      )
-    } else {
-      collection
-        .find(Json.obj("_id" -> "compareSum"))
-        .one[JsObject]
-        .map { json =>
-        Ok(json.get \ "data")
-      }
-    }
-  }
-
-  def fiNetIncome(update: Boolean) = Action.async {
-    val id = "fiCompareNetIncome"
-    if (update) {
-      val json = CompareServiceFI.getNetIncomeData
-      this.update(id, json)
-    } else {
-      this.load(id)
-    }
-  }
-
   def percent(update: Boolean) = Action.async {
     val id = "comparePercent"
     if (update) {
@@ -104,6 +57,53 @@ object Compare extends Controller with MongoController {
     if (update) {
       val data = compareService.getNetIncomeData
       this.update(id, data)
+    } else {
+      this.load(id)
+    }
+  }
+
+  def fiPercent(update: Boolean) = Action.async {
+    if (update) {
+      val json = CompareServiceFI.getPercentData
+      collection.update(Json.obj("_id" -> "fiComparePercent"), Json.obj("data" -> json)).map(lastError =>
+        Ok("updated percent json")
+      )
+    } else {
+      collection
+        .find(Json.obj("_id" -> "fiComparePercent"))
+        .one[JsObject]
+        .map { json =>
+        if (json.nonEmpty) {
+          Ok(json.get \ "data")
+        } else {
+          Ok(Json.arr())
+        }
+
+      }
+    }
+  }
+
+  def fiSum(update: Boolean) = Action.async {
+    if (update) {
+      val json = CompareServiceFI.getSumData
+      collection.update(Json.obj("_id" -> "fiCompareSum"), Json.obj("data" -> json)).map(lastError =>
+        Ok("updated sum json")
+      )
+    } else {
+      collection
+        .find(Json.obj("_id" -> "fiCompareSum"))
+        .one[JsObject]
+        .map { json =>
+        Ok(json.get \ "data")
+      }
+    }
+  }
+
+  def fiNetIncome(update: Boolean) = Action.async {
+    val id = "fiCompareNetIncome"
+    if (update) {
+      val json = CompareServiceFI.getNetIncomeData
+      this.update(id, json)
     } else {
       this.load(id)
     }

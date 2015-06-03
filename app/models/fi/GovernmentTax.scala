@@ -34,14 +34,14 @@ class GovernmentTax(salary: Int, naturalDeduction: Double, commonDeduction: Doub
   }
 
   private def calculateTax: Double = {
-    var tax: Double = if (this.salary < 1650000) 0 else 800
+    var tax: Double = if (this.salary < 16500) 0 else 800
 
     val governmentTaxList = List[Map[String, Double]](
-      Map[String, Double]("minSalary" -> 1650000, "maxSalary" -> 2470000, "taxPercent" -> 0.065),
-      Map[String, Double]("minSalary" -> 2470000, "maxSalary" -> 4030000, "taxPercent" -> 0.175),
-      Map[String, Double]("minSalary" -> 4030000, "maxSalary" -> 7140000, "taxPercent" -> 0.215),
-      Map[String, Double]("minSalary" -> 7140000, "maxSalary" -> 9000000, "taxPercent" -> 0.2975),
-      Map[String, Double]("minSalary" -> 9000000, "maxSalary" -> 0, "taxPercent" -> 0.3175)
+      Map[String, Double]("minSalary" -> 16500, "maxSalary" -> 24700, "taxPercent" -> 0.065),
+      Map[String, Double]("minSalary" -> 24700, "maxSalary" -> 40300, "taxPercent" -> 0.175),
+      Map[String, Double]("minSalary" -> 40300, "maxSalary" -> 71400, "taxPercent" -> 0.215),
+      Map[String, Double]("minSalary" -> 71400, "maxSalary" -> 90000, "taxPercent" -> 0.2975),
+      Map[String, Double]("minSalary" -> 90000, "maxSalary" -> 0, "taxPercent" -> 0.3175)
     )
 
     this.taxSectionHits = new ListBuffer[Map[String, Double]]

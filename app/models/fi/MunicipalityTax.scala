@@ -42,8 +42,8 @@ class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduct
 
   private def calculateIncomeDeduction: Double = {
     val municipalityDeductionTable = List[Map[String, Double]](
-      Map[String, Double]("minSalary" -> 250000, "maxSalary" -> 723000, "deductionPercent" -> 0.51),
-      Map[String, Double]("minSalary" -> 723000, "maxSalary" -> 1760000, "deductionPercent" -> 0.28)
+      Map[String, Double]("minSalary" -> 2500, "maxSalary" -> 7230, "deductionPercent" -> 0.51),
+      Map[String, Double]("minSalary" -> 7230, "maxSalary" -> 17600, "deductionPercent" -> 0.28)
     )
 
     var deduction: Double = 0
@@ -57,14 +57,14 @@ class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduct
       deduction += (salaryTemp - minSalary) * deductionPercent
     }}
 
-    var maxDeduction = 357000;
+    var maxDeduction = 3570;
     if (deduction > maxDeduction) {
       deduction = maxDeduction;
     }
 
     var naturalSalary = this.salary - this.naturalDeduction;
-    if (naturalSalary > 1400000) {
-      deduction = deduction - 0.045 * (naturalSalary - 1400000);
+    if (naturalSalary > 14000) {
+      deduction = deduction - 0.045 * (naturalSalary - 14000);
     }
 
     if (deduction < 0) {
@@ -84,8 +84,8 @@ class MunicipalityTax(salary: Int, municipality: String, age: Int, naturalDeduct
   private def calculateExtraIncomeDeduction: Double = {
     var deduction: Double = 0
     var deductedSalary: Double = this.salary - (this.getIncomeDeduction + this.commonDeduction);
-    if (deductedSalary <= 1947000) {
-      var maxDeduction: Double = 297000;
+    if (deductedSalary <= 19470) {
+      var maxDeduction: Double = 2970;
       if (deductedSalary < maxDeduction) {
         deduction = deductedSalary;
       } else {

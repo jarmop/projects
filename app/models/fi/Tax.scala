@@ -4,7 +4,7 @@ import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 
 class Tax(salary: Int, municipality: String, age: Int) {
-  private val incomeDeduction: Double = 62000
+  private val incomeDeduction: Double = 620
 
   private var totalTax: Double = -1
   private var naturalSalary: Double = -1
@@ -71,15 +71,15 @@ class Tax(salary: Int, municipality: String, age: Int) {
 
   private def calculateWorkIncomeDeduction: Double = {
     var deduction: Double = 0
-    if (this.salary > 250000) {
-      deduction = 0.086 * (this.salary - 250000)
+    if (this.salary > 2500) {
+      deduction = 0.086 * (this.salary - 2500)
     }
-    var maxDeduction: Double = 102500
+    var maxDeduction: Double = 1025
     if (deduction > maxDeduction) {
       deduction = maxDeduction
     }
-    if (this.getNaturalSalary > 3300000) {
-      deduction = deduction - (0.012 * (this.getNaturalSalary - 3300000))
+    if (this.getNaturalSalary > 33000) {
+      deduction = deduction - (0.012 * (this.getNaturalSalary - 33000))
     }
     if (deduction < 0) {
       deduction = 0

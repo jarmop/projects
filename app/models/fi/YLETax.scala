@@ -24,11 +24,11 @@ class YLETax(salary: Int, incomeDeduction: Double) {
   def getTax: Double = {
     var salary = this.getSalary
 
-    if (salary < 750000) {
+    if (salary < 7500) {
       return 0
     }
-    if (salary >= 2102900) {
-      return 14300
+    if (salary >= 21029) {
+      return 143
     }
 
     return salary * this.taxPercent;

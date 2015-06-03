@@ -8,8 +8,8 @@ object CompareServiceFI {
     val municipality = "Helsinki"
     val age = 30
 
-    val tax = new Tax(100000, municipality, age)
-    var salary = 100000
+    val tax = new Tax(1000, municipality, age)
+    var salary = 1000
     var dataGov = List[List[Double]](List[Double](salary, tax.getGovernmentTaxPercentage))
     var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTaxPercentage))
     var dataPen = List[List[Double]](List[Double](salary, tax.getPensionContributionPercentage))
@@ -20,7 +20,7 @@ object CompareServiceFI {
     var dataChu = List[List[Double]](List[Double](salary, tax.getChurchTaxPercentage))
     var dataWor = List[List[Double]](List[Double](salary, tax.getWorkIncomeDeductionPercentage))
 
-    for (salary <- 200000 to 10000000 by 100000) {
+    for (salary <- 2000 to 100000 by 1000) {
       val tax = new Tax(salary, municipality, age)
       //data :+= List[Double](salary, tax.getTotalTax / salary))
       dataGov :+= List[Double](salary, tax.getGovernmentTaxPercentage)
@@ -78,8 +78,8 @@ object CompareServiceFI {
     val municipality = "Helsinki"
     val age = 30
 
-    val tax = new Tax(100000, municipality, age)
-    var salary = 100000
+    val tax = new Tax(1000, municipality, age)
+    var salary = 1000
     var dataGov = List[List[Double]](List[Double](salary, tax.getGovernmentTax))
     var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTax))
     var dataPen = List[List[Double]](List[Double](salary, tax.getPensionContribution))
@@ -89,7 +89,7 @@ object CompareServiceFI {
     var dataYle = List[List[Double]](List[Double](salary, tax.getYleTax))
     var dataChu = List[List[Double]](List[Double](salary, tax.getChurchTax))
 
-    for (salary <- 200000 to 10000000 by 100000) {
+    for (salary <- 2000 to 100000 by 1000) {
       val tax = new Tax(salary, municipality, age)
       //data :+= List[Double](salary / 100, tax.getTotalTax / salary * 100)
       dataGov :+= List[Double](salary, tax.getGovernmentTax)
@@ -142,13 +142,13 @@ object CompareServiceFI {
     val municipality = "Helsinki"
     val age = 30
 
-    var salary = 100000
+    var salary = 1000
     val tax = new Tax(salary, municipality, age)
     var dataNet = List[List[Double]](List[Double](salary, tax.getNetIncome))
     var dataTax = List[List[Double]](List[Double](salary, tax.getTotalTax))
 
 
-    for (salary <- 200000 to 10000000 by 100000) {
+    for (salary <- 2000 to 100000 by 1000) {
       val tax = new Tax(salary, municipality, age)
       dataNet :+= List[Double](salary, tax.getNetIncome)
       dataTax :+= List[Double](salary, tax.getTotalTax)

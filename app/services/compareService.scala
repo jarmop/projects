@@ -7,15 +7,15 @@ object compareService {
   def getPercentData: JsArray = {
     val age = 30
 
-    var salary = 100000
+    var salary = 1000
     val taxFI = new models.fi.Tax(salary, "Helsinki", age)
-    val taxSV = new sv.Tax(euroToSVKrona(salary / 100), "Stockholm", age)
+    val taxSV = new sv.Tax(euroToSVKrona(salary), "Stockholm", age)
     var dataFI = List[List[Double]](List[Double](salary, taxFI.getTotalTaxPercentage))
     var dataSV = List[List[Double]](List[Double](salary, taxSV.getTotalTaxPercentage))
 
-    for (salary <- 200000 to 10000000 by 100000) {
+    for (salary <- 2000 to 100000 by 1000) {
       val taxFI = new fi.Tax(salary, "Helsinki", age)
-      val taxSV = new sv.Tax(euroToSVKrona(salary / 100), "Stockholm", age)
+      val taxSV = new sv.Tax(euroToSVKrona(salary), "Stockholm", age)
       dataFI :+= List[Double](salary, taxFI.getTotalTaxPercentage)
       dataSV :+= List[Double](salary, taxSV.getTotalTaxPercentage)
     }
@@ -35,17 +35,17 @@ object compareService {
   def getNetIncomeData: JsArray = {
     val age = 30
 
-    var salary = 100000
+    var salary = 1000
     val taxFI = new models.fi.Tax(salary, "Helsinki", age)
-    val taxSV = new sv.Tax(euroToSVKrona(salary / 100), "Stockholm", age)
+    val taxSV = new sv.Tax(euroToSVKrona(salary), "Stockholm", age)
     var dataFI = List[List[Double]](List[Double](salary, taxFI.getNetIncome))
-    var dataSV = List[List[Double]](List[Double](salary, svKronaToEuro(taxSV.getNetIncome) * 100))
+    var dataSV = List[List[Double]](List[Double](salary, svKronaToEuro(taxSV.getNetIncome)))
 
-    for (salary <- 200000 to 10000000 by 100000) {
+    for (salary <- 2000 to 100000 by 1000) {
       val taxFI = new fi.Tax(salary, "Helsinki", age)
-      val taxSV = new sv.Tax(euroToSVKrona(salary / 100), "Stockholm", age)
+      val taxSV = new sv.Tax(euroToSVKrona(salary), "Stockholm", age)
       dataFI :+= List[Double](salary, taxFI.getNetIncome)
-      dataSV :+= List[Double](salary, svKronaToEuro(taxSV.getNetIncome) * 100)
+      dataSV :+= List[Double](salary, svKronaToEuro(taxSV.getNetIncome))
     }
 
     Json.arr(

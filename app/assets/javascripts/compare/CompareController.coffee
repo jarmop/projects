@@ -12,7 +12,7 @@ class CompareController
 
     @$scope.xAxisTickFormatPercent = () =>
       return (salary) =>
-        return @formatCurrencyCents(salary)
+        return @formatCurrency(salary)
 
     @$scope.yAxisTickFormatPercent = () =>
       return (percent) =>
@@ -20,11 +20,11 @@ class CompareController
 
     @$scope.xAxisTickFormatSum = () =>
       return (salary) =>
-        return @formatCurrencyCents(salary)
+        return @formatCurrency(salary)
 
     @$scope.yAxisTickFormatSum = () =>
       return (sum) =>
-        return @formatCurrencyCents(sum)
+        return @formatCurrency(sum)
 
   getPercent: ->
     @$log.debug "getPercent"
@@ -98,9 +98,6 @@ class CompareController
 
   formatCurrency: (currency) =>
     return parseFloat(currency).toFixed()
-
-  formatCurrencyCents: (currency) =>
-    return @formatCurrency(currency / 100)
 
   formatPercent: (percent) =>
     return (percent * 100).toFixed(2).toString().replace(/0$|\.00$/, '').replace('.', ',')

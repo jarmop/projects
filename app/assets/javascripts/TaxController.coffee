@@ -30,60 +30,60 @@ class TaxController
     @$scope.salary = @formatCurrency(@form.salary)
     @$scope.commonDeduction = {}
     $.each(data.commonDeduction, (key, value) =>
-      @$scope.commonDeduction[key] = @formatCurrencyCents(value)
+      @$scope.commonDeduction[key] = @formatCurrency(value)
     )
     governmentTaxHits = []
     $.each(data.governmentTax.hits, (key, value) =>
       governmentTaxHits.push({
         maxSalary: value.maxSalary / 100,
         taxPercent: @formatPercent(value.taxPercent)
-        tax: @formatCurrencyCents(value.tax),
-        taxedSalary: @formatCurrencyCents(value.taxedSalary),
+        tax: @formatCurrency(value.tax),
+        taxedSalary: @formatCurrency(value.taxedSalary),
         minSalary: value.minSalary / 100,
       })
     )
     @$scope.governmentTax = {
-      deduction: @formatCurrencyCents(data.governmentTax.deduction),
-      deductedSalary: @formatCurrencyCents(data.governmentTax.deductedSalary),
-      sum: @formatCurrencyCents(data.governmentTax.sum),
+      deduction: @formatCurrency(data.governmentTax.deduction),
+      deductedSalary: @formatCurrency(data.governmentTax.deductedSalary),
+      sum: @formatCurrency(data.governmentTax.sum),
       hits: governmentTaxHits
     }
     @$scope.municipalityTax = {
-      earnedIncomeAllowance: @formatCurrencyCents(data.municipalityTax.earnedIncomeAllowance),
-      basicDeduction: @formatCurrencyCents(data.municipalityTax.basicDeduction),
-      totalDeduction: @formatCurrencyCents(data.municipalityTax.basicDeduction),
-      deductedSalary: @formatCurrencyCents(data.municipalityTax.deductedSalary),
-      sum: @formatCurrencyCents(data.municipalityTax.sum)
+      earnedIncomeAllowance: @formatCurrency(data.municipalityTax.earnedIncomeAllowance),
+      basicDeduction: @formatCurrency(data.municipalityTax.basicDeduction),
+      totalDeduction: @formatCurrency(data.municipalityTax.basicDeduction),
+      deductedSalary: @formatCurrency(data.municipalityTax.deductedSalary),
+      sum: @formatCurrency(data.municipalityTax.sum)
     }
     @$scope.medicalCareInsurancePayment = {
       percent: @formatPercent(data.medicalCareInsurancePayment.percent),
-      sum: @formatCurrencyCents(data.medicalCareInsurancePayment.sum)
+      sum: @formatCurrency(data.medicalCareInsurancePayment.sum)
     }
     @$scope.perDiemPayment = {
       percent: @formatPercent(data.perDiemPayment.percent),
-      sum: @formatCurrencyCents(data.perDiemPayment.sum)
+      sum: @formatCurrency(data.perDiemPayment.sum)
     }
     @$scope.pensionContribution = {
       tyel53Percent: @formatPercent(data.pensionContribution.tyel53Percent),
       tyelSub53Percent: @formatPercent(data.pensionContribution.tyelSub53Percent),
       percent: @formatPercent(data.pensionContribution.percent),
-      sum: @formatCurrencyCents(data.perDiemPayment.sum)
+      sum: @formatCurrency(data.perDiemPayment.sum)
     }
     @$scope.unemploymentInsurance = {
       percent: @formatPercent(data.unemploymentInsurance.percent),
-      sum: @formatCurrencyCents(data.unemploymentInsurance.sum)
+      sum: @formatCurrency(data.unemploymentInsurance.sum)
     }
     @$scope.churchTax = {
       percent: @formatPercent(data.churchTax.percent),
-      sum: @formatCurrencyCents(data.churchTax.sum)
+      sum: @formatCurrency(data.churchTax.sum)
     }
     @$scope.YLETax = {
       percent: @formatPercent(data.YLETax.percent),
-      sum: @formatCurrencyCents(data.YLETax.sum)
+      sum: @formatCurrency(data.YLETax.sum)
     }
-    @$scope.totalTax = @formatCurrencyCents(data.totalTax)
+    @$scope.totalTax = @formatCurrency(data.totalTax)
     @$scope.taxPercentage = @formatPercent(data.totalTax / 100 / @form.salary)
-    @$scope.workIncomeDeduction = @formatCurrencyCents(data.workIncomeDeduction)
+    @$scope.workIncomeDeduction = @formatCurrency(data.workIncomeDeduction)
 
   formatCurrency: (currency) ->
     return parseFloat(currency).toFixed(2).toString().replace('.', ',')
