@@ -81,4 +81,19 @@ class CompareService
 
     deferred.promise
 
+  getFINetIncome: () ->
+    @$log.debug "CompareService.getFINetIncome"
+    deferred = @$q.defer()
+
+    @$http.get("/compare/fi/net-income").success((data, status, headers) =>
+      @$log.info("Successfully got fi net income - status #{status}")
+      deferred.resolve(data)
+    )
+    .error((data, status, headers) =>
+      @$log.error("Failed to get fi net income - status #{status}")
+      deferred.reject(data)
+    )
+
+    deferred.promise
+
 servicesModule.service('CompareService', CompareService)

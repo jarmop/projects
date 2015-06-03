@@ -51,6 +51,7 @@ class Tax(salary: Int, municipality: String, age: Int) {
     this.municipalityTax.reduceWorkIncomeDeduction(totalDeductableTax, this.governmentTax.getLeftOverWorkIncomeDeduction)
     this.medicalCareInsurancePayment.reduceWorkIncomeDeduction(totalDeductableTax, this.governmentTax.getLeftOverWorkIncomeDeduction)
     this.churchTax.reduceWorkIncomeDeduction(totalDeductableTax, this.governmentTax.getLeftOverWorkIncomeDeduction)
+    // update total tax?
   }
 
   def getWorkIncomeDeduction: Double = {
@@ -152,6 +153,10 @@ class Tax(salary: Int, municipality: String, age: Int) {
 
   def getChurchTaxPercentage: Double = {
     if (this.salary > 0) this.getChurchTax / this.salary else 0
+  }
+
+  def getNetIncome: Double = {
+    this.salary - this.getTotalTax
   }
 
   def getJson: JsObject = {

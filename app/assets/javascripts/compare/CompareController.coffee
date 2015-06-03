@@ -7,6 +7,7 @@ class CompareController
     @getCountry()
     @getSvPercent()
     @getSvNetIncome()
+    @getFINetIncome()
 
     @$scope.xAxisTickFormatPercent = () =>
       return (salary) =>
@@ -65,11 +66,21 @@ class CompareController
     )
 
   getSvNetIncome: ->
-    @$log.debug "getNetIncome"
+    @$log.debug "getSVNetIncome"
     @CompareService.getSvNetIncome()
     .then((response) =>
       @$log.debug response
       @$scope.svNetIncomeData = response
+    ,(error) =>
+      @$log.error "Unable to get data: #{error}"
+    )
+
+  getFINetIncome: ->
+    @$log.debug "getFINetIncome"
+    @CompareService.getFINetIncome()
+    .then((response) =>
+      @$log.debug response
+      @$scope.fiNetIncomeData = response
     ,(error) =>
       @$log.error "Unable to get data: #{error}"
     )

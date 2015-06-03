@@ -77,6 +77,16 @@ object Compare extends Controller with MongoController {
     }
   }
 
+  def fiNetIncome(update: Boolean) = Action.async {
+    val id = "fiCompareNetIncome"
+    if (update) {
+      val json = CompareServiceFI.getNetIncomeData
+      this.update(id, json)
+    } else {
+      this.load(id)
+    }
+  }
+
   def country(update: Boolean) = Action.async {
     val id = "compareCountry"
     if (update) {
