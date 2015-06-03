@@ -2,7 +2,7 @@ class TaxController
   constructor: (@$scope, @$log, @TaxService, PieService) ->
     @$log.debug "constructing TaxController"
     @form = {
-      salary: 10000,
+      salary: 17000,
       municipality: 'Helsinki',
       age: 30
     }
@@ -19,7 +19,7 @@ class TaxController
     @TaxService.getTax(form)
     .then((response) =>
       @$log.debug response
-      @pie.createBasicPie(response.totalTax, @form.salary * 100, @openTaxPie)
+      @pie.createBasicPie(response.totalTax, @form.salary, @openTaxPie)
       @pie.createTaxPie(response)
       @updateReport(response)
     ,(error) =>
@@ -35,11 +35,11 @@ class TaxController
     governmentTaxHits = []
     $.each(data.governmentTax.hits, (key, value) =>
       governmentTaxHits.push({
-        maxSalary: value.maxSalary / 100,
+        maxSalary: value.maxSalary,
         taxPercent: @formatPercent(value.taxPercent)
         tax: @formatCurrency(value.tax),
         taxedSalary: @formatCurrency(value.taxedSalary),
-        minSalary: value.minSalary / 100,
+        minSalary: value.minSalary,
       })
     )
     @$scope.governmentTax = {
@@ -51,7 +51,7 @@ class TaxController
     @$scope.municipalityTax = {
       earnedIncomeAllowance: @formatCurrency(data.municipalityTax.earnedIncomeAllowance),
       basicDeduction: @formatCurrency(data.municipalityTax.basicDeduction),
-      totalDeduction: @formatCurrency(data.municipalityTax.basicDeduction),
+      totalDeduction: @formatCurrency(data.municipalityTax.totalDeduction),
       deductedSalary: @formatCurrency(data.municipalityTax.deductedSalary),
       sum: @formatCurrency(data.municipalityTax.sum)
     }
@@ -82,14 +82,11 @@ class TaxController
       sum: @formatCurrency(data.YLETax.sum)
     }
     @$scope.totalTax = @formatCurrency(data.totalTax)
-    @$scope.taxPercentage = @formatPercent(data.totalTax / 100 / @form.salary)
+    @$scope.taxPercentage = @formatPercent(data.totalTax / @form.salary)
     @$scope.workIncomeDeduction = @formatCurrency(data.workIncomeDeduction)
 
   formatCurrency: (currency) ->
     return parseFloat(currency).toFixed(2).toString().replace('.', ',')
-
-  formatCurrencyCents: (currency) ->
-    return @formatCurrency(currency / 100)
 
   formatPercent: (percent) ->
     return (percent * 100).toFixed(2).toString().replace(/0$|\.00$/, '').replace('.', ',')

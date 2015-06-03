@@ -12,7 +12,7 @@ class TaxService
 
     # create deep copy from form
     params = $.extend(true, {}, form);
-    params.salary = params.salary * 100
+    params.salary = params.salary
 
     @$http.get("/tax", {params: params})
     .success((data, status, headers) =>
