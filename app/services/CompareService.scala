@@ -3,7 +3,7 @@ package services
 import play.api.libs.json.{JsArray, Json}
 import models.{fi,sv}
 
-object compareService {
+object CompareService {
   def getPercentData: JsArray = {
     val age = 30
 
