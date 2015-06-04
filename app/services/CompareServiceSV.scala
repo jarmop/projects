@@ -1,6 +1,6 @@
 package services
 
-import models.sv.Tax
+import models.sv.TaxEuro
 import play.api.libs.json.{Json, JsArray}
 
 object CompareServiceSV {
@@ -8,8 +8,8 @@ object CompareServiceSV {
     val municipality = "Stockholm"
     val age = 30
 
-    var salary = 10000
-    val tax = new Tax(salary, municipality, age)
+    var salary = 1000
+    val tax = new TaxEuro(salary, municipality, age)
     var dataSta = List[List[Double]](List[Double](salary, tax.getStateTaxPercentage))
     var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTaxPercentage))
     var dataCou = List[List[Double]](List[Double](salary, tax.getCountyTaxPercentage))
@@ -18,8 +18,8 @@ object CompareServiceSV {
     var dataPen = List[List[Double]](List[Double](salary, tax.getPensionContributionPercentage))
     var dataCre = List[List[Double]](List[Double](salary, tax.getTaxCreditPercentage))
 
-    for (salary <- 20000 to 1000000 by 10000) {
-      val tax = new Tax(salary, municipality, age)
+    for (salary <- 2000 to 100000 by 1000) {
+      val tax = new TaxEuro(salary, municipality, age)
       dataSta :+= List[Double](salary, tax.getStateTaxPercentage)
       dataMun :+= List[Double](salary, tax.getMunicipalityTaxPercentage)
       dataCou :+= List[Double](salary, tax.getCountyTaxPercentage)
@@ -65,14 +65,14 @@ object CompareServiceSV {
     val municipality = "Stockholm"
     val age = 30
 
-    var salary = 10000
-    val tax = new Tax(salary, municipality, age)
+    var salary = 1000
+    val tax = new TaxEuro(salary, municipality, age)
     var dataNet = List[List[Double]](List[Double](salary, tax.getNetIncome))
     var dataTax = List[List[Double]](List[Double](salary, tax.getTotalTax))
 
 
-    for (salary <- 20000 to 1000000 by 10000) {
-      val tax = new Tax(salary, municipality, age)
+    for (salary <- 2000 to 100000 by 1000) {
+      val tax = new TaxEuro(salary, municipality, age)
       dataNet :+= List[Double](salary, tax.getNetIncome)
       dataTax :+= List[Double](salary, tax.getTotalTax)
 

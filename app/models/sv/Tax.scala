@@ -88,7 +88,7 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
     this.stateTax.deductTaxCredit(this.getTotalTax, this.getTaxCredit + this.getPensionContribution)
   }
 
-  def getNetIncome = {
+  def getNetIncome: Double = {
     this.earnedIncome - this.getTotalTax
   }
 
