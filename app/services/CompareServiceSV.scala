@@ -77,13 +77,13 @@ object CompareServiceSV {
 
     for (salary <- 2000 to 100000 by 1000) {
       val tax = new TaxEuro(salary, municipality, age)
-      dataSta :+= List[Double](salary, tax.getStateTaxPercentage)
-      dataMun :+= List[Double](salary, tax.getMunicipalityTaxPercentage)
-      dataCou :+= List[Double](salary, tax.getCountyTaxPercentage)
-      dataChu :+= List[Double](salary, tax.getChurchPaymentPercentage)
-      dataFun :+= List[Double](salary, tax.getFuneralPaymentPercentage)
-      dataPen :+= List[Double](salary, tax.getPensionContributionPercentage)
-      dataCre :+= List[Double](salary, tax.getTaxCreditPercentage)
+      dataSta :+= List[Double](salary, tax.getStateTax)
+      dataMun :+= List[Double](salary, tax.getMunicipalityTax)
+      dataCou :+= List[Double](salary, tax.getCountyTax)
+      dataChu :+= List[Double](salary, tax.getChurchPayment)
+      dataFun :+= List[Double](salary, tax.getFuneralPayment)
+      dataPen :+= List[Double](salary, tax.getPensionContribution)
+      dataCre :+= List[Double](salary, tax.getTaxCredit)
     }
 
     Json.arr(

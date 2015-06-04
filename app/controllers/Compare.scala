@@ -129,6 +129,16 @@ object Compare extends Controller with MongoController {
     }
   }
 
+  def svSum(update: Boolean) = Action.async {
+    val id = "svCompareSum"
+    if (update) {
+      val json = CompareServiceSV.getSumData
+      this.update(id, json)
+    } else {
+      this.load(id)
+    }
+  }
+
   def update(id: String, data: JsArray) = {
     collection.update(Json.obj("_id" -> id), Json.obj("data" -> data)).map(lastError =>
       Ok("updated " + id)

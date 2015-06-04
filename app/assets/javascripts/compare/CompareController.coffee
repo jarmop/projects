@@ -8,6 +8,7 @@ class CompareController
     @getFISum()
     @getFINetIncome()
     @getSVPercent()
+    @getSVSum()
     @getSVNetIncome()
 
     @$scope.xAxisTickFormatPercent = () =>
@@ -25,6 +26,12 @@ class CompareController
     @$scope.yAxisTickFormatSum = () =>
       return (sum) =>
         return @formatCurrency(sum)
+
+  getSVSum: ->
+    @CompareService.getSVSum()
+    .then((response) =>
+      @$scope.svSumData = response
+    )
 
   getPercent: ->
     @$log.debug "getPercent"

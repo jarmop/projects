@@ -6,6 +6,15 @@ class CompareService
   constructor: (@$log, @$http, @$q) ->
     @$log.debug "constructing CompareService"
 
+  getSVSum: () ->
+    deferred = @$q.defer()
+    @$http.get("/compare/sv/sum").success((data, status, headers) =>
+      deferred.resolve(data)
+    ).error((data, status, headers) =>
+      deferred.reject(data)
+    )
+    deferred.promise
+
   getFIPercent: () ->
     @$log.debug "CompareService.getFIPercent"
     deferred = @$q.defer()
