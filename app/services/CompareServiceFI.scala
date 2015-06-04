@@ -66,11 +66,11 @@ object CompareServiceFI {
       Json.obj(
         "key" -> "Valtion vero",
         "values" -> Json.toJson(dataGov)
-      ),
+      )/*,
       Json.obj(
         "key" -> "Työtulovähennys",
         "values" -> Json.toJson(dataWor)
-      )
+      )*/
     )
   }
 

@@ -3,9 +3,9 @@
 
   <h1>@title</h1>
 
-  <h2>Kokonaisveron osuus bruttotuloista</h2>
   <div class="row">
     <div class="col-md-6">
+      <h3>Kokonaisveron osuus bruttotuloista</h3>
       <nvd3-line-chart
       data="percentData"
       height="350"
@@ -20,6 +20,7 @@
       </nvd3-line-chart>
     </div>
     <div class="col-md-6">
+      <h3>Nettotulot</h3>
       <nvd3-line-chart
       data="netIncomeData"
       height="350"
@@ -42,10 +43,10 @@
   </div>
   <div class="row">
     <div class="col-md-6">
-      <h2>Ruotsi</h2>
+      <h3>Suomi</h3>
       <nvd3-stacked-area-chart
-      data="svPercentData"
-      id="svComparePercent"
+      data="fiPercentData"
+      id="exampleId"
       height="400"
       showXAxis="true"
       showYAxis="true"
@@ -60,10 +61,10 @@
       </nvd3-stacked-area-chart>
     </div>
     <div class="col-md-6">
-      <h3>Suomi</h3>
+      <h2>Ruotsi</h2>
       <nvd3-stacked-area-chart
-      data="fiPercentData"
-      id="exampleId"
+      data="svPercentData"
+      id="svComparePercent"
       height="400"
       showXAxis="true"
       showYAxis="true"
@@ -119,21 +120,45 @@
     </div>
   </div>
 
-  <h3>Verojen määrä</h3>
-  <nvd3-stacked-area-chart
-  data="fiSumData"
-  id="exampleId2"
-  height="400"
-  showXAxis="true"
-  showYAxis="true"
-  tooltips="true"
-  interactive="true"
-  useInteractiveGuideline="true"
-  showLegend="true"
-  toolTipContent="toolTipContentFunction()"
-  xAxisTickFormat="xAxisTickFormatSum()"
-  yAxisTickFormat="yAxisTickFormatSum()">
-    <svg></svg>
-  </nvd3-stacked-area-chart>
+  <h2>Verojen määrä</h2>
+  <div class="row">
+    <div class="col-md-6">
+      <nvd3-stacked-area-chart
+      data="fiSumData"
+      id="exampleId2"
+      height="400"
+      showXAxis="true"
+      showYAxis="true"
+      tooltips="true"
+      interactive="true"
+      useInteractiveGuideline="true"
+      showLegend="true"
+      toolTipContent="toolTipContentFunction()"
+      xAxisTickFormat="xAxisTickFormatSum()"
+      yAxisTickFormat="yAxisTickFormatSum()">
+        <svg></svg>
+      </nvd3-stacked-area-chart>
+    </div>
+    <div class="col-md-6">
+      <nvd3-stacked-area-chart
+      data="svSumData"
+      id="svSum"
+      height="400"
+      showXAxis="true"
+      showYAxis="true"
+      tooltips="true"
+      interactive="true"
+      useInteractiveGuideline="true"
+      showLegend="true"
+      toolTipContent="toolTipContentFunction()"
+      xAxisTickFormat="xAxisTickFormatSum()"
+      yAxisTickFormat="yAxisTickFormatSum()">
+        <svg></svg>
+      </nvd3-stacked-area-chart>
+    </div>
+  </div>
+
+
+
 
 }
