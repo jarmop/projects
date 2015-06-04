@@ -18,30 +18,30 @@ class TaxEuro(earnedIncome: Double, municipality: String, age: Int) extends Swed
   }
 
   def getStateTaxPercentage: Double = {
-    svKronaToEuro(this.tax.getStateTaxPercentage)
+    this.tax.getStateTaxPercentage
   }
 
   def getMunicipalityTaxPercentage: Double = {
-    svKronaToEuro(this.tax.getMunicipalityTaxPercentage)
+    this.tax.getMunicipalityTaxPercentage
   }
 
   def getCountyTaxPercentage: Double = {
-    svKronaToEuro(this.tax.getCountyTaxPercentage)
+    this.tax.getCountyTaxPercentage
   }
 
   def getChurchPaymentPercentage: Double = {
-    svKronaToEuro(this.tax.getChurchPaymentPercentage)
+    this.tax.getChurchPaymentPercentage
   }
 
   def getFuneralPaymentPercentage: Double = {
-    svKronaToEuro(this.tax.getFuneralPaymentPercentage)
+    this.tax.getFuneralPaymentPercentage
   }
 
   def getPensionContributionPercentage: Double = {
-    svKronaToEuro(this.tax.getPensionContributionPercentage)
+    this.tax.getPensionContributionPercentage
   }
 
   def getTaxCreditPercentage: Double = {
-    svKronaToEuro(this.tax.getTaxCreditPercentage)
+    this.tax.getTaxCreditPercentage
   }
 }
