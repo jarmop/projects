@@ -3,6 +3,7 @@ package models.sv
 import play.api.libs.json.{Json, JsObject}
 import scala.util.control.Breaks.{breakable, break}
 import models._
+import services.svKronaToEuro
 
 class StateTax(taxableIncome: Double) {
   var sum: Double = -1
@@ -40,7 +41,7 @@ class StateTax(taxableIncome: Double) {
 
   def getJson: JsObject = {
     Json.obj(
-      "sum" -> this.getSum
+      "sum" -> svKronaToEuro(this.getSum)
     )
   }
 }

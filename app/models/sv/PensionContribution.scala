@@ -2,6 +2,7 @@ package models.sv
 
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
+import services.svKronaToEuro
 
 class PensionContribution(earnedIncome: Double) {
   val minIncome = 18824
@@ -35,8 +36,8 @@ class PensionContribution(earnedIncome: Double) {
 
   def getJson: JsObject = {
     Json.obj(
-      "sum" -> this.getSum,
-      "deduction" -> this.getDeduction
+      "sum" -> svKronaToEuro(this.getSum),
+      "deduction" -> svKronaToEuro(this.getDeduction)
     )
   }
 }

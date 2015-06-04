@@ -1,5 +1,6 @@
 package services
 
+import models.sv.TaxEuro
 import play.api.libs.json.{JsArray, Json}
 import models.{fi,sv}
 
@@ -9,13 +10,13 @@ object CompareService {
 
     var salary = 1000
     val taxFI = new models.fi.Tax(salary, "Helsinki", age)
-    val taxSV = new sv.Tax(euroToSVKrona(salary), "Stockholm", age)
+    val taxSV = new sv.TaxEuro(salary, "Stockholm", age)
     var dataFI = List[List[Double]](List[Double](salary, taxFI.getTotalTaxPercentage))
     var dataSV = List[List[Double]](List[Double](salary, taxSV.getTotalTaxPercentage))
 
     for (salary <- 2000 to 100000 by 1000) {
       val taxFI = new fi.Tax(salary, "Helsinki", age)
-      val taxSV = new sv.Tax(euroToSVKrona(salary), "Stockholm", age)
+      val taxSV = new TaxEuro(salary, "Stockholm", age)
       dataFI :+= List[Double](salary, taxFI.getTotalTaxPercentage)
       dataSV :+= List[Double](salary, taxSV.getTotalTaxPercentage)
     }
@@ -37,15 +38,15 @@ object CompareService {
 
     var salary = 1000
     val taxFI = new models.fi.Tax(salary, "Helsinki", age)
-    val taxSV = new sv.Tax(euroToSVKrona(salary), "Stockholm", age)
+    val taxSV = new TaxEuro(salary, "Stockholm", age)
     var dataFI = List[List[Double]](List[Double](salary, taxFI.getNetIncome))
-    var dataSV = List[List[Double]](List[Double](salary, svKronaToEuro(taxSV.getNetIncome)))
+    var dataSV = List[List[Double]](List[Double](salary, taxSV.getNetIncome))
 
     for (salary <- 2000 to 100000 by 1000) {
       val taxFI = new fi.Tax(salary, "Helsinki", age)
-      val taxSV = new sv.Tax(euroToSVKrona(salary), "Stockholm", age)
+      val taxSV = new sv.TaxEuro(salary, "Stockholm", age)
       dataFI :+= List[Double](salary, taxFI.getNetIncome)
-      dataSV :+= List[Double](salary, svKronaToEuro(taxSV.getNetIncome))
+      dataSV :+= List[Double](salary, taxSV.getNetIncome)
     }
 
     Json.arr(

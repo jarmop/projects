@@ -1,6 +1,7 @@
 package models.sv
 
 import models.substractUntilZero
+import services.svKronaToEuro
 
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
@@ -106,13 +107,13 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
 
   def getJson: JsObject = {
     Json.obj(
-      "municipalityTax" -> this.getMunicipalityTax,
-      "countyTax" -> this.getCountyTax,
-      "municipalityAndCountyTax" -> this.getMunicipalityAndCountyTax,
+      "municipalityTax" -> svKronaToEuro(this.getMunicipalityTax),
+      "countyTax" -> svKronaToEuro(this.getCountyTax),
+      "municipalityAndCountyTax" -> svKronaToEuro(this.getMunicipalityAndCountyTax),
       "municipalityAndCountyPercent" -> this.getMunicipalityAndCountyPercent,
-      "churchPayment" -> this.getChurchPayment,
-      "funeralPayment" -> this.getFuneralPayment,
-      "totalTax" -> this.getTotalTax
+      "churchPayment" -> svKronaToEuro(this.getChurchPayment),
+      "funeralPayment" -> svKronaToEuro(this.getFuneralPayment),
+      "totalTax" -> svKronaToEuro(this.getTotalTax)
     )
   }
 }

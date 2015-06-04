@@ -4,6 +4,7 @@ import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 import scala.math.floor
 import models.substractUntilZero
+import services.svKronaToEuro
 
 class TaxableIncome(earnedIncome: Double) {
   var sum: Double = -1
@@ -85,17 +86,17 @@ class TaxableIncome(earnedIncome: Double) {
 
   def getJson: JsObject = {
     Json.obj(
-      "sum" -> this.getSum,
+      "sum" -> svKronaToEuro(this.getSum),
       "income" -> Json.obj(
-        "total" -> this.getTotalIncome,
-        "earnedIncome"-> this.earnedIncome,
-        "businessIncome" -> this.getBusinessIncome
+        "total" -> svKronaToEuro(this.getTotalIncome),
+        "earnedIncome"-> svKronaToEuro(this.earnedIncome),
+        "businessIncome" -> svKronaToEuro(this.getBusinessIncome)
       ),
       "deductions" -> Json.obj(
-        "total" -> this.getTotalDeductions,
-        "generalDeductions" -> this.getGeneralDeductions,
-        "nonTaxable" -> this.getNonTaxable,
-        "lakeDeductions" -> this.getLakeDeductions
+        "total" -> svKronaToEuro(this.getTotalDeductions),
+        "generalDeductions" -> svKronaToEuro(this.getGeneralDeductions),
+        "nonTaxable" -> svKronaToEuro(this.getNonTaxable),
+        "lakeDeductions" -> svKronaToEuro(this.getLakeDeductions)
       )
     )
   }

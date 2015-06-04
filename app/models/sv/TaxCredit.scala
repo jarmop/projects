@@ -4,6 +4,7 @@ import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 import scala.util.control.Breaks.{breakable, break}
 import models._
+import services.svKronaToEuro
 
 class TaxCredit(earnedIncome: Double, nonTaxable: Double, municipalityPercent: Double, pensionContribution: Double) {
   case class Section(limit: Int, percent: Double, addition: Int, deduction: Double)
@@ -44,7 +45,7 @@ class TaxCredit(earnedIncome: Double, nonTaxable: Double, municipalityPercent: D
 
   def getJson: JsObject = {
     Json.obj(
-      "sum" -> this.getSum
+      "sum" -> svKronaToEuro(this.getSum)
     )
   }
 }

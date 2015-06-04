@@ -3,6 +3,7 @@ package models.sv
 import models.AbstractTax
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
+import services.svKronaToEuro
 
 class Tax(earnedIncome: Double, municipality: String, age: Int) extends AbstractTax(earnedIncome) {
   val taxableIncome = new TaxableIncome(this.earnedIncome)
@@ -98,7 +99,7 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
       "stateTax" -> this.stateTax.getJson,
       "pensionContribution" -> this.pensionContribution.getJson,
       "taxCredit" -> this.taxCredit.getJson,
-      "totalTax" -> this.getTotalTax,
+      "totalTax" -> svKronaToEuro(this.getTotalTax),
       "totalTaxPercentage" -> this.getTotalTaxPercentage
     )
   }
