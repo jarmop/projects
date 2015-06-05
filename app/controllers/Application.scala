@@ -1,8 +1,6 @@
 package controllers
 
-import models.fi.Tax
-import models.sv
-import play.api.libs.json.Json
+import models.{fi,sv,de}
 import play.api.mvc._
 
 object Application extends Controller {
@@ -18,12 +16,12 @@ object Application extends Controller {
     Ok(views.html.index("Verolaskuri 2015", assets))
   }
 
-  def tax = Action { request =>
+  def taxFI = Action { request =>
     val salary = request.getQueryString("salary").get.toInt
     val municipality = request.getQueryString("municipality").get
     val age = request.getQueryString("age").get.toInt
 
-    val tax = new Tax(salary, municipality, age)
+    val tax = new fi.Tax(salary, municipality, age)
     Ok(tax.getJson)
   }
 
@@ -33,6 +31,15 @@ object Application extends Controller {
     val age = request.getQueryString("age").get.toInt
 
     val tax = new sv.Tax(salary, municipality, age)
+    Ok(tax.getJson)
+  }
+
+  def taxDE = Action { request =>
+    val salary = request.getQueryString("salary").get.toInt
+    val municipality = request.getQueryString("municipality").get
+    val age = request.getQueryString("age").get.toInt
+
+    val tax = new de.Tax(salary, municipality, age)
     Ok(tax.getJson)
   }
 

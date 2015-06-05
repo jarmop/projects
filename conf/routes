@@ -3,8 +3,9 @@
 # ~~~~
 
 GET        /                                    controllers.Application.index
-GET        /tax                                 controllers.Application.tax
+GET        /tax                                 controllers.Application.taxFI
 GET        /tax/sv                              controllers.Application.taxSV
+GET        /tax/de                              controllers.Application.taxDE
 
 GET        /compare                             controllers.Compare.index
 GET        /compare/update                      controllers.Compare.updateAll
@@ -20,8 +21,8 @@ GET        /compare/sv/percent                  controllers.Compare.svPercent(up
 GET        /compare/sv/percent/update           controllers.Compare.svPercent(update: Boolean ?= true)
 GET        /compare/sv/net-income               controllers.Compare.svNetIncome(update: Boolean ?= false)
 GET        /compare/sv/net-income/update        controllers.Compare.svNetIncome(update: Boolean ?= true)
-GET        /compare/sv/sum               controllers.Compare.svSum(update: Boolean ?= false)
-GET        /compare/sv/sum/update        controllers.Compare.svSum(update: Boolean ?= true)
+GET        /compare/sv/sum                      controllers.Compare.svSum(update: Boolean ?= false)
+GET        /compare/sv/sum/update               controllers.Compare.svSum(update: Boolean ?= true)
 
 
 GET        /compare/percent                     controllers.Compare.percent(update: Boolean ?= false)
