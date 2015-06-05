@@ -1,11 +1,11 @@
 package models.sv
 
-import models.AbstractTax
+import models.{TaxTrait, AbstractTax}
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 import services.svKronaToEuro
 
-class Tax(earnedIncome: Double, municipality: String, age: Int) extends AbstractTax(earnedIncome) {
+class Tax(earnedIncome: Double, municipality: String, age: Int) extends AbstractTax(earnedIncome) with TaxTrait {
   val taxableIncome = new TaxableIncome(this.earnedIncome)
   val pensionContribution = new PensionContribution(this.earnedIncome)
   val municipalityTax = new MunicipalityTax(this.getTaxableIncome, municipality, age)

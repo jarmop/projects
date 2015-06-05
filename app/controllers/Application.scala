@@ -1,6 +1,7 @@
 package controllers
 
-import models.{fi,sv,de}
+import models.de.Tax
+import models.{TaxTrait, fi, sv, de}
 import play.api.mvc._
 
 object Application extends Controller {
@@ -16,31 +17,14 @@ object Application extends Controller {
     Ok(views.html.index("Verolaskuri 2015", assets))
   }
 
-  def taxFI = Action { request =>
-    val salary = request.getQueryString("salary").get.toInt
-    val municipality = request.getQueryString("municipality").get
-    val age = request.getQueryString("age").get.toInt
-
-    val tax = new fi.Tax(salary, municipality, age)
+  def tax(country: String, earnedIncome: Double, municipality: String, age: Int) = Action { request =>
+    val tax = this.getTax(country, earnedIncome, municipality, age)
     Ok(tax.getJson)
   }
 
-  def taxSV = Action { request =>
-    val salary = request.getQueryString("salary").get.toInt
-    val municipality = request.getQueryString("municipality").get
-    val age = request.getQueryString("age").get.toInt
-
-    val tax = new sv.Tax(salary, municipality, age)
-    Ok(tax.getJson)
+  def getTax(country: String, earnedIncome: Double, municipality: String, age: Int): models.TaxTrait = country match {
+    case "fi" => new fi.Tax(earnedIncome, municipality, age)
+    case "sv" => new sv.Tax(earnedIncome, municipality, age)
+    case "de" => new de.Tax(earnedIncome, municipality, age)
   }
-
-  def taxDE = Action { request =>
-    val salary = request.getQueryString("salary").get.toInt
-    val municipality = request.getQueryString("municipality").get
-    val age = request.getQueryString("age").get.toInt
-
-    val tax = new de.Tax(salary, municipality, age)
-    Ok(tax.getJson)
-  }
-
 }
