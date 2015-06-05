@@ -8,7 +8,7 @@ object CompareServiceSV {
     val municipality = "Stockholm"
     val age = 30
 
-    var salary = 1000
+    var salary = 0
     val tax = new TaxEuro(salary, municipality, age)
     var dataSta = List[List[Double]](List[Double](salary, tax.getStateTaxPercentage))
     var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTaxPercentage))
@@ -18,7 +18,7 @@ object CompareServiceSV {
     var dataPen = List[List[Double]](List[Double](salary, tax.getPensionContributionPercentage))
     var dataCre = List[List[Double]](List[Double](salary, tax.getTaxCreditPercentage))
 
-    for (salary <- 2000 to 100000 by 1000) {
+    for (salary <- 1000 to 100000 by 1000) {
       val tax = new TaxEuro(salary, municipality, age)
       dataSta :+= List[Double](salary, tax.getStateTaxPercentage)
       dataMun :+= List[Double](salary, tax.getMunicipalityTaxPercentage)
@@ -65,7 +65,7 @@ object CompareServiceSV {
     val municipality = "Stockholm"
     val age = 30
 
-    var salary = 1000
+    var salary = 0
     val tax = new TaxEuro(salary, municipality, age)
     var dataSta = List[List[Double]](List[Double](salary, tax.getStateTax))
     var dataMun = List[List[Double]](List[Double](salary, tax.getMunicipalityTax))
@@ -75,7 +75,7 @@ object CompareServiceSV {
     var dataPen = List[List[Double]](List[Double](salary, tax.getPensionContribution))
     var dataCre = List[List[Double]](List[Double](salary, tax.getTaxCredit))
 
-    for (salary <- 2000 to 100000 by 1000) {
+    for (salary <- 1000 to 100000 by 1000) {
       val tax = new TaxEuro(salary, municipality, age)
       dataSta :+= List[Double](salary, tax.getStateTax)
       dataMun :+= List[Double](salary, tax.getMunicipalityTax)
@@ -118,13 +118,13 @@ object CompareServiceSV {
     val municipality = "Stockholm"
     val age = 30
 
-    var salary = 1000
+    var salary = 0
     val tax = new TaxEuro(salary, municipality, age)
     var dataNet = List[List[Double]](List[Double](salary, tax.getNetIncome))
     var dataTax = List[List[Double]](List[Double](salary, tax.getTotalTax))
 
 
-    for (salary <- 2000 to 100000 by 1000) {
+    for (salary <- 1000 to 100000 by 1000) {
       val tax = new TaxEuro(salary, municipality, age)
       dataNet :+= List[Double](salary, tax.getNetIncome)
       dataTax :+= List[Double](salary, tax.getTotalTax)

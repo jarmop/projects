@@ -8,13 +8,13 @@ object CompareService {
   def getPercentData: JsArray = {
     val age = 30
 
-    var salary = 1000
+    var salary = 0
     val taxFI = new models.fi.Tax(salary, "Helsinki", age)
     val taxSV = new sv.TaxEuro(salary, "Stockholm", age)
     var dataFI = List[List[Double]](List[Double](salary, taxFI.getTotalTaxPercentage))
     var dataSV = List[List[Double]](List[Double](salary, taxSV.getTotalTaxPercentage))
 
-    for (salary <- 2000 to 100000 by 1000) {
+    for (salary <- 1000 to 100000 by 1000) {
       val taxFI = new fi.Tax(salary, "Helsinki", age)
       val taxSV = new TaxEuro(salary, "Stockholm", age)
       dataFI :+= List[Double](salary, taxFI.getTotalTaxPercentage)
@@ -36,13 +36,13 @@ object CompareService {
   def getNetIncomeData: JsArray = {
     val age = 30
 
-    var salary = 1000
+    var salary = 0
     val taxFI = new models.fi.Tax(salary, "Helsinki", age)
     val taxSV = new TaxEuro(salary, "Stockholm", age)
     var dataFI = List[List[Double]](List[Double](salary, taxFI.getNetIncome))
     var dataSV = List[List[Double]](List[Double](salary, taxSV.getNetIncome))
 
-    for (salary <- 2000 to 100000 by 1000) {
+    for (salary <- 1000 to 100000 by 1000) {
       val taxFI = new fi.Tax(salary, "Helsinki", age)
       val taxSV = new sv.TaxEuro(salary, "Stockholm", age)
       dataFI :+= List[Double](salary, taxFI.getNetIncome)
