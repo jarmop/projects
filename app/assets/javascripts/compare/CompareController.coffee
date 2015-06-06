@@ -11,6 +11,14 @@ class CompareController
     @getSVSum()
     @getSVNetIncome()
 
+    @$scope.formatSum = () =>
+      return (sum) =>
+        return @formatCurrency(sum)
+
+    @$scope.formatPercent = () =>
+      return (percent) =>
+        return @formatPercent(percent)
+
     @$scope.xAxisTickFormatPercent = () =>
       return (salary) =>
         return @formatCurrency(salary)
@@ -76,7 +84,7 @@ class CompareController
     )
 
   formatCurrency: (currency) =>
-    return parseFloat(currency).toFixed()
+        return parseFloat(currency).toFixed()
 
   formatPercent: (percent) =>
     return (percent * 100).toFixed(2).toString().replace(/0$|\.00$/, '').replace('.', ',')

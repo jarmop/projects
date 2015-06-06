@@ -6,33 +6,12 @@
   <div class="row">
     <div class="col-md-6">
       <h3>Kokonaisveron osuus bruttotuloista</h3>
-      <nvd3-line-chart
-      data="percentData"
-      height="350"
-      showXAxis="true"
-      showYAxis="true"
-      tooltips="true"
-      interactive="true"
-      useInteractiveGuideline="true"
-      showLegend="true"
-      xAxisTickFormat="xAxisTickFormatPercent()"
-      yAxisTickFormat="yAxisTickFormatPercent()">
-      </nvd3-line-chart>
+      @lineChart(data="percentData", yAxisTickFormat="formatPercent()")
+
     </div>
     <div class="col-md-6">
       <h3>Nettotulot</h3>
-      <nvd3-line-chart
-      data="netIncomeData"
-      height="350"
-      showXAxis="true"
-      showYAxis="true"
-      tooltips="true"
-      interactive="true"
-      useInteractiveGuideline="true"
-      showLegend="true"
-      xAxisTickFormat="xAxisTickFormatSum()"
-      yAxisTickFormat="yAxisTickFormatSum()">
-      </nvd3-line-chart>
+      @lineChart(data="netIncomeData", yAxisTickFormat="formatSum()")
     </div>
   </div>
 

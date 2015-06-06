@@ -1,0 +1,14 @@
+@(data: String, yAxisTickFormat: String)
+<nvd3-line-chart
+  data="@data"
+  height="350"
+  showXAxis="true"
+  showYAxis="true"
+  tooltips="true"
+  interactive="true"
+  useInteractiveGuideline="true"
+  showLegend="true"
+  xAxisTickFormat="xAxisTickFormatPercent()"
+  yAxisTickFormat="@yAxisTickFormat"
+  >
+</nvd3-line-chart>
