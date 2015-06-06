@@ -1,8 +1,10 @@
 package models.sv
 
+import models.TaxTrait
+import play.api.libs.json.JsObject
 import services.{euroToSVKrona, svKronaToEuro}
 
-class TaxEuro(earnedIncome: Double, municipality: String, age: Int) extends SwedishTax {
+class TaxEuro(earnedIncome: Double, municipality: String, age: Int) extends SwedishTax with TaxTrait {
   val tax = new Tax(euroToSVKrona(earnedIncome), municipality, age)
 
   def getTotalTaxPercentage: Double = {
@@ -71,5 +73,9 @@ class TaxEuro(earnedIncome: Double, municipality: String, age: Int) extends Swed
 
   def getTaxCreditPercentage: Double = {
     this.tax.getTaxCreditPercentage
+  }
+
+  def getJson: JsObject = {
+    this.tax.getJson
   }
 }

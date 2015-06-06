@@ -1,6 +1,7 @@
 package controllers
 
 import models.de.Tax
+import models.sv.TaxEuro
 import models.{TaxTrait, fi, sv, de}
 import play.api.mvc._
 
@@ -24,7 +25,7 @@ object Application extends Controller {
 
   def getTax(country: String, earnedIncome: Double, municipality: String, age: Int): models.TaxTrait = country match {
     case "fi" => new fi.Tax(earnedIncome, municipality, age)
-    case "sv" => new sv.Tax(earnedIncome, municipality, age)
+    case "sv" => new TaxEuro(earnedIncome, municipality, age)
     case "de" => new de.Tax(earnedIncome, municipality, age)
   }
 }
