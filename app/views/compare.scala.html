@@ -1,17 +1,34 @@
 @(title: String, assets: List[String])
+
+@lineChartPercent(data: String) = {
+  @lineChart(data, yAxisTickFormat="formatPercent()")
+}
+
+@lineChartSum(data: String) = {
+  @lineChart(data, yAxisTickFormat="formatSum()")
+}
+
+@areaChartPercent(data: String) = {
+  @areaChart(data, yAxisTickFormat="formatPercent()")
+}
+
+@areaChartSum(data: String) = {
+  @areaChart(data, yAxisTickFormat="formatSum()")
+}
+
 @main(title, "CompareController as ctrl", assets) {
+
 
   <h1>@title</h1>
 
   <div class="row">
     <div class="col-md-6">
       <h3>Kokonaisveron osuus bruttotuloista</h3>
-      @lineChart(data="percentData", yAxisTickFormat="formatPercent()")
-
+      @lineChartPercent(data="percentData")
     </div>
     <div class="col-md-6">
       <h3>Nettotulot</h3>
-      @lineChart(data="netIncomeData", yAxisTickFormat="formatSum()")
+      @lineChartSum(data="netIncomeData")
     </div>
   </div>
 
@@ -23,39 +40,11 @@
   <div class="row">
     <div class="col-md-6">
       <h3>Suomi</h3>
-      <nvd3-stacked-area-chart
-      data="fiPercentData"
-      id="exampleId"
-      height="400"
-      showXAxis="true"
-      showYAxis="true"
-      tooltips="true"
-      interactive="true"
-      useInteractiveGuideline="true"
-      showLegend="true"
-      toolTipContent="toolTipContentFunction()"
-      xAxisTickFormat="xAxisTickFormatPercent()"
-      yAxisTickFormat="yAxisTickFormatPercent()">
-        <svg></svg>
-      </nvd3-stacked-area-chart>
+      @areaChartPercent(data="fiPercentData")
     </div>
     <div class="col-md-6">
-      <h2>Ruotsi</h2>
-      <nvd3-stacked-area-chart
-      data="svPercentData"
-      id="svComparePercent"
-      height="400"
-      showXAxis="true"
-      showYAxis="true"
-      tooltips="true"
-      interactive="true"
-      useInteractiveGuideline="true"
-      showLegend="true"
-      toolTipContent="toolTipContentFunction()"
-      xAxisTickFormat="xAxisTickFormatPercent()"
-      yAxisTickFormat="yAxisTickFormatPercent()">
-        <svg></svg>
-      </nvd3-stacked-area-chart>
+      <h3>Ruotsi</h3>
+      @areaChartPercent(data="svPercentData")
     </div>
   </div>
 
