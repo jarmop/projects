@@ -32,11 +32,7 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-lg-12">
-      <h2>Verojen osuus bruttotuloista</h2>
-    </div>
-  </div>
+  <h2>Verojen osuus bruttotuloista</h2>
   <div class="row">
     <div class="col-md-6">
       <h3>Suomi</h3>
@@ -48,87 +44,26 @@
     </div>
   </div>
 
+  <h2>Nettotulon määrä</h2>
   <div class="row">
-    <h2>Nettotulon määrä</h2>
     <div class="col-md-6">
       <h3>Suomi</h3>
-      <nvd3-stacked-area-chart
-      data="fiNetIncomeData"
-      id="fiCompareNetIncome"
-      height="400"
-      showXAxis="true"
-      showYAxis="true"
-      tooltips="true"
-      interactive="true"
-      useInteractiveGuideline="true"
-      showLegend="true"
-      toolTipContent="toolTipContentFunction()"
-      xAxisTickFormat="xAxisTickFormatSum()"
-      yAxisTickFormat="yAxisTickFormatSum()">
-        <svg></svg>
-      </nvd3-stacked-area-chart>
+      @areaChartSum(data="fiNetIncomeData")
     </div>
     <div class="col-md-6">
       <h3>Ruotsi</h3>
-      <nvd3-stacked-area-chart
-      data="svNetIncomeData"
-      id="svCompareNetIncome"
-      height="400"
-      showXAxis="true"
-      showYAxis="true"
-      tooltips="true"
-      interactive="true"
-      useInteractiveGuideline="true"
-      showLegend="true"
-      toolTipContent="toolTipContentFunction()"
-      xAxisTickFormat="xAxisTickFormatSum()"
-      yAxisTickFormat="yAxisTickFormatSum()">
-        <svg></svg>
-      </nvd3-stacked-area-chart>
+      @areaChartSum(data="svNetIncomeData")
     </div>
   </div>
 
   <h2>Verojen määrä</h2>
   <div class="row">
     <div class="col-md-6">
-      <h3>Suomi</h3>
-      <nvd3-stacked-area-chart
-      data="fiSumData"
-      id="exampleId2"
-      height="400"
-      showXAxis="true"
-      showYAxis="true"
-      tooltips="true"
-      interactive="true"
-      useInteractiveGuideline="true"
-      showLegend="true"
-      toolTipContent="toolTipContentFunction()"
-      xAxisTickFormat="xAxisTickFormatSum()"
-      yAxisTickFormat="yAxisTickFormatSum()">
-        <svg></svg>
-      </nvd3-stacked-area-chart>
+      @areaChartSum(data="fiSumData")
     </div>
     <div class="col-md-6">
-      <h3>Ruotsi</h3>
-      <nvd3-stacked-area-chart
-      data="svSumData"
-      id="svSum"
-      height="400"
-      showXAxis="true"
-      showYAxis="true"
-      tooltips="true"
-      interactive="true"
-      useInteractiveGuideline="true"
-      showLegend="true"
-      toolTipContent="toolTipContentFunction()"
-      xAxisTickFormat="xAxisTickFormatSum()"
-      yAxisTickFormat="yAxisTickFormatSum()">
-        <svg></svg>
-      </nvd3-stacked-area-chart>
+      @areaChartSum(data="svSumData")
     </div>
   </div>
-
-
-
 
 }
