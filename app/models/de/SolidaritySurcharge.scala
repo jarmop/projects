@@ -27,6 +27,6 @@ class SolidaritySurcharge(incomeTax: Double) {
   }
 
   def getJson: JsObject = Json.obj(
-    "solidaritySurCharge" -> this.getSum
+    "sum" -> this.getSum
   )
 }

@@ -8,7 +8,8 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   val basicAllowance = 1000
   val socialSecurity = new SocialSecurity(earnedIncome)
   val incomeTax = new IncomeTax(earnedIncome - (this.getIncomeTaxDeductions + this.basicAllowance))
-  val solidaritySurcharge = new SolidaritySurcharge(this.incomeTax.getSum)
+  val solidaritySurcharge = new SolidaritySurcharge(this.getIncomeTax)
+  val churchTax = new ChurchTax(this.getIncomeTax)
 
   def getIncomeTaxDeductions: Double = {
     this.socialSecurity.getSum
@@ -29,7 +30,8 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   def getJson: JsObject = {
     Json.obj(
       "incomeTax" -> this.incomeTax.getJson,
-      "solidaritySurcharge" -> this.solidaritySurcharge.getSum,
+      "solidaritySurcharge" -> this.solidaritySurcharge.getJson,
+      "churchTax" -> this.churchTax.getJson,
       "socialSecurity" -> this.socialSecurity.getJson,
       "totalTax" -> this.getTotalTax,
       "totalTaxPercentage" -> this.getTotalTaxPercentage
