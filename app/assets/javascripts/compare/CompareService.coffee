@@ -6,13 +6,34 @@ class CompareService
   constructor: (@$log, @$http, @$q) ->
     @$log.debug "constructing CompareService"
 
-  getSVSum: () ->
+  getPercent: () ->
+    @$log.debug "CompareService.getPercent"
     deferred = @$q.defer()
-    @$http.get("/compare/sv/sum").success((data, status, headers) =>
+
+    @$http.get("/compare/percent").success((data, status, headers) =>
+      @$log.info("Successfully got data - status #{status}")
       deferred.resolve(data)
-    ).error((data, status, headers) =>
+    )
+    .error((data, status, headers) =>
+      @$log.error("Failed to get data - status #{status}")
       deferred.reject(data)
     )
+
+    deferred.promise
+
+  getNetIncome: () ->
+    @$log.debug "CompareService.getNetIncome"
+    deferred = @$q.defer()
+
+    @$http.get("/compare/net-income").success((data, status, headers) =>
+      @$log.info("Successfully got data - status #{status}")
+      deferred.resolve(data)
+    )
+    .error((data, status, headers) =>
+      @$log.error("Failed to get data - status #{status}")
+      deferred.reject(data)
+    )
+
     deferred.promise
 
   getFIPercent: () ->
@@ -45,31 +66,16 @@ class CompareService
 
     deferred.promise
 
-  getPercent: () ->
-    @$log.debug "CompareService.getPercent"
+  getFINetIncome: () ->
+    @$log.debug "CompareService.getFINetIncome"
     deferred = @$q.defer()
 
-    @$http.get("/compare/percent").success((data, status, headers) =>
-      @$log.info("Successfully got data - status #{status}")
+    @$http.get("/compare/fi/net-income").success((data, status, headers) =>
+      @$log.info("Successfully got fi net income - status #{status}")
       deferred.resolve(data)
     )
     .error((data, status, headers) =>
-      @$log.error("Failed to get data - status #{status}")
-      deferred.reject(data)
-    )
-
-    deferred.promise
-
-  getNetIncome: () ->
-    @$log.debug "CompareService.getNetIncome"
-    deferred = @$q.defer()
-
-    @$http.get("/compare/net-income").success((data, status, headers) =>
-      @$log.info("Successfully got data - status #{status}")
-      deferred.resolve(data)
-    )
-    .error((data, status, headers) =>
-      @$log.error("Failed to get data - status #{status}")
+      @$log.error("Failed to get fi net income - status #{status}")
       deferred.reject(data)
     )
 
@@ -90,6 +96,15 @@ class CompareService
 
     deferred.promise
 
+  getSVSum: () ->
+    deferred = @$q.defer()
+    @$http.get("/compare/sv/sum").success((data, status, headers) =>
+      deferred.resolve(data)
+    ).error((data, status, headers) =>
+      deferred.reject(data)
+    )
+    deferred.promise
+
   getSvNetIncome: () ->
     @$log.debug "CompareService.getSvNetIncome"
     deferred = @$q.defer()
@@ -104,20 +119,32 @@ class CompareService
     )
 
     deferred.promise
-
-  getFINetIncome: () ->
-    @$log.debug "CompareService.getFINetIncome"
+    
+  getDEPercent: () ->
     deferred = @$q.defer()
-
-    @$http.get("/compare/fi/net-income").success((data, status, headers) =>
-      @$log.info("Successfully got fi net income - status #{status}")
+    @$http.get("/compare/de/percent").success((data, status, headers) =>
       deferred.resolve(data)
-    )
-    .error((data, status, headers) =>
-      @$log.error("Failed to get fi net income - status #{status}")
+    ).error((data, status, headers) =>
       deferred.reject(data)
     )
-
     deferred.promise
+        
+  getDESum: () ->
+    deferred = @$q.defer()
+    @$http.get("/compare/de/sum").success((data, status, headers) =>
+      deferred.resolve(data)
+    ).error((data, status, headers) =>
+      deferred.reject(data)
+    )
+    deferred.promise
+            
+  getDENetIncome: () ->
+    deferred = @$q.defer()
+    @$http.get("/compare/de/net-income").success((data, status, headers) =>
+      deferred.resolve(data)
+    ).error((data, status, headers) =>
+      deferred.reject(data)
+    )
+    deferred.promise          
 
 servicesModule.service('CompareService', CompareService)

@@ -10,6 +10,9 @@ class CompareController
     @getSVPercent()
     @getSVSum()
     @getSVNetIncome()
+    @getDEPercent()
+    @getDESum()
+    @getDENetIncome()
 
     @$scope.formatSum = () =>
       return (sum) =>
@@ -34,12 +37,6 @@ class CompareController
     @$scope.yAxisTickFormatSum = () =>
       return (sum) =>
         return @formatCurrency(sum)
-
-  getSVSum: ->
-    @CompareService.getSVSum()
-    .then((response) =>
-      @$scope.svSumData = response
-    )
 
   getPercent: ->
     @CompareService.getPercent()
@@ -77,10 +74,34 @@ class CompareController
       @$scope.svPercentData = response
     )
 
+  getSVSum: ->
+    @CompareService.getSVSum()
+    .then((response) =>
+      @$scope.svSumData = response
+    )
+
   getSVNetIncome: ->
     @CompareService.getSvNetIncome()
     .then((response) =>
       @$scope.svNetIncomeData = response
+    )
+
+  getDEPercent: ->
+    @CompareService.getDEPercent()
+    .then((response) =>
+      @$scope.dePercentData = response
+    )
+
+  getDESum: ->
+    @CompareService.getDESum()
+    .then((response) =>
+      @$scope.svSumData = response
+    )
+
+  getDENetIncome: ->
+    @CompareService.getDENetIncome()
+    .then((response) =>
+      @$scope.deNetIncomeData = response
     )
 
   formatCurrency: (currency) =>
