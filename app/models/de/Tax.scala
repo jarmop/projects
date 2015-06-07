@@ -52,7 +52,7 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   }
 
   def getTotalTaxPercentage: Double = {
-    this.getPercentage(this.getIncomeTax)
+    this.getPercentage(this.getTotalTax)
   }
 
   def getNetIncome: Double = {
