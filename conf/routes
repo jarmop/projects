@@ -22,6 +22,13 @@ GET        /compare/sv/net-income/update        controllers.Compare.svNetIncome(
 GET        /compare/sv/sum                      controllers.Compare.svSum(update: Boolean ?= false)
 GET        /compare/sv/sum/update               controllers.Compare.svSum(update: Boolean ?= true)
 
+GET        /compare/de/percent                  controllers.Compare.dePercent(update: Boolean ?= false)
+GET        /compare/de/percent/update           controllers.Compare.dePercent(update: Boolean ?= true)
+GET        /compare/de/net-income               controllers.Compare.deNetIncome(update: Boolean ?= false)
+GET        /compare/de/net-income/update        controllers.Compare.deNetIncome(update: Boolean ?= true)
+GET        /compare/de/sum                      controllers.Compare.deSum(update: Boolean ?= false)
+GET        /compare/de/sum/update               controllers.Compare.deSum(update: Boolean ?= true)
+
 
 GET        /compare/percent                     controllers.Compare.percent(update: Boolean ?= false)
 GET        /compare/percent/update              controllers.Compare.percent(update: Boolean ?= true)

@@ -19,16 +19,32 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
     this.incomeTax.getSum
   }
 
+  def getIncomeTaxPercentage: Double = {
+   this.getPercentage(this.getIncomeTax)
+  }
+
   def getSolidaritySurcharge: Double = {
     this.solidaritySurcharge.getSum
+  }
+
+  def getSolidaritySurchargePercentage: Double = {
+    this.getPercentage(this.getSolidaritySurcharge)
   }
 
   def getChurchTax: Double = {
     this.churchTax.getSum
   }
 
+  def getChurchTaxPercentage: Double = {
+    this.getPercentage(this.getChurchTax)
+  }
+
   def getSocialSecurity: Double = {
     this.socialSecurity.getSum
+  }
+
+  def getSocialSecurityPercentage: Double = {
+    this.getPercentage(this.getSocialSecurityPercentage)
   }
 
   def getTotalTax: Double = {
@@ -37,6 +53,10 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
 
   def getTotalTaxPercentage: Double = {
     this.getPercentage(this.getIncomeTax)
+  }
+
+  def getNetIncome: Double = {
+    this.earnedIncome - this.getTotalTax
   }
 
   def getJson: JsObject = {

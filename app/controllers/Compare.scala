@@ -10,7 +10,7 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import services.{CompareServiceFI, CompareService, CompareServiceSV}
+import services.{CompareServiceFI, CompareService, CompareServiceSV, CompareServiceDE}
 import scala.concurrent.Future
 
 // Reactive Mongo imports
@@ -139,6 +139,36 @@ object Compare extends Controller with MongoController {
     }
   }
 
+  def dePercent(update: Boolean) = Action.async {
+    val id = "deComparePercent"
+    if (update) {
+      val json = CompareServiceDE.getPercentData
+      this.update(id, json)
+    } else {
+      this.load(id)
+    }
+  }
+
+  def deNetIncome(update: Boolean) = Action.async {
+    val id = "deCompareNetIncome"
+    if (update) {
+      val json = CompareServiceDE.getNetIncomeData
+      this.update(id, json)
+    } else {
+      this.load(id)
+    }
+  }
+
+  def deSum(update: Boolean) = Action.async {
+    val id = "deCompareSum"
+    if (update) {
+      val json = CompareServiceDE.getSumData
+      this.update(id, json)
+    } else {
+      this.load(id)
+    }
+  }
+
   def update(id: String, data: JsArray) = {
     collection.update(Json.obj("_id" -> id), Json.obj("data" -> data)).map(lastError =>
       Ok("updated " + id)
@@ -162,7 +192,11 @@ object Compare extends Controller with MongoController {
       "fiCompareNetIncome" -> CompareServiceFI.getNetIncomeData,
       "fiCompareSum" -> CompareServiceFI.getSumData,
       "svComparePercent" -> CompareServiceSV.getPercentData,
-      "svCompareNetIncome" -> CompareServiceSV.getNetIncomeData
+      "svCompareNetIncome" -> CompareServiceSV.getNetIncomeData,
+      "svCompareSum" -> CompareServiceSV.getSumData,
+      "deComparePercent" -> CompareServiceDE.getPercentData,
+      "deCompareNetIncome" -> CompareServiceDE.getNetIncomeData,
+      "deCompareSum" -> CompareServiceDE.getSumData
     )
     for ((key, data) <- keys) {
       collection.update(Json.obj("_id" -> key), Json.obj("data" -> data))
