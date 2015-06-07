@@ -95,7 +95,7 @@ class CompareController
   getDESum: ->
     @CompareService.getDESum()
     .then((response) =>
-      @$scope.svSumData = response
+      @$scope.deSumData = response
     )
 
   getDENetIncome: ->
