@@ -34,21 +34,30 @@ class IncomeTax(earnedIncome: Double) {
     var previousPercent = 0.14
     breakable {
       for ((taxRate) <- taxRates) {
-        if (this.earnedIncome <= previousMax)
+        if (this.earnedIncome <= previousMax) {
           break
+        }
         var income = this.earnedIncome
-        if (income > taxRate.maxIncome)
+        if (income > taxRate.maxIncome) {
           income = taxRate.maxIncome
+        }
         income = income - previousMax
         var percent = income / (taxRate.maxIncome - previousMax) * taxRate.percentIncrease + previousPercent
         sum += percent * income
-        Logger.debug(percent.toString)
-        Logger.debug(income.toString)
 
         previousMax = taxRate.maxIncome
         previousPercent = percent
       }
     }
+
+    if (this.earnedIncome > 52881) {
+      sum += previousPercent * (this.earnedIncome - 52881)
+    }
+
+    if (this.earnedIncome > 250730) {
+      sum += 0.3 * (this.earnedIncome - 250730)
+    }
+
     sum
   }
 
