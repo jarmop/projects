@@ -25,16 +25,16 @@ object CompareServiceDE {
 
     Json.arr(
       Json.obj(
+        "key" -> "Sosiaaliturva",
+        "values" -> Json.toJson(dataSoc)
+      ),
+      Json.obj(
         "key" -> "Solidaarisuusvero",
         "values" -> Json.toJson(dataSol)
       ),
       Json.obj(
         "key" -> "Kirkollisvero",
         "values" -> Json.toJson(dataChu)
-      ),
-      Json.obj(
-        "key" -> "Sosiaaliturva",
-        "values" -> Json.toJson(dataSoc)
       ),
       Json.obj(
         "key" -> "Tulovero",
@@ -64,16 +64,16 @@ object CompareServiceDE {
 
     Json.arr(
       Json.obj(
+        "key" -> "Sosiaaliturva",
+        "values" -> Json.toJson(dataSoc)
+      ),
+      Json.obj(
         "key" -> "Solidaarisuusvero",
         "values" -> Json.toJson(dataSol)
       ),
       Json.obj(
         "key" -> "Kirkollisvero",
         "values" -> Json.toJson(dataChu)
-      ),
-      Json.obj(
-        "key" -> "Sosiaaliturva",
-        "values" -> Json.toJson(dataSoc)
       ),
       Json.obj(
         "key" -> "Tulovero",
