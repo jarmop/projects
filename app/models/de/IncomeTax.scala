@@ -2,11 +2,9 @@ package models.de
 
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
-import scala.util.control.Breaks.{breakable, break}
 
-
-class IncomeTax(earnedIncome: Double) {
-  case class TaxRate(minIncome: Int, maxIncome: Int, percentIncrease: Double, gh: Double)
+class IncomeTax(earnedIncome: Double, deduction: Double) {
+  val taxableIncome = this.earnedIncome - this.deduction
   val basicAllowance = 8472 // lohnsteuer.de
   // wikin mukaan 8354 mutta taitaa olla 2014 luku
 
@@ -20,49 +18,26 @@ class IncomeTax(earnedIncome: Double) {
     this.sum
   }
 
-  def calculateSum = {
-    val taxRates = List[TaxRate](
-      TaxRate(8355, 13469, 0.10, 0.10),
-      TaxRate(13470, 52881, 0.18, 0.18)
-      /*,
-      TaxRate(52882, 250730, 0.0, 0),
-      TaxRate(250731, 0, 0.45, 0)*/
-    )
-
-    var sum: Double = 0
-    var previousMax = 8354
-    var previousPercent = 0.14
-    breakable {
-      for ((taxRate) <- taxRates) {
-        if (this.earnedIncome <= previousMax) {
-          break
-        }
-        var income = this.earnedIncome
-        if (income > taxRate.maxIncome) {
-          income = taxRate.maxIncome
-        }
-        income = income - previousMax
-        var percent = income / (taxRate.maxIncome - previousMax) * taxRate.percentIncrease + previousPercent
-        sum += percent * income
-
-        previousMax = taxRate.maxIncome
-        previousPercent = percent
-      }
+  def calculateSum: Double = {
+    if (this.taxableIncome <= 8354) {
+      0
+    } else if (this.taxableIncome <= 13469) {
+      val y = (this.taxableIncome - 8354) / 10000
+      (974.58 * y + 1400) * y
+    } else if (this.taxableIncome <= 52881) {
+      val y = (this.taxableIncome - 13469) / 10000
+      (228.74 * y + 2397) * y + 971
+    } else if (this.taxableIncome <= 250730) {
+      0.42 * this.taxableIncome - 8239
+    } else {
+      0.45 * this.taxableIncome - 15761
     }
-
-    if (this.earnedIncome > 52881) {
-      sum += previousPercent * (this.earnedIncome - 52881)
-    }
-
-    if (this.earnedIncome > 250730) {
-      sum += 0.3 * (this.earnedIncome - 250730)
-    }
-
-    sum
   }
 
   def getJson: JsObject = Json.obj(
-    "sum" -> this.getSum
+    "sum" -> this.getSum,
+    "deduction" -> this.deduction,
+    "taxableIncome" -> this.taxableIncome
   )
 
 

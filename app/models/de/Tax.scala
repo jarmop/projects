@@ -7,7 +7,7 @@ import services._
 class Tax(earnedIncome: Double, municipality: String, age: Int) extends AbstractTax(earnedIncome) with models.TaxTrait {
   val basicAllowance = 1000
   val socialSecurity = new SocialSecurity(earnedIncome)
-  val incomeTax = new IncomeTax(earnedIncome - (this.getIncomeTaxDeductions + this.basicAllowance))
+  val incomeTax = new IncomeTax(earnedIncome, (this.getIncomeTaxDeductions + this.basicAllowance))
   val solidaritySurcharge = new SolidaritySurcharge(this.getIncomeTax)
   val churchTax = new ChurchTax(this.getIncomeTax)
 
@@ -98,7 +98,8 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
       "churchTax" -> this.churchTax.getJson,
       "socialSecurity" -> this.socialSecurity.getJson,
       "totalTax" -> this.getTotalTax,
-      "totalTaxPercentage" -> this.getTotalTaxPercentage
+      "totalTaxPercentage" -> this.getTotalTaxPercentage,
+      "netIncome" -> this.getNetIncome
     )
   }
 }
