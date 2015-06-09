@@ -47,6 +47,38 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
     this.getPercentage(this.getSocialSecurity)
   }
 
+  def getPensionIncurance: Double = {
+    this.socialSecurity.getPensionInsurance
+  }
+
+  def getPensionIncurancePercentage: Double = {
+    this.getPercentage(this.getPensionIncurance)
+  }
+
+  def getUnemploymentInsurance: Double = {
+    this.socialSecurity.getUnemploymentInsurance
+  }
+
+  def getUnemploymentInsurancePercentage: Double = {
+    this.getPercentage(this.getUnemploymentInsurance)
+  }
+
+  def getNursingInsurance: Double = {
+    this.socialSecurity.getNursingInsurance
+  }
+
+  def getNursingInsurancePercentage: Double = {
+    this.getPercentage(this.getNursingInsurance)
+  }
+
+  def getHealthInsurance: Double = {
+    this.socialSecurity.getHealthInsurance + this.socialSecurity.getAdditionalHealthInsurance
+  }
+
+  def getHealthInsurancePercentage: Double = {
+    this.getPercentage(this.getHealthInsurance)
+  }
+
   def getTotalTax: Double = {
     this.getIncomeTax + this.getSolidaritySurcharge + this.getChurchTax + this.getSocialSecurity
   }

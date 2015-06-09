@@ -1,6 +1,7 @@
 package models.de
 
 import play.api.libs.json.{Json, JsObject}
+import scala.math.min
 
 class SocialSecurity(earnedIncome: Double) {
   val pensionInsurancePercent: Double = 0.0935
@@ -9,24 +10,26 @@ class SocialSecurity(earnedIncome: Double) {
   val healthInsurancePercent: Double = 0.073
   val additionalHealthInsurancePercent: Double = 0.009 // Average. Depends on insurance provider.
 
+  var pensionInsurance: Double = -1
+
   def getPensionInsurance: Double = {
-    this.pensionInsurancePercent * this.earnedIncome
+    this.pensionInsurancePercent * min(this.earnedIncome, 62400)
   }
 
   def getUnemploymentInsurance: Double = {
-    this.unemploymentInsurancePercent * this.earnedIncome
+    this.unemploymentInsurancePercent * min(this.earnedIncome, 62400)
   }
 
   def getNursingInsurance: Double = {
-    this.nursingInsurancePercent * this.earnedIncome
+    this.nursingInsurancePercent * min(this.earnedIncome, 49500)
   }
 
   def getHealthInsurance: Double = {
-    this.healthInsurancePercent * this.earnedIncome
+    this.healthInsurancePercent * min(this.earnedIncome, 49500)
   }
 
   def getAdditionalHealthInsurance: Double = {
-    this.additionalHealthInsurancePercent * this.earnedIncome
+    this.additionalHealthInsurancePercent * min(this.earnedIncome, 49500)
   }
 
   def getSum: Double = {
