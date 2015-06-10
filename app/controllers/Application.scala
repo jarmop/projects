@@ -18,14 +18,14 @@ object Application extends Controller {
     Ok(views.html.index("Verolaskuri 2015", assets))
   }
 
-  def tax(country: String, earnedIncome: Double, municipality: String, age: Int) = Action { request =>
-    val tax = this.getTax(country, earnedIncome, municipality, age)
+  def tax(country: String, earnedIncome: Double, municipality: Option[String], age: Option[Int]) = Action { request =>
+    val tax = this.getTax(country, earnedIncome, municipality, age.getOrElse(30))
     Ok(tax.getJson)
   }
 
-  def getTax(country: String, earnedIncome: Double, municipality: String, age: Int): models.TaxTrait = country match {
-    case "fi" => new fi.Tax(earnedIncome, municipality, age)
-    case "sv" => new TaxEuro(earnedIncome, municipality, age)
-    case "de" => new de.Tax(earnedIncome, municipality, age)
+  def getTax(country: String, earnedIncome: Double, municipality: Option[String], age: Int): models.TaxTrait = country match {
+    case "fi" => new fi.Tax(earnedIncome, municipality.getOrElse("Helsinki"), age)
+    case "sv" => new TaxEuro(earnedIncome, municipality.getOrElse("Stockholm"), age)
+    case "de" => new de.Tax(earnedIncome, municipality.getOrElse("Berlin"), age)
   }
 }

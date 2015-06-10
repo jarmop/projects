@@ -3,7 +3,7 @@
 # ~~~~
 
 GET        /                                    controllers.Application.index
-GET        /tax/:country                        controllers.Application.tax(country: String, earnedIncome: Double, municipality: String, age: Int)
+GET        /tax/:country                        controllers.Application.tax(country: String, earnedIncome: Double, municipality: Option[String], age: Option[Int])
 
 GET        /compare                             controllers.Compare.index
 GET        /compare/update                      controllers.Compare.updateAll
