@@ -172,11 +172,13 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
       "medicalCareInsurancePayment" -> this.medicalCareInsurancePayment.getJson,
       "perDiemPayment" -> this.perDiemPayment.getJson,
       "commonDeduction" -> this.commonDeduction,
-      "totalTax" -> this.getTotalTax,
       "workIncomeDeduction" -> this.getWorkIncomeDeduction,
       "pensionContribution" -> this.pensionContribution.getJson,
       "unemploymentInsurance" -> this.unemploymentInsurance.getJson,
-      "churchTax" -> this.churchTax.getJson
+      "churchTax" -> this.churchTax.getJson,
+      "totalTax" -> this.getTotalTax,
+      "totalTaxPercentage" -> this.getTotalTaxPercentage,
+      "netIncome" -> this.getNetIncome
     )
   }
 }

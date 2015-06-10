@@ -100,7 +100,8 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
       "pensionContribution" -> this.pensionContribution.getJson,
       "taxCredit" -> this.taxCredit.getJson,
       "totalTax" -> svKronaToEuro(this.getTotalTax),
-      "totalTaxPercentage" -> this.getTotalTaxPercentage
+      "totalTaxPercentage" -> this.getTotalTaxPercentage,
+      "netIncome" -> svKronaToEuro(this.getNetIncome)
     )
   }
 }
