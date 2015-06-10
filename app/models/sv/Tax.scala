@@ -94,10 +94,12 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
 
   def getJson: JsObject = {
     Json.obj(
+      "taxes" -> Json.obj(
+        "municipalityTax" -> this.municipalityTax.getJson,
+        "stateTax" -> this.stateTax.getJson,
+        "pensionContribution" -> this.pensionContribution.getJson
+      ),
       "taxableIncome" -> this.taxableIncome.getJson,
-      "municipalityTax" -> this.municipalityTax.getJson,
-      "stateTax" -> this.stateTax.getJson,
-      "pensionContribution" -> this.pensionContribution.getJson,
       "taxCredit" -> this.taxCredit.getJson,
       "totalTax" -> svKronaToEuro(this.getTotalTax),
       "totalTaxPercentage" -> this.getTotalTaxPercentage,
