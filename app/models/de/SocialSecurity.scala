@@ -41,6 +41,7 @@ class SocialSecurity(earnedIncome: Double) {
     "unemploymentInsurance" -> this.getUnemploymentInsurance,
     "nursingInsurance" -> this.getNursingInsurance,
     "healthInsurance" -> this.getHealthInsurance,
-    "additionalHealthInsurance" -> this.getAdditionalHealthInsurance
+    "additionalHealthInsurance" -> this.getAdditionalHealthInsurance,
+    "sum" -> this.getSum
   )
 }
