@@ -1,18 +1,6 @@
 class CompareController
   constructor: (@$scope, @$log, @CompareService) ->
-    @$log.debug "constructing CompareControlleri"
-
-    @getPercent()
-    @getNetIncome()
-    @getFIPercent()
-    @getFISum()
-    @getFINetIncome()
-    @getSVPercent()
-    @getSVSum()
-    @getSVNetIncome()
-    @getDEPercent()
-    @getDESum()
-    @getDENetIncome()
+    @$log.debug "constructing CompareController"
 
     @$scope.formatSum = () =>
       return (sum) =>
@@ -38,6 +26,75 @@ class CompareController
       return (sum) =>
         return @formatCurrency(sum)
 
+    @$scope.loadPercent = () =>
+      @$scope.getFIPercent()
+      @$scope.getSVPercent()
+      @$scope.getDEPercent()
+
+    @$scope.getFIPercent = () =>
+      @CompareService.getFIPercent()
+      .then((response) =>
+        @$scope.fiPercentData = response
+      )
+
+    @$scope.getSVPercent = () =>
+      @CompareService.getSvPercent()
+      .then((response) =>
+        @$scope.svPercentData = response
+      )
+
+    @$scope.getDEPercent = () =>
+      @CompareService.getDEPercent()
+      .then((response) =>
+        @$scope.dePercentData = response
+      )
+
+    @$scope.loadNetIncome = () =>
+      @$scope.getFINetIncome()
+      @$scope.getSVNetIncome()
+      @$scope.getDENetIncome()
+
+    @$scope.getFINetIncome = () =>
+      @CompareService.getFINetIncome()
+        .then((response) =>
+          @$scope.fiNetIncomeData = response
+        )
+
+    @$scope.getSVNetIncome = () =>
+      @CompareService.getSVNetIncome()
+        .then((response) =>
+          @$scope.svNetIncomeData = response
+        )
+
+    @$scope.getDENetIncome = () =>
+      @CompareService.getDENetIncome()
+        .then((response) =>
+          @$scope.deNetIncomeData = response
+        )
+
+    @$scope.loadSum = () =>
+      @$scope.getFISum()
+      @$scope.getSVSum()
+      @$scope.getDESum()
+
+    @$scope.getFISum = () =>
+      @CompareService.getFISum()
+        .then((response) =>
+          @$scope.fiSumData = response
+        )
+
+    @$scope.getSVSum = () =>
+      @CompareService.getSVSum()
+        .then((response) =>
+          @$scope.svSumData = response
+        )
+
+    @$scope.getDESum = () =>
+      @CompareService.getDESum()
+        .then((response) =>
+          @$scope.deSumData = response
+        )
+
   getPercent: ->
     @CompareService.getPercent()
     .then((response) =>
@@ -48,60 +105,6 @@ class CompareController
     @CompareService.getNetIncome()
     .then((response) =>
       @$scope.netIncomeData = response
-    )
-
-  getFIPercent: ->
-    @CompareService.getFIPercent()
-    .then((response) =>
-      @$scope.fiPercentData = response
-    )
-
-  getFISum: ->
-    @CompareService.getFISum()
-    .then((response) =>
-      @$scope.fiSumData = response
-    )
-
-  getFINetIncome: ->
-    @CompareService.getFINetIncome()
-    .then((response) =>
-      @$scope.fiNetIncomeData = response
-    )
-
-  getSVPercent: ->
-    @CompareService.getSvPercent()
-    .then((response) =>
-      @$scope.svPercentData = response
-    )
-
-  getSVSum: ->
-    @CompareService.getSVSum()
-    .then((response) =>
-      @$scope.svSumData = response
-    )
-
-  getSVNetIncome: ->
-    @CompareService.getSvNetIncome()
-    .then((response) =>
-      @$scope.svNetIncomeData = response
-    )
-
-  getDEPercent: ->
-    @CompareService.getDEPercent()
-    .then((response) =>
-      @$scope.dePercentData = response
-    )
-
-  getDESum: ->
-    @CompareService.getDESum()
-    .then((response) =>
-      @$scope.deSumData = response
-    )
-
-  getDENetIncome: ->
-    @CompareService.getDENetIncome()
-    .then((response) =>
-      @$scope.deNetIncomeData = response
     )
 
   formatCurrency: (currency) =>

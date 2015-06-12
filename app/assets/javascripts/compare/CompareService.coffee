@@ -105,7 +105,7 @@ class CompareService
     )
     deferred.promise
 
-  getSvNetIncome: () ->
+  getSVNetIncome: () ->
     @$log.debug "CompareService.getSvNetIncome"
     deferred = @$q.defer()
 
