@@ -10,6 +10,7 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import play.twirl.api.Html
 import services.{CompareServiceFI, CompareService, CompareServiceSV, CompareServiceDE}
 import scala.concurrent.Future
 
@@ -22,7 +23,8 @@ import reactivemongo.api._
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
 
-case class Chart(title: String, data: String)
+case class Chart(title: String, graph: Html)
+case class Tab(heading: String, select: String, charts: List[Chart], active: String="false")
 
 object Compare extends Controller with MongoController {
 
@@ -32,25 +34,33 @@ object Compare extends Controller with MongoController {
       "javascripts/compare/CompareService.js"
     )
 
-    val percentAreaCharts = List[Chart](
-      Chart("Suomi", "fiPercentData"),
-      Chart("Ruotsi", "svPercentData"),
-      Chart("Saksa", "dePercentData")
+    val tabs = List[Tab](
+      Tab("Veroprosentti", "loadPercent()", List[Chart](
+        Chart("Suomi", this.getAreaChartPercent("fiPercentData")),
+        Chart("Ruotsi", this.getAreaChartPercent("svPercentData")),
+        Chart("Saksa", this.getAreaChartPercent("dePercentData"))
+      ), active="true"),
+      Tab("Verosumma", "loadSum()", List[Chart](
+        Chart("Suomi", this.getAreaChartSum("fiSumData")),
+        Chart("Ruotsi", this.getAreaChartSum("svSumData")),
+        Chart("Saksa", this.getAreaChartSum("deSumData"))
+      )),
+      Tab("Nettotulot", "loadNetIncome()", List[Chart](
+        Chart("Suomi", this.getAreaChartSum("fiNetIncomeData")),
+        Chart("Ruotsi", this.getAreaChartSum("svNetIncomeData")),
+        Chart("Saksa", this.getAreaChartSum("deNetIncomeData"))
+      ))
     )
 
-    val sumAreaCharts = List[Chart](
-      Chart("Suomi", "fiSumData"),
-      Chart("Ruotsi", "svSumData"),
-      Chart("Saksa", "deSumData")
-    )
+    Ok(views.html.compare("Vertaa", assets, tabs))
+  }
 
-    val netIncomeAreaCharts = List[Chart](
-      Chart("Suomi", "fiNetIncomeData"),
-      Chart("Ruotsi", "svNetIncomeData"),
-      Chart("Saksa", "deNetIncomeData")
-    )
+  def getAreaChartPercent(data:String): Html = {
+    views.html.areaChart(data, yAxisTickFormat="formatPercent()")
+  }
 
-    Ok(views.html.compare("Vertaa", assets, percentAreaCharts, sumAreaCharts, netIncomeAreaCharts))
+  def getAreaChartSum(data:String): Html = {
+    views.html.areaChart(data, yAxisTickFormat="formatSum()")
   }
 
   /*

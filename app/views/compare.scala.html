@@ -1,5 +1,6 @@
-@(title: String, assets: List[String], percentAreaCharts: List[Chart], sumAreaCharts: List[Chart], netIncomeAreaCharts: List[Chart])
+@(title: String, assets: List[String], tabs: List[Tab])
 
+@import play.twirl.api.Html
 
 @lineChartPercent(data: String) = {
   @lineChart(data, yAxisTickFormat="formatPercent()")
@@ -9,18 +10,9 @@
   @lineChart(data, yAxisTickFormat="formatSum()")
 }
 
-@areaChartPercent(data: String) = {
-  @areaChart(data, yAxisTickFormat="formatPercent()")
-}
-
-@areaChartSum(data: String) = {
-  @areaChart(data, yAxisTickFormat="formatSum()")
-}
-
 @main(title, "CompareController as ctrl", assets) {
 
-
-  <h1 ng-click="loadNetIncome()">@title</h1>
+  <h1>@title</h1>
 
   <div class="row">
     <div class="col-sm-6">
@@ -34,36 +26,18 @@
   </div>
 
   <tabset>
-    <tab heading="Veroprosentti" select="loadPercent()" active="true">
-      <div class="row">
-        @for(chart <- percentAreaCharts) {
-          <div class="col-xs-6 col-sm-4 col-lg-3">
-            <h3>@chart.title</h3>
-            @areaChartPercent(data=chart.data)
-          </div>
-        }
-      </div>
-    </tab>
-    <tab heading="Verosumma" select="loadSum()">
-      <div class="row">
-        @for(chart <- sumAreaCharts) {
-        <div class="col-xs-6 col-sm-4 col-lg-3">
-          <h3>@chart.title</h3>
-          @areaChartSum(data=chart.data)
+    @for(tab <- tabs) {
+      <tab heading="@tab.heading" select="@tab.select" active="@tab.active">
+        <div class="row">
+          @for(chart <- tab.charts) {
+            <div class="col-xs-6 col-sm-4 col-lg-3">
+              <h3>@chart.title</h3>
+              @chart.graph
+            </div>
+          }
         </div>
-        }
-      </div>
-    </tab>
-    <tab heading="Nettotulot" select="loadNetIncome()">
-      <div class="row">
-        @for(chart <- netIncomeAreaCharts) {
-        <div class="col-xs-6 col-sm-4 col-lg-3">
-          <h3>@chart.title</h3>
-          @areaChartSum(data=chart.data)
-        </div>
-        }
-      </div>
-    </tab>
+      </tab>
+    }
   </tabset>
 
 }
