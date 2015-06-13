@@ -21,10 +21,10 @@ object Compare extends Controller with MongoController {
     )
 
     val tabs = List[Tab](
-      Tab("Veroprosentti", "loadPercent()", List[Chart](
-        Chart("Suomi", this.getAreaChartPercent("fiPercentData")),
-        Chart("Ruotsi", this.getAreaChartPercent("svPercentData")),
-        Chart("Saksa", this.getAreaChartPercent("dePercentData"))
+      Tab("Veroprosentti", "loadAllPercent()", List[Chart](
+        Chart("Suomi", this.getAreaChartPercent("fi.percent.data")),
+        Chart("Ruotsi", this.getAreaChartPercent("sv.percent.data")),
+        Chart("Saksa", this.getAreaChartPercent("de.percent.data"))
       ), active="true"),
       Tab("Verosumma", "loadSum()", List[Chart](
         Chart("Suomi", this.getAreaChartSum("fiSumData")),

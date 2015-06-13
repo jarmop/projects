@@ -2,6 +2,11 @@ class CompareController
   constructor: (@$scope, @$log, @CompareService) ->
     @$log.debug "constructing CompareController"
 
+    countries = ["fi","sv","de"]
+    countries.forEach((country) =>
+      @$scope[country] = {"percent" : {}}
+    )
+
     @getPercent()
     @getNetIncome()
 
@@ -29,10 +34,17 @@ class CompareController
       return (sum) =>
         return @formatCurrency(sum)
 
-    @$scope.loadPercent = () =>
-      @$scope.getFIPercent()
-      @$scope.getSVPercent()
-      @$scope.getDEPercent()
+    @$scope.loadAllPercent = () =>
+      countries.forEach(@$scope.loadPercent)
+      
+    @$scope.loadPercent = (country) =>
+      @$scope.loadData(country, "percent")
+      
+    @$scope.loadData = (country, type) =>
+      if (@$scope[country][type]["data"] == undefined)
+        @CompareService.getData(type, country).then((response) =>
+          @$scope[country][type]["data"] = response
+        )
 
     @$scope.getFIPercent = () =>
       @CompareService.getFIPercent().then((response) =>
