@@ -13,6 +13,9 @@ class CompareService
     url = "/compare"
     if (country.length > 0)
       url += "/" + country
+
+    if (type == "netIncome")
+      type = "net-income"
     url += "/" + type
 
     @$http.get(url).success((data, status, headers) =>

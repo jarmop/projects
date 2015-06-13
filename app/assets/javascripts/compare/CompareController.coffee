@@ -4,7 +4,11 @@ class CompareController
 
     countries = ["fi","sv","de"]
     countries.forEach((country) =>
-      @$scope[country] = {"percent" : {}}
+      @$scope[country] = {
+        "percent" : {},
+        "sum" : {},
+        "netIncome" : {}
+      }
     )
 
     @getPercent()
@@ -34,11 +38,14 @@ class CompareController
       return (sum) =>
         return @formatCurrency(sum)
 
-    @$scope.loadAllPercent = () =>
-      countries.forEach(@$scope.loadPercent)
-      
-    @$scope.loadPercent = (country) =>
-      @$scope.loadData(country, "percent")
+    @$scope.loadAllPercent = () => @$scope.loadAll("percent")
+
+    @$scope.loadAllSum = () => @$scope.loadAll("sum")
+
+    @$scope.loadAllNetIncome = () => @$scope.loadAll("netIncome")
+
+    @$scope.loadAll = (type) =>
+      countries.forEach((country) => @$scope.loadData(country, type))
       
     @$scope.loadData = (country, type) =>
       if (@$scope[country][type]["data"] == undefined)

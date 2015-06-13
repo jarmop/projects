@@ -26,15 +26,15 @@ object Compare extends Controller with MongoController {
         Chart("Ruotsi", this.getAreaChartPercent("sv.percent.data")),
         Chart("Saksa", this.getAreaChartPercent("de.percent.data"))
       ), active="true"),
-      Tab("Verosumma", "loadSum()", List[Chart](
-        Chart("Suomi", this.getAreaChartSum("fiSumData")),
-        Chart("Ruotsi", this.getAreaChartSum("svSumData")),
-        Chart("Saksa", this.getAreaChartSum("deSumData"))
+      Tab("Verosumma", "loadAllSum()", List[Chart](
+        Chart("Suomi", this.getAreaChartSum("fi.sum.data")),
+        Chart("Ruotsi", this.getAreaChartSum("sv.sum.data")),
+        Chart("Saksa", this.getAreaChartSum("de.sum.data"))
       )),
-      Tab("Nettotulot", "loadNetIncome()", List[Chart](
-        Chart("Suomi", this.getAreaChartSum("fiNetIncomeData")),
-        Chart("Ruotsi", this.getAreaChartSum("svNetIncomeData")),
-        Chart("Saksa", this.getAreaChartSum("deNetIncomeData"))
+      Tab("Nettotulot", "loadAllNetIncome()", List[Chart](
+        Chart("Suomi", this.getAreaChartSum("fi.netIncome.data")),
+        Chart("Ruotsi", this.getAreaChartSum("sv.netIncome.data")),
+        Chart("Saksa", this.getAreaChartSum("de.netIncome.data"))
       ))
     )
 
