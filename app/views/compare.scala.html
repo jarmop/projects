@@ -1,4 +1,5 @@
-@(title: String, assets: List[String])
+@(title: String, assets: List[String], percentAreaCharts: List[Chart], sumAreaCharts: List[Chart], netIncomeAreaCharts: List[Chart])
+
 
 @lineChartPercent(data: String) = {
   @lineChart(data, yAxisTickFormat="formatPercent()")
@@ -35,50 +36,32 @@
   <tabset>
     <tab heading="Veroprosentti" select="loadPercent()" active="true">
       <div class="row">
-        <div class="col-xs-6 col-sm-4 col-lg-3">
-          <h3>Suomi</h3>
-          @areaChartPercent(data="fiPercentData")
-        </div>
-        <div class="col-xs-6 col-sm-4 col-lg-3">
-          <h3>Ruotsi</h3>
-          @areaChartPercent(data="svPercentData")
-        </div>
-        <div class="col-xs-6 col-sm-4 col-lg-3">
-          <h3>Saksa</h3>
-          @areaChartPercent(data="dePercentData")
-        </div>
-      </div>
-    </tab>
-    <tab heading="Nettotulot" select="loadNetIncome()">
-      <div class="row">
-        <div class="col-sm-6 col-lg-4">
-          <h3>Suomi</h3>
-          @areaChartSum(data="fiNetIncomeData")
-        </div>
-        <div class="col-sm-6 col-lg-4">
-          <h3>Ruotsi</h3>
-          @areaChartSum(data="svNetIncomeData")
-        </div>
-        <div class="col-sm-6 col-lg-4">
-          <h3>Saksa</h3>
-          @areaChartSum(data="deNetIncomeData")
-        </div>
+        @for(chart <- percentAreaCharts) {
+          <div class="col-xs-6 col-sm-4 col-lg-3">
+            <h3>@chart.title</h3>
+            @areaChartPercent(data=chart.data)
+          </div>
+        }
       </div>
     </tab>
     <tab heading="Verosumma" select="loadSum()">
       <div class="row">
-        <div class="col-sm-6 col-lg-4">
-          <h3>Suomi</h3>
-          @areaChartSum(data="fiSumData")
+        @for(chart <- sumAreaCharts) {
+        <div class="col-xs-6 col-sm-4 col-lg-3">
+          <h3>@chart.title</h3>
+          @areaChartSum(data=chart.data)
         </div>
-        <div class="col-sm-6 col-lg-4">
-          <h3>Ruotsi</h3>
-          @areaChartSum(data="svSumData")
+        }
+      </div>
+    </tab>
+    <tab heading="Nettotulot" select="loadNetIncome()">
+      <div class="row">
+        @for(chart <- netIncomeAreaCharts) {
+        <div class="col-xs-6 col-sm-4 col-lg-3">
+          <h3>@chart.title</h3>
+          @areaChartSum(data=chart.data)
         </div>
-        <div class="col-sm-6 col-lg-4">
-          <h3>Saksa</h3>
-          @areaChartSum(data="deSumData")
-        </div>
+        }
       </div>
     </tab>
   </tabset>

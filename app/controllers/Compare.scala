@@ -22,6 +22,8 @@ import reactivemongo.api._
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
 
+case class Chart(title: String, data: String)
+
 object Compare extends Controller with MongoController {
 
   def index = Action {
@@ -30,7 +32,25 @@ object Compare extends Controller with MongoController {
       "javascripts/compare/CompareService.js"
     )
 
-    Ok(views.html.compare("Vertaa", assets))
+    val percentAreaCharts = List[Chart](
+      Chart("Suomi", "fiPercentData"),
+      Chart("Ruotsi", "svPercentData"),
+      Chart("Saksa", "dePercentData")
+    )
+
+    val sumAreaCharts = List[Chart](
+      Chart("Suomi", "fiSumData"),
+      Chart("Ruotsi", "svSumData"),
+      Chart("Saksa", "deSumData")
+    )
+
+    val netIncomeAreaCharts = List[Chart](
+      Chart("Suomi", "fiNetIncomeData"),
+      Chart("Ruotsi", "svNetIncomeData"),
+      Chart("Saksa", "deNetIncomeData")
+    )
+
+    Ok(views.html.compare("Vertaa", assets, percentAreaCharts, sumAreaCharts, netIncomeAreaCharts))
   }
 
   /*
