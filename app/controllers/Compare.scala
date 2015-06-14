@@ -79,39 +79,22 @@ object Compare extends Controller with MongoController {
   }
 
   def fiPercent(update: Boolean) = Action.async {
+    val id = "fiComparePercent"
     if (update) {
       val json = CompareServiceFI.getPercentData
-      collection.update(Json.obj("_id" -> "fiComparePercent"), Json.obj("data" -> json)).map(lastError =>
-        Ok("updated percent json")
-      )
+      this.update(id, json)
     } else {
-      collection
-        .find(Json.obj("_id" -> "fiComparePercent"))
-        .one[JsObject]
-        .map { json =>
-        if (json.nonEmpty) {
-          Ok(json.get \ "data")
-        } else {
-          Ok(Json.arr())
-        }
-
-      }
+      this.load(id)
     }
   }
 
   def fiSum(update: Boolean) = Action.async {
+    val id = "fiCompareSum"
     if (update) {
       val json = CompareServiceFI.getSumData
-      collection.update(Json.obj("_id" -> "fiCompareSum"), Json.obj("data" -> json)).map(lastError =>
-        Ok("updated sum json")
-      )
+      this.update(id, json)
     } else {
-      collection
-        .find(Json.obj("_id" -> "fiCompareSum"))
-        .one[JsObject]
-        .map { json =>
-        Ok(json.get \ "data")
-      }
+      this.load(id)
     }
   }
 
