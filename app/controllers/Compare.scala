@@ -78,6 +78,56 @@ object Compare extends Controller with MongoController {
     }
   }
 
+  def getId(dataType: String, country: String = ""): String = {
+    var id = "compare." + dataType
+    if (country.length > 0) { id += "." + country }
+    id
+  }
+
+  def getPercent(country: String) = country match {
+    case "fi" => CompareServiceFI.getPercentData
+    case "sv" => CompareServiceSV.getPercentData
+    case "de" => CompareServiceDE.getPercentData
+    case "" => CompareService.getPercentData
+  }
+
+  def getSum(country: String) = country match {
+    case "fi" => CompareServiceFI.getSumData
+    case "sv" => CompareServiceSV.getSumData
+    case "de" => CompareServiceDE.getSumData
+  }
+
+  def getNetIncome(country: String) = country match {
+    case "fi" => CompareServiceFI.getNetIncomeData
+    case "sv" => CompareServiceSV.getNetIncomeData
+    case "de" => CompareServiceDE.getNetIncomeData
+    case "" => CompareService.getNetIncomeData
+  }
+
+  def getData(dataType: String, country: String = "") = dataType match {
+    case "percent" => this.getPercent(country)
+    case "sum" => this.getSum(country)
+    case "net-income" => this.getNetIncome(country)
+  }
+
+  def updateData(dataType: String, country: String) = Action.async {
+    val id = this.getId(dataType, country)
+    val data = this.getData(dataType, country)
+    collection.update(Json.obj("_id" -> id), Json.obj("data" -> data)).map(lastError =>
+      Ok("updated " + id)
+    )
+  }
+
+  def loadData(dataType: String, country: String = "") = Action.async {
+    val id = this.getId(dataType, country)
+    collection
+      .find(Json.obj("_id" -> id))
+      .one[JsObject]
+      .map { json =>
+      Ok(json.get \ "data")
+    }
+  }
+
   def fiPercent(update: Boolean) = Action.async {
     val id = "fiComparePercent"
     if (update) {
@@ -184,22 +234,19 @@ object Compare extends Controller with MongoController {
   }
 
   def updateAll = Action {
-    val keys = Map[String, JsArray](
-      "comparePercent" -> CompareService.getPercentData,
-      "compareNetIncome" -> CompareService.getNetIncomeData,
-      "fiComparePercent" -> CompareServiceFI.getPercentData,
-      "fiCompareNetIncome" -> CompareServiceFI.getNetIncomeData,
-      "fiCompareSum" -> CompareServiceFI.getSumData,
-      "svComparePercent" -> CompareServiceSV.getPercentData,
-      "svCompareNetIncome" -> CompareServiceSV.getNetIncomeData,
-      "svCompareSum" -> CompareServiceSV.getSumData,
-      "deComparePercent" -> CompareServiceDE.getPercentData,
-      "deCompareNetIncome" -> CompareServiceDE.getNetIncomeData,
-      "deCompareSum" -> CompareServiceDE.getSumData
-    )
-    for ((key, data) <- keys) {
-      collection.update(Json.obj("_id" -> key), Json.obj("data" -> data))
+    val countries = List[String]("fi", "sv", "de")
+    val types = List[String]("percent", "sum", "net-income")
+    for (dataType <- types) {
+      for (country <- countries) {
+        collection.update(
+          Json.obj("_id" -> this.getId(dataType, country)),
+          Json.obj("data" -> this.getData(dataType, country))
+        )
+      }
     }
+    collection.update(Json.obj("_id" -> this.getId("percent")), Json.obj("data" -> this.getData("percent")))
+    collection.update(Json.obj("_id" -> this.getId("net-income")), Json.obj("data" -> this.getData("net-income")))
+
     Ok("Updated all")
   }
 }

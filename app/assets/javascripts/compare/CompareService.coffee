@@ -10,13 +10,12 @@ class CompareService
     @$log.debug "CompareService.get" + type + country
     deferred = @$q.defer()
 
-    url = "/compare"
-    if (country.length > 0)
-      url += "/" + country
-
+    url = "/compare/data"
     if (type == "netIncome")
       type = "net-income"
     url += "/" + type
+    if (country.length > 0)
+      url += "/" + country
 
     @$http.get(url).success((data, status, headers) =>
       @$log.info("Successfully got data - status #{status}")
