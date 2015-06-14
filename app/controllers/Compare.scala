@@ -58,26 +58,6 @@ object Compare extends Controller with MongoController {
    */
   def collection: JSONCollection = db.collection[JSONCollection]("persons")
 
-  def percent(update: Boolean) = Action.async {
-    val id = "comparePercent"
-    if (update) {
-      val data = CompareService.getPercentData
-      this.update(id, data)
-    } else {
-      this.load(id)
-    }
-  }
-
-  def netIncome(update: Boolean) = Action.async {
-    val id = "compareNetIncome"
-    if (update) {
-      val data = CompareService.getNetIncomeData
-      this.update(id, data)
-    } else {
-      this.load(id)
-    }
-  }
-
   def getId(dataType: String, country: String = ""): String = {
     var id = "compare." + dataType
     if (country.length > 0) { id += "." + country }
@@ -120,111 +100,6 @@ object Compare extends Controller with MongoController {
 
   def loadData(dataType: String, country: String = "") = Action.async {
     val id = this.getId(dataType, country)
-    collection
-      .find(Json.obj("_id" -> id))
-      .one[JsObject]
-      .map { json =>
-      Ok(json.get \ "data")
-    }
-  }
-
-  def fiPercent(update: Boolean) = Action.async {
-    val id = "fiComparePercent"
-    if (update) {
-      val json = CompareServiceFI.getPercentData
-      this.update(id, json)
-    } else {
-      this.load(id)
-    }
-  }
-
-  def fiSum(update: Boolean) = Action.async {
-    val id = "fiCompareSum"
-    if (update) {
-      val json = CompareServiceFI.getSumData
-      this.update(id, json)
-    } else {
-      this.load(id)
-    }
-  }
-
-  def fiNetIncome(update: Boolean) = Action.async {
-    val id = "fiCompareNetIncome"
-    if (update) {
-      val json = CompareServiceFI.getNetIncomeData
-      this.update(id, json)
-    } else {
-      this.load(id)
-    }
-  }
-
-  def svPercent(update: Boolean) = Action.async {
-    val id = "svComparePercent"
-    if (update) {
-      val json = CompareServiceSV.getPercentData
-      this.update(id, json)
-    } else {
-      this.load(id)
-    }
-  }
-
-  def svNetIncome(update: Boolean) = Action.async {
-    val id = "svCompareNetIncome"
-    if (update) {
-      val json = CompareServiceSV.getNetIncomeData
-      this.update(id, json)
-    } else {
-      this.load(id)
-    }
-  }
-
-  def svSum(update: Boolean) = Action.async {
-    val id = "svCompareSum"
-    if (update) {
-      val json = CompareServiceSV.getSumData
-      this.update(id, json)
-    } else {
-      this.load(id)
-    }
-  }
-
-  def dePercent(update: Boolean) = Action.async {
-    val id = "deComparePercent"
-    if (update) {
-      val json = CompareServiceDE.getPercentData
-      this.update(id, json)
-    } else {
-      this.load(id)
-    }
-  }
-
-  def deNetIncome(update: Boolean) = Action.async {
-    val id = "deCompareNetIncome"
-    if (update) {
-      val json = CompareServiceDE.getNetIncomeData
-      this.update(id, json)
-    } else {
-      this.load(id)
-    }
-  }
-
-  def deSum(update: Boolean) = Action.async {
-    val id = "deCompareSum"
-    if (update) {
-      val json = CompareServiceDE.getSumData
-      this.update(id, json)
-    } else {
-      this.load(id)
-    }
-  }
-
-  def update(id: String, data: JsArray) = {
-    collection.update(Json.obj("_id" -> id), Json.obj("data" -> data)).map(lastError =>
-      Ok("updated " + id)
-    )
-  }
-
-  def load(id: String) = {
     collection
       .find(Json.obj("_id" -> id))
       .one[JsObject]
