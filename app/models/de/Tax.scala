@@ -4,7 +4,7 @@ import models.{AbstractTax, TaxTrait}
 import play.api.libs.json.{Json, JsObject}
 import services._
 
-class Tax(earnedIncome: Double, municipality: String, age: Int) extends AbstractTax(earnedIncome) with models.TaxTrait {
+class Tax(earnedIncome: Double, municipality: String = "Berlin", age: Int = 30) extends AbstractTax(earnedIncome) with models.TaxTrait {
   val basicAllowance = 1000
   val socialSecurity = new SocialSecurity(earnedIncome)
   val incomeTax = new IncomeTax(earnedIncome, (this.getIncomeTaxDeductions + this.basicAllowance))

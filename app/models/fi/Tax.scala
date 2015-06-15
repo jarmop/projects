@@ -4,7 +4,7 @@ import models.{TaxTrait, AbstractTax}
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 
-class Tax(earnedIncome: Double, municipality: String, age: Int) extends AbstractTax(earnedIncome) with TaxTrait {
+class Tax(earnedIncome: Double, municipality: String = "Helsinki", age: Int = 30) extends AbstractTax(earnedIncome) with TaxTrait {
   private val incomeDeduction: Double = 620
 
   private var totalTax: Double = -1

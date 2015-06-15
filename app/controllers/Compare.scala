@@ -5,9 +5,10 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import play.twirl.api.Html
-import services.{CompareServiceFI, CompareService, CompareServiceSV, CompareServiceDE}
+import services.{CompareServiceFI, CompareService, CompareServiceSV, CompareServiceDE, ChartService}
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
+import models.CountryFactory
 
 case class Chart(title: String, graph: Html)
 case class Tab(heading: String, select: String, charts: List[Chart], active: String="false")
@@ -41,11 +42,11 @@ object Compare extends Controller with MongoController {
     Ok(views.html.compare("Vertaa", assets, tabs))
   }
 
-  def getAreaChartPercent(data:String): Html = {
+  def getAreaChartPercent(data: String): Html = {
     views.html.areaChart(data, yAxisTickFormat="formatPercent()")
   }
 
-  def getAreaChartSum(data:String): Html = {
+  def getAreaChartSum(data: String): Html = {
     views.html.areaChart(data, yAxisTickFormat="formatSum()")
   }
 
@@ -68,7 +69,7 @@ object Compare extends Controller with MongoController {
     case "fi" => CompareServiceFI.getPercentData
     case "sv" => CompareServiceSV.getPercentData
     case "de" => CompareServiceDE.getPercentData
-    case "" => CompareService.getPercentData
+    case "" => ChartService.getPercentData
   }
 
   def getSum(country: String) = country match {
@@ -109,10 +110,9 @@ object Compare extends Controller with MongoController {
   }
 
   def updateAll = Action {
-    val countries = List[String]("fi", "sv", "de")
     val types = List[String]("percent", "sum", "net-income")
     for (dataType <- types) {
-      for (country <- countries) {
+      for (country <- CountryFactory.getCountryCodes) {
         collection.update(
           Json.obj("_id" -> this.getId(dataType, country)),
           Json.obj("data" -> this.getData(dataType, country))

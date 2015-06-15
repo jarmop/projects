@@ -4,7 +4,7 @@ import models.TaxTrait
 import play.api.libs.json.JsObject
 import services.{euroToSVKrona, svKronaToEuro}
 
-class TaxEuro(earnedIncome: Double, municipality: String, age: Int) extends SwedishTax with TaxTrait {
+class TaxEuro(earnedIncome: Double, municipality: String = "Stockholm", age: Int = 30) extends SwedishTax with TaxTrait {
   val tax = new Tax(euroToSVKrona(earnedIncome), municipality, age)
 
   def getTotalTaxPercentage: Double = {
