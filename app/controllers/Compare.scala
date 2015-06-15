@@ -82,7 +82,7 @@ object Compare extends Controller with MongoController {
     case "fi" => CompareServiceFI.getNetIncomeData
     case "sv" => CompareServiceSV.getNetIncomeData
     case "de" => CompareServiceDE.getNetIncomeData
-    case "" => CompareService.getNetIncomeData
+    case "" => ChartService.getNetIncomeData
   }
 
   def getData(dataType: String, country: String = "") = dataType match {
