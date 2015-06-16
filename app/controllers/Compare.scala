@@ -69,7 +69,7 @@ object Compare extends Controller with MongoController {
     case "fi" => CompareServiceFI.getPercentData
     case "sv" => CompareServiceSV.getPercentData
     case "de" => CompareServiceDE.getPercentData
-    case "" => ChartService.getPercentData
+    case "" => ChartService.getPercentDataAll
   }
 
   def getSum(country: String) = country match {
@@ -82,7 +82,7 @@ object Compare extends Controller with MongoController {
     case "fi" => CompareServiceFI.getNetIncomeData
     case "sv" => CompareServiceSV.getNetIncomeData
     case "de" => CompareServiceDE.getNetIncomeData
-    case "" => ChartService.getNetIncomeData
+    case "" => ChartService.getNetIncomeDataAll
   }
 
   def getData(dataType: String, country: String = "") = dataType match {

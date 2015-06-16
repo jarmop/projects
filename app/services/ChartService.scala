@@ -1,6 +1,6 @@
 package services
 
-import models.{TaxTrait, CountryFactory}
+import models.{CountryTrait, TaxTrait, CountryFactory}
 import play.api.libs.json.{Writes, JsValue, Json}
 import scala.collection.mutable.{ListBuffer, Map}
 
@@ -23,11 +23,11 @@ object ChartService {
     dataMap
   }
 
-  def fillDataMap(dataMap: Map[String, ListBuffer[List[Double]]], getValue: (TaxTrait) => Double, range: Range, countryCode: String) = {
+  def fillDataMap(dataMap: Map[String, ListBuffer[List[Double]]], getValue: (TaxTrait) => Double, range: Range, country: CountryTrait, key: String) = {
     for (earnedIncome <- range.start to range.end by range.step) {
-      dataMap(countryCode).append(List[Double](
+      dataMap(key).append(List[Double](
         earnedIncome,
-        getValue(CountryFactory.getCountry(countryCode).getTax(earnedIncome))
+        getValue(country.getTax(earnedIncome))
       ))
     }
     dataMap
@@ -35,7 +35,7 @@ object ChartService {
 
   def fillDataMapAll(dataMap: Map[String, ListBuffer[List[Double]]], getValue: (TaxTrait) => Double, range: Range) = {
     for (countryCode <- CountryFactory.getCountryCodes) {
-      fillDataMap(dataMap, getValue, range, countryCode)
+      fillDataMap(dataMap, getValue, range, CountryFactory.getCountry(countryCode), countryCode)
     }
     dataMap
   }
@@ -48,21 +48,25 @@ object ChartService {
     dataList
   }
 
-  def getData(getValue: (TaxTrait) => Double): JsValue = {
+  def getDataAll(getValue: (TaxTrait) => Double): JsValue = {
     val dataMap = this.getDataMap
     this.fillDataMapAll(dataMap, getValue, 0 to 100000 by 1000)
     Json.toJson(this.dataMapToList(dataMap))
   }
+  
+  def getPercentage = (tax: TaxTrait) => {tax.getTotalTaxPercentage}
+  def getSum = (tax: TaxTrait) => {tax.getTotalTax}
+  def getNetIncome = (tax: TaxTrait) => {tax.getNetIncome}
 
-  def getPercentData: JsValue = {
-    this.getData((tax: TaxTrait) => {tax.getTotalTaxPercentage})
+  def getPercentDataAll: JsValue = {
+    this.getDataAll(this.getPercentage)
   }
 
-  def getSumData: JsValue = {
-    this.getData((tax: TaxTrait) => {tax.getTotalTax})
+  def getSumDataAll: JsValue = {
+    this.getDataAll(this.getSum)
   }
 
-  def getNetIncomeData: JsValue = {
-    this.getData((tax: TaxTrait) => {tax.getNetIncome})
+  def getNetIncomeDataAll: JsValue = {
+    this.getDataAll(this.getNetIncome)
   }
 }
