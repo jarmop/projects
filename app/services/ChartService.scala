@@ -23,17 +23,12 @@ object ChartService {
     dataMap
   }
 
-  def getTaxData(tax: TaxTrait, dataType: String): Double = dataType match {
-    case "percent" => tax.getTotalTaxPercentage
-    case "netIncome" => tax.getNetIncome
-  }
-
-  def fillDataMap(dataMap: Map[String, ListBuffer[List[Double]]], dataType: String, range: Range) = {
+  def fillDataMap(dataMap: Map[String, ListBuffer[List[Double]]], getValue: (TaxTrait) => Double, range: Range) = {
     for (earnedIncome <- 0 to 100000 by 1000) {
       for (countryCode <- CountryFactory.getCountryCodes) {
         dataMap(countryCode).append(List[Double](
           earnedIncome,
-          this.getTaxData(CountryFactory.getCountry(countryCode).getTax(earnedIncome), dataType)
+          getValue(CountryFactory.getCountry(countryCode).getTax(earnedIncome))
         ))
       }
     }
@@ -48,17 +43,21 @@ object ChartService {
     dataList
   }
 
-  def getData(dataType: String): JsValue = {
+  def getData(getValue: (TaxTrait) => Double): JsValue = {
     var dataMap = this.getDataMap
-    dataMap = this.fillDataMap(dataMap, dataType, 0 to 100000 by 1000)
+    dataMap = this.fillDataMap(dataMap, getValue, 0 to 100000 by 1000)
     Json.toJson(this.dataMapToList(dataMap))
   }
 
   def getPercentData: JsValue = {
-    this.getData("percent")
+    this.getData((tax: TaxTrait) => {tax.getTotalTaxPercentage})
+  }
+
+  def getSumData: JsValue = {
+    this.getData((tax: TaxTrait) => {tax.getTotalTax})
   }
 
   def getNetIncomeData: JsValue = {
-    this.getData("netIncome")
+    this.getData((tax: TaxTrait) => {tax.getNetIncome})
   }
 }
