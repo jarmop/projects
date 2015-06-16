@@ -23,14 +23,19 @@ object ChartService {
     dataMap
   }
 
-  def fillDataMap(dataMap: Map[String, ListBuffer[List[Double]]], getValue: (TaxTrait) => Double, range: Range) = {
-    for (earnedIncome <- 0 to 100000 by 1000) {
-      for (countryCode <- CountryFactory.getCountryCodes) {
-        dataMap(countryCode).append(List[Double](
-          earnedIncome,
-          getValue(CountryFactory.getCountry(countryCode).getTax(earnedIncome))
-        ))
-      }
+  def fillDataMap(dataMap: Map[String, ListBuffer[List[Double]]], getValue: (TaxTrait) => Double, range: Range, countryCode: String) = {
+    for (earnedIncome <- range.start to range.end by range.step) {
+      dataMap(countryCode).append(List[Double](
+        earnedIncome,
+        getValue(CountryFactory.getCountry(countryCode).getTax(earnedIncome))
+      ))
+    }
+    dataMap
+  }
+
+  def fillDataMapAll(dataMap: Map[String, ListBuffer[List[Double]]], getValue: (TaxTrait) => Double, range: Range) = {
+    for (countryCode <- CountryFactory.getCountryCodes) {
+      fillDataMap(dataMap, getValue, range, countryCode)
     }
     dataMap
   }
@@ -44,8 +49,8 @@ object ChartService {
   }
 
   def getData(getValue: (TaxTrait) => Double): JsValue = {
-    var dataMap = this.getDataMap
-    dataMap = this.fillDataMap(dataMap, getValue, 0 to 100000 by 1000)
+    val dataMap = this.getDataMap
+    this.fillDataMapAll(dataMap, getValue, 0 to 100000 by 1000)
     Json.toJson(this.dataMapToList(dataMap))
   }
 
