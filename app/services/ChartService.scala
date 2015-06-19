@@ -70,11 +70,11 @@ object ChartService {
     this.getDataAll(this.getNetIncome)
   }
 
-  def fillDataList(range: Range, country: CountryTrait, getValue: (SubTaxValueSet) => Double) = {
+  private def fillDataList(range: Range, country: CountryTrait, getValue: (SubTaxValueSet) => Double) = {
     val dataList = country.getTax.getDataList
     for (earnedIncome <- range.start to range.end by range.step) {
+      val tax = country.getTax(earnedIncome)
       for (data <- dataList) {
-        val tax = country.getTax(earnedIncome)
         data.values.append(
           List(
             earnedIncome,
@@ -100,5 +100,26 @@ object ChartService {
 
   def getSumData(country: CountryTrait): JsValue = {
     Json.toJson(this.fillDataList(0 to 100000 by 1000, country, this.getSum))
+  }
+
+
+  def getNetIncomeData(country: CountryTrait): JsValue = {
+    val taxList = new ListBuffer[List[Double]]
+    val netIncomeList = new ListBuffer[List[Double]]
+    for (earnedIncome <- 0 to 100000 by 1000) {
+      val tax = country.getTax(earnedIncome)
+      taxList.append(List(
+        earnedIncome,
+        tax.getTotalTax
+      ))
+      netIncomeList.append(List(
+        earnedIncome,
+        tax.getNetIncome
+      ))
+    }
+    Json.toJson(List[Data](
+      Data("Nettotulot", netIncomeList),
+      Data("Vero", taxList)
+    ))
   }
 }
