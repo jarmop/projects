@@ -109,8 +109,8 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
     )
   }
 
-  def getSubTaxValueSetByName(subTaxName: String): SubTaxValueSet = subTaxName match {
-    case MunicipalityTax.name => SubTaxValueSet(this.getMunicipalityTax, this.getMunicipalityTaxPercentage)
+  def getSubTaxByName(subTaxName: String): SubTaxTrait = subTaxName match {
+    case MunicipalityTax.name => this.municipalityTax
   }
 }
 

@@ -79,7 +79,7 @@ class TaxEuro(earnedIncome: Double, municipality: String = "Stockholm", age: Int
     this.tax.getJson
   }
 
-  def getSubTaxValueSetByName(subTaxName: String): SubTaxValueSet = {
-    this.tax.getSubTaxValueSetByName(subTaxName)
+  def getSubTaxByName(subTaxName: String): SubTaxTrait = {
+    this.tax.getSubTaxByName(subTaxName)
   }
 }

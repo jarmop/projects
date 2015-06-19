@@ -107,8 +107,8 @@ class Tax(earnedIncome: Double, municipality: String = "Berlin", age: Int = 30) 
     )
   }
 
-  def getSubTaxValueSetByName(subTaxName: String): SubTaxValueSet = subTaxName match {
-    case ChurchTax.name => SubTaxValueSet(this.getChurchTax, this.getChurchTaxPercentage)
+  def getSubTaxByName(subTaxName: String): SubTaxTrait = subTaxName match {
+    case ChurchTax.name => this.churchTax
   }
 }
 

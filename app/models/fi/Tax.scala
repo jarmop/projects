@@ -187,15 +187,15 @@ class Tax(earnedIncome: Double, municipality: String = "Helsinki", age: Int = 30
     )
   }
 
-  def getSubTaxValueSetByName(subTaxName: String): SubTaxValueSet = subTaxName match {
-    case ChurchTax.name => SubTaxValueSet(this.getChurchTax, this.getChurchTaxPercentage)
-    case GovernmentTax.name => SubTaxValueSet(this.getGovernmentTax, this.getGovernmentTaxPercentage)
-    case MedicalCareInsurancePayment.name => SubTaxValueSet(this.getMedicalCareInsurancePayment, this.getMedicalCareInsurancePaymentPercentage)
-    case MunicipalityTax.name => SubTaxValueSet(this.getMunicipalityTax, this.getMunicipalityTaxPercentage)
-    case PensionContribution.name => SubTaxValueSet(this.getPensionContribution, this.getPensionContributionPercentage)
-    case PerDiemPayment.name => SubTaxValueSet(this.getPerDiemPayment, this.getPerDiemPaymentPercentage)
-    case UnemploymentInsurance.name => SubTaxValueSet(this.getUnemploymentInsurance, this.getUnemploymentInsurancePercentage)
-    case YLETax.name => SubTaxValueSet(this.getYleTax, this.getYleTaxPercentage)
+  def getSubTaxByName(subTaxName: String): SubTaxTrait = subTaxName match {
+    case ChurchTax.name => this.churchTax
+    case GovernmentTax.name => this.governmentTax
+    case MedicalCareInsurancePayment.name => this.medicalCareInsurancePayment
+    case MunicipalityTax.name => this.municipalityTax
+    case PensionContribution.name => this.pensionContribution
+    case PerDiemPayment.name => this.perDiemPayment
+    case UnemploymentInsurance.name => this.unemploymentInsurance
+    case YLETax.name => this.yleTax
   }
 }
 

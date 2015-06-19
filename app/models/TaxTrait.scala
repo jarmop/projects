@@ -7,5 +7,6 @@ trait TaxTrait {
   def getTotalTax: Double
   def getTotalTaxPercentage: Double
   def getNetIncome: Double
+  def getSubTaxByName(subTaxName: String): SubTaxTrait
   def getSubTaxValueSetByName(subTaxName: String): SubTaxValueSet
 }
