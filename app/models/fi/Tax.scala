@@ -1,8 +1,11 @@
 package models.fi
 
-import models.{TaxTrait, AbstractTax}
+import models._
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
+import services.Data
+
+import scala.collection.mutable.ListBuffer
 
 class Tax(earnedIncome: Double, municipality: String = "Helsinki", age: Int = 30) extends AbstractTax(earnedIncome) with TaxTrait {
   private val incomeDeduction: Double = 620
@@ -25,7 +28,7 @@ class Tax(earnedIncome: Double, municipality: String = "Helsinki", age: Int = 30
 
   private val governmentTax: GovernmentTax = new GovernmentTax(earnedIncome, this.incomeDeduction, this.commonDeduction.get("total").get)
   private val municipalityTax: MunicipalityTax = new MunicipalityTax(earnedIncome, municipality, age, this.incomeDeduction, this.commonDeduction.get("total").get)
-  private val YLETax: YLETax = new YLETax(earnedIncome, this.incomeDeduction)
+  private val yleTax: YLETax = new YLETax(earnedIncome, this.incomeDeduction)
   private val medicalCareInsurancePayment = new MedicalCareInsurancePayment(this.municipalityTax.getDeductedSalary)
   private val churchTax = new ChurchTax(earnedIncome, municipality, this.municipalityTax.getTotalTaxDeduction)
 
@@ -129,7 +132,7 @@ class Tax(earnedIncome: Double, municipality: String = "Helsinki", age: Int = 30
   }
 
   def getYleTax: Double = {
-    this.YLETax.getTax
+    this.yleTax.getSum
   }
 
   def getYleTaxPercentage: Double = {
@@ -169,7 +172,7 @@ class Tax(earnedIncome: Double, municipality: String = "Helsinki", age: Int = 30
       "taxes" -> Json.obj(
         "municipalityTax" -> this.municipalityTax.getJson,
         "governmentTax" -> this.governmentTax.getJson,
-        "YLETax" -> this.YLETax.getJson,
+        "YLETax" -> this.yleTax.getJson,
         "medicalCareInsurancePayment" -> this.medicalCareInsurancePayment.getJson,
         "perDiemPayment" -> this.perDiemPayment.getJson,
         "pensionContribution" -> this.pensionContribution.getJson,
@@ -181,6 +184,32 @@ class Tax(earnedIncome: Double, municipality: String = "Helsinki", age: Int = 30
       "totalTax" -> this.getTotalTax,
       "totalTaxPercentage" -> this.getTotalTaxPercentage,
       "netIncome" -> this.getNetIncome
+    )
+  }
+
+  def getSubTaxValueSetByName(subTaxName: String): SubTaxValueSet = subTaxName match {
+    case ChurchTax.name => SubTaxValueSet(this.getChurchTax, this.getChurchTaxPercentage)
+    case GovernmentTax.name => SubTaxValueSet(this.getGovernmentTax, this.getGovernmentTaxPercentage)
+    case MedicalCareInsurancePayment.name => SubTaxValueSet(this.getMedicalCareInsurancePayment, this.getMedicalCareInsurancePaymentPercentage)
+    case MunicipalityTax.name => SubTaxValueSet(this.getMunicipalityTax, this.getMunicipalityTaxPercentage)
+    case PensionContribution.name => SubTaxValueSet(this.getPensionContribution, this.getPensionContributionPercentage)
+    case PerDiemPayment.name => SubTaxValueSet(this.getPerDiemPayment, this.getPerDiemPaymentPercentage)
+    case UnemploymentInsurance.name => SubTaxValueSet(this.getUnemploymentInsurance, this.getUnemploymentInsurancePercentage)
+    case YLETax.name => SubTaxValueSet(this.getYleTax, this.getYleTaxPercentage)
+  }
+}
+
+object Tax extends TaxObjectTrait{
+  def getDataList: List[Data] = {
+    List(
+      Data(UnemploymentInsurance.name, new ListBuffer[List[Double]]),
+      Data(PensionContribution.name, new ListBuffer[List[Double]]),
+      Data(PerDiemPayment.name, new ListBuffer[List[Double]]),
+      Data(MedicalCareInsurancePayment.name, new ListBuffer[List[Double]]),
+      Data(YLETax.name, new ListBuffer[List[Double]]),
+      Data(ChurchTax.name, new ListBuffer[List[Double]]),
+      Data(MunicipalityTax.name, new ListBuffer[List[Double]]),
+      Data(GovernmentTax.name, new ListBuffer[List[Double]])
     )
   }
 }

@@ -1,9 +1,11 @@
 package models.sv
 
-import models.{TaxTrait, AbstractTax}
+import models._
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
-import services.svKronaToEuro
+import services.{Data, svKronaToEuro}
+
+import scala.collection.mutable.ListBuffer
 
 class Tax(earnedIncome: Double, municipality: String, age: Int) extends AbstractTax(earnedIncome) with SwedishTax with TaxTrait {
   val taxableIncome = new TaxableIncome(this.earnedIncome)
@@ -104,6 +106,18 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
       "totalTax" -> svKronaToEuro(this.getTotalTax),
       "totalTaxPercentage" -> this.getTotalTaxPercentage,
       "netIncome" -> svKronaToEuro(this.getNetIncome)
+    )
+  }
+
+  def getSubTaxValueSetByName(subTaxName: String): SubTaxValueSet = subTaxName match {
+    case MunicipalityTax.name => SubTaxValueSet(this.getMunicipalityTax, this.getMunicipalityTaxPercentage)
+  }
+}
+
+object Tax extends TaxObjectTrait {
+  def getDataList: List[Data] = {
+    List(
+      Data(MunicipalityTax.name, new ListBuffer[List[Double]])
     )
   }
 }

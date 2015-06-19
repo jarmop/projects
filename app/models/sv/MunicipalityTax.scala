@@ -1,12 +1,12 @@
 package models.sv
 
-import models.substractUntilZero
+import models.{SubTaxTrait, SubTaxObjectTrait, substractUntilZero}
 import services.svKronaToEuro
 
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 
-class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
+class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) extends SubTaxTrait {
   val municipalityPercents = Map[String, Double]("Stockholm" -> 0.1768)
   val countyPercents = Map[String, Double]("Stockholm" -> 0.1210)
   val churchPercents = Map[String, Double]("Adolf Fred." -> 0.0098)
@@ -63,6 +63,10 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
     this.funeralPayment
   }
 
+  def getSum() = {
+    this.getTotalTax
+  }
+
   def getTotalTax: Double = {
     if (this.totalTax < 0) {
       this.totalTax = this.calculateTotalTax
@@ -116,4 +120,8 @@ class MunicipalityTax(taxableIncome: Double, municipality: String, age: Int) {
       "totalTax" -> svKronaToEuro(this.getTotalTax)
     )
   }
+}
+
+object MunicipalityTax extends SubTaxObjectTrait {
+  val name = "Kunnallisvero"
 }

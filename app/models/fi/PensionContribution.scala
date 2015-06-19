@@ -1,8 +1,9 @@
 package models.fi
 
+import models.{SubTaxTrait, SubTaxObjectTrait}
 import play.api.libs.json.{Json, JsObject}
 
-class PensionContribution(earnedIncome: Double, age: Int) {
+class PensionContribution(earnedIncome: Double, age: Int) extends SubTaxTrait {
   private val pensionContributionTyelSub53Percent = 0.057
   private val pensionContributionTyel53Percent = 0.072
 
@@ -26,4 +27,8 @@ class PensionContribution(earnedIncome: Double, age: Int) {
       "sum" -> this.getSum
     )
   }
+}
+
+object PensionContribution extends SubTaxObjectTrait {
+  val name = "Työeläkemaksu"
 }

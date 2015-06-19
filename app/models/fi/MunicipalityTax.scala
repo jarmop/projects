@@ -1,12 +1,13 @@
 package models.fi
 
+import models.{SubTaxTrait, SubTaxObjectTrait}
 import play.api
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import scala.math._
 import scala.util.control.Breaks._
 
-class MunicipalityTax(earnedIncome: Double, municipality: String, age: Int, naturalDeduction: Double, commonDeduction: Double) {
+class MunicipalityTax(earnedIncome: Double, municipality: String, age: Int, naturalDeduction: Double, commonDeduction: Double) extends SubTaxTrait {
   val municipalityPercents = Map[String, Double]("Helsinki" -> 0.1850, "Nivala" -> 0.2150)
 
   var tax: Double = -1
@@ -127,4 +128,8 @@ class MunicipalityTax(earnedIncome: Double, municipality: String, age: Int, natu
       "deductedSalary" -> this.getDeductedSalary
     )
   }
+}
+
+object MunicipalityTax extends SubTaxObjectTrait {
+  val name = "Kunnallisvero"
 }

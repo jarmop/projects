@@ -1,8 +1,9 @@
 package models.fi
 
+import models.{SubTaxObjectTrait, SubTaxTrait}
 import play.api.libs.json.{Json, JsObject}
 
-class ChurchTax(earnedIncome: Double, municipality: String, municipalityDeduction: Double, church: String = "evangelicLutheran") {
+class ChurchTax(earnedIncome: Double, municipality: String, municipalityDeduction: Double, church: String = "evangelicLutheran") extends SubTaxTrait {
   var deductedSalary: Double = -1
 
   val taxPercents = Map[String, Map[String, Double]](
@@ -63,4 +64,8 @@ class ChurchTax(earnedIncome: Double, municipality: String, municipalityDeductio
       "deductedSalary" -> this.getDeductedSalary
     )
   }
+}
+
+object ChurchTax extends SubTaxObjectTrait {
+  val name = "Kirkollisvero"
 }

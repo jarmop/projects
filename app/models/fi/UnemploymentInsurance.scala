@@ -1,8 +1,9 @@
 package models.fi
 
+import models.{SubTaxTrait, SubTaxObjectTrait}
 import play.api.libs.json.{Json, JsObject}
 
-class UnemploymentInsurance(earnedIncome: Double) {
+class UnemploymentInsurance(earnedIncome: Double) extends SubTaxTrait {
   private val unemploymentInsurancePercent = 0.0065
 
   def getSum: Double = {
@@ -15,4 +16,8 @@ class UnemploymentInsurance(earnedIncome: Double) {
       "sum" -> this.getSum
     )
   }
+}
+
+object UnemploymentInsurance extends SubTaxObjectTrait {
+  val name = "Työttömysvakuutusmaksu"
 }

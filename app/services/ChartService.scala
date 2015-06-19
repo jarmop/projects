@@ -1,6 +1,6 @@
 package services
 
-import models.{CountryTrait, TaxTrait, CountryFactory}
+import models._
 import play.api.libs.json.{Writes, JsValue, Json}
 import scala.collection.mutable.{ListBuffer, Map}
 
@@ -68,5 +68,33 @@ object ChartService {
 
   def getNetIncomeDataAll: JsValue = {
     this.getDataAll(this.getNetIncome)
+  }
+
+  def fillDataList(range: Range, country: CountryTrait, getValue: (SubTaxValueSet) => Double) = {
+    val dataList = country.getTax.getDataList
+    for (earnedIncome <- range.start to range.end by range.step) {
+      for (data <- dataList) {
+        val tax = country.getTax(earnedIncome)
+        data.values.append(
+          List(
+            earnedIncome,
+            getValue(tax.getSubTaxValueSetByName(data.key))
+          )
+        )
+      }
+    }
+    dataList
+  }
+
+  def getPercentage(subTaxValueSet: SubTaxValueSet) = {
+    subTaxValueSet.percentage
+  }
+
+  def getSum(subTaxValueSet: SubTaxValueSet) = {
+    subTaxValueSet.sum
+  }
+
+  def getPercentData(country: CountryTrait): JsValue = {
+    Json.toJson(this.fillDataList(0 to 100000 by 1000, country, this.getPercentage))
   }
 }

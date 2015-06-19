@@ -1,5 +1,6 @@
 package controllers
 
+import models.fi.Finland
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -66,7 +67,7 @@ object Compare extends Controller with MongoController {
   }
 
   def getPercent(country: String) = country match {
-    case "fi" => CompareServiceFI.getPercentData
+    case "fi" => ChartService.getPercentData(Finland)
     case "sv" => CompareServiceSV.getPercentData
     case "de" => CompareServiceDE.getPercentData
     case "" => ChartService.getPercentDataAll

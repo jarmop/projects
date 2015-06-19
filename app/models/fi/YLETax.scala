@@ -1,8 +1,9 @@
 package models.fi
 
+import models.{SubTaxTrait, SubTaxObjectTrait}
 import play.api.libs.json.{Json, JsObject}
 
-class YLETax(earnedIncome: Double, incomeDeduction: Double) {
+class YLETax(earnedIncome: Double, incomeDeduction: Double) extends SubTaxTrait {
   private val taxPercent = 0.0068
   private var taxableSalary: Double = -1
 
@@ -21,7 +22,7 @@ class YLETax(earnedIncome: Double, incomeDeduction: Double) {
     this.taxableSalary
   }
 
-  def getTax: Double = {
+  def getSum: Double = {
     var salary = this.getSalary
 
     if (salary < 7500) {
@@ -37,10 +38,14 @@ class YLETax(earnedIncome: Double, incomeDeduction: Double) {
   def getJson: JsObject = {
     Json.obj(
       "percent" -> this.taxPercent,
-      "sum" -> this.getTax,
+      "sum" -> this.getSum,
       "deduction" -> this.getDeduction,
       "deductedSalary" -> this.getDeductedSalary
     )
   }
 
+}
+
+object YLETax extends SubTaxObjectTrait {
+  val name = "YLE-vero"
 }

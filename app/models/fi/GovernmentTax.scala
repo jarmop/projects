@@ -1,11 +1,12 @@
 package models.fi
 
+import models.{SubTaxTrait, SubTaxObjectTrait}
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import scala.collection.mutable.ListBuffer
 import scala.util.control.Breaks._
 
-class GovernmentTax(earnedIncome: Double, naturalDeduction: Double, commonDeduction: Double) {
+class GovernmentTax(earnedIncome: Double, naturalDeduction: Double, commonDeduction: Double) extends SubTaxTrait {
   var deductedSum: Double = 0
   var leftOverWorkIncomeDeduction: Double = 0
   var tax: Double = -1
@@ -25,6 +26,10 @@ class GovernmentTax(earnedIncome: Double, naturalDeduction: Double, commonDeduct
 
   def getDeductedSum: Double = {
     this.deductedSum
+  }
+
+  def getSum: Double = {
+    this.getDeductedSum
   }
 
   def getTax: Double = {
@@ -94,4 +99,8 @@ class GovernmentTax(earnedIncome: Double, naturalDeduction: Double, commonDeduct
       "hits" -> this.getTaxSectionHits
     )
   }
+}
+
+object GovernmentTax extends SubTaxObjectTrait {
+  val name = "Valtion vero"
 }

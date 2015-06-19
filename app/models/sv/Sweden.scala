@@ -1,6 +1,6 @@
 package models.sv
 
-import models.{CountryTrait, TaxTrait}
+import models.{TaxObjectTrait, CountryTrait, TaxTrait}
 
 object Sweden extends CountryTrait {
   def getCountryCode: String = "sv"
@@ -8,5 +8,9 @@ object Sweden extends CountryTrait {
 
   def getTax(earnedIncome: Double): TaxTrait = {
     new TaxEuro(earnedIncome)
+  }
+
+  def getTax: TaxObjectTrait = {
+    Tax
   }
 }

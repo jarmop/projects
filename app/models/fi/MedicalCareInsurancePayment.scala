@@ -1,8 +1,9 @@
 package models.fi
 
+import models.{SubTaxTrait, SubTaxObjectTrait}
 import play.api.libs.json.{Json, JsObject}
 
-class MedicalCareInsurancePayment(deductedMunicipalityTaxSalary: Double) {
+class MedicalCareInsurancePayment(deductedMunicipalityTaxSalary: Double) extends SubTaxTrait {
   private val medicalCareInsurancePercent = 0.0132
 
   var deductedSum: Double = 0
@@ -35,4 +36,8 @@ class MedicalCareInsurancePayment(deductedMunicipalityTaxSalary: Double) {
       "deductedSum" -> this.getDeductedSum
     )
   }
+}
+
+object MedicalCareInsurancePayment extends SubTaxObjectTrait {
+  val name = "Sairaanhoitomaksu"
 }

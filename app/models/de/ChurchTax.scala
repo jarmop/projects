@@ -1,8 +1,9 @@
 package models.de
 
+import models.{SubTaxTrait, SubTaxObjectTrait}
 import play.api.libs.json.{Json, JsObject}
 
-class ChurchTax(incomeTax: Double) {
+class ChurchTax(incomeTax: Double) extends SubTaxTrait {
   val percent = 0.09
   var sum: Double = -1
 
@@ -20,4 +21,8 @@ class ChurchTax(incomeTax: Double) {
   def getJson: JsObject = Json.obj(
     "sum" -> this.getSum
   )
+}
+
+object ChurchTax extends SubTaxObjectTrait {
+  val name = "Kirkollisvero"
 }

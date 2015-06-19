@@ -1,6 +1,6 @@
 package models.fi
 
-import models.{CountryTrait, TaxTrait}
+import models.{TaxObjectTrait, CountryTrait, TaxTrait}
 
 object Finland extends CountryTrait {
   def getCountryCode: String = "fi"
@@ -8,5 +8,9 @@ object Finland extends CountryTrait {
 
   def getTax(earnedIncome: Double): TaxTrait = {
     new Tax(earnedIncome)
+  }
+
+  def getTax: TaxObjectTrait = {
+    Tax
   }
 }

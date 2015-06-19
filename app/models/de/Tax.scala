@@ -1,8 +1,10 @@
 package models.de
 
-import models.{AbstractTax, TaxTrait}
+import models._
 import play.api.libs.json.{Json, JsObject}
 import services._
+
+import scala.collection.mutable.ListBuffer
 
 class Tax(earnedIncome: Double, municipality: String = "Berlin", age: Int = 30) extends AbstractTax(earnedIncome) with models.TaxTrait {
   val basicAllowance = 1000
@@ -102,6 +104,18 @@ class Tax(earnedIncome: Double, municipality: String = "Berlin", age: Int = 30) 
       "totalTax" -> this.getTotalTax,
       "totalTaxPercentage" -> this.getTotalTaxPercentage,
       "netIncome" -> this.getNetIncome
+    )
+  }
+
+  def getSubTaxValueSetByName(subTaxName: String): SubTaxValueSet = subTaxName match {
+    case ChurchTax.name => SubTaxValueSet(this.getChurchTax, this.getChurchTaxPercentage)
+  }
+}
+
+object Tax extends TaxObjectTrait{
+  def getDataList: List[Data] = {
+    List(
+      Data(ChurchTax.name, new ListBuffer[List[Double]])
     )
   }
 }
