@@ -74,7 +74,7 @@ object Compare extends Controller with MongoController {
   }
 
   def getSum(country: String) = country match {
-    case "fi" => CompareServiceFI.getSumData
+    case "fi" => ChartService.getSumData(Finland)
     case "sv" => CompareServiceSV.getSumData
     case "de" => CompareServiceDE.getSumData
   }

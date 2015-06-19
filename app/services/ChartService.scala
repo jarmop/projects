@@ -54,9 +54,9 @@ object ChartService {
     Json.toJson(this.dataMapToList(dataMap))
   }
   
-  def getPercentage = (tax: TaxTrait) => {tax.getTotalTaxPercentage}
-  def getSum = (tax: TaxTrait) => {tax.getTotalTax}
-  def getNetIncome = (tax: TaxTrait) => {tax.getNetIncome}
+  private def getPercentage = (tax: TaxTrait) => {tax.getTotalTaxPercentage}
+  private def getSum = (tax: TaxTrait) => {tax.getTotalTax}
+  private def getNetIncome = (tax: TaxTrait) => {tax.getNetIncome}
 
   def getPercentDataAll: JsValue = {
     this.getDataAll(this.getPercentage)
@@ -86,15 +86,19 @@ object ChartService {
     dataList
   }
 
-  def getPercentage(subTaxValueSet: SubTaxValueSet) = {
+  private def getPercentage(subTaxValueSet: SubTaxValueSet) = {
     subTaxValueSet.percentage
   }
 
-  def getSum(subTaxValueSet: SubTaxValueSet) = {
+  private def getSum(subTaxValueSet: SubTaxValueSet) = {
     subTaxValueSet.sum
   }
 
   def getPercentData(country: CountryTrait): JsValue = {
     Json.toJson(this.fillDataList(0 to 100000 by 1000, country, this.getPercentage))
+  }
+
+  def getSumData(country: CountryTrait): JsValue = {
+    Json.toJson(this.fillDataList(0 to 100000 by 1000, country, this.getSum))
   }
 }
