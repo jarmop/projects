@@ -1,6 +1,8 @@
 package controllers
 
+import models.de.Germany
 import models.fi.Finland
+import models.sv.Sweden
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -81,9 +83,8 @@ object Compare extends Controller with MongoController {
 
   def getNetIncome(country: String) = country match {
     case "fi" => ChartService.getNetIncomeData(Finland)
-    //case "fi" => CompareServiceFI.getNetIncomeData
-    case "sv" => CompareServiceSV.getNetIncomeData
-    case "de" => CompareServiceDE.getNetIncomeData
+    case "sv" => ChartService.getNetIncomeData(Sweden)
+    case "de" => ChartService.getNetIncomeData(Germany)
     case "" => ChartService.getNetIncomeDataAll
   }
 
