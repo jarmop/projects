@@ -112,10 +112,8 @@ class Tax(earnedIncome: Double, municipality: String = "Berlin", age: Int = 30) 
   }
 }
 
-object Tax extends TaxObjectTrait{
-  def getDataList: List[Data] = {
-    List(
-      Data(ChurchTax.name, new ListBuffer[List[Double]])
-    )
-  }
+object Tax extends TaxObjectTrait {
+  protected val subTaxNames = List[String](
+    ChurchTax.name
+  )
 }

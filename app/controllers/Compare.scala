@@ -70,14 +70,14 @@ object Compare extends Controller with MongoController {
 
   def getPercent(country: String) = country match {
     case "fi" => ChartService.getPercentData(Finland)
-    case "sv" => CompareServiceSV.getPercentData
+    case "sv" => ChartService.getPercentData(Sweden)
     case "de" => CompareServiceDE.getPercentData
     case "" => ChartService.getPercentDataAll
   }
 
   def getSum(country: String) = country match {
     case "fi" => ChartService.getSumData(Finland)
-    case "sv" => CompareServiceSV.getSumData
+    case "sv" => ChartService.getSumData(Sweden)
     case "de" => CompareServiceDE.getSumData
   }
 

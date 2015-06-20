@@ -11,8 +11,11 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   val taxableIncome = new TaxableIncome(this.earnedIncome)
   val pensionContribution = new PensionContribution(this.earnedIncome)
   val municipalityTax = new MunicipalityTax(this.getTaxableIncome, municipality, age)
+  val countyTax = new CountyTax(this.getTaxableIncome, municipality)
+  val churchPayment = new ChurchPayment(this.getTaxableIncome)
+  val funeralPayment = new FuneralPayment(this.getTaxableIncome, municipality)
   val stateTax = new StateTax(this.getTaxableIncome)
-  val taxCredit = new TaxCredit(this.earnedIncome, this.taxableIncome.getNonTaxable, this.municipalityTax.getMunicipalityPercent + this.municipalityTax.getCountyPercent, this.getPensionContribution)
+  val taxCredit = new TaxCredit(this.earnedIncome, this.taxableIncome.getNonTaxable, this.municipalityTax.getPercent + this.countyTax.getPercent, this.getPensionContribution)
 
   this.deductTaxCredit
 
@@ -46,7 +49,7 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   }
 
   def getMunicipalityTax: Double = {
-    this.municipalityTax.getMunicipalityTax
+    this.municipalityTax.getSum
   }
 
   def getMunicipalityTaxPercentage: Double = {
@@ -54,7 +57,7 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   }
 
   def getCountyTax: Double = {
-    this.municipalityTax.getCountyTax
+    this.countyTax.getSum
   }
 
   def getCountyTaxPercentage: Double = {
@@ -62,7 +65,7 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   }
 
   def getChurchPayment: Double = {
-    this.municipalityTax.getChurchPayment
+    this.churchPayment.getSum
   }
 
   def getChurchPaymentPercentage: Double = {
@@ -70,7 +73,7 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   }
 
   def getFuneralPayment: Double = {
-    this.municipalityTax.getFuneralPayment
+    this.funeralPayment.getSum
   }
 
   def getFuneralPaymentPercentage: Double = {
@@ -78,7 +81,7 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   }
 
   def getTotalTax: Double = {
-    this.municipalityTax.getTotalTax + this.getStateTax + this.getPensionContribution
+    this.getMunicipalityTax + this.getCountyTax + this.getChurchPayment + this.getFuneralPayment + this.getStateTax + this.getPensionContribution
   }
 
   def getTotalTaxPercentage: Double = {
@@ -86,7 +89,13 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
   }
 
   def deductTaxCredit = {
-    this.municipalityTax.deductTaxCredit(this.getTotalTax, this.getTaxCredit, this.getPensionContribution)
+    val totalTax = this.getTotalTax
+    val municipalityTax = this.getMunicipalityTax
+    val countyTax = this.getCountyTax
+    this.municipalityTax.deductTaxCredit(totalTax, this.getTaxCredit, countyTax, this.getPensionContribution)
+    this.countyTax.deductTaxCredit(totalTax, this.getTaxCredit, municipalityTax, this.getPensionContribution)
+    this.churchPayment.deductTaxCredit(totalTax, this.getTaxCredit)
+    this.funeralPayment.deductTaxCredit(totalTax, this.getTaxCredit)
     this.stateTax.deductTaxCredit(this.getTotalTax, this.getTaxCredit + this.getPensionContribution)
   }
 
@@ -111,13 +120,21 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
 
   def getSubTaxByName(subTaxName: String): SubTaxTrait = subTaxName match {
     case MunicipalityTax.name => this.municipalityTax
+    case CountyTax.name => this.countyTax
+    case ChurchPayment.name => this.churchPayment
+    case FuneralPayment.name => this.funeralPayment
+    case StateTax.name => this.stateTax
+    case PensionContribution.name => this.pensionContribution
   }
 }
 
 object Tax extends TaxObjectTrait {
-  def getDataList: List[Data] = {
-    List(
-      Data(MunicipalityTax.name, new ListBuffer[List[Double]])
-    )
-  }
+  protected val subTaxNames = List[String](
+    PensionContribution.name,
+    ChurchPayment.name,
+    FuneralPayment.name,
+    CountyTax.name,
+    MunicipalityTax.name,
+    StateTax.name
+  )
 }

@@ -5,7 +5,7 @@ import scala.util.control.Breaks.{breakable, break}
 import models._
 import services.svKronaToEuro
 
-class StateTax(taxableIncome: Double) {
+class StateTax(taxableIncome: Double) extends SubTaxTrait {
   var sum: Double = -1
   var sumDeduction: Double = -1
 
@@ -44,4 +44,8 @@ class StateTax(taxableIncome: Double) {
       "sum" -> svKronaToEuro(this.getSum)
     )
   }
+}
+
+object StateTax extends SubTaxObjectTrait {
+  val name = "Valtion vero"
 }

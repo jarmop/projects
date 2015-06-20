@@ -1,10 +1,11 @@
 package models.sv
 
+import models.{SubTaxTrait, SubTaxObjectTrait}
 import play.api.Logger
 import play.api.libs.json.{Json, JsObject}
 import services.svKronaToEuro
 
-class PensionContribution(earnedIncome: Double) {
+class PensionContribution(earnedIncome: Double) extends SubTaxTrait {
   val minIncome = 18824
   val maxIncome = 467900
   var sum: Double = -1
@@ -40,4 +41,8 @@ class PensionContribution(earnedIncome: Double) {
       "deduction" -> svKronaToEuro(this.getDeduction)
     )
   }
+}
+
+object PensionContribution extends SubTaxObjectTrait {
+  val name = "Eläkemaksu"
 }

@@ -82,4 +82,10 @@ class TaxEuro(earnedIncome: Double, municipality: String = "Stockholm", age: Int
   def getSubTaxByName(subTaxName: String): SubTaxTrait = {
     this.tax.getSubTaxByName(subTaxName)
   }
+
+  override def getSubTaxValueSetByName(subTaxName: String): SubTaxValueSet = {
+    val subTax = this.getSubTaxByName(subTaxName)
+    val sumInEuro = svKronaToEuro(subTax.getSum)
+    SubTaxValueSet(sumInEuro, this.getPercentage(sumInEuro))
+  }
 }
