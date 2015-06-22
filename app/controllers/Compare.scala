@@ -8,7 +8,7 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import play.twirl.api.Html
-import services.{CompareService, CompareServiceSV, CompareServiceDE, ChartService}
+import services.{CompareServiceDE, ChartService}
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
 import models.CountryFactory
