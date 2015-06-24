@@ -34,6 +34,17 @@ class Tax(earnedIncome: Double, municipality: String = "Helsinki", age: Int = 30
 
   this.reduceWorkIncomeDeduction
 
+  val values = List[TaxValue](
+    TaxValue(UnemploymentInsurance.name, this.getUnemploymentInsurance, this.getUnemploymentInsurancePercentage),
+    TaxValue(PensionContribution.name, this.getPensionContribution, this.getPensionContributionPercentage),
+    TaxValue(PerDiemPayment.name, this.getPerDiemPayment, this.getPerDiemPaymentPercentage),
+    TaxValue(MedicalCareInsurancePayment.name, this.getMedicalCareInsurancePayment, this.getMedicalCareInsurancePaymentPercentage),
+    TaxValue(YLETax.name, this.getYleTax, this.getYleTaxPercentage),
+    TaxValue(ChurchTax.name, this.getChurchTax, this.getChurchTaxPercentage),
+    TaxValue(MunicipalityTax.name, this.getMunicipalityTax, this.getMunicipalityTaxPercentage),
+    TaxValue(GovernmentTax.name, this.getGovernmentTax, this.getGovernmentTaxPercentage)
+  )
+
   def getTotalTax: Double = {
     if (this.totalTax < 0)
       this.totalTax = this.calculateTotalTax
@@ -186,21 +197,10 @@ class Tax(earnedIncome: Double, municipality: String = "Helsinki", age: Int = 30
       "netIncome" -> this.getNetIncome
     )
   }
-
-  def getSubTaxByName(subTaxName: String): SubTaxTrait = subTaxName match {
-    case ChurchTax.name => this.churchTax
-    case GovernmentTax.name => this.governmentTax
-    case MedicalCareInsurancePayment.name => this.medicalCareInsurancePayment
-    case MunicipalityTax.name => this.municipalityTax
-    case PensionContribution.name => this.pensionContribution
-    case PerDiemPayment.name => this.perDiemPayment
-    case UnemploymentInsurance.name => this.unemploymentInsurance
-    case YLETax.name => this.yleTax
-  }
 }
 
 object Tax extends TaxObjectTrait{
-  protected val subTaxNames = List[String](
+  protected val valueNames = List[String](
     UnemploymentInsurance.name,
     PensionContribution.name,
     PerDiemPayment.name,

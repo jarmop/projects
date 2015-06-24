@@ -1,10 +1,10 @@
 package models.sv
 
-import models.{AbstractTax, SubTaxValueSet, SubTaxTrait, TaxTrait}
+import models._
 import play.api.libs.json.JsObject
 import services.{euroToSVKrona, svKronaToEuro}
 
-class TaxEuro(earnedIncome: Double, municipality: String = "Stockholm", age: Int = 30) extends AbstractTax(earnedIncome) with SwedishTax with TaxTrait {
+class TaxEuro(earnedIncome: Double, municipality: String = "Stockholm", age: Int = 30) extends SwedishTax with TaxTrait {
   val tax = new Tax(euroToSVKrona(earnedIncome), municipality, age)
 
   def getTotalTaxPercentage: Double = {
@@ -79,13 +79,11 @@ class TaxEuro(earnedIncome: Double, municipality: String = "Stockholm", age: Int
     this.tax.getJson
   }
 
-  def getSubTaxByName(subTaxName: String): SubTaxTrait = {
-    this.tax.getSubTaxByName(subTaxName)
+  def getValueByName(name: String): TaxValue = {
+    this.tax.getValueByName(name)
   }
 
-  override def getSubTaxValueSetByName(subTaxName: String): SubTaxValueSet = {
-    val subTax = this.getSubTaxByName(subTaxName)
-    val sumInEuro = svKronaToEuro(subTax.getSum)
-    SubTaxValueSet(sumInEuro, this.getPercentage(sumInEuro))
+  def getValues: List[TaxValue] = {
+    this.tax.getValues
   }
 }

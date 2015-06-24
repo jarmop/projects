@@ -5,12 +5,12 @@ import services.Data
 import scala.collection.mutable.ListBuffer
 
 trait TaxObjectTrait {
-  protected val subTaxNames: List[String]
+  protected val valueNames: List[String]
 
   def getDataList: ListBuffer[Data] = {
     val dataList = new ListBuffer[Data]
-    for (subTaxName <- this.subTaxNames) {
-      dataList.append(Data(subTaxName, new ListBuffer[List[Double]]))
+    for (valueName <- this.valueNames) {
+      dataList.append(Data(valueName, new ListBuffer[List[Double]]))
     }
     dataList
   }

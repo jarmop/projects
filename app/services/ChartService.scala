@@ -70,7 +70,7 @@ object ChartService {
     this.getDataAll(this.getNetIncome)
   }
 
-  private def fillDataList(range: Range, country: CountryTrait, getValue: (SubTaxValueSet) => Double) = {
+  private def fillDataList(range: Range, country: CountryTrait, getValue: (TaxValue) => Double) = {
     val dataList = country.getTax.getDataList
     for (earnedIncome <- range.start to range.end by range.step) {
       val tax = country.getTax(earnedIncome)
@@ -78,7 +78,7 @@ object ChartService {
         data.values.append(
           List(
             earnedIncome,
-            getValue(tax.getSubTaxValueSetByName(data.key))
+            getValue(tax.getValueByName(data.key))
           )
         )
       }
@@ -86,12 +86,12 @@ object ChartService {
     dataList
   }
 
-  private def getPercentage(subTaxValueSet: SubTaxValueSet) = {
-    subTaxValueSet.percentage
+  private def getPercentage(taxValue: TaxValue) = {
+    taxValue.percentage
   }
 
-  private def getSum(subTaxValueSet: SubTaxValueSet) = {
-    subTaxValueSet.sum
+  private def getSum(taxValue: TaxValue) = {
+    taxValue.sum
   }
 
   def getPercentData(country: CountryTrait): JsValue = {

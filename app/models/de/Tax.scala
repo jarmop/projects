@@ -12,6 +12,10 @@ class Tax(earnedIncome: Double, municipality: String = "Berlin", age: Int = 30) 
   val incomeTax = new IncomeTax(earnedIncome, (this.getIncomeTaxDeductions + this.basicAllowance))
   val solidaritySurcharge = new SolidaritySurcharge(this.getIncomeTax)
   val churchTax = new ChurchTax(this.getIncomeTax)
+  
+  val values = List[TaxValue](
+    TaxValue(ChurchTax.name, this.getChurchTax, this.getChurchTaxPercentage)
+  )
 
   def getIncomeTaxDeductions: Double = {
     this.socialSecurity.getSum
@@ -95,25 +99,22 @@ class Tax(earnedIncome: Double, municipality: String = "Berlin", age: Int = 30) 
 
   def getJson: JsObject = {
     Json.obj(
-      "taxes" -> Json.obj(
+      /*"taxes" -> Json.obj(
         "incomeTax" -> this.incomeTax.getJson,
         "solidaritySurcharge" -> this.solidaritySurcharge.getJson,
         "churchTax" -> this.churchTax.getJson,
         "socialSecurity" -> this.socialSecurity.getJson
-      ),
+      ),*/
+      "taxes" -> this.getValues,
       "totalTax" -> this.getTotalTax,
       "totalTaxPercentage" -> this.getTotalTaxPercentage,
       "netIncome" -> this.getNetIncome
     )
   }
-
-  def getSubTaxByName(subTaxName: String): SubTaxTrait = subTaxName match {
-    case ChurchTax.name => this.churchTax
-  }
 }
 
 object Tax extends TaxObjectTrait {
-  protected val subTaxNames = List[String](
+  protected val valueNames = List[String](
     ChurchTax.name
   )
 }

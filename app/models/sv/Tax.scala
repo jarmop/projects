@@ -19,6 +19,15 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
 
   this.deductTaxCredit
 
+  val values = List[TaxValue](
+    TaxValue(PensionContribution.name, this.getPensionContribution, this.getPensionContributionPercentage),
+    TaxValue(ChurchPayment.name, this.getChurchPayment, this.getChurchPaymentPercentage),
+    TaxValue(FuneralPayment.name, this.getFuneralPayment, this.getFuneralPaymentPercentage),
+    TaxValue(CountyTax.name, this.getCountyTax, this.getCountyTaxPercentage),
+    TaxValue(MunicipalityTax.name, this.getMunicipalityTax, this.getMunicipalityTaxPercentage),
+    TaxValue(StateTax.name, this.getStateTax, this.getStateTaxPercentage)
+  )
+
   // Tax credit for income from work (earned income tax)
   def getTaxCredit: Double = {
     this.taxCredit.getSum
@@ -117,19 +126,10 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
       "netIncome" -> svKronaToEuro(this.getNetIncome)
     )
   }
-
-  def getSubTaxByName(subTaxName: String): SubTaxTrait = subTaxName match {
-    case MunicipalityTax.name => this.municipalityTax
-    case CountyTax.name => this.countyTax
-    case ChurchPayment.name => this.churchPayment
-    case FuneralPayment.name => this.funeralPayment
-    case StateTax.name => this.stateTax
-    case PensionContribution.name => this.pensionContribution
-  }
 }
 
 object Tax extends TaxObjectTrait {
-  protected val subTaxNames = List[String](
+  protected val valueNames = List[String](
     PensionContribution.name,
     ChurchPayment.name,
     FuneralPayment.name,
