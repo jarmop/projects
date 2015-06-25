@@ -5,6 +5,9 @@
 GET        /                                    controllers.Application.index
 GET        /tax/:country                        controllers.Application.tax(country: String, earnedIncome: Double, municipality: Option[String], age: Option[Int])
 
+GET        /calculate                           controllers.Calculate.index
+GET        /calculate/:country                  controllers.Calculate.tax(country: String, earnedIncome: Double)
+
 GET        /compare                             controllers.Compare.index
 GET        /compare/update                      controllers.Compare.updateAll
 
