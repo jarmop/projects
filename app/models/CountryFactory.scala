@@ -22,4 +22,8 @@ object CountryFactory {
   def getCountry(countryCode: String): CountryTrait = {
     countryMap(countryCode)
   }
+
+  def isValidCountryCode(countryCode: String): Boolean = {
+    this.getCountryCodes.exists(_ == countryCode)
+  }
 }
