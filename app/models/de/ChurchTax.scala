@@ -22,7 +22,3 @@ class ChurchTax(incomeTax: Double) extends SubTaxTrait {
     "sum" -> this.getSum
   )
 }
-
-object ChurchTax extends SubTaxObjectTrait {
-  val name = "Kirkollisvero"
-}

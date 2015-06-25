@@ -14,7 +14,13 @@ class Tax(earnedIncome: Double, municipality: String = "Berlin", age: Int = 30) 
   val churchTax = new ChurchTax(this.getIncomeTax)
   
   val values = List[TaxValue](
-    TaxValue(ChurchTax.name, this.getChurchTax, this.getChurchTaxPercentage)
+    TaxValue("Terveysvakuutus", this.getHealthInsurance, this.getHealthInsurancePercentage),
+    TaxValue("Hoitovakuutus", this.getNursingInsurance, this.getNursingInsurancePercentage),
+    TaxValue("Eläkevakuutus", this.getPensionIncurance, this.getPensionIncurancePercentage),
+    TaxValue("Työttömyysvakuutus", this.getUnemploymentInsurance, this.getUnemploymentInsurancePercentage),
+    TaxValue("Solidaarisuusvero", this.getSolidaritySurcharge, this.getSolidaritySurchargePercentage),
+    TaxValue("Kirkollisvero", this.getChurchTax, this.getChurchTaxPercentage),
+    TaxValue("Tulovero", this.getIncomeTax, this.getIncomeTaxPercentage)
   )
 
   def getIncomeTaxDeductions: Double = {

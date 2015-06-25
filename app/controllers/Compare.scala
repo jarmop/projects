@@ -8,7 +8,7 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import play.twirl.api.Html
-import services.{CompareServiceDE, ChartService}
+import services.ChartService
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
 import models.CountryFactory
@@ -71,14 +71,14 @@ object Compare extends Controller with MongoController {
   def getPercent(country: String) = country match {
     case "fi" => ChartService.getPercentData(Finland)
     case "sv" => ChartService.getPercentData(Sweden)
-    case "de" => CompareServiceDE.getPercentData
+    case "de" => ChartService.getPercentData(Germany)
     case "" => ChartService.getPercentDataAll
   }
 
   def getSum(country: String) = country match {
     case "fi" => ChartService.getSumData(Finland)
     case "sv" => ChartService.getSumData(Sweden)
-    case "de" => CompareServiceDE.getSumData
+    case "de" => ChartService.getSumData(Germany)
   }
 
   def getNetIncome(country: String) = country match {
