@@ -6,18 +6,16 @@ class CalculateService
   constructor: (@$log, @$http, @$q) ->
     @$log.debug "constructing CalculateService"
 
-  getData: (type, country="") ->
-    @$log.debug "CalculateService.get" + type + country
+  getData: (countryCode, earnedIncome) ->
+    @$log.debug "CalculateService.get " + countryCode
     deferred = @$q.defer()
 
-    url = "/compare/data"
-    if (type == "netIncome")
-      type = "net-income"
-    url += "/" + type
-    if (country.length > 0)
-      url += "/" + country
+    url = "/calculate/data/" + countryCode
+    params = {earnedIncome: earnedIncome}
 
-    @$http.get(url).success((data, status, headers) =>
+
+
+    @$http.get(url, {params: params}).success((data, status, headers) =>
       @$log.info("Successfully got data - status #{status}")
       deferred.resolve(data)
     )

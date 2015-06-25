@@ -1,6 +1,13 @@
-@(title: String, assets: List[String])
-@main(title, "CalculateController as ctrl", assets) {
+@(title: String, assets: List[String], countryCode: String, earnedIncome: Double)
+
+@main(title, assets, "CalculateController as ctrl", "earnedIncome = " + earnedIncome + "; countryCode = '" + countryCode + "'") {
 
 <h1>@title</h1>
+
+<form class="form-inline">
+  <label>Vuositulot</label>
+  <input ng-model="earnedIncome" type="text" placeholder="Vuositulot" class="form-control form-input-salary input-sm">
+  <input ng-click="ctrl.getData()" class="btn btn-primary btn-sm" type="submit" value="Laske vero">
+</form>
 
 }

@@ -1,16 +1,13 @@
 class CalculateController
   constructor: (@$scope, @$log, @CalculateService) ->
     @$log.debug "constructing CalculateController"
+    @$log.debug @$scope.countryCode
+    @$log.debug @$scope.earnedIncome
+    @getData()
 
-
-  getPercent: ->
-    @CalculateService.getPercent().then((response) =>
-      @$scope.percentData = response
-    )
-
-  getNetIncome: ->
-    @CalculateService.getNetIncome().then((response) =>
-      @$scope.netIncomeData = response
+  getData: ->
+    @CalculateService.getData(@$scope.countryCode, @$scope.earnedIncome).then((response) =>
+      @$scope.data = response
     )
 
   formatCurrency: (currency) =>
