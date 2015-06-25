@@ -71,16 +71,18 @@ object ChartService {
   }
 
   private def fillDataList(range: Range, country: CountryTrait, getValue: (TaxValue) => Double) = {
-    val dataList = country.getTax.getDataList
+    val dataList = new ListBuffer[Data]
     for (earnedIncome <- range.start to range.end by range.step) {
       val tax = country.getTax(earnedIncome)
-      for (data <- dataList) {
-        data.values.append(
-          List(
-            earnedIncome,
-            getValue(tax.getValueByName(data.key))
-          )
-        )
+      for (taxValue <- tax.getValues) {
+        val valueSet = List[Double](earnedIncome, getValue(taxValue))
+        dataList.find((data) => data.key == taxValue.name) match {
+          case Some(data) => data.values.append(valueSet)
+          case None =>
+            val dataValues = new ListBuffer[List[Double]]
+            dataValues.append(valueSet)
+            dataList.append(Data(taxValue.name, dataValues))
+        }
       }
     }
     dataList

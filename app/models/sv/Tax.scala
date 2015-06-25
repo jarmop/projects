@@ -127,14 +127,3 @@ class Tax(earnedIncome: Double, municipality: String, age: Int) extends Abstract
     )
   }
 }
-
-object Tax extends TaxObjectTrait {
-  protected val valueNames = List[String](
-    PensionContribution.name,
-    ChurchPayment.name,
-    FuneralPayment.name,
-    CountyTax.name,
-    MunicipalityTax.name,
-    StateTax.name
-  )
-}

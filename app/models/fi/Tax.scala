@@ -198,16 +198,3 @@ class Tax(earnedIncome: Double, municipality: String = "Helsinki", age: Int = 30
     )
   }
 }
-
-object Tax extends TaxObjectTrait{
-  protected val valueNames = List[String](
-    UnemploymentInsurance.name,
-    PensionContribution.name,
-    PerDiemPayment.name,
-    MedicalCareInsurancePayment.name,
-    YLETax.name,
-    ChurchTax.name,
-    MunicipalityTax.name,
-    GovernmentTax.name
-  )
-}

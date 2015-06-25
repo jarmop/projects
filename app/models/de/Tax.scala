@@ -112,9 +112,3 @@ class Tax(earnedIncome: Double, municipality: String = "Berlin", age: Int = 30) 
     )
   }
 }
-
-object Tax extends TaxObjectTrait {
-  protected val valueNames = List[String](
-    ChurchTax.name
-  )
-}
