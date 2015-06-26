@@ -15,9 +15,14 @@ table.table-tax {
 }
 
 table.table-accordion {
-  tbody tr {
-    &:hover {
-      cursor: pointer;
+  tbody tr.table-row-heading:hover {
+    cursor: pointer;
+    background-color: @table-bg-hover;
+  }
+  .table-row-description {
+    background-color: @table-bg-hover;
+    td {
+      border: none;
     }
   }
 }
