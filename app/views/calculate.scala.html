@@ -17,6 +17,7 @@
     <table class="table table-tax table-accordion">
       <thead>
       <tr>
+        <th></th>
         <th>Maksu</th>
         <th>€</th>
         <th>%</th>
@@ -30,6 +31,7 @@
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
         <td rowspan="{{data.taxes.length*2+1}}" class="td-graph">
           <div class="graph">
             <div class="tax1"></div>
@@ -38,14 +40,19 @@
           </div>
         </td>
       </tr>
-      <tr class="table-row-heading" ng-repeat-start="tax in data.taxes" ng-class="{active: ctrl.isActive(tax.name), first: $first}" ng-click="ctrl.toggleDescription(tax.name)">
+      <tr class="table-row-heading" ng-repeat-start="tax in data.taxes" ng-class="{tr-active: ctrl.isActive(tax.name), first: $first}" ng-click="ctrl.toggleDescription(tax.name)">
+        <td ng-if="ctrl.isActive(tax.name)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></td>
+        <td ng-if="!ctrl.isActive(tax.name)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></td>
         <td>{{tax.name}}</td>
         <td>{{ctrl.formatCurrency(tax.sum)}}</td>
         <td>{{ctrl.formatPercent(tax.percentage)}}</td>
         <td><span class="glyphicon glyphicon-stop {{ctrl.getColor(tax.name)}}" aria-hidden="true"></span></td>
       </tr>
-      <tr class="table-row-description" ng-repeat-end="">
-        <td ng-show="ctrl.isActive(tax.name)" colspan="4">jhghg</td>
+      <tr class="table-row-description" ng-repeat-end="" ng-show="ctrl.isActive(tax.name)">
+        <td></td>
+        <td colspan="4">jhghg</td>
+        <td></td>
+        <td></td>
       </tr>
       </tbody>
     </table>
