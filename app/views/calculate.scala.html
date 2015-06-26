@@ -29,19 +29,19 @@
         <td>{{ctrl.formatCurrency(tax.sum)}}</td>
         <td>{{ctrl.formatPercent(tax.percentage)}}</td>
         <td><span class="glyphicon glyphicon-stop {{ctrl.getColor(tax.name)}}" aria-hidden="true"></span></td>
+        <td ng-if="$first" rowspan="{{data.taxes.length*2}}" class="td-graph">
+          <div class="graph">
+            <div class="tax1"></div>
+            <div class="tax2"></div>
+            <div class="tax3"></div>
+          </div>
+        </td>
       </tr>
       <tr class="table-row-description" ng-repeat-end="">
         <td ng-show="ctrl.isActive(tax.name)" colspan="4">jhghg</td>
       </tr>
       </tbody>
     </table>
-  </div>
-  <div class="col-xs-2">
-    <div class="graph">
-      <div class="tax1"></div>
-      <div class="tax2"></div>
-      <div class="tax3"></div>
-    </div>
   </div>
 </div>
 
