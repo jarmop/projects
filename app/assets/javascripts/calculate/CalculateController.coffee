@@ -20,6 +20,10 @@ class CalculateController
      else
        @activeTaxNames.push(taxName)
 
+  getColor: (taxName) ->
+    taxColors = ["red", "green", "blue"]
+    return taxColors[0]
+
   formatCurrency: (currency) =>
         return parseFloat(currency).toFixed()
 
