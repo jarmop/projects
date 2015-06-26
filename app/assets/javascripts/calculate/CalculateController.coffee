@@ -4,11 +4,21 @@ class CalculateController
     @$log.debug @$scope.countryCode
     @$log.debug @$scope.earnedIncome
     @getData()
+    @activeTaxNames = []
 
   getData: ->
     @CalculateService.getData(@$scope.countryCode, @$scope.earnedIncome).then((response) =>
       @$scope.data = response
     )
+
+  isActive: (taxName) ->
+    @activeTaxNames.indexOf(taxName) > -1
+
+  toggleDescription: (taxName) ->
+     if (@isActive(taxName))
+       @activeTaxNames.splice(@activeTaxNames.indexOf(taxName), 1)
+     else
+       @activeTaxNames.push(taxName)
 
   formatCurrency: (currency) =>
         return parseFloat(currency).toFixed()

@@ -1,3 +1,5 @@
+@import "lib/bootstrap/less/bootstrap.less";
+
 form.form-inline .form-control {
   &.form-input-salary { width: 100px; }
   &.form-input-age { width: 60px; }
@@ -8,6 +10,14 @@ table.table-tax {
   > tbody > tr {
     > td, > th {
       padding: 2px 8px;
+    }
+  }
+}
+
+table.table-accordion {
+  tbody tr {
+    &:hover {
+      cursor: pointer;
     }
   }
 }

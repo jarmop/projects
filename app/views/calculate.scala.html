@@ -10,4 +10,37 @@
   <input ng-click="ctrl.getData()" class="btn btn-primary btn-sm" type="submit" value="Laske vero">
 </form>
 
+{{data.totalTax}}
+
+<table class="table table-hover table-tax table-accordion">
+  <thead>
+    <tr>
+      <th>Maksu</th>
+      <th>€</th>
+      <th>%</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="table-row-heading" ng-repeat-start="tax in data.taxes" ng-class="{active: ctrl.isActive(tax.name)}" ng-click="ctrl.toggleDescription(tax.name)">
+      <td>{{tax.name}}</td>
+      <td>{{ctrl.formatCurrency(tax.sum)}}</td>
+      <td>{{ctrl.formatPercent(tax.percentage)}}</td>
+    </tr>
+    <tr class="table-row-description" ng-repeat-end="">
+      <td ng-show="ctrl.isActive(tax.name)" colspan="3">jhghg</td>
+    </tr>
+  </tbody>
+</table>
+
+<!--div>
+  <accordion close-others="oneAtATime">
+    <accordion-group heading="{{tax.name}}" ng-repeat="tax in data.taxes">
+      <accordion-heading>
+        {{tax.name}}: {{tax.sum}} € ({{tax.percentage}}%)
+      </accordion-heading>
+      {{tax.sum}}
+    </accordion-group>
+  </accordion>
+</div-->
+
 }
