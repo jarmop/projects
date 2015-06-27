@@ -18,7 +18,7 @@
       <thead>
       <tr>
         <!--th></th-->
-        <th>Maksu</th>
+        <th></th>
         <th>€</th>
         <th>%</th>
         <th></th>
@@ -44,16 +44,14 @@
           <span ng-if="ctrl.isActive(tax.name)" class="glyphicon glyphicon-minus" aria-hidden="true"></span>
           <span ng-if="!ctrl.isActive(tax.name)" class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </td-->
-        <td>{{tax.name}}</td>
+        <th>{{tax.name}}</th>
         <td>{{ctrl.formatCurrency(tax.sum)}}</td>
         <td>{{ctrl.formatPercent(tax.percentage)}}</td>
         <td><span class="glyphicon glyphicon-stop {{ctrl.getColor(tax.name)}}" aria-hidden="true"></span></td>
       </tr>
       <tr class="table-row-description" ng-repeat-end="" ng-show="ctrl.isActive(tax.name)">
-        <td></td>
+        <!--td></td-->
         <td colspan="4">jhghg</td>
-        <td></td>
-        <td></td>
       </tr>
       </tbody>
     </table>
