@@ -17,11 +17,10 @@
     <table class="table table-tax table-accordion">
       <thead>
       <tr>
-        <th></th>
+        <!--th></th-->
         <th>Maksu</th>
         <th>€</th>
         <th>%</th>
-        <th></th>
         <th></th>
       </tr>
       </thead>
@@ -41,8 +40,10 @@
         </td>
       </tr>
       <tr class="table-row-heading" ng-repeat-start="tax in data.taxes" ng-class="{tr-active: ctrl.isActive(tax.name), first: $first}" ng-click="ctrl.toggleDescription(tax.name)">
-        <td ng-if="ctrl.isActive(tax.name)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></td>
-        <td ng-if="!ctrl.isActive(tax.name)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></td>
+        <!--td class="td-toggle">
+          <span ng-if="ctrl.isActive(tax.name)" class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+          <span ng-if="!ctrl.isActive(tax.name)" class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </td-->
         <td>{{tax.name}}</td>
         <td>{{ctrl.formatCurrency(tax.sum)}}</td>
         <td>{{ctrl.formatPercent(tax.percentage)}}</td>
