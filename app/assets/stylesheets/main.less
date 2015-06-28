@@ -20,8 +20,10 @@ table.table-accordion {
       cursor: pointer;
       background-color: @table-bg-hover;
     }
-    &.first td {
-      border: none;
+    &.first {
+      td, th {
+        border: none;
+      }
     }
   }
   .table-row-description {

@@ -16,43 +16,49 @@
   <div class="col-xs-9 col-sm-5">
     <table class="table table-tax table-accordion">
       <thead>
-      <tr>
-        <!--th></th-->
-        <th></th>
-        <th>€</th>
-        <th>%</th>
-        <th></th>
-      </tr>
+        <tr>
+          <!--th></th-->
+          <th></th>
+          <th>€</th>
+          <th>%</th>
+          <th></th>
+        </tr>
       </thead>
       <tbody>
-      <tr class="tr-graph">
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td rowspan="{{data.taxes.length*2+1}}" class="td-graph">
-          <div class="graph">
-            <div class="tax1"></div>
-            <div class="tax2"></div>
-            <div class="tax3"></div>
-          </div>
-        </td>
-      </tr>
-      <tr class="table-row-heading" ng-repeat-start="tax in data.taxes" ng-class="{tr-active: ctrl.isActive(tax.name), first: $first}" ng-click="ctrl.toggleDescription(tax.name)">
-        <!--td class="td-toggle">
-          <span ng-if="ctrl.isActive(tax.name)" class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-          <span ng-if="!ctrl.isActive(tax.name)" class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-        </td-->
-        <th>{{tax.name}}</th>
-        <td>{{ctrl.formatCurrency(tax.sum)}}</td>
-        <td>{{ctrl.formatPercent(tax.percentage)}}</td>
-        <td><span class="glyphicon glyphicon-stop {{ctrl.getColor(tax.name)}}" aria-hidden="true"></span></td>
-      </tr>
-      <tr class="table-row-description" ng-repeat-end="" ng-show="ctrl.isActive(tax.name)">
-        <!--td></td-->
-        <td colspan="4">jhghg</td>
-      </tr>
+        <tr class="tr-graph">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td rowspan="{{data.taxes.length*2+1}}" class="td-graph">
+            <div class="graph">
+              <div class="tax1"></div>
+              <div class="tax2"></div>
+              <div class="tax3"></div>
+            </div>
+          </td>
+        </tr>
+        <tr class="table-row-heading" ng-repeat-start="tax in data.taxes" ng-class="{tractive: ctrl.isActive(tax.name), first: $first}" ng-click="ctrl.toggleDescription(tax.name)">
+          <!--td class="td-toggle">
+            <span ng-if="ctrl.isActive(tax.name)" class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+            <span ng-if="!ctrl.isActive(tax.name)" class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </td-->
+          <th>{{tax.name}}</th>
+          <td>{{ctrl.formatCurrency(tax.sum)}}</td>
+          <td>{{ctrl.formatPercent(tax.percentage)}}</td>
+          <td><!--span class="glyphicon glyphicon-stop {{ctrl.getColor(tax.name)}}" aria-hidden="true"></span--></td>
+        </tr>
+        <tr class="table-row-description" ng-repeat-end="" ng-show="ctrl.isActive(tax.name)">
+          <!--td></td-->
+          <td colspan="4">jhghg</td>
+        </tr>
+        <tr>
+          <th>Yhteensä</th>
+          <td>{{ctrl.formatCurrency(data.totalTax)}}</td>
+          <td>{{ctrl.formatPercent(data.totalTaxPercentage)}}</td>
+          <td></td>
+        </tr>
       </tbody>
     </table>
   </div>
