@@ -1,11 +1,11 @@
 package controllers
 
-import models.de.Tax
-import models.sv.TaxEuro
+import javax.inject.Singleton
 import models._
 import play.api.mvc._
 
-object Application extends Controller {
+@Singleton
+class Application extends Controller {
 
   def index = Action {
     val assets = List[String](

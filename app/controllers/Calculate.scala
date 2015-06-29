@@ -1,10 +1,11 @@
 package controllers
 
-import controllers.Application._
+import javax.inject.Singleton
 import models.CountryFactory
-import play.api.mvc.Action
+import play.api.mvc.{Controller, Action}
 
-object Calculate {
+@Singleton
+class Calculate extends Controller {
   def index(countryCode: String, earnedIncome: Double) = Action {
     val assets = List[String](
       "javascripts/calculate/CalculateController.js",

@@ -1,22 +1,25 @@
 package controllers
 
+import javax.inject.{Singleton, Inject}
 import models.de.Germany
 import models.fi.Finland
 import models.sv.Sweden
-import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import play.twirl.api.Html
 import services.ChartService
-import play.modules.reactivemongo.MongoController
+import play.modules.reactivemongo.{ReactiveMongoApi, ReactiveMongoComponents, MongoController}
 import play.modules.reactivemongo.json.collection.JSONCollection
 import models.CountryFactory
+import play.modules.reactivemongo.json._
 
 case class Chart(title: String, graph: Html)
 case class Tab(heading: String, select: String, charts: List[Chart], active: String="false")
 
-object Compare extends Controller with MongoController {
+@Singleton
+class Compare @Inject() (val reactiveMongoApi: ReactiveMongoApi)
+  extends Controller with MongoController with ReactiveMongoComponents {
 
   def index = Action {
     val assets = List[String](
@@ -108,7 +111,7 @@ object Compare extends Controller with MongoController {
       .find(Json.obj("_id" -> id))
       .one[JsObject]
       .map { json =>
-      Ok(json.get \ "data")
+      Ok((json.get \ "data").get)
     }
   }
 
