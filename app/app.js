@@ -4,6 +4,7 @@
 angular.module('myApp', [
   'ngRoute',
   'ui.bootstrap',
+  'taxServices',
   'myApp.view1',
   'myApp.view2',
   'myApp.version'
