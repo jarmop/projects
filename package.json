@@ -27,12 +27,12 @@
     "postinstall": "bower install",
     "prestart": "npm install",
     "start": "http-server -a localhost -p 8000 -c-1",
-    "pretest": "npm install",
+    "pretest": "npm install; gulp build",
     "test": "karma start tests/unit-tests/karma.conf.js --single-run",
     "test:watch": "karma start tests/unit-tests/karma.conf.js",
     "preupdate-webdriver": "npm install",
     "update-webdriver": "webdriver-manager update",
-    "preprotractor": "npm run update-webdriver",
+    "preprotractor": "npm run update-webdriver; gulp build",
     "protractor": "protractor tests/e2e-tests/protractor.conf.js"
   }
 }

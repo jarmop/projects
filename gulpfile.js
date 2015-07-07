@@ -19,7 +19,11 @@ var concat = require('gulp-concat');
 var rev = require('gulp-rev');
 var sourcemaps = require('gulp-sourcemaps');*/
 var destFolder = 'dist';
+var del = require('del');
 
+gulp.task('styles:clean', function() {
+  del(destFolder + '/lib')
+});
 var mainBowerFiles = require('main-bower-files');
 gulp.task("bower-files", function(){
   gulp.src(mainBowerFiles('**/*.js'))
@@ -27,12 +31,18 @@ gulp.task("bower-files", function(){
     .pipe(gulp.dest(destFolder + '/lib'));
 });
 
+gulp.task('styles:clean', function() {
+  del(destFolder + '/app.js')
+});
 gulp.task('scripts', function() {
   gulp.src(['src/*.js', 'src/controllers/**/*.js'])
     .pipe(concat('app.js'))
     .pipe(gulp.dest(destFolder));
 });
 
+gulp.task('styles:clean', function() {
+  del(destFolder + '/app.css')
+});
 var sass = require('gulp-sass');
 gulp.task('styles', function() {
   gulp.src('src/scss/*.scss')
@@ -40,16 +50,18 @@ gulp.task('styles', function() {
     .pipe(gulp.dest(destFolder));
 });
 
-gulp.task('html', function() {
+gulp.task('html:clean', function() {
+  del(destFolder + '/**/*.html')
+});
+gulp.task('html', ['html:clean'], function() {
   gulp.src('src/*.html')
     .pipe(gulp.dest(destFolder));
   gulp.src('src/templates/*')
     .pipe(gulp.dest(destFolder + '/templates'));
 });
 
-var del = require('del');
 gulp.task('clean', function () {
-  del('dist')
+  del(destFolder)
 });
 
-gulp.task('build', ['clean', 'bower-files', 'scripts', 'styles', 'html']);
+gulp.task('build', ['bower-files', 'scripts', 'styles', 'html']);
