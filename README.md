@@ -1,12 +1,10 @@
 git clone https://github.com/jarmop/tax-calculator-front.git
 cd angular-seed
 
+# install node and bower dependencies
 npm install
 
-# start basic http server
-npm start
-
-# start server and refresh browser with changes
+# build project, start server and refresh browser with changes
 gulp serve
 
 # watch scss files
