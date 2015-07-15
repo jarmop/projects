@@ -4,10 +4,8 @@ module.exports = function(config){
     basePath : '../../',
 
     files : [
-      'dist/lib/angular.js',
-      'dist/lib/angular-route.js',
+      'dist/lib.js',
       'src/bower_components/angular-mocks/angular-mocks.js',
-      'dist/lib/angular-resource.js',
       'dist/app.js',
       'tests/unit-tests/view*.js'
     ],

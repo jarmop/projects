@@ -25,8 +25,8 @@ gulp.task("bower-files", function(){
   /* Using separate del task as a dependency fails for some reason. Therefore performing build now as a callback after del. */
   return del(destFolder + '/lib', function() {
     gulp.src(mainBowerFiles('**/*.js'))
-      //.pipe(concat('lib.js'))
-      .pipe(gulp.dest(destFolder + '/lib'));
+      .pipe(concat('lib.js'))
+      .pipe(gulp.dest(destFolder));
   });
 
 });
