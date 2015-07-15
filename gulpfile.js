@@ -9,7 +9,7 @@ gulp.task('serve', ['build'], function() {
       baseDir: './dist'
     }
   });
-  gulp.watch(['*.html', 'modules/view1/*', 'modules/view2/*', '*.css'], {cwd: 'src'}, ['build', browserSync.reload]);
+  gulp.watch(['*.html', 'modules/view1/*', 'modules/view2/*', 'scss/*'], {cwd: 'src'}, ['build', browserSync.reload]);
 });
 
 //var uglify = require('gulp-uglify');
