@@ -10,7 +10,7 @@ gulp.task('serve', ['build'], function() {
       baseDir: './dist'
     }
   });
-  gulp.watch(['*.html', 'view1/*', 'view2/*', '*.css'], {cwd: 'app'}, ['build', reload]);
+  gulp.watch(['*.html', 'modules/view1/*', 'modules/view2/*', '*.css'], {cwd: 'app'}, ['build', reload]);
 });
 
 //var uglify = require('gulp-uglify');
@@ -21,21 +21,22 @@ var sourcemaps = require('gulp-sourcemaps');*/
 var destFolder = 'dist';
 var del = require('del');
 
-gulp.task('styles:clean', function() {
-  del(destFolder + '/lib')
-});
 var mainBowerFiles = require('main-bower-files');
 gulp.task("bower-files", function(){
-  gulp.src(mainBowerFiles('**/*.js'))
-    //.pipe(concat('lib.js'))
-    .pipe(gulp.dest(destFolder + '/lib'));
+  /* Using separate del task as a dependency fails for some reason. Therefore performing build now as a callback after del. */
+  del(destFolder + '/lib', function() {
+    gulp.src(mainBowerFiles('**/*.js'))
+      //.pipe(concat('lib.js'))
+      .pipe(gulp.dest(destFolder + '/lib'));
+  });
+
 });
 
-gulp.task('styles:clean', function() {
+gulp.task('scripts:clean', function() {
   del(destFolder + '/app.js')
 });
-gulp.task('scripts', function() {
-  gulp.src(['src/*.js', 'src/controllers/**/*.js'])
+gulp.task('scripts', ['scripts:clean'], function() {
+  gulp.src(['src/*.js', 'src/modules/**/*.js'])
     .pipe(concat('app.js'))
     .pipe(gulp.dest(destFolder));
 });
@@ -44,20 +45,22 @@ gulp.task('styles:clean', function() {
   del(destFolder + '/app.css')
 });
 var sass = require('gulp-sass');
-gulp.task('styles', function() {
+gulp.task('styles', ['styles:clean'], function() {
   gulp.src('src/scss/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(destFolder));
 });
 
+var flatten = require('gulp-flatten');
 gulp.task('html:clean', function() {
   del(destFolder + '/**/*.html')
 });
 gulp.task('html', ['html:clean'], function() {
   gulp.src('src/*.html')
     .pipe(gulp.dest(destFolder));
-  gulp.src('src/templates/*')
-    .pipe(gulp.dest(destFolder + '/templates'));
+  gulp.src('src/modules/**/*.html')
+    .pipe(flatten())
+    .pipe(gulp.dest(destFolder));
 });
 
 gulp.task('clean', function () {
