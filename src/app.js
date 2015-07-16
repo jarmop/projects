@@ -5,7 +5,8 @@ angular.module('myApp', [
   'ngRoute',
   'taxServices',
   'myApp.view1',
-  'myApp.view2'
+  'myApp.view2',
+  'mgcrea.ngStrap'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/view1'});

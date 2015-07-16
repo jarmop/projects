@@ -1,20 +1,7 @@
 <h1>Example 1</h1>
 <div class="row">
-  <div class="col-sm-3">
-    <h2>C-koodi</h2>
-
-<pre><code class="c">int sub() {
-  return 0xbeef;
-}
-int main() {
-  sub();
-  return 0xf00d;
-}</code></pre>
-
-  </div>
-  <div class="col-sm-5">
-    <h2>Assembly</h2>
-
+  <div class="col-xs-12 col-sm-6 col-md-4" bs-tabs>
+    <div bs-pane title="Assembly">
 <pre><code class="assembly">sub:
 00401000  push      ebp
 00401001  mov       ebp,esp
@@ -28,9 +15,19 @@ main:
 00401018  mov       eax,0F00Dh
 0040101D  pop       ebp
 0040101E  ret</code></pre>
-
+    </div>
+    <div bs-pane title="C">
+<pre><code class="c">int sub() {
+  return 0xbeef;
+}
+int main() {
+  sub();
+  return 0xf00d;
+}</code></pre>
+    </div>
   </div>
-  <div class="col-sm-3">
+
+  <div class="col-xs-6 col-sm-6 col-md-4">
     <h2>Stack</h2>
     <table class="table table-bordered">
       <thead>
