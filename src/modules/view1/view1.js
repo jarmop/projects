@@ -14,8 +14,26 @@ angular.module('myApp.view1', ['ngRoute'])
     {address: '0x0012FF6C', value: '0x004012E8'},
     {address: '0x0012FF68', value: '0x0012FFB8'}
   ];
-    
+
   $scope.code = [
-    {code: '00401000  push      ebp', description: 'tälläainen laini'}
+    {code: 'sub:', description: ''},
+    {code: '00401000  push      ebp', description: 'tälläainen laini'},
+    {code: '00401001  mov       ebp,esp', description: ''},
+    {code: '00401003  mov       eax,0BEEFh', description: ''},
+    {code: '00401008  pop       ebp', description: ''},
+    {code: '00401009  ret', description: ''},
+    {code: 'main:', description: ''},
+    {code: '00401010  push      ebp', description: ''},
+    {code: '00401011  mov       ebp,esp', description: ''},
+    {code: '00401013  call      sub (401000h)', description: ''},
+    {code: '00401018  mov       eax,0F00Dh', description: ''},
+    {code: '0040101D  pop       ebp', description: ''},
+    {code: '0040101E  ret', description: ''}
   ];
+
+  var activeLineKey = 0;
+  $scope.isActiveLine = function(lineKey) {
+    return lineKey == activeLineKey;
+  };
+
 }]);

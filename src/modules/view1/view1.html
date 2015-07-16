@@ -6,19 +6,8 @@
     <h2>Code</h2>
     <div bs-tabs>
       <div bs-pane title="Assembly">
-<pre><code class="assembly">sub:
-<span ng-repeat="line in code" data-placement="right" data-content="{{line.description}}" data-trigger="click" bs-popover>{{line.code}}</span>
-00401001  mov       ebp,esp
-00401003  mov       eax,0BEEFh
-00401008  pop       ebp
-00401009  ret
-main:
-00401010  push      ebp
-00401011  mov       ebp,esp
-00401013  call      sub (401000h)
-00401018  mov       eax,0F00Dh
-0040101D  pop       ebp
-0040101E  ret</code></pre>
+<pre><code class="assembly"><span ng-repeat-start="(key,line) in code"></span><span data-placement="right" data-content="{{line.description}}" data-trigger="manual" bs-popover ng-class="{active: isActiveLine(key)}">{{line.code}}</span>
+<span ng-repeat-end></span></code></pre>
       </div>
       <div bs-pane title="C">
 <pre><code class="c">int sub() {
