@@ -12,7 +12,7 @@
         <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
       </button>
       <div bs-pane title="Assembly">
-<pre><code class="assembly"><span ng-repeat-start="(key,line) in code"></span><span data-placement="right" data-content="{{line.description}}" data-trigger="manual" bs-popover ng-class="{active: isActiveLine(key)}">{{line.code}}</span>
+<pre><code class="assembly"><span ng-repeat-start="(key,line) in code"></span><span data-placement="right" data-content="{{line.description}}" data-trigger="manual" bs-popover ng-class="{active: isActiveLine(key)}" ng-click="setActive(key)">{{line.code}}</span>
 <span ng-repeat-end></span></code></pre>
       </div>
       <div bs-pane title="C">

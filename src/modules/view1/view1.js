@@ -48,4 +48,8 @@ angular.module('myApp.view1', ['ngRoute'])
       linePointer--;
     }
   }
+
+  $scope.setActive = function(lineKey) {
+    linePointer = runningOrder.indexOf(lineKey);
+  }
 }]);
