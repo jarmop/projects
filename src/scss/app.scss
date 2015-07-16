@@ -10,8 +10,10 @@ body {
   display: none;
 }
 
-code.assembly .active {
-  background-color: green;
-  color: white;
+code.assembly .line-of-code {
   padding: 0 5px;
+  &.active {
+    background-color: green;
+    color: white;
+  }
 }

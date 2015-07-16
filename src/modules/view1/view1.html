@@ -13,7 +13,7 @@
       </button>
       <button ng-click="goToStart()" class="btn btn-default btn-mini">start</button>
       <div bs-pane title="Assembly">
-<pre><code class="assembly"><span ng-repeat-start="(key,line) in code"></span><span data-placement="right" data-content="{{line.description}}" data-trigger="manual" bs-popover ng-class="{active: isActiveLine(key)}" ng-click="setActive(key)">{{line.code}}</span>
+<pre><code class="assembly"><span ng-repeat-start="(key,line) in code"></span><span data-placement="right" data-content="{{line.description}}" data-trigger="manual" bs-popover ng-class="{active: isActiveLine(key)}" ng-click="setActive(key)" class="line-of-code">{{line.code}}</span>
 <span ng-repeat-end></span></code></pre>
       </div>
       <div bs-pane title="C">
@@ -37,14 +37,34 @@ int main() {
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="obj in stack">
+        <tr ng-repeat="(address, value) in stack">
           <td>
-            {{obj.address}}
+            {{address}}
           </td>
           <td>
-            {{obj.value}}
+            {{value}}
           </td>
         </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-xs-6 col-sm-6 col-md-4">
+    <h2>Registers</h2>
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>Name</th><th>Value</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="(name,value) in registers">
+        <td>
+          {{name}}
+        </td>
+        <td>
+          {{value}}
+        </td>
+      </tr>
       </tbody>
     </table>
   </div>
