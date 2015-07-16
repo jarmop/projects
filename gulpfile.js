@@ -1,6 +1,7 @@
 'use strict';
 
 var gulp = require('gulp');
+var merge = require('merge-stream');
 
 var browserSync = require('browser-sync');
 gulp.task('serve', ['build'], function() {
@@ -23,12 +24,13 @@ var del = require('del');
 var mainBowerFiles = require('main-bower-files');
 gulp.task("bower-files", function(){
   /* Using separate del task as a dependency fails for some reason. Therefore performing build now as a callback after del. */
-  return del(destFolder + '/lib', function() {
-    gulp.src(mainBowerFiles('**/*.js'))
-      .pipe(concat('lib.js'))
-      .pipe(gulp.dest(destFolder));
-  });
-
+  var js = gulp.src(mainBowerFiles('**/*.js'))
+    .pipe(concat('lib.js'))
+    .pipe(gulp.dest(destFolder));
+  var css = gulp.src(mainBowerFiles('**/*.css'))
+    .pipe(concat('lib.css'))
+    .pipe(gulp.dest(destFolder));
+  return merge(js,css);
 });
 
 gulp.task('scripts:clean', function() {
@@ -54,7 +56,6 @@ var flatten = require('gulp-flatten');
 gulp.task('html:clean', function() {
   return del(destFolder + '/**/*.html')
 });
-var merge = require('merge-stream');
 gulp.task('html', ['html:clean'], function() {
   var index = gulp.src('src/*.html')
     .pipe(gulp.dest(destFolder));

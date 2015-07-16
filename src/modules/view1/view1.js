@@ -10,5 +10,7 @@ angular.module('myApp.view1', ['ngRoute'])
 }])
 
 .controller('View1Ctrl', ['$scope', 'Tax', function($scope, Tax) {
-  $scope.tax = Tax.query();
+  $('pre code').each(function(i, block) {
+    hljs.highlightBlock(block);
+  });
 }]);

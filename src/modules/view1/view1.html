@@ -1,9 +1,33 @@
 <h1>Example 1</h1>
 <div class="row">
-    <div class="col-xs-6">
-        testi
-    </div>
-    <div class="col-xs-6">
-        testi
-    </div>
+  <div class="col-xs-6">
+    <h2>C-koodi</h2>
+
+<pre><code class="c">int sub() {
+  return 0xbeef;
+}
+int main() {
+  sub();
+  return 0xf00d;
+}</code></pre>
+
+  </div>
+  <div class="col-xs-6">
+    <h2>Assembly</h2>
+
+<pre><code class="assembly">sub:
+00401000  push      ebp
+00401001  mov       ebp,esp
+00401003  mov       eax,0BEEFh
+00401008  pop       ebp
+00401009  ret
+main:
+00401010  push      ebp
+00401011  mov       ebp,esp
+00401013  call      sub (401000h)
+00401018  mov       eax,0F00Dh
+0040101D  pop       ebp
+0040101E  ret</code></pre>
+
+  </div>
 </div>
