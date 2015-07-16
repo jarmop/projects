@@ -5,6 +5,12 @@
   <div class="col-xs-12 col-sm-6 col-md-4">
     <h2>Code</h2>
     <div bs-tabs>
+      <button ng-click="backward()" class="btn btn-default btn-mini">
+        <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
+      </button>
+      <button ng-click="forward()" class="btn btn-default btn-mini">
+        <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
+      </button>
       <div bs-pane title="Assembly">
 <pre><code class="assembly"><span ng-repeat-start="(key,line) in code"></span><span data-placement="right" data-content="{{line.description}}" data-trigger="manual" bs-popover ng-class="{active: isActiveLine(key)}">{{line.code}}</span>
 <span ng-repeat-end></span></code></pre>

@@ -31,9 +31,21 @@ angular.module('myApp.view1', ['ngRoute'])
     {code: '0040101E  ret', description: ''}
   ];
 
-  var activeLineKey = 0;
+  var runningOrder = [7,8,9,1,2,3,4,5,10,11,12];
+  var linePointer = 0;
   $scope.isActiveLine = function(lineKey) {
-    return lineKey == activeLineKey;
+    return lineKey == runningOrder[linePointer];
   };
 
+  $scope.forward = function() {
+    if (linePointer < (runningOrder.length - 1)) {
+      linePointer++;
+    }
+  }
+
+  $scope.backward = function() {
+    if (linePointer > 0) {
+      linePointer--;
+    }
+  }
 }]);

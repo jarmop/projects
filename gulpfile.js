@@ -65,10 +65,18 @@ gulp.task('html', ['html:clean'], function() {
   return merge(index, modules);
 });
 
+gulp.task('fonts:clean', function() {
+  return del(destFolder + '/fonts')
+});
+gulp.task('fonts', ['fonts:clean'], function() {
+  return gulp.src('src/bower_components/bootstrap-sass/assets/fonts/bootstrap/*')
+    .pipe(gulp.dest(destFolder + '/fonts'));
+});
+
 gulp.task('clean', function () {
   return del(destFolder);
 });
 
 gulp.task('build', ['clean'], function() {
-  return runSequence('bower-files', 'scripts', 'styles', 'html');
+  return runSequence('bower-files', 'scripts', 'styles', 'html', 'fonts');
 });
