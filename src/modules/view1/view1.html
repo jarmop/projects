@@ -11,6 +11,7 @@
       <button ng-click="forward()" class="btn btn-default btn-mini">
         <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
       </button>
+      <button ng-click="goToStart()" class="btn btn-default btn-mini">start</button>
       <div bs-pane title="Assembly">
 <pre><code class="assembly"><span ng-repeat-start="(key,line) in code"></span><span data-placement="right" data-content="{{line.description}}" data-trigger="manual" bs-popover ng-class="{active: isActiveLine(key)}" ng-click="setActive(key)">{{line.code}}</span>
 <span ng-repeat-end></span></code></pre>

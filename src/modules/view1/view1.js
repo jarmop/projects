@@ -41,15 +41,19 @@ angular.module('myApp.view1', ['ngRoute'])
     if (linePointer < (runningOrder.length - 1)) {
       linePointer++;
     }
-  }
+  };
 
   $scope.backward = function() {
     if (linePointer > 0) {
       linePointer--;
     }
-  }
+  };
 
   $scope.setActive = function(lineKey) {
     linePointer = runningOrder.indexOf(lineKey);
-  }
+  };
+
+  $scope.goToStart = function() {
+    linePointer = 0;
+  };
 }]);
