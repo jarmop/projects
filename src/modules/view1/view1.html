@@ -32,5 +32,22 @@ main:
   </div>
   <div class="col-sm-3">
     <h2>Stack</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Address</th><th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="obj in stack">
+          <td>
+            {{obj.address}}
+          </td>
+          <td>
+            {{obj.value}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
