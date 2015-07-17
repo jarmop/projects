@@ -22,7 +22,8 @@ angular.module('myApp.view1', ['ngRoute'])
   var initialRegisters = {
     eax: '0x003435C0',
     ebp: '0x0012FFB8',
-    esp: '0x0012FF6C'
+    esp: '0x0012FF6C',
+    eip: '0x00401010'
   };
 
   initializeStackAndRegisters();
@@ -36,25 +37,23 @@ angular.module('myApp.view1', ['ngRoute'])
 
   $scope.code = {
     'sub:': {instruction: '', arguments: '', description: ''},
-    '00401000': {instruction: 'push', arguments: ['ebp'], description: 'tälläainen laini'},
-    '00401001': {instruction: 'mov', arguments: ['ebp','esp'], description: ''},
-    '00401003': {instruction: 'mov', arguments: ['eax','0x0000BEEF'], description: ''},
-    '00401008': {instruction: 'pop', arguments: ['ebp'], description: ''},
-    '00401009': {instruction: 'ret', arguments: [], description: ''},
+    '0x00401000': {instruction: 'push', arguments: ['ebp'], description: 'tälläainen laini'},
+    '0x00401001': {instruction: 'mov', arguments: ['ebp','esp'], description: ''},
+    '0x00401003': {instruction: 'mov', arguments: ['eax','0x0000BEEF'], description: ''},
+    '0x00401008': {instruction: 'pop', arguments: ['ebp'], description: ''},
+    '0x00401009': {instruction: 'ret', arguments: [], description: ''},
     'main:': {instruction: '', arguments: [], description: ''},
-    '00401010': {instruction: 'push', arguments: ['ebp'], description: ''},
-    '00401011': {instruction: 'mov', arguments: ['ebp','esp'], description: ''},
-    '00401013': {instruction: 'call', arguments: ['sub'], description: ''},
-    '00401018': {instruction: 'mov', arguments: ['eax','0x0000F00D'], description: ''},
-    '0040101D': {instruction: 'pop', arguments: ['ebp'], description: ''},
-    '0040101E': {instruction: 'ret', arguments: [], description: ''},
+    '0x00401010': {instruction: 'push', arguments: ['ebp'], description: ''},
+    '0x00401011': {instruction: 'mov', arguments: ['ebp','esp'], description: ''},
+    '0x00401013': {instruction: 'call', arguments: ['sub'], description: ''},
+    '0x00401018': {instruction: 'mov', arguments: ['eax','0x0000F00D'], description: ''},
+    '0x0040101D': {instruction: 'pop', arguments: ['ebp'], description: ''},
+    '0x0040101E': {instruction: 'ret', arguments: [], description: ''},
   };
 
+  var procedureStart = {sub: '0x00401000'};
 
-
-  var procedureStart = {sub: '00401000'};
-
-  var runningOrder = ['00401010','00401011','00401013','00401000','00401001','00401003','00401008','00401009','00401018','0040101D','0040101E'];
+  var runningOrder = ['0x00401010','0x00401011','0x00401013','0x00401000','0x00401001','0x00401003','0x00401008','0x00401009','0x00401018','0x0040101D','0x0040101E'];
   var linePointer = 0;
   $scope.isActiveLine = function(address) {
     return address == runningOrder[linePointer];
@@ -62,7 +61,7 @@ angular.module('myApp.view1', ['ngRoute'])
 
   $scope.forward = function() {
     if (linePointer < (runningOrder.length - 1)) {
-      setLinePointer(linePointer + 1);
+      setLinePointer(runningOrder.indexOf($scope.registers.eip));
     }
   };
 
@@ -98,8 +97,13 @@ angular.module('myApp.view1', ['ngRoute'])
     assembler[line.instruction].apply(this, line.arguments);
   }
 
+  function getNextInstructionAddress() {
+    return runningOrder[linePointer + 1];
+  }
+
   function setLinePointer(value) {
     linePointer = value;
+    $scope.registers.eip = getNextInstructionAddress();
     runLine(linePointer);
   }
 
@@ -131,7 +135,7 @@ angular.module('myApp.view1', ['ngRoute'])
   function call() {
     // push next instruction to stack for ret
     var procedure = arguments[0];
-    setLinePointer(runningOrder.indexOf(procedureStart[procedure]));
+    $scope.registers.eip = procedureStart[procedure];
   }
 
   var assembler = {
