@@ -25,20 +25,22 @@ angular.module('myApp.view1', ['ngRoute'])
     esp: '0x0012FF6C'
   };
 
+  // $scope.codeBlock for describing multiple code lines
+
   $scope.code = [
-    {code: 'sub:', description: ''},
-    {code: '00401000  push      ebp', description: 'tälläainen laini', instruction: push, argument: 'ebp'},
-    {code: '00401001  mov       ebp,esp', description: ''},
-    {code: '00401003  mov       eax,0BEEFh', description: ''},
-    {code: '00401008  pop       ebp', description: ''},
-    {code: '00401009  ret', description: ''},
-    {code: 'main:', description: ''},
-    {code: '00401010  push      ebp', description: '', instruction: push, argument: 'ebp'},
-    {code: '00401011  mov       ebp,esp', description: ''},
-    {code: '00401013  call      sub (401000h)', description: ''},
-    {code: '00401018  mov       eax,0F00Dh', description: ''},
-    {code: '0040101D  pop       ebp', description: ''},
-    {code: '0040101E  ret', description: ''}
+    {address: 'sub:', instruction: '', arguments: '', description: ''},
+    {address: '00401000', instruction: 'push', arguments: ['ebp'], description: 'tälläainen laini'},
+    {address: '00401001', instruction: 'mov', arguments: ['ebp','esp'], description: ''},
+    {address: '00401003', instruction: 'mov', arguments: ['eax','0BEEFh'], description: ''},
+    {address: '00401008', instruction: 'pop', arguments: ['ebp'], description: ''},
+    {address: '00401009', instruction: 'ret', arguments: [], description: ''},
+    {address: 'main:', instruction: '', arguments: [], description: ''},
+    {address: '00401010', instruction: 'push', arguments: ['ebp'], description: ''},
+    {address: '00401011', instruction: 'mov', arguments: ['ebp','esp'], description: ''},
+    {address: '00401013', instruction: 'call', arguments: ['sub'], description: ''},
+    {address: '00401018', instruction: 'mov', arguments: ['eax','0F00Dh'], description: ''},
+    {address: '0040101D', instruction: 'pop', arguments: ['ebp'], description: ''},
+    {address: '0040101E', instruction: 'ret', arguments: [], description: ''},
   ];
 
   var runningOrder = [7,8,9,1,2,3,4,5,10,11,12];
@@ -67,8 +69,12 @@ angular.module('myApp.view1', ['ngRoute'])
     setLinePointer(0);
   };
 
-  function push(value) {
+  function push() {
     decrementESP();
+    var value = arguments[0];
+    if (isRegister(value)) {
+      value = $scope.registers[value];
+    }
     $scope.stack[$scope.registers.esp] = value;
   }
 
@@ -93,14 +99,16 @@ angular.module('myApp.view1', ['ngRoute'])
 
   function runLine(linePointer) {
     var line = $scope.code[runningOrder[linePointer]];
-    if (isRegister(line.argument)) {
-      line.argument = $scope.registers[line.argument];
-    }
-    line.instruction(line.argument);
+    assembler[line.instruction].apply(this, line.arguments);
   }
 
   function setLinePointer(value) {
     linePointer = value;
     runLine(linePointer);
   }
+
+  var assembler = {
+    push: push,
+    pop: pop
+  };
 }]);
