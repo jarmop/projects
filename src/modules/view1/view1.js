@@ -69,22 +69,6 @@ angular.module('myApp.view1', ['ngRoute'])
     setLinePointer(0);
   };
 
-  function push() {
-    decrementESP();
-    var value = arguments[0];
-    if (isRegister(value)) {
-      value = $scope.registers[value];
-    }
-    $scope.stack[$scope.registers.esp] = value;
-  }
-
-  function pop(register) {
-    if (register !== undefined) {
-      register.value = $scope.stack[$scope.registers.esp];
-    }
-    incrementESP()
-  }
-
   function decrementESP() {
     $scope.registers.esp = '0x00' + (parseInt($scope.registers.esp, 16) - 4).toString(16).toUpperCase();
   }
@@ -108,7 +92,27 @@ angular.module('myApp.view1', ['ngRoute'])
   }
 
   var assembler = {
-    push: push,
-    pop: pop
+    push: function() {
+      decrementESP();
+      var value = arguments[0];
+      if (isRegister(value)) {
+        value = $scope.registers[value];
+      }
+      $scope.stack[$scope.registers.esp] = value;
+    },
+    pop: function(register) {
+      if (register !== undefined) {
+        register.value = $scope.stack[$scope.registers.esp];
+      }
+      incrementESP()
+    },
+    mov: function() {
+      var target = arguments[0];
+      var value = arguments[1];
+      if (isRegister(value)) {
+        value = $scope.registers[value];
+      }
+      $scope.registers[target] = value;
+    }
   };
 }]);
