@@ -34,28 +34,30 @@ angular.module('myApp.view1', ['ngRoute'])
 
   // $scope.codeBlock for describing multiple code lines
 
-  $scope.code = [
-    {address: 'sub:', instruction: '', arguments: '', description: ''},
-    {address: '00401000', instruction: 'push', arguments: ['ebp'], description: 'tälläainen laini'},
-    {address: '00401001', instruction: 'mov', arguments: ['ebp','esp'], description: ''},
-    {address: '00401003', instruction: 'mov', arguments: ['eax','0x0000BEEF'], description: ''},
-    {address: '00401008', instruction: 'pop', arguments: ['ebp'], description: ''},
-    {address: '00401009', instruction: 'ret', arguments: [], description: ''},
-    {address: 'main:', instruction: '', arguments: [], description: ''},
-    {address: '00401010', instruction: 'push', arguments: ['ebp'], description: ''},
-    {address: '00401011', instruction: 'mov', arguments: ['ebp','esp'], description: ''},
-    {address: '00401013', instruction: 'call', arguments: ['sub'], description: ''},
-    {address: '00401018', instruction: 'mov', arguments: ['eax','0x0000F00D'], description: ''},
-    {address: '0040101D', instruction: 'pop', arguments: ['ebp'], description: ''},
-    {address: '0040101E', instruction: 'ret', arguments: [], description: ''},
-  ];
+  $scope.code = {
+    'sub:': {instruction: '', arguments: '', description: ''},
+    '00401000': {instruction: 'push', arguments: ['ebp'], description: 'tälläainen laini'},
+    '00401001': {instruction: 'mov', arguments: ['ebp','esp'], description: ''},
+    '00401003': {instruction: 'mov', arguments: ['eax','0x0000BEEF'], description: ''},
+    '00401008': {instruction: 'pop', arguments: ['ebp'], description: ''},
+    '00401009': {instruction: 'ret', arguments: [], description: ''},
+    'main:': {instruction: '', arguments: [], description: ''},
+    '00401010': {instruction: 'push', arguments: ['ebp'], description: ''},
+    '00401011': {instruction: 'mov', arguments: ['ebp','esp'], description: ''},
+    '00401013': {instruction: 'call', arguments: ['sub'], description: ''},
+    '00401018': {instruction: 'mov', arguments: ['eax','0x0000F00D'], description: ''},
+    '0040101D': {instruction: 'pop', arguments: ['ebp'], description: ''},
+    '0040101E': {instruction: 'ret', arguments: [], description: ''},
+  };
 
-  var procedureStart = {sub: 1};
 
-  var runningOrder = [7,8,9,1,2,3,4,5,10,11,12];
+
+  var procedureStart = {sub: '00401000'};
+
+  var runningOrder = ['00401010','00401011','00401013','00401000','00401001','00401003','00401008','00401009','00401018','0040101D','0040101E'];
   var linePointer = 0;
-  $scope.isActiveLine = function(lineKey) {
-    return lineKey == runningOrder[linePointer];
+  $scope.isActiveLine = function(address) {
+    return address == runningOrder[linePointer];
   };
 
   $scope.forward = function() {
@@ -101,32 +103,41 @@ angular.module('myApp.view1', ['ngRoute'])
     runLine(linePointer);
   }
 
-  var assembler = {
-    push: function() {
-      decrementESP();
-      var value = arguments[0];
-      if (isRegister(value)) {
-        value = $scope.registers[value];
-      }
-      $scope.stack[$scope.registers.esp] = value;
-    },
-    pop: function(register) {
-      if (register !== undefined) {
-        register.value = $scope.stack[$scope.registers.esp];
-      }
-      incrementESP()
-    },
-    mov: function() {
-      var target = arguments[0];
-      var value = arguments[1];
-      if (isRegister(value)) {
-        value = $scope.registers[value];
-      }
-      $scope.registers[target] = value;
-    },
-    call: function() {
-      var procedure = arguments[0];
-      setLinePointer(runningOrder.indexOf(procedureStart[procedure]));
+  function push() {
+    decrementESP();
+    var value = arguments[0];
+    if (isRegister(value)) {
+      value = $scope.registers[value];
     }
+    $scope.stack[$scope.registers.esp] = value;
+  }
+
+  function pop(register) {
+    if (register !== undefined) {
+      register.value = $scope.stack[$scope.registers.esp];
+    }
+    incrementESP()
+  }
+
+  function mov() {
+    var target = arguments[0];
+    var value = arguments[1];
+    if (isRegister(value)) {
+      value = $scope.registers[value];
+    }
+    $scope.registers[target] = value;
+  }
+
+  function call() {
+    // push next instruction to stack for ret
+    var procedure = arguments[0];
+    setLinePointer(runningOrder.indexOf(procedureStart[procedure]));
+  }
+
+  var assembler = {
+    push: push,
+    pop: pop,
+    mov: mov,
+    call: call
   };
 }]);

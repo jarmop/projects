@@ -16,8 +16,8 @@
         <div class="well code">
           <table>
             <tbody>
-              <tr ng-repeat="(key,line) in code" class="line-of-code" ng-class="{active: isActiveLine(key)}" ng-click="setActive(key)">
-                <td class="address">{{line.address}}</td>
+              <tr ng-repeat="(address,line) in code" class="line-of-code" ng-class="{active: isActiveLine(address)}" ng-click="setActive(key)">
+                <td class="address">{{address}}</td>
                 <td class="instruction">{{line.instruction}}</td>
                 <td class="arguments">{{line.arguments.join(',')}}</td>
               </tr>
