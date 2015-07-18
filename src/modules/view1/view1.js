@@ -71,9 +71,9 @@ angular.module('myApp.view1', ['ngRoute'])
     currentLine = linePointer;
   };
 
-  $scope.restart = function() {
+  $scope.rewind = function() {
     initializeStackAndRegisters();
-    $scope.forward();
+    currentLine = '';
   };
 
   function decrementESP() {
