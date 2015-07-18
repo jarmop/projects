@@ -6,7 +6,7 @@
     <h2>Code</h2>
     <div bs-tabs>
       <div bs-pane title="Assembly">
-        <button ng-click="backward()" class="btn btn-default btn-mini">
+        <button disabled ng-click="backward()" class="btn btn-default btn-mini">
           <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
         </button>
         <button ng-click="forward()" class="btn btn-default btn-mini">
@@ -16,7 +16,7 @@
         <div class="well code">
           <table>
             <tbody>
-              <tr ng-repeat="(address,line) in code" class="line-of-code" ng-class="{active: isActiveLine(address)}" ng-click="setActive(key)">
+              <tr ng-repeat="(address,line) in code" class="line-of-code" ng-class="{active: isActiveLine(address)}" ng-click="setActive(address)">
                 <td class="address">{{address}}</td>
                 <td class="instruction">{{line.instruction}}</td>
                 <td class="arguments">{{line.arguments.join(',')}}</td>

@@ -35,49 +35,45 @@ angular.module('myApp.view1', ['ngRoute'])
 
   // $scope.codeBlock for describing multiple code lines
 
+  // linked list, each line points to next instruction... eip?
   $scope.code = {
     'sub:': {instruction: '', arguments: '', description: ''},
-    '0x00401000': {instruction: 'push', arguments: ['ebp'], description: 'tälläainen laini'},
-    '0x00401001': {instruction: 'mov', arguments: ['ebp','esp'], description: ''},
-    '0x00401003': {instruction: 'mov', arguments: ['eax','0x0000BEEF'], description: ''},
-    '0x00401008': {instruction: 'pop', arguments: ['ebp'], description: ''},
+    '0x00401000': {instruction: 'push', arguments: ['ebp'], description: 'tälläainen laini', nextInstruction: '0x00401001'},
+    '0x00401001': {instruction: 'mov', arguments: ['ebp','esp'], description: '', nextInstruction: '0x00401003'},
+    '0x00401003': {instruction: 'mov', arguments: ['eax','0x0000BEEF'], description: '', nextInstruction: '0x00401008'},
+    '0x00401008': {instruction: 'pop', arguments: ['ebp'], description: '', nextInstruction: '0x00401009'},
     '0x00401009': {instruction: 'ret', arguments: [], description: ''},
     'main:': {instruction: '', arguments: [], description: ''},
-    '0x00401010': {instruction: 'push', arguments: ['ebp'], description: ''},
-    '0x00401011': {instruction: 'mov', arguments: ['ebp','esp'], description: ''},
-    '0x00401013': {instruction: 'call', arguments: ['sub'], description: ''},
-    '0x00401018': {instruction: 'mov', arguments: ['eax','0x0000F00D'], description: ''},
-    '0x0040101D': {instruction: 'pop', arguments: ['ebp'], description: ''},
+    '0x00401010': {instruction: 'push', arguments: ['ebp'], description: '', nextInstruction: '0x00401011'},
+    '0x00401011': {instruction: 'mov', arguments: ['ebp','esp'], description: '', nextInstruction: '0x00401013'},
+    '0x00401013': {instruction: 'call', arguments: ['sub'], description: '', nextInstruction: '0x00401018'},
+    '0x00401018': {instruction: 'mov', arguments: ['eax','0x0000F00D'], description: '', nextInstruction: '0x0040101D'},
+    '0x0040101D': {instruction: 'pop', arguments: ['ebp'], description: '', nextInstruction: '0x0040101E'},
     '0x0040101E': {instruction: 'ret', arguments: [], description: ''},
   };
 
   var procedureStart = {sub: '0x00401000'};
+  var currentLine = '';
 
-  var runningOrder = ['0x00401010','0x00401011','0x00401013','0x00401000','0x00401001','0x00401003','0x00401008','0x00401009','0x00401018','0x0040101D','0x0040101E'];
-  var linePointer = 0;
   $scope.isActiveLine = function(address) {
-    return address == runningOrder[linePointer];
+    return address == currentLine;
   };
 
   $scope.forward = function() {
-    if (linePointer < (runningOrder.length - 1)) {
-      setLinePointer(runningOrder.indexOf($scope.registers.eip));
-    }
+    runNextLine();
   };
 
   $scope.backward = function() {
-    if (linePointer > 0) {
-      setLinePointer(linePointer - 1);
-    }
+    // TODO
   };
 
-  $scope.setActive = function(lineKey) {
-    setLinePointer(runningOrder.indexOf(lineKey));
+  $scope.setActive = function(linePointer) {
+    currentLine = linePointer;
   };
 
   $scope.restart = function() {
     initializeStackAndRegisters();
-    setLinePointer(0);
+    $scope.forward();
   };
 
   function decrementESP() {
@@ -92,19 +88,11 @@ angular.module('myApp.view1', ['ngRoute'])
     return value in $scope.registers;
   }
 
-  function runLine(linePointer) {
-    var line = $scope.code[runningOrder[linePointer]];
+  function runNextLine() {
+    currentLine = $scope.registers.eip;
+    var line = $scope.code[currentLine];
+    $scope.registers.eip = line.nextInstruction;
     assembler[line.instruction].apply(this, line.arguments);
-  }
-
-  function getNextInstructionAddress() {
-    return runningOrder[linePointer + 1];
-  }
-
-  function setLinePointer(value) {
-    linePointer = value;
-    $scope.registers.eip = getNextInstructionAddress();
-    runLine(linePointer);
   }
 
   function push() {
