@@ -121,7 +121,7 @@ angular.module('myApp.view1', ['ngRoute'])
   }
 
   function call() {
-    // push next instruction to stack for ret
+    push($scope.registers.eip);
     var procedure = arguments[0];
     $scope.registers.eip = procedureStart[procedure];
   }
