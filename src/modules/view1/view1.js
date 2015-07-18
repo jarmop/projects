@@ -126,10 +126,15 @@ angular.module('myApp.view1', ['ngRoute'])
     $scope.registers.eip = procedureStart[procedure];
   }
 
+  function ret() {
+    pop('eip');
+  }
+
   var assembler = {
     push: push,
     pop: pop,
     mov: mov,
-    call: call
+    call: call,
+    ret: ret
   };
 }]);
