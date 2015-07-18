@@ -106,7 +106,7 @@ angular.module('myApp.view1', ['ngRoute'])
 
   function pop(register) {
     if (register !== undefined) {
-      register.value = $scope.stack[$scope.registers.esp];
+      $scope.registers[register] = $scope.stack[$scope.registers.esp];
     }
     incrementESP()
   }
