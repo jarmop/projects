@@ -31,6 +31,8 @@ angular.module('myApp.view1', ['ngRoute'])
   function initializeStackAndRegisters() {
     jQuery.extend(true, $scope.stack = {}, initialStack);
     jQuery.extend(true, $scope.registers = {}, initialRegisters);
+    activeRegisters = [];
+    activeStacks = [];
   }
 
   // $scope.codeBlock for describing multiple code lines
@@ -54,6 +56,16 @@ angular.module('myApp.view1', ['ngRoute'])
 
   var procedureStart = {sub: '0x00401000'};
   var currentLine = '';
+
+  var activeRegisters = [];
+  $scope.isActiveRegister = function(name) {
+    return activeRegisters.indexOf(name) !== -1;
+  }
+
+  var activeStacks = [];
+  $scope.isActiveStack = function(address) {
+    return activeStacks.indexOf(address) !== -1;
+  }
 
   $scope.isActiveLine = function(address) {
     return address == currentLine;
@@ -91,7 +103,10 @@ angular.module('myApp.view1', ['ngRoute'])
   function runNextLine() {
     currentLine = $scope.registers.eip;
     var line = $scope.code[currentLine];
+    if (line === undefined) { return false; }
     $scope.registers.eip = line.nextInstruction;
+    activeRegisters = ['eip'];
+    activeStacks = [];
     assembler[line.instruction].apply(this, line.arguments);
   }
 
@@ -99,25 +114,34 @@ angular.module('myApp.view1', ['ngRoute'])
     decrementESP();
     var value = arguments[0];
     if (isRegister(value)) {
+      activeRegisters.push(value);
       value = $scope.registers[value];
     }
     $scope.stack[$scope.registers.esp] = value;
+    activeStacks.push($scope.registers.esp);
+    activeRegisters.push('esp');
   }
 
   function pop(register) {
     if (register !== undefined) {
       $scope.registers[register] = $scope.stack[$scope.registers.esp];
+      activeRegisters.push(register);
     }
-    incrementESP()
+    activeRegisters.push('esp');
+    activeStacks.push($scope.registers.esp);
+    incrementESP();
+    activeStacks.push($scope.registers.esp);
   }
 
   function mov() {
     var target = arguments[0];
     var value = arguments[1];
     if (isRegister(value)) {
+      activeRegisters.push(value);
       value = $scope.registers[value];
     }
     $scope.registers[target] = value;
+    activeRegisters.push(target);
   }
 
   function call() {

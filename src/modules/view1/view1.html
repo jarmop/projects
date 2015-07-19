@@ -46,7 +46,7 @@ int main() {
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="(address, value) in stack">
+        <tr ng-repeat="(address, value) in stack" ng-class="{modified: isActiveStack(address)}">
           <td>
             {{address}}
           </td>
@@ -66,7 +66,7 @@ int main() {
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="(name,value) in registers">
+      <tr ng-repeat="(name,value) in registers" ng-class="{modified: isActiveRegister(name)}">
         <td>
           {{name}}
         </td>
