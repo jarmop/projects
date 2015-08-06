@@ -57,20 +57,26 @@ for(input in inputs) {
   not.getValue(input);
 }
 
-var inputs = [];
-function fillInputs(ia, limit) {
+//var inputs = [];
+function fillInputs(inputs, ia, limit) {
   for (var i=0; i<2; i++) {
     ia.push(i);
     if (ia.length < limit) {
-      fillInputs(ia, limit);
+      inputs = fillInputs(inputs, ia, limit);
     } else {
       inputs.push(ia.slice(0));
     }
     ia.pop();
   }
+  return inputs;
 }
 
-fillInputs([], 3)
+function getTestInputs(limit) {
+  var inputs = fillInputs([], [], limit);
+  return inputs;
+}
+
+var inputs = getTestInputs(3);
 
 for(var i=0; i<inputs.length; i++) {
   console.log(inputs[i]);
