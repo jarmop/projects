@@ -1,8 +1,10 @@
 {
   "devDependencies": {
+    "bower": "^1.4.1",
     "browser-sync": "^2.8.2"
   },
   "scripts": {
-    "start": "browser-sync start --server --files '*.html'"
+    "pre-start": "npm install",
+    "start": "browser-sync start --server --files '*.html, *.js'"
   }
 }
