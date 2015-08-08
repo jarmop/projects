@@ -5,6 +5,7 @@
   },
   "scripts": {
     "pre-start": "npm install",
-    "start": "browser-sync start --server --files '*.html, *.js'"
+    "start": "browser-sync start --server --files '*.html, *.js, *.css'",
+    "watch": "node-sass --watch app.scss app.css"
   }
 }
