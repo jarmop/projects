@@ -1,21 +1,38 @@
-function nand(in1, in2) {
-  if (in1 == in2 == 0) {
-    return 1;
-  } else {
-    return false;
+//var inputs = [];
+function fillInputs(inputs, ia, limit) {
+  for (var i=0; i<2; i++) {
+    ia.push(i);
+    if (ia.length < limit) {
+      inputs = fillInputs(inputs, ia, limit);
+    } else {
+      inputs.push(ia.slice(0));
+    }
+    ia.pop();
   }
+  return inputs;
 }
 
-/*function not(in1) {
-  return nand(in1, in1);
-}*/
-
-function and(in1, in2) {
-  return nand(not(in1), not(in2));
+function getTestInputs(limit) {
+  var inputs = fillInputs([], [], limit);
+  return inputs;
 }
 
-function orGate(in1, in2) {
+var inputs = getTestInputs(2);
 
+for(var i=0; i<inputs.length; i++) {
+  console.log(inputs[i]);
+  console.log(nand(inputs[i]));
+}
+
+
+function nand(inputs) {
+  var output = 0;
+  inputs.some(function(input) {
+    if (input == 0) {
+      output = 1;
+    }
+  });
+  return output;
 }
 
 var not = {
@@ -57,30 +74,6 @@ for(input in inputs) {
   not.getValue(input);
 }
 
-//var inputs = [];
-function fillInputs(inputs, ia, limit) {
-  for (var i=0; i<2; i++) {
-    ia.push(i);
-    if (ia.length < limit) {
-      inputs = fillInputs(inputs, ia, limit);
-    } else {
-      inputs.push(ia.slice(0));
-    }
-    ia.pop();
-  }
-  return inputs;
-}
-
-function getTestInputs(limit) {
-  var inputs = fillInputs([], [], limit);
-  return inputs;
-}
-
-var inputs = getTestInputs(3);
-
-for(var i=0; i<inputs.length; i++) {
-  console.log(inputs[i]);
-}
 
 var out = not.getValue(0);
 
@@ -104,36 +97,5 @@ var not = [
   }
 ];
 
-var squareWidth = 100;
-var squareHeight = 100;
-var padding = 50;
 
-var diagram = [
-  [],
-  []
-];
 
-// First lets create our drawing surface out of existing SVG element
-// If you want to create new surface just provide dimensions
-var paper = Snap("#diagram");
-//var s = Snap("#svg");
-// Lets create big circle in the middle:
-var nand = paper.rect(150, 150, 100, 100);
-// By default its black, lets change its attributes
-nand.attr({
-  fill: "#bada55",
-  stroke: "#000",
-  strokeWidth: 3
-});
-
-var nand2 = paper.rect(300, 150, 100, 100);
-// By default its black, lets change its attributes
-nand2.attr({
-  fill: "#bada55",
-  stroke: "#000",
-  strokeWidth: 3
-});
-
-paper.line(250, 200, 300, 200).attr({stroke: '#000', strokeWidth: 3});
-
-paper.text(200, 200, 'NAND');
