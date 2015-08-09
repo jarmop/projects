@@ -18,15 +18,16 @@ function Diagram() {
     //this.drawLine(250, 60, 275, 60);
     this.drawLine(250, 35, 275, 35);
     this.drawLine(250, 35, 250, 60);
-
     this.drawLine(250, 60, 250, 175);
     this.drawLine(250, 175, 275, 175);
+    this.drawSplit(250, 60);
 
     this.drawGate(325, 150, 'Nand');
     this.drawInput(150, 175);
     this.drawLine(250, 200, 275, 200);
     this.drawLine(275, 200, 275, 85);
     this.drawLine(275, 200, 275, 225);
+    this.drawSplit(275, 200);
     //this.drawLine(200+this.lineLength, 200, 300-this.lineLength, 175);
     //this.drawLine(200+this.lineLength, 200, 300-this.lineLength, 225);
   };
@@ -60,6 +61,10 @@ function Diagram() {
 
   this.drawLine = function(x1, y1, x2, y2) {
     this.paper.line(x1, y1, x2, y2).attr({stroke: '#000', strokeWidth: this.strokeWidth});
+  }
+
+  this.drawSplit = function(x, y) {
+    this.paper.circle(x, y, 5);
   }
 }
 
