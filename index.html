@@ -1,34 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="gateSimulator">
 <head>
     <meta charset="UTF-8">
     <title></title>
     <link rel="stylesheet" href="app.css">
 </head>
 <body>
+<div ng-controller="truthTableController as truthTable">
     <table>
         <thead>
-            <tr>
-                <th colspan="2">In</th>
-                <th>Out</th>
-            </tr>
+        <tr>
+            <th colspan="2">In</th>
+            <th>Out</th>
+        </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>0</td>
-                <td>1</td>
-                <td>0</td>
-            </tr>
+        <tr ng-repeat="value in truthTable.values">
+            <td ng-repeat="vali in value track by $index">{{vali}}</td>
+        </tr>
         </tbody>
     </table>
-    <svg id="diagram" width="800" height="600"></svg>
-    <script src="bower_components/snap.svg/dist/snap.svg.js"></script>
-    <script src="app.js"></script>
-    <script src="diagram.js"></script>
+</div>
+
+<div class="diagram" ng-controller="diagramController as diagram">
+    <ul>
+        <li ng-repeat="gate in diagram.gates">
+            {{gate.name}}
+            <ul>
+                <li>
+                    out: {{gate.getValue}}
+                </li>
+                <li>
+                    in
+                    <ul>
+                        <li ng-repeat="input in gate.inputs track by $index">
+                            {{input}}
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li ng-repeat="(key, input) in diagram.inputs">
+            {{key}}
+            <ul>
+                <li>out: {{input}}</li>
+            </ul>
+        </li>
+    </ul>
+
+    <ul>
+        <li>
+            Nand
+            <ul>
+                <li>
+                    out: 0
+                </li>
+                <li>
+                    in
+                    <ul>
+                        <li>
+                            in1
+                        </li>
+                        <li>
+                            in1
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            in1
+            <ul>
+                <li>
+                    out: 1
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+
+    <table>
+        <tbody>
+        <tr>
+            <td colspan="2">Not</td>
+        </tr>
+        <tr>
+            <td>in1</td>
+            <td>in1</td>
+        </tr>
+        </tbody>
+    </table>
+    <table>
+        <tbody>
+        <tr>
+            <td colspan="2">in1</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--svg id="diagram" width="800" height="600"></svg-->
+<script src="bower_components/snap.svg/dist/snap.svg.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="app.js"></script>
+<script src="diagram.js"></script>
 </body>
 </html>
