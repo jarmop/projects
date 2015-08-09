@@ -1,38 +1,53 @@
+var diagram = new Diagram();
+diagram.draw();
 
+function Diagram() {
+  this.paper = Snap("#diagram");
+  this.lineLength = 30;
 
-function draw() {
-  var squareWidth = 100;
-  var squareHeight = 100;
-  var padding = 50;
+  this.draw = function() {
+    var squareWidth = 100;
+    var squareHeight = 100;
+    var padding = 50;
 
-  var diagram = [
-    [],
-    []
-  ];
+    this.drawGate(300, 150, 'Nand');
+    this.drawInput(150, 175);
 
-// First lets create our drawing surface out of existing SVG element
-// If you want to create new surface just provide dimensions
-  var paper = Snap("#diagram");
-//var s = Snap("#svg");
-// Lets create big circle in the middle:
-  var nand = paper.rect(150, 150, 100, 100);
-// By default its black, lets change its attributes
-  nand.attr({
-    fill: "#bada55",
-    stroke: "#000",
-    strokeWidth: 3
-  });
+    this.drawLine(200+this.lineLength, 200, 300-this.lineLength, 175);
+    this.drawLine(200+this.lineLength, 200, 300-this.lineLength, 225);
+  };
 
-  var nand2 = paper.rect(300, 150, 100, 100);
-// By default its black, lets change its attributes
-  nand2.attr({
-    fill: "#bada55",
-    stroke: "#000",
-    strokeWidth: 3
-  });
+  this.drawInput = function(x, y) {
+    var width = 50;
+    var height = 50;
+    var input = this.paper.rect(x, y, width, height);
+    input.attr({
+      fill: "#fff",
+      stroke: "#000",
+      strokeWidth: 3
+    });
+    this.drawLine(x+width, y+width/2, x+width+this.lineLength, y+width/2);
+  }
 
-  paper.line(250, 200, 300, 200).attr({stroke: '#000', strokeWidth: 3});
+  this.drawGate = function(x, y, name) {
+    var width = 100;
+    var height = 100;
+    var nand = this.paper.rect(x, y, width, height);
+    nand.attr({
+      fill: "#fff",
+      stroke: "#000",
+      strokeWidth: 3
+    });
+    this.paper.text(x+20, y+40, name);
+    this.drawLine(x-this.lineLength, y+height/4, x, y+height/4);
+    this.drawLine(x-this.lineLength, y+height/4*3, x, y+height/4*3);
+    this.drawLine(x+width, y+height/2, x+width+this.lineLength, y+height/2);
+  };
 
-  paper.text(200, 200, 'NAND');
+  this.drawLine = function(x1, y1, x2, y2) {
+    this.paper.line(x1, y1, x2, y2).attr({stroke: '#000', strokeWidth: 3});
+  }
 }
+
+
 
