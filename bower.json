@@ -1,0 +1,6 @@
+{
+  "name": "gate-simulator",
+  "devDependencies": {
+    "angular": "~1.4.3"
+  }
+}
