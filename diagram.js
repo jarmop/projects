@@ -1,10 +1,61 @@
 var diagram = new Diagram();
-diagram.draw();
+//diagram.draw();
+
+var xorg = {
+  id: 0,
+  type: 'or',
+  input: [
+    {
+      id: 0,
+      type: 'and',
+      input: [
+        {
+          id: 0,
+          type: 'in'
+        },
+        {
+          id: 0,
+          type: 'not',
+          input: [
+            {
+              id: 1,
+              type: 'in'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 1,
+      type: 'and',
+      input: [
+        {
+          id: 1,
+          type: 'in'
+        },
+        {
+          id: 1,
+          type: 'not',
+          input: [
+            {
+              id: 0,
+              type: 'in'
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+diagram.drawRecursive(xorg);
 
 function Diagram() {
   this.paper = Snap("#diagram");
   this.lineLength = 50;
   this.strokeWidth = 2;
+
+
 
   this.draw = function() {
     var squareWidth = 100;
@@ -30,7 +81,33 @@ function Diagram() {
     this.drawSplit(275, 200);
     //this.drawLine(200+this.lineLength, 200, 300-this.lineLength, 175);
     //this.drawLine(200+this.lineLength, 200, 300-this.lineLength, 225);
+
+    this.drawGate(525, 80, 'Or');
+    this.drawLine(475, 60, 475, 105);
+    this.drawLine(475, 200, 475, 155);
   };
+
+  this.inputPoint = {x: 10, y:10};
+  this.inputSize = 50;
+  this.padding = 20;
+
+  this.gatePoint = {x: 200, y:10};
+  this.gateSize = 100;
+
+  this.drawRecursive = function(gate) {
+    if (gate.input !== undefined) {
+      for (i=0; i<gate.input.length; i++) {
+        this.drawRecursive(gate.input[i]);
+      }
+    }
+    if (gate.type == 'in') {
+      this.drawInput(this.inputPoint.x, this.inputPoint.y);
+      this.inputPoint.y += (this.inputSize + this.padding);
+    } else {
+      this.drawGate(this.gatePoint.x, this.gatePoint.y, gate.type);
+      this.gatePoint.y += (this.gateSize + this.padding);
+    }
+  }
 
   this.drawInput = function(x, y) {
     var width = 50;
