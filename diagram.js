@@ -48,14 +48,19 @@ var xorg = {
   ]
 };
 
-diagram.drawRecursive(xorg);
+var elements = [
+  ['in1', 'in2'],
+  ['and1', 'and2'],
+  ['or']
+];
+
+//diagram.drawElements(elements);
+diagram.drawRecursive(xorg, 0);
 
 function Diagram() {
   this.paper = Snap("#diagram");
   this.lineLength = 50;
   this.strokeWidth = 2;
-
-
 
   this.draw = function() {
     var squareWidth = 100;
@@ -94,20 +99,21 @@ function Diagram() {
   this.gatePoint = {x: 200, y:10};
   this.gateSize = 100;
 
-  this.drawRecursive = function(gate) {
-    if (gate.input !== undefined) {
-      for (i=0; i<gate.input.length; i++) {
-        this.drawRecursive(gate.input[i]);
-      }
-    }
+  this.drawRecursive = function(gate, parentY) {
     if (gate.type == 'in') {
       this.drawInput(this.inputPoint.x, this.inputPoint.y);
       this.inputPoint.y += (this.inputSize + this.padding);
     } else {
       this.drawGate(this.gatePoint.x, this.gatePoint.y, gate.type);
       this.gatePoint.y += (this.gateSize + this.padding);
+      if (gate.input !== undefined) {
+        for (var i=0; i<gate.input.length; i++) {
+          this.drawRecursive(gate.input[i], 0);
+        }
+      }
     }
-  }
+
+  };
 
   this.drawInput = function(x, y) {
     var width = 50;
@@ -119,7 +125,7 @@ function Diagram() {
       strokeWidth: this.strokeWidth
     });
     this.drawLine(x+width, y+width/2, x+width+this.lineLength, y+width/2);
-  }
+  };
 
   this.drawGate = function(x, y, name) {
     var width = 100;
@@ -138,11 +144,11 @@ function Diagram() {
 
   this.drawLine = function(x1, y1, x2, y2) {
     this.paper.line(x1, y1, x2, y2).attr({stroke: '#000', strokeWidth: this.strokeWidth});
-  }
+  };
 
   this.drawSplit = function(x, y) {
     this.paper.circle(x, y, 5);
-  }
+  };
 }
 
 
