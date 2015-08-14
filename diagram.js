@@ -1,3 +1,5 @@
+//suosiolla manuaalinen järjestely
+
 var diagram = new Diagram();
 //diagram.draw();
 
@@ -49,13 +51,14 @@ var xorg = {
 };
 
 var elements = [
-  ['in1', 'in2'],
-  ['and1', 'and2'],
-  ['or']
+  [{type: 'in'}, {type: 'in'}],
+  [{type: 'not', inputs: [[0,1]]}, {type: 'not', inputs: [[0,0]]}],
+  [{type: 'and', inputs: [[0,0], [1,0]]}, {type: 'and', inputs: [[0,1], [1,1]]}],
+  [{type: 'or', inputs: [[2,0], [2,1]]}]
 ];
 
-//diagram.drawElements(elements);
-diagram.drawRecursive(xorg, 0);
+diagram.drawElements(elements);
+//diagram.drawRecursive(xorg, 0);
 
 function Diagram() {
   this.paper = Snap("#diagram");
@@ -112,7 +115,33 @@ function Diagram() {
         }
       }
     }
+  };
 
+  /*
+   var elements = [
+   ['in', 'in'],
+   [{type: 'not', inputs: [[0,1]]}, {type: 'not', inputs: [[0,0]]}],
+   [{type: 'and', inputs: [[0,0], [1,0]]}, {type: 'and', inputs: [[0,1], [1,1]]}],
+   [{type: 'or', inputs: [[2,0], [2,1]]}]
+   ];
+  */
+
+  this.drawElements = function() {
+    var x = -90;
+    for (var i=0; i<elements.length; i++) {
+      x += 200
+      var y = -90;
+      for (var j=0; j<elements[i].length; j++) {
+        y += 150
+        var element = elements[i][j];
+        if (element.type == 'in') {
+          this.drawInput(x, y);
+        } else {
+          this.drawGate(x, y, element.type);
+        }
+      }
+
+    }
   };
 
   this.drawInput = function(x, y) {
