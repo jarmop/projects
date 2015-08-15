@@ -6,15 +6,18 @@ function Diagram() {
   this.paper = Snap("#diagram");
   this.lineLength = 50;
   this.strokeWidth = 2;
-  this.padding = 20;
+  // square size
+  var s = 10;
+  // line length
+  var l = 2*s;
 
   this.drawGrid = function() {
-    var gridLineStroke = '#ddd';
+    var gridLineStroke = '#eee';
     var gridLinewidth = 2;
-    for (var i = this.padding; i < 600; i += this.padding) {
+    for (var i = s; i < 600; i += s) {
       this.paper.line(0, i, 600, i).attr({stroke: gridLineStroke, strokeWidth: gridLinewidth});
     }
-    for (var i = this.padding; i < 600; i += this.padding) {
+    for (var i = s; i < 600; i += s) {
       this.paper.line(i, 0, i, 600).attr({stroke: gridLineStroke, strokeWidth: gridLinewidth});
     }
   };
@@ -28,7 +31,7 @@ function Diagram() {
   };
 
   this.drawInput = function(x, y) {
-    var size = 2*this.padding;
+    var size = 4*s;
     this.paper.group(
       this.paper.rect(x, y, size, size)
         .attr({
@@ -36,23 +39,24 @@ function Diagram() {
           stroke: "#000",
           strokeWidth: this.strokeWidth
         }),
-      this.drawLine(x+size, y+size/2, x+size+this.lineLength, y+size/2)
+      this.drawLine(x+size, y+size/2, x+size+l, y+size/2)
     ).drag(diagram.move, diagram.start, diagram.stop);
   };
 
   this.drawGate = function(x, y, name) {
-    var size = 4*this.padding;
+    var width = 6*s;
+    var height = 6*s;
     this.paper.group(
-      this.paper.rect(x, y, size, size)
+      this.paper.rect(x, y, width, height)
         .attr({
           fill: "#fff",
           stroke: "#000",
           strokeWidth: this.strokeWidth
         }),
-      this.paper.text(x+20, y+40, name),
-      this.drawLine(x-this.lineLength, y+size/4, x, y+size/4),
-      this.drawLine(x-this.lineLength, y+size/4*3, x, y+size/4*3),
-      this.drawLine(x+size, y+size/2, x+size+this.lineLength, y+size/2)
+      this.paper.text(x +.5*s, y+1.5*s, name),
+      this.drawLine(x-l, y+s, x, y+s),
+      this.drawLine(x-l, y+5*s, x, y+5*s),
+      this.drawLine(x+width, y+height/2, x+width+l, y+height/2)
     ).drag(diagram.move, diagram.start, diagram.stop);
   };
 
@@ -65,8 +69,8 @@ function Diagram() {
   };
 
   this.move = function(dx,dy,x,y) {
-    dx = Math.round(dx / 20)*20;
-    dy = Math.round(dy / 20)*20;
+    dx = Math.round(dx / s)*s;
+    dy = Math.round(dy / s)*s;
     this.attr({
       transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [dx, dy]
     });
