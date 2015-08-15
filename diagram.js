@@ -1,6 +1,19 @@
 var diagram = new Diagram();
-diagram.drawGrid();
-diagram.draw();
+
+function Element(x,y,type) {
+  this.x = x;
+  this.y = y;
+  this.type = type;
+}
+var elements = [
+  new Element(60, 20, 'input'),
+  new Element(60, 80, 'input'),
+  new Element(240, 20, 'and'),
+  new Element(240, 140, 'and'),
+  new Element(240, 260, 'or')
+];
+
+diagram.draw(elements);
 
 function Diagram() {
   this.paper = Snap("#diagram");
@@ -22,12 +35,15 @@ function Diagram() {
     }
   };
 
-  this.draw = function() {
-    this.drawInput(60, 20);
-    this.drawInput(60, 80);
-    this.drawGate(240, 20, 'Nand');
-    this.drawGate(240, 140, 'Nand');
-    this.drawGate(240, 260, 'Or');
+  this.draw = function(elements) {
+    this.drawGrid();
+    for (var i=0; i<elements.length; i++) {
+      if (elements[i].type == 'input') {
+        this.drawInput(elements[i].x, elements[i].y);
+      } else {
+        this.drawGate(elements[i].x, elements[i].y, elements[i].type);
+      }
+    }
   };
 
   this.drawInput = function(x, y) {
@@ -54,8 +70,8 @@ function Diagram() {
           strokeWidth: this.strokeWidth
         }),
       this.paper.text(x +.5*s, y+1.5*s, name),
-      this.drawLine(x-l, y+s, x, y+s),
-      this.drawLine(x-l, y+5*s, x, y+5*s),
+      this.drawLine(x-l, y+2*s, x, y+2*s),
+      this.drawLine(x-l, y+4*s, x, y+4*s),
       this.drawLine(x+width, y+height/2, x+width+l, y+height/2)
     ).drag(diagram.move, diagram.start, diagram.stop);
   };
