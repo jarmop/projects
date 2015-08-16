@@ -11,17 +11,17 @@
         <svg id="diagram" width="600" height="600"></svg>
     </div>
     <div class="col-xs-6" ng-controller="truthTableController as truthTable">
-        <table>
+        <table class="truth-table">
             <thead>
-            <tr>
-                <th colspan="2">In</th>
-                <th>Out</th>
-            </tr>
+                <tr>
+                    <th colspan="2">In</th>
+                    <th>Out</th>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="value in truthTable.values">
-                <td ng-repeat="vali in value track by $index">{{vali}}</td>
-            </tr>
+                <tr ng-repeat="value in truthTable.values">
+                    <td ng-repeat="vali in value track by $index">{{vali}}</td>
+                </tr>
             </tbody>
         </table>
     </div>
