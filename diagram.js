@@ -17,13 +17,23 @@ function getGate(x, y, type, inputs) {
 function Line(points) {
   this.points = points;
 }
+
+var inputs = [
+  new Input(60, 60),
+  new Input(60, 120),
+  new Input(60, 180)
+];
+var gates = [
+  new Gate(240, 60, 'and',[0, 1]),
+  new Gate(240, 200, 'and',[1]),
+  new Gate(240, 320, 'or',[2,2])
+];
+
 var elements = {
-  gates: [
-    new Gate(240, 60, 'and',[new Input(60, 60), new Input(60, 120)]),
-    new Gate(240, 200, 'and',[new Input(60, 120)]),
-    new Gate(240, 320, 'or',[new Input(60, 180)])
-  ]
+  inputs: inputs,
+  gates: gates
 };
+
 
 diagram.draw(elements);
 
@@ -38,31 +48,22 @@ function Diagram() {
 
   this.draw = function(elements) {
     this.drawGrid();
-    for (var i=0; i<elements.gates.length; i++) {
-      this.drawGateObject(elements.gates[i]);
+    for (var i=0; i<elements.inputs.length; i++) {
+      this.drawInput(elements.inputs[i].x, elements.inputs[i].y);
     }
-    /*for (var i=0; i<elements.lines.length; i++) {
-      this.drawPolyline(elements.lines[i]);
-    }*/
+    for (var i=0; i<elements.gates.length; i++) {
+      this.drawGate(elements.gates[i].x, elements.gates[i].y, elements.gates[i].type);
+      for (var j=0; j<elements.gates[i].inputs.length; j++) {
+        this.drawConnection(elements.gates[i], j);
+      }
+    }
   };
 
   this.drawConnection = function(outGate, i) {
-    outPort = {x: outGate.inputs[i].x + 4*s + 2*s, y: outGate.inputs[i].y + 2*s};
+    outPort = {x: inputs[outGate.inputs[i]].x + 4*s + 2*s, y: inputs[outGate.inputs[i]].y + 2*s};
     inPort = {x: outGate.x - l, y: outGate.y + 2*s + i*2*s};
     this.drawLine(outPort.x, outPort.y, inPort.x, inPort.y);
   }
-
-  this.drawGateObject = function(gate) {
-    this.drawGate(gate.x, gate.y,gate.type);
-    for (var i=0; i<gate.inputs.length; i++) {
-      if (gate.inputs[i].type = 'input') {
-        this.drawInput(gate.inputs[i].x, gate.inputs[i].y);
-      } else {
-        this.drawGateObject(gate.inputs[i]);
-      }
-      this.drawConnection(gate, i);
-    }
-  };
 
   this.drawGrid = function() {
     var gridLineStroke = '#eee';
