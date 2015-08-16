@@ -18,18 +18,11 @@ function Line(points) {
   this.points = points;
 }
 var elements = {
-  inputs: [
-    //new Input(60, 60),
-    //new Input(60, 120)
-  ],
   gates: [
-    new Gate(240, 60, 'and',[new Input(60, 60)]),
+    new Gate(240, 60, 'and',[new Input(60, 60), new Input(60, 120)]),
     new Gate(240, 200, 'and',[new Input(60, 120)]),
     new Gate(240, 320, 'or',[new Input(60, 180)])
-  ],
-  lines: [
-    //[120, 80, 220, 80],
-  ],
+  ]
 };
 
 diagram.draw(elements);
@@ -43,6 +36,22 @@ function Diagram() {
   // line length
   var l = 2*s;
 
+  this.draw = function(elements) {
+    this.drawGrid();
+    for (var i=0; i<elements.gates.length; i++) {
+      this.drawGateObject(elements.gates[i]);
+    }
+    /*for (var i=0; i<elements.lines.length; i++) {
+      this.drawPolyline(elements.lines[i]);
+    }*/
+  };
+
+  this.drawConnection = function(outGate, i) {
+    outPort = {x: outGate.inputs[i].x + 4*s + 2*s, y: outGate.inputs[i].y + 2*s};
+    inPort = {x: outGate.x - l, y: outGate.y + 2*s + i*2*s};
+    this.drawLine(outPort.x, outPort.y, inPort.x, inPort.y);
+  }
+
   this.drawGateObject = function(gate) {
     this.drawGate(gate.x, gate.y,gate.type);
     for (var i=0; i<gate.inputs.length; i++) {
@@ -51,16 +60,7 @@ function Diagram() {
       } else {
         this.drawGateObject(gate.inputs[i]);
       }
-    }
-  }
-
-  this.draw = function(elements) {
-    this.drawGrid();
-    for (var i=0; i<elements.gates.length; i++) {
-      this.drawGateObject(elements.gates[i]);
-    }
-    for (var i=0; i<elements.lines.length; i++) {
-      this.drawPolyline(elements.lines[i]);
+      this.drawConnection(gate, i);
     }
   };
 
@@ -91,6 +91,7 @@ function Diagram() {
           strokeWidth: this.strokeWidth
         }),
       this.drawLine(x+size, y+size/2, x+size+l, y+size/2)
+      //this.paper.circle(x+size+l, y+size/2, 5)
     ).drag(diagram.move, diagram.start, diagram.stop);
   };
 
@@ -104,8 +105,9 @@ function Diagram() {
           stroke: "#000",
           strokeWidth: this.strokeWidth
         }),
-      this.paper.text(x +.5*s, y+1.5*s, name),
+      //this.paper.text(x +.5*s, y+1.5*s, name),
       this.drawLine(x-l, y+2*s, x, y+2*s),
+      //this.paper.circle(x-l, y+2*s, 5),
       this.drawLine(x-l, y+4*s, x, y+4*s),
       this.drawLine(x+width, y+height/2, x+width+l, y+height/2)
     ).drag(diagram.move, diagram.start, diagram.stop);
