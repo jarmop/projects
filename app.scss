@@ -1,7 +1,5 @@
-table {
-  color: black;
-}
+@import "bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
 
-.diagram table tr td {
-  border: 1px solid black;
+.container {
+  width: 1240px !important;
 }
