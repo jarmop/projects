@@ -2,13 +2,16 @@
   "name": "angular2-quickstart",
   "version": "1.0.0",
   "scripts": {
-    "start": "concurrently \"npm run tsc:w\" \"npm run html\" \"npm run lite\" ",
+    "clean": "rm -rf app && mkdir -p app/component",
+    "build": "concurrently \"npm run clean\" \"npm run tsc\" \"npm run css\" \"npm run html\" ",
+    "start": "concurrently \"npm run clean\" \"npm run tsc:w\" \"npm run css\" \"npm run html\" \"npm run lite\" ",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "lite": "lite-server",
     "typings": "typings",
     "postinstall": "typings install",
-    "html": "mkdir -p app/html && rm -rf app/html/* && cp -r source/html app"
+    "css": "cp source/*.css app && cp source/component/*.css app/component",
+    "html": "cp source/*.html app && cp source/component/*.html app/component"
   },
   "license": "ISC",
   "dependencies": {
