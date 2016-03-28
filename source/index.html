@@ -17,18 +17,14 @@
     <!-- 2. Configure SystemJS -->
     <script>
       System.config({
-        packages: {        
-          wtf: {
-            format: 'register',
-            defaultExtension: 'js'
-          },
+        packages: {
           component: {
             format: 'register',
             defaultExtension: 'js'
           }
         }
       });
-      System.import('wtf/main')
+      System.import('main.js')
             .then(null, console.error.bind(console));
     </script>
   </head>
