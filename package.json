@@ -12,7 +12,7 @@
     "postinstall": "typings install",
     "css": "cp source/*.css app",
     "html": "cp source/*.html app && cp source/component/*.html app/component",
-    "vendor": "./perkele.sh"
+    "vendor": "./node_modules.sh"
   },
   "license": "ISC",
   "dependencies": {
