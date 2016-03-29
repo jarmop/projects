@@ -4,16 +4,17 @@
   "scripts": {
     "clean": "rm -rf app && mkdir -p app/component",
     "build": "concurrently \"npm run clean\" \"npm run tsc\" \"npm run vendor\" \"npm run css\" \"npm run html\" ",
-    "start": "concurrently \"npm run clean\" \"npm run build\" \"npm run watch\" \"npm run lite\" ",
+    "start": "concurrently \"npm run clean\" \"npm run watch\" \"npm run lite\" ",
     "tsc": "tsc",
-    "tsc:w": "tsc -w",
+    "watch:js": "tsc -w",
     "lite": "lite-server",
     "typings": "typings",
     "postinstall": "typings install",
     "css": "cp source/*.css app",
-    "html": "cp source/*.html app && cp source/component/*.html app/component",
+    "html": "cp source/html/* app/component && mv app/component/index.html app",
     "vendor": "./node_modules.sh",
-    "watch": "watch 'npm run build' source --wait 2"
+    "watch:html": "watch 'npm run html' source/html --wait 2",
+    "watch": "concurrently \"npm run watch:js\" \"npm run watch:html\" \"npm run css\" \"npm run vendor\" "
   },
   "license": "ISC",
   "dependencies": {
