@@ -12,7 +12,7 @@
     "watch:html": "watch 'npm run build:html' source/html --wait 2",
     "build:css": "cp source/css/* app",
     "watch:css": "watch 'npm run build:css' source/css --wait 2",
-    "build:vendor": "./node_modules.sh",
+    "build:vendor": "./vendor.sh",
     "server": "browser-sync start --server app --files 'app/*'",
     "lite": "lite-server",
     "typings": "typings",
