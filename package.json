@@ -2,7 +2,7 @@
   "name": "angular2-quickstart",
   "version": "1.0.0",
   "scripts": {
-    "start": "concurrently \"npm run clean\" \"npm run watch\" \"npm run build:vendor\" \"npm run lite\" ",
+    "start": "concurrently \"npm run clean\" \"npm run watch\" \"npm run build:vendor\" \"npm run server\" ",
     "clean": "rm -rf app && mkdir -p app/component",
     "build": "concurrently \"npm run clean\" \"npm run build:js\" \"npm run build:vendor\" \"npm run build:css\" \"npm run build:html\" ",
     "watch": "concurrently \"npm run watch:js\" \"npm run watch:css\" \"npm run watch:html\" ",
@@ -13,6 +13,7 @@
     "build:css": "cp source/css/* app",
     "watch:css": "watch 'npm run build:css' source/css --wait 2",
     "build:vendor": "./node_modules.sh",
+    "server": "browser-sync start --server app --files 'app/*'",
     "lite": "lite-server",
     "typings": "typings",
     "postinstall": "typings install"
@@ -27,6 +28,7 @@
     "zone.js": "0.6.6"
   },
   "devDependencies": {
+    "browser-sync": "^2.11.2",
     "concurrently": "^2.0.0",
     "lite-server": "^2.1.0",
     "typescript": "^1.8.9",
