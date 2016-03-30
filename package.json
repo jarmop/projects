@@ -1,6 +1,10 @@
 {
-  "name": "angular2-quickstart",
+  "name": "nutrient",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jarmop/nutrient.git"
+  },
   "scripts": {
     "start": "concurrently \"npm run clean\" \"npm run watch\" \"npm run build:vendor\" \"npm run server\" ",
     "clean": "rm -rf app && mkdir -p app/component",
@@ -10,8 +14,8 @@
     "watch:js": "tsc -w",
     "build:html": "cp source/html/* app/component && mv app/component/index.html app",
     "watch:html": "watch 'npm run build:html' source/html --wait 2",
-    "build:css": "cp source/css/* app",
-    "watch:css": "watch 'npm run build:css' source/css --wait 2",
+    "build:css": "node-sass source/scss/styles.scss app/styles.css",
+    "watch:css": "npm run build:css && node-sass -w source/scss/styles.scss app/styles.css",
     "build:vendor": "./vendor.sh",
     "server": "browser-sync start --server app --files 'app/*'",
     "lite": "lite-server",
@@ -21,10 +25,11 @@
   "license": "ISC",
   "dependencies": {
     "angular2": "2.0.0-beta.12",
-    "systemjs": "0.19.24",
+    "bootstrap": "^4.0.0-alpha.2",
     "es6-shim": "^0.35.0",
     "reflect-metadata": "0.1.2",
     "rxjs": "5.0.0-beta.2",
+    "systemjs": "0.19.24",
     "zone.js": "0.6.6"
   },
   "devDependencies": {
