@@ -1,5 +1,6 @@
 <html>
-  <head>
+<head>
+    <base href="/">
     <title>Nutrient</title>
 
     <meta charset="utf-8">
@@ -17,20 +18,30 @@
 
     <!-- 2. Configure SystemJS -->
     <script>
-      System.config({
-        packages: {
-          component: {
-            format: 'register',
-            defaultExtension: 'js'
-          }
-        }
-      });
-      System.import('main.js')
-            .then(null, console.error.bind(console));
+        System.config({
+            packages: {
+                component: {
+                    format: 'register',
+                    defaultExtension: 'js'
+                },
+                model: {
+                    format: 'register',
+                    defaultExtension: 'js'
+                },
+                service: {
+                    format: 'register',
+                    defaultExtension: 'js'
+                }
+            }
+        });
+        System.import('main.js')
+                .then(null, console.error.bind(console));
     </script>
-  </head>
-  <!-- 3. Display the application -->
-  <body>
-    <my-app>Loading...</my-app>
-  </body>
+</head>
+<!-- 3. Display the application -->
+<body>
+<div class="container">
+    <app>Loading...</app>
+</div>
+</body>
 </html>
