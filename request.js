@@ -15,9 +15,10 @@ var partySupport = {
   'MUU': []
 };
 
-var startYear = 2011;
+var startYear = 2002;
 var endYear = 2016;
 var endMonth = 1;
+
 getYearlyData(startYear);
 
 function getYearlyData(year) {
@@ -34,7 +35,11 @@ function getYearlyData(year) {
 }
 
 function getUrl(year) {
-  return 'http://www.taloustutkimus.fi/tuotteet_ja_palvelut/puolueiden_kannatusarviot/puolueiden-kannatusarviot-' + year;
+  var url = 'http://www.taloustutkimus.fi/tuotteet_ja_palvelut/puolueiden_kannatusarviot/puolueiden-kannatusarviot-' + year;
+  if (year < 2011) {
+    url = url.replace(/-/g, '_');
+  }
+  return url;
 }
 
 function parseHtml(body, year) {
@@ -73,7 +78,7 @@ function exportCsv() {
   }
 
   for (var date in dateData) {
-    var csvDataRow = {'date' :date};
+    var csvDataRow = {'date': date};
     for (var i in dateData[date]) {
       csvDataRow[i] = dateData[date][i];
     }
