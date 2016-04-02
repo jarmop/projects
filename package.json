@@ -17,7 +17,7 @@
     "build:css": "node-sass source/scss/styles.scss app/styles.css --output-style compressed",
     "watch:css": "npm run build:css && node-sass -w source/scss/styles.scss app/styles.css",
     "build:vendor": "./vendor.sh",
-    "server": "browser-sync start --server app --files 'app/*'",
+    "server": "node server.js",
     "lite": "lite-server",
     "typings": "typings",
     "postinstall": "typings install"
@@ -35,6 +35,7 @@
   "devDependencies": {
     "browser-sync": "^2.11.2",
     "concurrently": "^2.0.0",
+    "connect-history-api-fallback": "^1.2.0",
     "lite-server": "^2.1.0",
     "typescript": "^1.8.9",
     "typings": "^0.7.9",
