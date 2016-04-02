@@ -15,13 +15,19 @@ var partySupport = {
   'MUU': []
 };
 
-getYearlyData(2014);
+var startYear = 2014;
+var endYear = 2015;
+getYearlyData(startYear);
 
 function getYearlyData(year) {
   request(getUrl(year), function (error, response, body) {
     if (!error && response.statusCode == 200) {
       parseHtml(body, year);
-      exportCsv(partySupport);
+      if (year == endYear) {
+        exportCsv(partySupport);
+      } else {
+        getYearlyData(year + 1)
+      }
     }
   });
 }
