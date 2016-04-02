@@ -62,7 +62,10 @@ function parseHtml(body, year) {
     var td = $(element).children('td');
     var partyName = td.eq(0).text();
     sliceStart = 3;
-    sliceEnd = 16;
+    if (year < 2004) {
+      sliceStart = 1;
+    }
+    sliceEnd = sliceStart + 13;
     if (year == endYear) {
       sliceEnd = sliceStart + endMonth
     };
