@@ -15,15 +15,16 @@ var partySupport = {
   'MUU': []
 };
 
-var startYear = 2014;
-var endYear = 2015;
+var startYear = 2011;
+var endYear = 2016;
+var endMonth = 1;
 getYearlyData(startYear);
 
 function getYearlyData(year) {
   request(getUrl(year), function (error, response, body) {
     if (!error && response.statusCode == 200) {
       parseHtml(body, year);
-      if (year == endYear) {
+      if (year >= endYear) {
         exportCsv(partySupport);
       } else {
         getYearlyData(year + 1)
@@ -38,10 +39,15 @@ function getUrl(year) {
 
 function parseHtml(body, year) {
   $ = cheerio.load(body);
-  $('.content-container table tr').slice(2).each(function (index, element) {
+  $('.content-container table tr').slice(2,11).each(function (index, element) {
     var td = $(element).children('td');
     var partyName = td.eq(0).text();
-    td.slice(3).each(function (index, element) {
+    sliceStart = 3;
+    sliceEnd = 16;
+    if (year == endYear) {
+      sliceEnd = sliceStart + endMonth
+    };
+    td.slice(sliceStart, sliceEnd).each(function (index, element) {
       partySupport[partyName].push({
         'date': year + '-' + (index + 1),
         'support': $(element).text().trim().replace(',', '.'),
