@@ -31,7 +31,7 @@ var partySupport = {
 
 var startYear = 2002;
 var endYear = 2016;
-var endMonth = 1;
+var endColAmount = 1;
 
 getYearlyData(startYear);
 
@@ -61,19 +61,33 @@ function parseHtml(body, year) {
   $('.content-container table tr').slice(2,11).each(function (index, element) {
     var td = $(element).children('td');
     var partyName = td.eq(0).text();
-    sliceStart = 3;
+    var sliceStart = 3;
     if (year < 2004) {
       sliceStart = 1;
     }
-    sliceEnd = sliceStart + 13;
+    var colAmount = 12;
+    if (year == 2009) {
+      colAmount = 14;
+    }
+    var sliceEnd = sliceStart + colAmount + 1;
     if (year == endYear) {
-      sliceEnd = sliceStart + endMonth
+      sliceEnd = sliceStart + endColAmount
     };
+    var month = 1;
     td.slice(sliceStart, sliceEnd).each(function (index, element) {
-      partySupport[partyName].push({
-        'date': year + '-' + (index + 1),
-        'support': parseFloat($(element).text().trim().replace(',', '.')),
-      });
+      var support = parseFloat($(element).text().trim().replace(',', '.'));
+      if (year == 2009 && (index == 1 || index == 4)) {
+        month--;
+        var data = partySupport[partyName][partySupport[partyName].length - 1];
+        data.date = year + '-' + (month);
+        data.support = parseFloat(((data.support + support) / 2).toFixed(1));
+      } else {
+        partySupport[partyName].push({
+          'date': year + '-' + (month),
+          'support': parseFloat($(element).text().trim().replace(',', '.'))
+        });
+      }
+      month++;
     });
   });
 }
