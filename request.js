@@ -3,6 +3,20 @@ var cheerio = require('cheerio');
 var json2csv = require('json2csv');
 var fs = require('fs');
 
+/**
+ * example content {
+ *    SDP: [
+ *      {
+ *      'date': '2015-1',
+ *      'support' : 15.2
+ *      },
+ *      {
+ *      'date': '2015-1',
+ *      'support' : 15.2
+ *      }
+ *    ]
+ *  }
+ */
 var partySupport = {
   'SDP': [],
   'VAS': [],
@@ -55,7 +69,7 @@ function parseHtml(body, year) {
     td.slice(sliceStart, sliceEnd).each(function (index, element) {
       partySupport[partyName].push({
         'date': year + '-' + (index + 1),
-        'support': $(element).text().trim().replace(',', '.'),
+        'support': parseFloat($(element).text().trim().replace(',', '.')),
       });
     });
   });
@@ -71,9 +85,13 @@ function exportCsv() {
   }
 
   for (var partyName in partySupport) {
-    supportData = partySupport[partyName];
+    var supportData = partySupport[partyName];
     for (var i = 0; i < supportData.length; i++) {
-      dateData[supportData[i].date][partyName] = supportData[i].support;
+      var support = supportData[i].support;
+      if (isNaN(support)) {
+        support = estimateMissingValue(supportData, i);
+      }
+      dateData[supportData[i].date][partyName] = support;
     }
   }
 
@@ -92,4 +110,24 @@ function exportCsv() {
       console.log('file saved');
     });
   });
+}
+
+function estimateMissingValue(data, index) {
+  var prev = 0;
+  for (var i=index; i>=0; i--) {
+    if (data[i].support) {
+      prev = data[i].support;
+      break;
+    }
+  }
+
+  var next = 0;
+  for (var i=index; i<data.length; i++) {
+    if (data[i].support) {
+      next = data[i].support;
+      break;
+    }
+  }
+
+  return parseFloat(((prev + next) / 2).toFixed(1));
 }
