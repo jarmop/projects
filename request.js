@@ -104,11 +104,7 @@ function exportCsv() {
   for (var partyName in partySupport) {
     var supportData = partySupport[partyName];
     for (var i = 0; i < supportData.length; i++) {
-      var support = supportData[i].support;
-      if (isNaN(support)) {
-        support = estimateMissingValue(supportData, i);
-      }
-      dateData[supportData[i].date][partyName] = support;
+      dateData[supportData[i].date][partyName] = supportData[i].support;
     }
   }
 
