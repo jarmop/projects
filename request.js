@@ -29,7 +29,7 @@ var partySupport = {
   'MUU': []
 };
 
-var startYear = 2002;
+var startYear = 2000;
 var endYear = 2016;
 var endColAmount = 1;
 
@@ -58,9 +58,22 @@ function getUrl(year) {
 
 function parseHtml(body, year) {
   $ = cheerio.load(body);
-  $('.content-container table tr').slice(2,11).each(function (index, element) {
+  var partyAmount = 9;
+  if (year < 2002) {
+    partyAmount = 10;
+  }
+  $('.content-container table tr').slice(2, partyAmount + 2).each(function (index, element) {
     var td = $(element).children('td');
     var partyName = td.eq(0).text();
+    if (year < 2002) {
+      if (partyName.indexOf('REM') > -1) {
+        // skip Remonttiryhmä
+        return true;
+      }
+      if (partyName === 'SKL/KD' || partyName === 'SKL') {
+        partyName = 'KD';
+      }
+    }
     var sliceStart = 3;
     if (year < 2004) {
       sliceStart = 1;
