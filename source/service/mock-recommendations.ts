@@ -1,4 +1,6 @@
-[
+import {Recommendation} from '../model/recommendation';
+
+export var RECOMMENDATIONS:Recommendation[] = [
     {
         "name": "A",
         "male": 900,
@@ -151,4 +153,4 @@
         "nutrientDensity": 23,
         "unit": "µg"
     }
-]
+];

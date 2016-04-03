@@ -3,7 +3,7 @@ import {RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from 'angular2/router'
 
 import {FoodComponent} from './food.component';
 import {FoodService} from "../service/food.service";
-import {RecommendationsComponent} from "./recommendations.component";
+import {RecommendationComponent} from "./recommendation.component";
 
 @Component({
     selector: 'app',
@@ -17,9 +17,9 @@ import {RecommendationsComponent} from "./recommendations.component";
 
 @RouteConfig([
     {
-        path: '/recommendations',
-        name: 'Recommendations',
-        component: RecommendationsComponent,
+        path: '/recommendation',
+        name: 'Recommendation',
+        component: RecommendationComponent,
         useAsDefault: true
     },
     {
