@@ -1,6 +1,6 @@
 var fs = require('fs');
 var lineReader = require('readline').createInterface({
-  input: fs.createReadStream('recommendations.csv', {'start' : 51})
+  input: fs.createReadStream('recommendations.csv', {'start' : 50})
 });
 
 var data = [];
