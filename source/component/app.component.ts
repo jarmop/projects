@@ -1,9 +1,9 @@
 import {Component}       from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from 'angular2/router';
 
-// import {MealComponent} from './meal.component';
 import {FoodComponent} from './food.component';
 import {FoodService} from "../service/food.service";
+import {RecommendationsComponent} from "./recommendations.component";
 
 @Component({
     selector: 'app',
@@ -17,13 +17,18 @@ import {FoodService} from "../service/food.service";
 
 @RouteConfig([
     {
+        path: '/recommendations',
+        name: 'Recommendations',
+        component: RecommendationsComponent,
+        useAsDefault: true
+    },
+    {
         path: '/food/:id',
         name: 'Food',
-        component: FoodComponent,
-        // useAsDefault: true
-    },
+        component: FoodComponent
+    }
 ])
 
 export class AppComponent {
-    title = 'Nutrientti';
+    title = 'Nutrient';
 }
