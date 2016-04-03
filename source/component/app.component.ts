@@ -4,6 +4,7 @@ import {RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from 'angular2/router'
 import {FoodComponent} from './food.component';
 import {FoodService} from "../service/food.service";
 import {RecommendationComponent} from "./recommendation.component";
+import {RecommendationService} from "../service/recommendation.service";
 
 @Component({
     selector: 'app',
@@ -11,7 +12,8 @@ import {RecommendationComponent} from "./recommendation.component";
     directives: [ROUTER_DIRECTIVES],
     providers: [
         ROUTER_PROVIDERS,
-        FoodService
+        FoodService,
+        RecommendationService
     ]
 })
 
