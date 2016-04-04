@@ -8,6 +8,18 @@
         </tr>
         </thead>
         <tbody>
+        <tr *ngFor="#nutrient of food.nutrients">
+            <td>{{nutrient.name}}</td>
+            <td>{{nutrient.value}}</td>
+        </tr>
+        </tbody>
+        <thead class="thead-inverse">
+        <tr>
+            <th>Perusravintoaineet</th>
+            <th>Määrä</th>
+        </tr>
+        </thead>
+        <tbody>
         <tr>
             <td>Proteiini</td>
             <td>30 g</td>
