@@ -1,7 +1,7 @@
 <div *ngIf="food">
     <h2>{{food.name}}</h2>
-    <table class="table">
-        <thead>
+    <table class="table table-bordered table-sm">
+        <thead class="thead-inverse">
         <tr>
             <th>Perusravintoaineet</th>
             <th>Määrä</th>
@@ -29,9 +29,7 @@
             <td>100 mg</td>
         </tr>
         </tbody>
-    </table>
-    <table class="table">
-        <thead>
+        <thead class="thead-inverse">
         <tr>
             <th>Kivennäis- ja hivenaineet</th>
             <th>Määrä</th>
@@ -47,9 +45,7 @@
             <td>100 mg</td>
         </tr>
         </tbody>
-    </table>
-    <table class="table">
-        <thead>
+        <thead class="thead-inverse">
         <tr>
             <th>Vitamiinit</th>
             <th>Määrä</th>
@@ -66,15 +62,4 @@
         </tr>
         </tbody>
     </table>
-    <div class="row">
-        <div class="col-sm-4">
-            One of three columns
-        </div>
-        <div class="col-sm-4">
-            One of three columns
-        </div>
-        <div class="col-sm-4">
-            One of three columns
-        </div>
-    </div>
 </div>
