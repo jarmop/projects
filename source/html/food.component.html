@@ -8,37 +8,33 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="#nutrient of food.nutrients">
+        <tr *ngFor="#nutrient of food.basicNutrients">
             <td>{{nutrient.name}}</td>
             <td>{{nutrient.value}}</td>
         </tr>
         </tbody>
         <thead class="thead-inverse">
         <tr>
-            <th>Perusravintoaineet</th>
+            <th>Hiilarit</th>
             <th>Määrä</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>Proteiini</td>
-            <td>30 g</td>
+        <tr *ngFor="#nutrient of food.carbs">
+            <td>{{nutrient.name}}</td>
+            <td>{{nutrient.value}}</td>
         </tr>
+        </tbody>
+        <thead class="thead-inverse">
         <tr>
-            <td>Hiilihydraatti</td>
-            <td>20 g</td>
+            <th>Rasvat</th>
+            <th>Määrä</th>
         </tr>
-        <tr>
-            <td>Rasva</td>
-            <td>10 g</td>
-        </tr>
-        <tr>
-            <td>Rauta</td>
-            <td>3 mg</td>
-        </tr>
-        <tr>
-            <td>Kalsium</td>
-            <td>100 mg</td>
+        </thead>
+        <tbody>
+        <tr *ngFor="#nutrient of food.fats">
+            <td>{{nutrient.name}}</td>
+            <td>{{nutrient.value}}</td>
         </tr>
         </tbody>
         <thead class="thead-inverse">
@@ -48,13 +44,9 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>Rauta</td>
-            <td>3 mg</td>
-        </tr>
-        <tr>
-            <td>Kalsium</td>
-            <td>100 mg</td>
+        <tr *ngFor="#nutrient of food.dietaryElements">
+            <td>{{nutrient.name}}</td>
+            <td>{{nutrient.value}}</td>
         </tr>
         </tbody>
         <thead class="thead-inverse">
@@ -64,13 +56,9 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>B12-vitamiini</td>
-            <td>3 mg</td>
-        </tr>
-        <tr>
-            <td>C-vitamiini</td>
-            <td>100 mg</td>
+        <tr *ngFor="#nutrient of food.vitamins">
+            <td>{{nutrient.name}}</td>
+            <td>{{nutrient.value}}</td>
         </tr>
         </tbody>
     </table>

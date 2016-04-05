@@ -1,10 +1,8 @@
-import {Food} from '../model/food';
-
-export var FOODS:Food[] = [
+export var FOODS = [
     {
         "id": 1,
         "name": "Soijapapu",
-        "nutrients" : [
+        "basicNutrients": [
             {
                 "name": "energia, laskennallinen",
                 "value": 1565
@@ -24,7 +22,9 @@ export var FOODS:Food[] = [
             {
                 "name": "alkoholi",
                 "value": 0
-            },
+            }
+        ],
+        "carbs": [
             {
                 "name": "kuitu, kokonais-",
                 "value": 15.7
@@ -76,7 +76,9 @@ export var FOODS:Food[] = [
             {
                 "name": "kuitu veteen liukenematon",
                 "value": 9.3
-            },
+            }
+        ],
+        "fats": [
             {
                 "name": "rasvahapot yhteensä",
                 "value": 13.3
@@ -129,6 +131,8 @@ export var FOODS:Food[] = [
                 "name": "sterolit",
                 "value": 123.8
             },
+        ],
+        'dietaryElements': [
             {
                 "name": "kalsium",
                 "value": 163
@@ -168,11 +172,15 @@ export var FOODS:Food[] = [
             {
                 "name": "sinkki",
                 "value": 1
-            },
+            }
+        ],
+        "aminoAcids": [
             {
                 "name": "tryptofaani",
                 "value": 450
-            },
+            }
+        ],
+        "vitamins": [
             {
                 "name": "folaatti, kokonais-",
                 "value": 370
