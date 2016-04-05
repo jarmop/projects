@@ -10,7 +10,7 @@
         <tbody>
         <tr *ngFor="#nutrient of food.basicNutrients">
             <td>{{nutrient.name}}</td>
-            <td>{{nutrient.value}}</td>
+            <td>{{nutrient.value}} {{nutrient.unit}}</td>
         </tr>
         </tbody>
         <thead class="thead-inverse">
@@ -22,7 +22,7 @@
         <tbody>
         <tr *ngFor="#nutrient of food.carbs">
             <td>{{nutrient.name}}</td>
-            <td>{{nutrient.value}}</td>
+            <td>{{nutrient.value}} {{nutrient.unit}}</td>
         </tr>
         </tbody>
         <thead class="thead-inverse">
@@ -34,7 +34,7 @@
         <tbody>
         <tr *ngFor="#nutrient of food.fats">
             <td>{{nutrient.name}}</td>
-            <td>{{nutrient.value}}</td>
+            <td>{{nutrient.value}} {{nutrient.unit}}</td>
         </tr>
         </tbody>
         <thead class="thead-inverse">
@@ -46,7 +46,7 @@
         <tbody>
         <tr *ngFor="#nutrient of food.dietaryElements">
             <td>{{nutrient.name}}</td>
-            <td>{{nutrient.value}}</td>
+            <td>{{nutrient.value}} {{nutrient.unit}}</td>
         </tr>
         </tbody>
         <thead class="thead-inverse">
@@ -58,7 +58,7 @@
         <tbody>
         <tr *ngFor="#nutrient of food.vitamins">
             <td>{{nutrient.name}}</td>
-            <td>{{nutrient.value}}</td>
+            <td>{{nutrient.value}} {{nutrient.unit}}</td>
         </tr>
         </tbody>
     </table>
