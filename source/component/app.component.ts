@@ -5,6 +5,7 @@ import {FoodComponent} from './food.component';
 import {FoodService} from "../service/food.service";
 import {RecommendationComponent} from "./recommendation.component";
 import {RecommendationService} from "../service/recommendation.service";
+import {MealComponent} from "./meal.component";
 
 @Component({
     selector: 'app',
@@ -19,10 +20,16 @@ import {RecommendationService} from "../service/recommendation.service";
 
 @RouteConfig([
     {
+        path: '/meal',
+        name: 'Meal',
+        component: MealComponent,
+        useAsDefault: true
+    },
+    {
         path: '/recommendation',
         name: 'Recommendation',
         component: RecommendationComponent,
-        useAsDefault: true
+        // useAsDefault: true
     },
     {
         path: '/food/:id',
