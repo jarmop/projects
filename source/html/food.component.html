@@ -3,40 +3,52 @@
     <table class="table table-bordered table-sm">
         <thead class="thead-inverse">
         <tr>
-            <th>Perusravintoaineet</th>
+            <th>Proteiini</th>
             <th>Määrä</th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="#nutrient of food.basicNutrients">
-            <td>{{nutrient.name}}</td>
-            <td>{{nutrient.value}} {{nutrient.unit}}</td>
+        <tr>
+            <td>proteiini</td>
+            <td>{{food.protein}} g</td>
         </tr>
         </tbody>
         <thead class="thead-inverse">
         <tr>
-            <th>Hiilarit</th>
+            <th>Aminohapot</th>
             <th>Määrä</th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="#nutrient of food.carbs">
+        <tr *ngFor="#nutrient of food.aminoAcids">
             <td>{{nutrient.name}}</td>
             <td>{{nutrient.value}} {{nutrient.unit}}</td>
         </tr>
         </tbody>
-        <thead class="thead-inverse">
-        <tr>
-            <th>Rasvat</th>
-            <th>Määrä</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="#nutrient of food.fats">
-            <td>{{nutrient.name}}</td>
-            <td>{{nutrient.value}} {{nutrient.unit}}</td>
-        </tr>
-        </tbody>
+        <!--<thead class="thead-inverse">-->
+        <!--<tr>-->
+            <!--<th>Hiilarit</th>-->
+            <!--<th>Määrä</th>-->
+        <!--</tr>-->
+        <!--</thead>-->
+        <!--<tbody>-->
+        <!--<tr *ngFor="#nutrient of food.carbs">-->
+            <!--<td>{{nutrient.name}}</td>-->
+            <!--<td>{{nutrient.value}} {{nutrient.unit}}</td>-->
+        <!--</tr>-->
+        <!--</tbody>-->
+        <!--<thead class="thead-inverse">-->
+        <!--<tr>-->
+            <!--<th>Rasvat</th>-->
+            <!--<th>Määrä</th>-->
+        <!--</tr>-->
+        <!--</thead>-->
+        <!--<tbody>-->
+        <!--<tr *ngFor="#nutrient of food.fats">-->
+            <!--<td>{{nutrient.name}}</td>-->
+            <!--<td>{{nutrient.value}} {{nutrient.unit}}</td>-->
+        <!--</tr>-->
+        <!--</tbody>-->
         <thead class="thead-inverse">
         <tr>
             <th>Kivennäis- ja hivenaineet</th>

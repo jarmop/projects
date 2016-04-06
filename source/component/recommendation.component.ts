@@ -16,7 +16,7 @@ export class RecommendationComponent implements OnInit {
     ) { }
 
     getRecommendations() {
-        this._recommendationService.getRecommendations().then(recommendatios => this.recommendations = recommendatios);
+        this._recommendationService.getRecommendations().then(recommendations => this.recommendations = recommendations);
     }
 
     ngOnInit() {
