@@ -1,5 +1,6 @@
 import {Component, OnInit} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
+// import {BarChartDemo} from './bar-chart.component';
 // import {MealService} from '../service/meal.service';
 // import {Meal} from "../model/meal";
 
