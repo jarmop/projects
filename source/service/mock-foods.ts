@@ -167,6 +167,12 @@ export var FOODS = [
         'dietaryElements': [
             // kupari puuttuu :(
             {
+                "nutrientId": 17,
+                "name": "kupari",
+                "unit": "mg",
+                "value": 0
+            },
+            {
                 "nutrientId": 11,
                 "name": "kalsium",
                 "unit": "mg",
@@ -235,6 +241,12 @@ export var FOODS = [
         "vitamins": [
             // B6 puuttuu kokonaan?
             {
+                "nutrientId": 7,
+                "name": "B6-vitamiini",
+                "unit": "mg",
+                "value": 0
+            },
+            {
                 "nutrientId": 8,
                 "name": "folaatti, kokonais-",
                 "unit": "µg",
@@ -302,11 +314,11 @@ export var FOODS = [
                 "name": "E-vitamiini alfatokoferoli",
                 "unit": "mg",
                 "value": 0.8
-            },
-            {
-                "name": "K-vitamiini",
-                "unit": "µg",
-                "value": 47
+            // },
+            // {
+            //     "name": "K-vitamiini",
+            //     "unit": "µg",
+            //     "value": 47
             }
         ]
     },

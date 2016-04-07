@@ -20,22 +20,38 @@
         </div>
     </div>
     <div class="col-sm-12 col-md-6">
-        <h3>Ravintoaineet</h3>
-        <table class="table table-bordered table-sm">
-            <thead class="thead-inverse">
-            <tr>
-                <th>Ravinto-aine</th>
-                <th>suositus</th>
-                <th>määrä</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="#nutrition of nutritionShares">
-                <td>{{nutrition.name}}</td>
-                <td>{{nutrition.amount}} {{nutrition.funit}}</td>
-                <td>{{nutrition.male}} {{nutrition.runit}}</td>
-            </tr>
-            </tbody>
-        </table>
+        <div *ngIf="nutritionShares">
+            <h3>Ravintoaineet</h3>
+            <table class="table table-bordered table-sm">
+                <thead class="thead-inverse">
+                <tr>
+                    <th>Vitamiinit</th>
+                    <th>suositus</th>
+                    <th>määrä</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="#nutrition of nutritionShares.vitamins">
+                    <td>{{nutrition.name}}</td>
+                    <td>{{nutrition.amount}} {{nutrition.funit}}</td>
+                    <td>{{nutrition.male}} {{nutrition.runit}}</td>
+                </tr>
+                </tbody>
+                <thead class="thead-inverse">
+                <tr>
+                    <th>Kivennäis- ja hivenaineet</th>
+                    <th>suositus</th>
+                    <th>määrä</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="#nutrition of nutritionShares.dietaryElements">
+                    <td>{{nutrition.name}}</td>
+                    <td>{{nutrition.amount}} {{nutrition.funit}}</td>
+                    <td>{{nutrition.male}} {{nutrition.runit}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
