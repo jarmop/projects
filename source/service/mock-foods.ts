@@ -165,27 +165,33 @@ export var FOODS = [
         //     }
         // ],
         'dietaryElements': [
+            // kupari puuttuu :(
             {
+                "nutrientId": 11,
                 "name": "kalsium",
                 "unit": "mg",
                 "value": 163
             },
             {
+                "nutrientId": 15,
                 "name": "rauta",
                 "unit": "mg",
                 "value": 8.4
             },
             {
+                "nutrientId": 18,
                 "name": "jodidi (jodi)",
                 "unit": "µg",
                 "value": 6
             },
             {
+                "nutrientId": 13,
                 "name": "kalium",
                 "unit": "mg",
                 "value": 1730
             },
             {
+                "nutrientId": 14,
                 "name": "magnesium",
                 "unit": "mg",
                 "value": 225
@@ -201,16 +207,19 @@ export var FOODS = [
             //     "value": 12.7
             // },
             {
+                "nutrientId": 12,
                 "name": "fosfori",
                 "unit": "mg",
                 "value": 467
             },
             {
+                "nutrientId": 19,
                 "name": "seleeni",
                 "unit": "µg",
                 "value": 19
             },
             {
+                "nutrientId": 16,
                 "name": "sinkki",
                 "unit": "mg",
                 "value": 1
@@ -224,8 +233,9 @@ export var FOODS = [
             }
         ],
         "vitamins": [
-            // B& puuttuu kokonaan?
+            // B6 puuttuu kokonaan?
             {
+                "nutrientId": 8,
                 "name": "folaatti, kokonais-",
                 "unit": "µg",
                 "value": 370
@@ -236,6 +246,7 @@ export var FOODS = [
             //     "value": 9.7
             // },
             {
+                "nutrientId": 6,
                 "name": "niasiini (nikotiinihappo + nikotiiniamidi)",
                 "unit": "mg",
                 "value": 2.2
@@ -246,26 +257,31 @@ export var FOODS = [
             //     "value": 0.46
             // },
             {
+                "nutrientId": 5,
                 "name": "riboflaviini (B2)",
                 "unit": "mg",
                 "value": 0.31
             },
             {
+                "nutrientId": 4,
                 "name": "tiamiini (B1)",
                 "unit": "mg",
                 "value": 1.1
             },
             {
+                "nutrientId": 9,
                 "name": "B12-vitamiini (kobalamiini)",
                 "unit": "µg",
                 "value": 0
             },
             {
+                "nutrientId": 10,
                 "name": "C-vitamiini",
                 "unit": "mg",
                 "value": 0
             },
             {
+                "nutrientId": 1,
                 "name": "A-vitamiini RAE",
                 "unit": "µg",
                 "value": 2
@@ -276,11 +292,13 @@ export var FOODS = [
             //     "value": 24
             // },
             {
+                "nutrientId": 2,
                 "name": "D-vitamiini",
                 "unit": "µg",
                 "value": 0
             },
             {
+                "nutrientId": 3,
                 "name": "E-vitamiini alfatokoferoli",
                 "unit": "mg",
                 "value": 0.8
