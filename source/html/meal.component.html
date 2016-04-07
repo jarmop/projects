@@ -26,29 +26,33 @@
                 <thead class="thead-inverse">
                 <tr>
                     <th>Vitamiinit</th>
-                    <th>suositus</th>
                     <th>määrä</th>
+                    <th>suositus</th>
+                    <th>max</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="#nutrition of nutritionShares.vitamins">
-                    <td>{{nutrition.name}}</td>
-                    <td>{{nutrition.amount}} {{nutrition.funit}}</td>
-                    <td>{{nutrition.male}} {{nutrition.runit}}</td>
+                    <td>{{nutrition.name}} ({{nutrition.funit}})</td>
+                    <td>{{nutrition.amount}}</td>
+                    <td>{{nutrition.male}}</td>
+                    <td>{{nutrition.max}}</td>
                 </tr>
                 </tbody>
                 <thead class="thead-inverse">
                 <tr>
                     <th>Kivennäis- ja hivenaineet</th>
-                    <th>suositus</th>
                     <th>määrä</th>
+                    <th>suositus</th>
+                    <th>max</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="#nutrition of nutritionShares.dietaryElements">
-                    <td>{{nutrition.name}}</td>
-                    <td>{{nutrition.amount}} {{nutrition.funit}}</td>
-                    <td>{{nutrition.male}} {{nutrition.runit}}</td>
+                    <td>{{nutrition.name}} ({{nutrition.funit}})</td>
+                    <td>{{nutrition.amount}}</td>
+                    <td>{{nutrition.male}}</td>
+                    <td>{{nutrition.max}}</td>
                 </tr>
                 </tbody>
             </table>

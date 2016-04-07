@@ -38,6 +38,7 @@ export class MealComponent implements OnInit {
                         'name': recommendation.name,
                         'male': recommendation.male,
                         'runit': recommendation.unit,
+                        'max': recommendation.max,
                         'amount': 0,
                         'funit': 'N/A',
                     };
@@ -54,6 +55,7 @@ export class MealComponent implements OnInit {
                         'name': recommendation.name,
                         'male': recommendation.male,
                         'runit': recommendation.unit,
+                        'max': recommendation.max,
                         'amount': 0,
                         'funit': 'N/A',
                     };
