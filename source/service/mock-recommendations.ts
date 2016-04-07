@@ -115,11 +115,11 @@ export var RECOMMENDATIONS = {
         {
             "nutrientId": 13,
             "name": "Kalium",
-            "male": 3.5,
-            "female": 3.1,
-            "max": 3.7,
+            "male": 3500,
+            "female": 3100,
+            "max": 3700,
             "nutrientDensity": 1500,
-            "unit": "g"
+            "unit": "mg"
         },
         {
             "nutrientId": 14,
