@@ -9,7 +9,7 @@ export var RECOMMENDATIONS = {
             "female": 700,
             "max": 3000,
             "nutrientDensity": 336,
-            "unit": "RE"
+            "unit": "µg"
         },
         {
             "nutrientId": 2,
@@ -27,7 +27,7 @@ export var RECOMMENDATIONS = {
             "female": 8,
             "max": 300,
             "nutrientDensity": 3.8,
-            "unit": "α-TE"
+            "unit": "mg"
         },
         {
             "nutrientId": 4,
@@ -54,7 +54,7 @@ export var RECOMMENDATIONS = {
             "female": 15,
             "max": null,
             "nutrientDensity": 6.7,
-            "unit": "NE"
+            "unit": "mg"
         },
         {
             "nutrientId": 7,
