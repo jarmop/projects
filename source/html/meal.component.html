@@ -49,34 +49,35 @@
 
     <div class="col-sm-12 col-md-12">
         <div *ngIf="nutritionShares">
+
             <h3>Ravintoaineet</h3>
             <table class="table table-bordered table-sm">
-                <thead class="thead-inverse">
-                <tr>
-                    <th>Vitamiinit</th>
-                    <th>määrä</th>
-                    <th>määrä</th>
-                    <th>suositus</th>
-                    <th>max</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="#nutrition of nutritionShares.vitamins">
-                    <td>{{nutrition.name}} ({{nutrition.funit}})</td>
-                    <td>
-                        <div class="bar">
-                            <div class="ok" [style.width]="nutrition.percent.ok + '%'"></div>
-                            <div class="over" [style.width]="nutrition.percent.over + '%'"></div>
-                            <div class="too-much" [style.width]="nutrition.percent.tooMuch + '%'"></div>
-                            <!--<div class="over"></div>-->
-                            <!--<div class="too-much"></div>-->
-                        </div>
-                    </td>
-                    <td>{{nutrition.amount}}</td>
-                    <td>{{nutrition.male}}</td>
-                    <td>{{nutrition.max}}</td>
-                </tr>
-                </tbody>
+                <template ngFor #nutritionShare [ngForOf]="nutritionShares">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th>{{nutritionShare.name}}</th>
+                        <th>määrä</th>
+                        <th>määrä</th>
+                        <th>suositus</th>
+                        <th>max</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="#nutrition of nutritionShare.nutrients">
+                        <td>{{nutrition.name}} ({{nutrition.unit}})</td>
+                        <td>
+                            <div class="bar">
+                                <div class="ok" [style.width]="nutrition.percent.ok + '%'"></div>
+                                <div class="over" [style.width]="nutrition.percent.over + '%'"></div>
+                                <div class="too-much" [style.width]="nutrition.percent.tooMuch + '%'"></div>
+                            </div>
+                        </td>
+                        <td>{{nutrition.amount}}</td>
+                        <td>{{nutrition.male}}</td>
+                        <td>{{nutrition.max}}</td>
+                    </tr>
+                    </tbody>
+                </template>
                 <!--<thead class="thead-inverse">-->
                 <!--<tr>-->
                     <!--<th>Kivennäis- ja hivenaineet</th>-->
@@ -87,7 +88,7 @@
                 <!--</thead>-->
                 <!--<tbody>-->
                 <!--<tr *ngFor="#nutrition of nutritionShares.dietaryElements">-->
-                    <!--<td>{{nutrition.name}} ({{nutrition.funit}})</td>-->
+                    <!--<td>{{nutrition.name}} ({{nutrition.unit}})</td>-->
                     <!--<td>{{nutrition.amount}}</td>-->
                     <!--<td>{{nutrition.male}}</td>-->
                     <!--<td>{{nutrition.max}}</td>-->

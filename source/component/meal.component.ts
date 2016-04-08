@@ -13,7 +13,7 @@ declare var Chart: any;
 
 export class MealComponent implements OnInit {
     meal: any;
-    nutritionShares: any;
+    nutritionShares = [];
 
     constructor(
         private _recommendationService: RecommendationService,
@@ -25,64 +25,25 @@ export class MealComponent implements OnInit {
         // this._mealService.getMeal(id).then(meal => this.meal = meal);
         this._recommendationService.getRecommendations().then(recommendations => {
             this._foodService.getFood(1).then(food => {
-                let nutritionShares = {
-                    'vitamins': [],
-                    'dietaryElements': []
+                let nutritionShare = {
+                    'name': '',
+                    'nutrients': []
                 };
-
-                let nutrientti = food.vitamins.find(nutrient => nutrient.nutrientId === 1);
-
                 for (let recommendation of recommendations.vitamins) {
-                    let nutrient = food.vitamins.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
-                    let nutritionShare = {
-                        'name': recommendation.name,
-                        'male': recommendation.male,
-                        'runit': recommendation.unit,
-                        'max': recommendation.max,
-                        'amount': 0,
-                        'funit': 'N/A',
-                        'percent': {
-                            'ok': 0,
-                            'over': 0,
-                            'tooMuch': 0,
-                        },
-                    };
-                    if (nutrient) {
-                        nutritionShare.amount = nutrient.value;
-                        nutritionShare.funit = nutrient.unit;
-                        nutritionShare.percent.ok = nutrient.value / recommendation.male * 100;
-                        if (nutrient.value > recommendation.male) {
-                            nutritionShare.percent.ok = recommendation.male / nutrient.value * 100;
-                            let over = nutrient.value - recommendation.male;
-                            if (nutrient.value > recommendation.max) {
-                                let tooMuch = nutrient.value - recommendation.max;
-                                over -= nutritionShare.percent.tooMuch;
-                                nutritionShare.percent.tooMuch = tooMuch / nutrient.value * 100;
-                            }
-                            nutritionShare.percent.over = over / nutrient.value * 100;
-                        }
-
-                    }
-                    nutritionShares.vitamins.push(nutritionShare);
+                    nutritionShare.name = 'Vitamiinit';
+                    nutritionShare.nutrients.push(this.getNutritionShare(food.vitamins, recommendation));
                 }
-
+                console.log(nutritionShare.nutrients);
+                this.nutritionShares.push(nutritionShare);
+                nutritionShare = {
+                    'name': '',
+                    'nutrients': []
+                };
                 for (let recommendation of recommendations.dietaryElements) {
-                    let nutrient = food.dietaryElements.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
-                    let nutritionShare = {
-                        'name': recommendation.name,
-                        'male': recommendation.male,
-                        'runit': recommendation.unit,
-                        'max': recommendation.max,
-                        'amount': 0,
-                        'funit': 'N/A',
-                    };
-                    if (nutrient) {
-                        nutritionShare.amount = nutrient.value;
-                        nutritionShare.funit = nutrient.unit;
-                    }
-                    nutritionShares.dietaryElements.push(nutritionShare);
+                    nutritionShare.name = 'Kivennäis- ja hivenaineet';
+                    nutritionShare.nutrients.push(this.getNutritionShare(food.dietaryElements, recommendation));
                 }
-                this.nutritionShares = nutritionShares;
+                this.nutritionShares.push(nutritionShare);
             });
         });
         this.meal = {
@@ -97,5 +58,43 @@ export class MealComponent implements OnInit {
 
     goBack() {
         window.history.back();
+    }
+
+    private getNutritionShare(nutrients, recommendation) {
+        let nutrient = nutrients.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
+        let nutritionShare = {
+            'name': recommendation.name,
+            'male': recommendation.male,
+            'max': recommendation.max,
+            'amount': 0,
+            'unit': recommendation.unit,
+            'percent': {
+                'ok': 0,
+                'over': 0,
+                'tooMuch': 0,
+            },
+        };
+
+        if (nutrient) {
+            nutritionShare.amount = nutrient.value;
+            nutritionShare.unit = nutrient.unit;
+            this.calculatePercent(nutritionShare, nutrient, recommendation);
+        }
+
+        return nutritionShare;
+    }
+
+    private calculatePercent(nutritionShare, nutrient, recommendation) {
+        nutritionShare.percent.ok = nutrient.value / recommendation.male * 100;
+        if (nutrient.value > recommendation.male) {
+            nutritionShare.percent.ok = recommendation.male / nutrient.value * 100;
+            let over = nutrient.value - recommendation.male;
+            if (nutrient.value > recommendation.max) {
+                let tooMuch = nutrient.value - recommendation.max;
+                over -= nutritionShare.percent.tooMuch;
+                nutritionShare.percent.tooMuch = tooMuch / nutrient.value * 100;
+            }
+            nutritionShare.percent.over = over / nutrient.value * 100;
+        }
     }
 }
