@@ -1,31 +1,60 @@
 <h2>Ateria</h2>
 <div class="row">
-    <div class="col-sm-12 col-md-6">
-        <div *ngIf="meal">
-            <h3>Ruoat</h3>
-            <table class="table table-bordered table-sm">
-                <thead class="thead-inverse">
-                <tr>
-                    <th>Ruoka-aine</th>
-                    <th>Määrä</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="#food of meal.foods">
-                    <td>{{food.name}}</td>
-                    <td>{{food.amount}} g</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-sm-12 col-md-6">
+    <!--<div class="col-sm-12 col-md-6">-->
+        <!--<div *ngIf="meal">-->
+            <!--<h3>Ruoat</h3>-->
+            <!--<table class="table table-sm">-->
+                <!--<thead class="thead-inverse">-->
+                <!--<tr>-->
+                    <!--<th>Ruoka-aine</th>-->
+                    <!--<th>Määrä</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                <!--<tr *ngFor="#food of meal.foods">-->
+                    <!--<td>{{food.name}}</td>-->
+                    <!--<td>{{food.amount}} g</td>-->
+                <!--</tr>-->
+                <!--</tbody>-->
+            <!--</table>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="col-sm-12 col-md-6">-->
+        <!--<h3>Ravintoaineet</h3>-->
+        <!--<table class="table table-sm">-->
+            <!--<thead class="thead-inverse">-->
+            <!--<tr>-->
+                <!--<th>Vitamiinit</th>-->
+                <!--<th>Määrä</th>-->
+                <!--&lt;!&ndash;<th>Suositus</th>&ndash;&gt;-->
+            <!--</tr>-->
+            <!--</thead>-->
+            <!--<tbody>-->
+            <!--<tr>-->
+                <!--<td>A-vitamiini (µg)</td>-->
+                <!--<td class="td-bar">-->
+                    <!--<div class="bar">-->
+                        <!--<div class="ok" [style.width]="width + '%'"><div>2</div></div>-->
+                        <!--<div class="over"></div>-->
+                        <!--<div class="too-much"></div>-->
+                    <!--</div>-->
+                <!--</td>-->
+                <!--&lt;!&ndash;<td>900</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td>3000</td>&ndash;&gt;-->
+            <!--</tr>-->
+            <!--</tbody>-->
+        <!--</table>-->
+    <!--</div>-->
+
+    <div class="col-sm-12 col-md-12">
         <div *ngIf="nutritionShares">
             <h3>Ravintoaineet</h3>
             <table class="table table-bordered table-sm">
                 <thead class="thead-inverse">
                 <tr>
                     <th>Vitamiinit</th>
+                    <th>määrä</th>
                     <th>määrä</th>
                     <th>suositus</th>
                     <th>max</th>
@@ -34,27 +63,36 @@
                 <tbody>
                 <tr *ngFor="#nutrition of nutritionShares.vitamins">
                     <td>{{nutrition.name}} ({{nutrition.funit}})</td>
+                    <td>
+                        <div class="bar">
+                            <div class="ok" [style.width]="nutrition.percent.ok + '%'"></div>
+                            <div class="over" [style.width]="nutrition.percent.over + '%'"></div>
+                            <div class="too-much" [style.width]="nutrition.percent.tooMuch + '%'"></div>
+                            <!--<div class="over"></div>-->
+                            <!--<div class="too-much"></div>-->
+                        </div>
+                    </td>
                     <td>{{nutrition.amount}}</td>
                     <td>{{nutrition.male}}</td>
                     <td>{{nutrition.max}}</td>
                 </tr>
                 </tbody>
-                <thead class="thead-inverse">
-                <tr>
-                    <th>Kivennäis- ja hivenaineet</th>
-                    <th>määrä</th>
-                    <th>suositus</th>
-                    <th>max</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="#nutrition of nutritionShares.dietaryElements">
-                    <td>{{nutrition.name}} ({{nutrition.funit}})</td>
-                    <td>{{nutrition.amount}}</td>
-                    <td>{{nutrition.male}}</td>
-                    <td>{{nutrition.max}}</td>
-                </tr>
-                </tbody>
+                <!--<thead class="thead-inverse">-->
+                <!--<tr>-->
+                    <!--<th>Kivennäis- ja hivenaineet</th>-->
+                    <!--<th>määrä</th>-->
+                    <!--<th>suositus</th>-->
+                    <!--<th>max</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                <!--<tr *ngFor="#nutrition of nutritionShares.dietaryElements">-->
+                    <!--<td>{{nutrition.name}} ({{nutrition.funit}})</td>-->
+                    <!--<td>{{nutrition.amount}}</td>-->
+                    <!--<td>{{nutrition.male}}</td>-->
+                    <!--<td>{{nutrition.max}}</td>-->
+                <!--</tr>-->
+                <!--</tbody>-->
             </table>
         </div>
     </div>

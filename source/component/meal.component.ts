@@ -41,10 +41,27 @@ export class MealComponent implements OnInit {
                         'max': recommendation.max,
                         'amount': 0,
                         'funit': 'N/A',
+                        'percent': {
+                            'ok': 0,
+                            'over': 0,
+                            'tooMuch': 0,
+                        },
                     };
                     if (nutrient) {
                         nutritionShare.amount = nutrient.value;
                         nutritionShare.funit = nutrient.unit;
+                        nutritionShare.percent.ok = nutrient.value / recommendation.male * 100;
+                        if (nutrient.value > recommendation.male) {
+                            nutritionShare.percent.ok = recommendation.male / nutrient.value * 100;
+                            let over = nutrient.value - recommendation.male;
+                            if (nutrient.value > recommendation.max) {
+                                let tooMuch = nutrient.value - recommendation.max;
+                                over -= nutritionShare.percent.tooMuch;
+                                nutritionShare.percent.tooMuch = tooMuch / nutrient.value * 100;
+                            }
+                            nutritionShare.percent.over = over / nutrient.value * 100;
+                        }
+
                     }
                     nutritionShares.vitamins.push(nutritionShare);
                 }
@@ -65,13 +82,7 @@ export class MealComponent implements OnInit {
                     }
                     nutritionShares.dietaryElements.push(nutritionShare);
                 }
-console.log(nutritionShares);
                 this.nutritionShares = nutritionShares;
-                // this.recommendations = [
-                //     {
-                //         'name':
-                //     }
-                // ];
             });
         });
         this.meal = {

@@ -1,1 +1,19 @@
 @import "bootstrap";
+
+.bar div {
+  display: inline-block;
+  height: 20px;
+  float: left;
+}
+
+.ok {
+  background-color: green;
+}
+
+.over {
+  background-color: yellow;
+}
+
+.too-much {
+  background-color: red;
+}
