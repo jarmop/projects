@@ -3,9 +3,14 @@ var request = require('request');
 
 var data = [];
 
+// broileri jauheliha
 // request('https://fineli.fi/fineli/fi/elintarvikkeet/28930/resultset.csv', function (error, response, body) {
-// request('https://fineli.fi/fineli/fi/elintarvikkeet/153/resultset.csv', function (error, response, body) {
-request('https://fineli.fi/fineli/fi/elintarvikkeet/391/resultset.csv', function (error, response, body) {
+// kaurahiutale
+request('https://fineli.fi/fineli/fi/elintarvikkeet/153/resultset.csv', function (error, response, body) {
+// banaani
+// request('https://fineli.fi/fineli/fi/elintarvikkeet/28934/resultset.csv', function (error, response, body) {
+// soijapapu
+// request('https://fineli.fi/fineli/fi/elintarvikkeet/391/resultset.csv', function (error, response, body) {
   if (!error && response.statusCode == 200) {
     var lines = body.split('\r\n');
     parseValues(lines[1].split(';'));

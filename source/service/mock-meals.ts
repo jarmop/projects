@@ -5,11 +5,11 @@ export var MEALS = [
         "foods": [
             {
                 'id': 1,
-                'amount': 100
+                'amount': 40
             },
             {
                 'id': 2,
-                'amount': 50
+                'amount': 100
             }
         ]
     }
