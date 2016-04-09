@@ -55,15 +55,15 @@ export var RECOMMENDATIONS = [
         "nutrientDensity": 6.7,
         "unit": "mg"
     },
-    {
-        "nutrientId": 7,
-        "name": "B6-vitamiini",
-        "male": 1.6,
-        "female": 1.3,
-        "max": 25,
-        "nutrientDensity": 0.5,
-        "unit": "mg"
-    },
+    // {
+    //     "nutrientId": 7,
+    //     "name": "B6-vitamiini",
+    //     "male": 1.6,
+    //     "female": 1.3,
+    //     "max": 25,
+    //     "nutrientDensity": 0.5,
+    //     "unit": "mg"
+    // },
     {
         "nutrientId": 8,
         "name": "Folaatti",
@@ -145,15 +145,15 @@ export var RECOMMENDATIONS = [
         "nutrientDensity": 4.6,
         "unit": "mg"
     },
-    {
-        "nutrientId": 17,
-        "name": "Kupari",
-        "male": 0.9,
-        "female": 0.9,
-        "max": 5,
-        "nutrientDensity": 0.4,
-        "unit": "mg"
-    },
+    // {
+    //     "nutrientId": 17,
+    //     "name": "Kupari",
+    //     "male": 0.9,
+    //     "female": 0.9,
+    //     "max": 5,
+    //     "nutrientDensity": 0.4,
+    //     "unit": "mg"
+    // },
     {
         "nutrientId": 18,
         "name": "Jodi",
