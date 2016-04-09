@@ -31,7 +31,7 @@ export class MealComponent implements OnInit {
                 }
                 this._foodService.getFoodsByIds(foodIds).then(foods => {
                     this.initMeal(meal, foods);
-                    this.initNutritionShares(recommendations, foods);
+                    this.initNutritionShares(recommendations, foods, meal.foods);
                 });
             });
         });
@@ -53,7 +53,7 @@ export class MealComponent implements OnInit {
         }
     }
 
-    private initNutritionShares(recommendations, foods) {
+    private initNutritionShares(recommendations, foods, mealFoods) {
         let nutritionShare = {
             'name': '',
             'nutrients': []
@@ -63,7 +63,8 @@ export class MealComponent implements OnInit {
             // let nutrient = nutrients.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
             let nutrientValue = 0;
             for (let food of foods) {
-                nutrientValue += food.vitamins.find(nutrient => nutrient.nutrientId === recommendation.nutrientId).value;
+                let multiplier = mealFoods.find(mealFood => mealFood.id == food.id).amount / 100;
+                nutrientValue += food.vitamins.find(nutrient => nutrient.nutrientId === recommendation.nutrientId).value * multiplier;
             }
             nutritionShare.nutrients.push(this.getNutritionShare(nutrientValue, recommendation));
         }
@@ -114,5 +115,12 @@ export class MealComponent implements OnInit {
             }
             nutritionShare.percent.over = over / nutrientValue * 100;
         }
+    }
+
+    public formatAmount(amount) {
+        if (parseInt(amount) == amount) {
+            return amount;
+        }
+        return amount.toFixed(2).replace(/0$/, '');
     }
 }
