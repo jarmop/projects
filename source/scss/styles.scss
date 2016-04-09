@@ -1,6 +1,10 @@
 @import "bootstrap";
 
-.bar div {
+th.bar {
+  width: 30%;
+}
+
+td div.bar div {
   display: inline-block;
   height: 20px;
   float: left;

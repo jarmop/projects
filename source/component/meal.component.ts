@@ -13,7 +13,7 @@ declare var Chart: any;
 
 export class MealComponent implements OnInit {
     meal: any;
-    nutritionShares = [];
+    nutritionShareGroups = [];
 
     constructor(
         private _recommendationService: RecommendationService,
@@ -54,30 +54,28 @@ export class MealComponent implements OnInit {
     }
 
     private initNutritionShares(recommendations, foods, mealFoods) {
-        let nutritionShare = {
-            'name': '',
+        this.nutritionShareGroups.push(this.getNutritionShareGroup(recommendations.vitamins, foods, mealFoods, 'Vitamiinit'));
+        this.nutritionShareGroups.push(this.getNutritionShareGroup(recommendations.dietaryElements, foods, mealFoods, 'Kivennäis- ja hivenaineet'));
+    }
+
+    private getNutritionShareGroup(recommendations, foods, mealFoods, name) {
+        let nutritionShareGroup = {
+            'name': name,
             'nutrients': []
         };
-        for (let recommendation of recommendations.vitamins) {
-            nutritionShare.name = 'Vitamiinit';
-            // let nutrient = nutrients.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
+        for (let recommendation of recommendations) {
             let nutrientValue = 0;
             for (let food of foods) {
                 let multiplier = mealFoods.find(mealFood => mealFood.id == food.id).amount / 100;
-                nutrientValue += food.vitamins.find(nutrient => nutrient.nutrientId === recommendation.nutrientId).value * multiplier;
+                let nutrient = food.vitamins.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
+                if (!nutrient) {
+                    nutrient = food.dietaryElements.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
+                }
+                nutrientValue += nutrient.value * multiplier;
             }
-            nutritionShare.nutrients.push(this.getNutritionShare(nutrientValue, recommendation));
+            nutritionShareGroup.nutrients.push(this.getNutritionShare(nutrientValue, recommendation));
         }
-        this.nutritionShares.push(nutritionShare);
-        // nutritionShare = {
-        //     'name': '',
-        //     'nutrients': []
-        // };
-        // for (let recommendation of recommendations.dietaryElements) {
-        //     nutritionShare.name = 'Kivennäis- ja hivenaineet';
-        //     nutritionShare.nutrients.push(this.getNutritionShare(food.dietaryElements, recommendation));
-        // }
-        // this.nutritionShares.push(nutritionShare);
+        return nutritionShareGroup;
     }
 
     private getNutritionShare(nutrientValue, recommendation) {        

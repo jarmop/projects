@@ -48,15 +48,15 @@
     <!--</div>-->
 
     <div class="col-sm-12 col-md-8">
-        <div *ngIf="nutritionShares">
+        <div *ngIf="nutritionShareGroups">
 
             <h3>Ravintoaineet</h3>
             <table class="table table-bordered table-sm">
-                <template ngFor #nutritionShare [ngForOf]="nutritionShares">
+                <template ngFor #nutritionShare [ngForOf]="nutritionShareGroups">
                     <thead class="thead-inverse">
                     <tr>
                         <th>{{nutritionShare.name}}</th>
-                        <th>määrä</th>
+                        <th class="bar">määrä</th>
                         <th>määrä</th>
                         <th>suositus</th>
                         <th>max</th>
@@ -87,7 +87,7 @@
                 <!--</tr>-->
                 <!--</thead>-->
                 <!--<tbody>-->
-                <!--<tr *ngFor="#nutrition of nutritionShares.dietaryElements">-->
+                <!--<tr *ngFor="#nutrition of nutritionShareGroups.dietaryElements">-->
                     <!--<td>{{nutrition.name}} ({{nutrition.unit}})</td>-->
                     <!--<td>{{nutrition.amount}}</td>-->
                     <!--<td>{{nutrition.male}}</td>-->
