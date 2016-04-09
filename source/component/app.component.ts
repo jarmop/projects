@@ -3,6 +3,7 @@ import {RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from 'angular2/router'
 
 import {FoodComponent} from './food.component';
 import {FoodService} from "../service/food.service";
+import {MealService} from "../service/meal.service";
 import {RecommendationComponent} from "./recommendation.component";
 import {RecommendationService} from "../service/recommendation.service";
 import {MealComponent} from "./meal.component";
@@ -14,7 +15,8 @@ import {MealComponent} from "./meal.component";
     providers: [
         ROUTER_PROVIDERS,
         FoodService,
-        RecommendationService
+        RecommendationService,
+        MealService
     ]
 })
 

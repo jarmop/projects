@@ -1,24 +1,24 @@
 <h2>Ateria</h2>
 <div class="row">
-    <!--<div class="col-sm-12 col-md-6">-->
-        <!--<div *ngIf="meal">-->
-            <!--<h3>Ruoat</h3>-->
-            <!--<table class="table table-sm">-->
-                <!--<thead class="thead-inverse">-->
-                <!--<tr>-->
-                    <!--<th>Ruoka-aine</th>-->
-                    <!--<th>Määrä</th>-->
-                <!--</tr>-->
-                <!--</thead>-->
-                <!--<tbody>-->
-                <!--<tr *ngFor="#food of meal.foods">-->
-                    <!--<td>{{food.name}}</td>-->
-                    <!--<td>{{food.amount}} g</td>-->
-                <!--</tr>-->
-                <!--</tbody>-->
-            <!--</table>-->
-        <!--</div>-->
-    <!--</div>-->
+    <div class="col-sm-12 col-md-4">
+        <div *ngIf="meal">
+            <h3>Ruoat</h3>
+            <table class="table table-sm">
+                <thead class="thead-inverse">
+                <tr>
+                    <th>Ruoka-aine</th>
+                    <th>Määrä</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="#food of meal.foods">
+                    <td>{{food.name}}</td>
+                    <td>{{food.value}} g</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <!--<div class="col-sm-12 col-md-6">-->
         <!--<h3>Ravintoaineet</h3>-->
@@ -47,7 +47,7 @@
         <!--</table>-->
     <!--</div>-->
 
-    <div class="col-sm-12 col-md-12">
+    <div class="col-sm-12 col-md-8">
         <div *ngIf="nutritionShares">
 
             <h3>Ravintoaineet</h3>

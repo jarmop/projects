@@ -7,6 +7,12 @@ export class FoodService {
         return Promise.resolve(FOODS);
     }
 
+    getFoodsByIds(ids: number[]) {
+        return Promise.resolve(FOODS).then(
+            foods => foods.filter(food => ids.indexOf(food.id) != -1)
+        );
+    }
+
     getFood(id: number) {
         return Promise.resolve(FOODS).then(
             foods => foods.filter(food => food.id === id)[0]
