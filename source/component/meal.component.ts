@@ -117,9 +117,9 @@ export class MealComponent implements OnInit {
     }
 
     public formatAmount(amount) {
-        if (parseInt(amount) == amount) {
+        if (!amount || parseInt(amount) == amount) {
             return amount;
         }
-        return amount.toFixed(2).replace(/0$/, '');
+        return amount.toFixed(2).replace(/0$/, '').replace('.', ',');
     }
 }
