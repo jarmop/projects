@@ -3,8 +3,7 @@ export var FOODS = [
         "id": 1,
         "name": "Soijapapu",
         "protein": 35.9,
-        'dietaryElements': [
-            // kupari puuttuu :(
+        'nutrients': [
             {
                 "nutrientId": 17,
                 "name": "kupari",
@@ -63,17 +62,7 @@ export var FOODS = [
                 "name": "sinkki",
                 "unit": "mg",
                 "value": 1
-            }
-        ],
-        "aminoAcids": [
-            {
-                "name": "tryptofaani",
-                "unit": "mg",
-                "value": 450
-            }
-        ],
-        "vitamins": [
-            // B6 puuttuu kokonaan?
+            },
             {
                 "nutrientId": 7,
                 "name": "B6-vitamiini",
@@ -137,11 +126,10 @@ export var FOODS = [
         ]
     },
     {
-        "id": 2,
+        "id": 1,
         "name": "Soijapapu2",
         "protein": 35.9,
-        'dietaryElements': [
-            // kupari puuttuu :(
+        'nutrients': [
             {
                 "nutrientId": 17,
                 "name": "kupari",
@@ -200,17 +188,7 @@ export var FOODS = [
                 "name": "sinkki",
                 "unit": "mg",
                 "value": 1
-            }
-        ],
-        "aminoAcids": [
-            {
-                "name": "tryptofaani",
-                "unit": "mg",
-                "value": 450
-            }
-        ],
-        "vitamins": [
-            // B6 puuttuu kokonaan?
+            },
             {
                 "nutrientId": 7,
                 "name": "B6-vitamiini",
@@ -272,5 +250,5 @@ export var FOODS = [
                 "value": 0.8
             }
         ]
-    },
+    }
 ];

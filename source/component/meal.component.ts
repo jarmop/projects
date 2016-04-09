@@ -14,6 +14,8 @@ declare var Chart: any;
 export class MealComponent implements OnInit {
     meal: any;
     nutritionShareGroups = [];
+    vitaminIds = [1,2,3,4,5,6,7,8,9,10];
+    dietaryElementIds = [11,12,13,14,15,16,17,18,19];
 
     constructor(
         private _recommendationService: RecommendationService,
@@ -54,8 +56,10 @@ export class MealComponent implements OnInit {
     }
 
     private initNutritionShares(recommendations, foods, mealFoods) {
-        this.nutritionShareGroups.push(this.getNutritionShareGroup(recommendations.vitamins, foods, mealFoods, 'Vitamiinit'));
-        this.nutritionShareGroups.push(this.getNutritionShareGroup(recommendations.dietaryElements, foods, mealFoods, 'Kivennäis- ja hivenaineet'));
+        let vitaminRecommendations = recommendations.filter(recommendation => this.vitaminIds.indexOf(recommendation.nutrientId) != -1);
+        this.nutritionShareGroups.push(this.getNutritionShareGroup(vitaminRecommendations, foods, mealFoods, 'Vitamiinit'));
+        let dietaryElementRecommendations = recommendations.filter(recommendation => this.dietaryElementIds.indexOf(recommendation.nutrientId) != -1);
+        this.nutritionShareGroups.push(this.getNutritionShareGroup(dietaryElementRecommendations, foods, mealFoods, 'Kivennäis- ja hivenaineet'));
     }
 
     private getNutritionShareGroup(recommendations, foods, mealFoods, name) {
@@ -67,10 +71,7 @@ export class MealComponent implements OnInit {
             let nutrientValue = 0;
             for (let food of foods) {
                 let multiplier = mealFoods.find(mealFood => mealFood.id == food.id).amount / 100;
-                let nutrient = food.vitamins.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
-                if (!nutrient) {
-                    nutrient = food.dietaryElements.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
-                }
+                let nutrient = food.nutrients.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
                 nutrientValue += nutrient.value * multiplier;
             }
             nutritionShareGroup.nutrients.push(this.getNutritionShare(nutrientValue, recommendation));
