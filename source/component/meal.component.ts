@@ -50,7 +50,7 @@ export class MealComponent implements OnInit {
         for (let food of foods) {
             this.meal.foods.push({
                 'name': food.name,
-                'value': meal.foods.find(mealFood => mealFood.id == food.id).amount
+                'amount': meal.foods.find(mealFood => mealFood.id == food.id).amount
             });
         }
     }
@@ -72,7 +72,7 @@ export class MealComponent implements OnInit {
             for (let food of foods) {
                 let multiplier = mealFoods.find(mealFood => mealFood.id == food.id).amount / 100;
                 let nutrient = food.nutrients.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
-                nutrientValue += nutrient.value * multiplier;
+                nutrientValue += nutrient.amount * multiplier;
             }
             nutritionShareGroup.nutrients.push(this.getNutritionShare(nutrientValue, recommendation));
         }
