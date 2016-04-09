@@ -109,7 +109,7 @@ export class MealComponent implements OnInit {
             nutritionShare.percent.ok = recommendation.male / nutrientValue * 100;
             let over = nutrientValue - recommendation.male;
             if (nutrientValue > recommendation.max) {
-                let tooMuch = nutrientValue - recommendation.max;
+                let tooMuch = recommendation.max ? nutrientValue - recommendation.max : 0;
                 over -= nutritionShare.percent.tooMuch;
                 nutritionShare.percent.tooMuch = tooMuch / nutrientValue * 100;
             }
