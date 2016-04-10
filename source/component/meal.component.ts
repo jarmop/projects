@@ -3,24 +3,26 @@ import {RouteParams} from 'angular2/router';
 import {RecommendationService} from '../service/recommendation.service';
 import {MealService} from '../service/meal.service';
 import {FoodService} from '../service/food.service';
+import {NutrientService} from "../service/nutrient.service";
+import {amountPipe} from "../pipe/amount.pipe";
 
 declare var Chart: any;
 
 @Component({
     selector: 'meal',
     templateUrl: 'component/meal.component.html',
+    pipes: [amountPipe]
 })
 
 export class MealComponent implements OnInit {
     meal: any;
     nutritionShareGroups = [];
-    vitaminIds = [1,2,3,4,5,6,7,8,9,10];
-    dietaryElementIds = [11,12,13,14,15,16,17,18,19];
 
     constructor(
         private _recommendationService: RecommendationService,
         private _mealService: MealService,
         private _foodService: FoodService,
+        private _nutrientService: NutrientService,
         private _routeParams: RouteParams) {
     }
 
@@ -56,9 +58,9 @@ export class MealComponent implements OnInit {
     }
 
     private initNutritionShares(recommendations, foods, mealFoods) {
-        let vitaminRecommendations = recommendations.filter(recommendation => this.vitaminIds.indexOf(recommendation.nutrientId) != -1);
+        let vitaminRecommendations = this._recommendationService.getRecommendationVitamins(recommendations);
         this.nutritionShareGroups.push(this.getNutritionShareGroup(vitaminRecommendations, foods, mealFoods, 'Vitamiinit'));
-        let dietaryElementRecommendations = recommendations.filter(recommendation => this.dietaryElementIds.indexOf(recommendation.nutrientId) != -1);
+        let dietaryElementRecommendations = this._recommendationService.getRecommendationDietaryElements(recommendations);
         this.nutritionShareGroups.push(this.getNutritionShareGroup(dietaryElementRecommendations, foods, mealFoods, 'Kivennäis- ja hivenaineet'));
     }
 
@@ -114,12 +116,5 @@ export class MealComponent implements OnInit {
             }
             nutritionShare.percent.over = over / nutrientValue * 100;
         }
-    }
-
-    public formatAmount(amount) {
-        if (!amount || parseInt(amount) == amount) {
-            return amount;
-        }
-        return amount.toFixed(2).replace(/0$/, '').replace('.', ',');
     }
 }

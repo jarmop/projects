@@ -9,7 +9,9 @@ import {Food} from "../model/food";
 })
 
 export class FoodComponent implements OnInit {
-    food: Food;
+    food;
+    vitamins;
+    dietaryElements;
 
     constructor(
         private _foodService: FoodService,
@@ -18,8 +20,11 @@ export class FoodComponent implements OnInit {
 
     ngOnInit() {
         let id = +this._routeParams.get('id');
-        this._foodService.getFood(id)
-            .then(food => this.food = food);
+        this._foodService.getFood(id).then(food => {
+            this.food = food;
+            this.vitamins = this._foodService.getFoodVitamins(food);
+            this.dietaryElements = this._foodService.getFoodDietaryElements(food);
+        });
     }
 
     goBack() {

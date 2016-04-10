@@ -1,5 +1,7 @@
 import {Injectable} from 'angular2/core';
 import {FOODS} from './mock-foods';
+import {Food} from "../model/food";
+import {NutrientService} from "./nutrient.service";
 
 @Injectable()
 export class FoodService {
@@ -17,5 +19,15 @@ export class FoodService {
         return Promise.resolve(FOODS).then(
             foods => foods.filter(food => food.id === id)[0]
         );
+    }
+    
+    getFoodVitamins(food) {
+        let nutrientService = new NutrientService();
+        return food.nutrients.filter(nutrient => nutrientService.vitaminIds.indexOf(nutrient.nutrientId) != -1);
+    }
+
+    getFoodDietaryElements(food) {
+        let nutrientService = new NutrientService();
+        return food.nutrients.filter(nutrient => nutrientService.dietaryElementIds.indexOf(nutrient.nutrientId) != -1);
     }
 }

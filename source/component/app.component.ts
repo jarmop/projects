@@ -7,6 +7,7 @@ import {MealService} from "../service/meal.service";
 import {RecommendationComponent} from "./recommendation.component";
 import {RecommendationService} from "../service/recommendation.service";
 import {MealComponent} from "./meal.component";
+import {NutrientService} from "../service/nutrient.service";
 
 @Component({
     selector: 'app',
@@ -16,6 +17,7 @@ import {MealComponent} from "./meal.component";
         ROUTER_PROVIDERS,
         FoodService,
         RecommendationService,
+        NutrientService,
         MealService
     ]
 })

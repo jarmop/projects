@@ -43,9 +43,9 @@
                                 <div class="too-much" [style.width]="nutrition.percent.tooMuch + '%'"></div>
                             </div>
                         </td>
-                        <td>{{formatAmount(nutrition.amount)}}</td>
-                        <td>{{formatAmount(nutrition.male)}}</td>
-                        <td>{{formatAmount(nutrition.max)}}</td>
+                        <td>{{nutrition.amount | amount}}</td>
+                        <td>{{nutrition.male | amount}}</td>
+                        <td>{{nutrition.max | amount}}</td>
                     </tr>
                     </tbody>
                 </template>
