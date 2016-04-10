@@ -2,11 +2,14 @@ var fs = require('fs');
 var request = require('request');
 
 var data = [];
-
+//soijamaito 33122
+//kasvishernekeitto 29222
 // broileri jauheliha
+// parsakaali
+// auringonkukansiemen 11212
 // request('https://fineli.fi/fineli/fi/elintarvikkeet/28930/resultset.csv', function (error, response, body) {
 // kaurahiutale
-request('https://fineli.fi/fineli/fi/elintarvikkeet/153/resultset.csv', function (error, response, body) {
+request('https://fineli.fi/fineli/fi/elintarvikkeet/3343/resultset.csv', function (error, response, body) {
 // banaani
 // request('https://fineli.fi/fineli/fi/elintarvikkeet/28934/resultset.csv', function (error, response, body) {
 // soijapapu

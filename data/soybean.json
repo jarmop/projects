@@ -1,7 +1,7 @@
 [
     {
         "nutrientId": 1,
-        "amount": 0
+        "amount": 77.4
     },
     {
         "nutrientId": 2,
@@ -9,23 +9,23 @@
     },
     {
         "nutrientId": 3,
-        "amount": 0.8
+        "amount": 0.7
     },
     {
         "nutrientId": 4,
-        "amount": 0.33
+        "amount": 0.07
     },
     {
         "nutrientId": 5,
-        "amount": 0.09
+        "amount": 0.16
     },
     {
         "nutrientId": 6,
-        "amount": 0.8
+        "amount": 0.9
     },
     {
         "nutrientId": 8,
-        "amount": 46
+        "amount": 79.1
     },
     {
         "nutrientId": 9,
@@ -33,38 +33,38 @@
     },
     {
         "nutrientId": 10,
-        "amount": 0
+        "amount": 78
     },
     {
         "nutrientId": 11,
-        "amount": 47
+        "amount": 48
     },
     {
         "nutrientId": 12,
-        "amount": 471
+        "amount": 90
     },
     {
         "nutrientId": 13,
-        "amount": 414
+        "amount": 400
     },
     {
         "nutrientId": 14,
-        "amount": 142
+        "amount": 24
     },
     {
         "nutrientId": 15,
-        "amount": 4.7
+        "amount": 1.1
     },
     {
         "nutrientId": 16,
-        "amount": 3.6
+        "amount": 0.1
     },
     {
         "nutrientId": 18,
-        "amount": 20
+        "amount": 1
     },
     {
         "nutrientId": 19,
-        "amount": 12
+        "amount": 0.4
     }
 ]
