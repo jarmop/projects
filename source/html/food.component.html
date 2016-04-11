@@ -1,54 +1,6 @@
 <div *ngIf="food">
     <h2>{{food.name}}</h2>
     <table class="table table-bordered table-sm">
-        <!--<thead class="thead-inverse">-->
-        <!--<tr>-->
-            <!--<th>Proteiini</th>-->
-            <!--<th>Määrä</th>-->
-        <!--</tr>-->
-        <!--</thead>-->
-        <!--<tbody>-->
-        <!--<tr>-->
-            <!--<td>proteiini</td>-->
-            <!--<td>{{food.protein}} g</td>-->
-        <!--</tr>-->
-        <!--</tbody>-->
-        <!--<thead class="thead-inverse">-->
-        <!--<tr>-->
-            <!--<th>Aminohapot</th>-->
-            <!--<th>Määrä</th>-->
-        <!--</tr>-->
-        <!--</thead>-->
-        <!--<tbody>-->
-        <!--<tr *ngFor="#nutrient of food.aminoAcids">-->
-            <!--<td>{{nutrient.name}}</td>-->
-            <!--<td>{{nutrient.value}} {{nutrient.unit}}</td>-->
-        <!--</tr>-->
-        <!--</tbody>-->
-        <!--<thead class="thead-inverse">-->
-        <!--<tr>-->
-            <!--<th>Hiilarit</th>-->
-            <!--<th>Määrä</th>-->
-        <!--</tr>-->
-        <!--</thead>-->
-        <!--<tbody>-->
-        <!--<tr *ngFor="#nutrient of food.carbs">-->
-            <!--<td>{{nutrient.name}}</td>-->
-            <!--<td>{{nutrient.value}} {{nutrient.unit}}</td>-->
-        <!--</tr>-->
-        <!--</tbody>-->
-        <!--<thead class="thead-inverse">-->
-        <!--<tr>-->
-            <!--<th>Rasvat</th>-->
-            <!--<th>Määrä</th>-->
-        <!--</tr>-->
-        <!--</thead>-->
-        <!--<tbody>-->
-        <!--<tr *ngFor="#nutrient of food.fats">-->
-            <!--<td>{{nutrient.name}}</td>-->
-            <!--<td>{{nutrient.value}} {{nutrient.unit}}</td>-->
-        <!--</tr>-->
-        <!--</tbody>-->
         <thead class="thead-inverse">
         <tr>
             <th>Kivennäis- ja hivenaineet</th>
@@ -58,7 +10,7 @@
         <tbody>
         <tr *ngFor="#nutrient of dietaryElements">
             <td>{{nutrient.name}}</td>
-            <td>{{nutrient.amount}}<!-- {{nutrient.unit}}--></td>
+            <td>{{nutrient.amount}} {{nutrient.unit}}</td>
         </tr>
         </tbody>
         <thead class="thead-inverse">
@@ -70,7 +22,7 @@
         <tbody>
         <tr *ngFor="#nutrient of vitamins">
             <td>{{nutrient.name}}</td>
-            <td>{{nutrient.amount}}<!-- {{nutrient.unit}}--></td>
+            <td>{{nutrient.amount}} {{nutrient.unit}}</td>
         </tr>
         </tbody>
     </table>

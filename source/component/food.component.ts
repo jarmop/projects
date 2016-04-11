@@ -2,6 +2,7 @@ import {Component, OnInit} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 import {FoodService} from '../service/food.service';
 import {Food} from "../model/food";
+import {NutrientService} from "../service/nutrient.service";
 
 @Component({
     selector: 'food',
@@ -10,11 +11,12 @@ import {Food} from "../model/food";
 
 export class FoodComponent implements OnInit {
     food;
-    vitamins;
-    dietaryElements;
+    vitamins = [];
+    dietaryElements = [];
 
     constructor(
         private _foodService: FoodService,
+        private _nutrientService: NutrientService,
         private _routeParams: RouteParams) {
     }
 
@@ -22,8 +24,25 @@ export class FoodComponent implements OnInit {
         let id = +this._routeParams.get('id');
         this._foodService.getFood(id).then(food => {
             this.food = food;
-            this.vitamins = this._foodService.getFoodVitamins(food);
-            this.dietaryElements = this._foodService.getFoodDietaryElements(food);
+            this._nutrientService.getNutrients().then(nutrients => {
+                for (let i=0; i<food.nutrients.length; i++) {
+                    let nutrient = nutrients.find(nutrient => nutrient.id === food.nutrients[i].nutrientId);
+                    let nutrientData = {
+                        'name': nutrient.name,
+                        'unit': nutrient.unit,
+                        'amount': food.nutrients[i].amount
+                    };
+                    if (this._nutrientService.vitaminIds.indexOf(nutrient.id) != -1) {
+                        this.vitamins.push(nutrientData);
+                    } else {
+                        this.dietaryElements.push(nutrientData);
+                    }
+
+                }
+                // this.vitamins = this._foodService.getFoodVitamins(food);
+                // this.dietaryElements = this._foodService.getFoodDietaryElements(food);
+            });
+
         });
     }
 
