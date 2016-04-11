@@ -1,45 +1,27 @@
-<div *ngIf="recommendations">
+<div *ngIf="recommendationGroups">
     <h2>Saantisuositukset 18 - 30 v.</h2>
     <table class="table table-bordered table-sm">
-        <thead class="thead-inverse">
-        <tr>
-            <th>Kivennäis- ja hivenaineet</th>
-            <th>Mies</th>
-            <th>Nainen</th>
-            <th>Max</th>
-            <th>Ravintoainetiheys /1000 kcal</th>
-            <th>Yksikkö</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="#recommendation of recommendations.dietaryElements">
-            <td>{{recommendation.name}}</td>
-            <td>{{recommendation.male}}</td>
-            <td>{{recommendation.female}}</td>
-            <td>{{recommendation.max}}</td>
-            <td>{{recommendation.nutrientDensity}}</td>
-            <td>{{recommendation.unit}}</td>
-        </tr>
-        </tbody>
-        <thead class="thead-inverse">
-        <tr>
-            <th>Ravintoaine</th>
-            <th>Mies</th>
-            <th>Nainen</th>
-            <th>Max</th>
-            <th>Ravintoainetiheys /1000 kcal</th>
-            <th>Yksikkö</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="#recommendation of recommendations.vitamins">
-            <td>{{recommendation.name}}</td>
-            <td>{{recommendation.male}}</td>
-            <td>{{recommendation.female}}</td>
-            <td>{{recommendation.max}}</td>
-            <td>{{recommendation.nutrientDensity}}</td>
-            <td>{{recommendation.unit}}</td>
-        </tr>
-        </tbody>
+        <template ngFor #recommendationGroup [ngForOf]="recommendationGroups">
+            <thead class="thead-inverse">
+            <tr>
+                <th>{{recommendationGroup.name}}</th>
+                <th>Mies</th>
+                <th>Nainen</th>
+                <th>Max</th>
+                <th>Ravintoainetiheys /1000 kcal</th>
+                <th>Yksikkö</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="#recommendation of recommendationGroup.recommendations">
+                <td>{{recommendation.name}}</td>
+                <td>{{recommendation.male}}</td>
+                <td>{{recommendation.female}}</td>
+                <td>{{recommendation.max}}</td>
+                <td>{{recommendation.nutrientDensity}}</td>
+                <td>{{recommendation.unit}}</td>
+            </tr>
+            </tbody>
+        </template>
     </table>
 </div>
