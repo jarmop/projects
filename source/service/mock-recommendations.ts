@@ -55,15 +55,6 @@ export var RECOMMENDATIONS = [
         "nutrientDensity": 6.7,
         "unit": "mg"
     },
-    // {
-    //     "nutrientId": 7,
-    //     "name": "B6-vitamiini",
-    //     "male": 1.6,
-    //     "female": 1.3,
-    //     "max": 25,
-    //     "nutrientDensity": 0.5,
-    //     "unit": "mg"
-    // },
     {
         "nutrientId": 8,
         "name": "Folaatti",
@@ -145,15 +136,6 @@ export var RECOMMENDATIONS = [
         "nutrientDensity": 4.6,
         "unit": "mg"
     },
-    // {
-    //     "nutrientId": 17,
-    //     "name": "Kupari",
-    //     "male": 0.9,
-    //     "female": 0.9,
-    //     "max": 5,
-    //     "nutrientDensity": 0.4,
-    //     "unit": "mg"
-    // },
     {
         "nutrientId": 18,
         "name": "Jodi",
@@ -173,3 +155,125 @@ export var RECOMMENDATIONS = [
         "unit": "µg"
     }
 ];
+
+// export var RECOMMENDATIONS = [
+//     {
+//         "nutrientId": 1,
+//         "male": 900,
+//         "female": 700,
+//         "max": 3000,
+//         "nutrientDensity": 336
+//     },
+//     {
+//         "nutrientId": 2,
+//         "male": 10,
+//         "female": 10,
+//         "max": 100,
+//         "nutrientDensity": 5.5
+//     },
+//     {
+//         "nutrientId": 3,
+//         "male": 10,
+//         "female": 8,
+//         "max": 300,
+//         "nutrientDensity": 3.8
+//     },
+//     {
+//         "nutrientId": 4,
+//         "male": 1.5,
+//         "female": 1.1,
+//         "max": null,
+//         "nutrientDensity": 0.5
+//     },
+//     {
+//         "nutrientId": 5,
+//         "male": 1.7,
+//         "female": 1.3,
+//         "max": null,
+//         "nutrientDensity": 0.6
+//     },
+//     {
+//         "nutrientId": 6,
+//         "male": 20,
+//         "female": 15,
+//         "max": null,
+//         "nutrientDensity": 6.7
+//     },
+//     {
+//         "nutrientId": 8,
+//         "male": 300,
+//         "female": 400,
+//         "max": 1000,
+//         "nutrientDensity": 189,
+//     },
+//     {
+//         "nutrientId": 9,
+//         "male": 2,
+//         "female": 2,
+//         "max": null,
+//         "nutrientDensity": 0.8
+//     },
+//     {
+//         "nutrientId": 10,
+//         "male": 75,
+//         "female": 75,
+//         "max": 1000,
+//         "nutrientDensity": 34
+//     },
+//     {
+//         "nutrientId": 11,
+//         "male": 800,
+//         "female": 800,
+//         "max": 2500,
+//         "nutrientDensity": 420
+//     },
+//     {
+//         "nutrientId": 12,
+//         "male": 600,
+//         "female": 600,
+//         "max": 5000,
+//         "nutrientDensity": 336
+//     },
+//     {
+//         "nutrientId": 13,
+//         "male": 3500,
+//         "female": 3100,
+//         "max": 3700,
+//         "nutrientDensity": 1500
+//     },
+//     {
+//         "nutrientId": 14,
+//         "male": 350,
+//         "female": 280,
+//         "max": null,
+//         "nutrientDensity": 147
+//     },
+//     {
+//         "nutrientId": 15,
+//         "male": 9,
+//         "female": 15,
+//         "max": 25,
+//         "nutrientDensity": 6.7
+//     },
+//     {
+//         "nutrientId": 16,
+//         "male": 9,
+//         "female": 7,
+//         "max": 25,
+//         "nutrientDensity": 4.6
+//     },
+//     {
+//         "nutrientId": 18,
+//         "male": 150,
+//         "female": 150,
+//         "max": 600,
+//         "nutrientDensity": 71
+//     },
+//     {
+//         "nutrientId": 19,
+//         "male": 60,
+//         "female": 50,
+//         "max": 300,
+//         "nutrientDensity": 23
+//     }
+// ];
