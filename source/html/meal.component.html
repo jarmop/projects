@@ -12,7 +12,7 @@
                 </thead>
                 <tbody>
                 <tr *ngFor="#food of meal.foods" (click)="remove(food)">
-                    <td>{{food.name}}</td>
+                    <td>{{food.food.name}}</td>
                     <td>{{food.amount}} g</td>
                 </tr>
                 </tbody>

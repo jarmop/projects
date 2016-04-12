@@ -6,7 +6,7 @@ import {FoodService} from '../service/food.service';
 import {NutrientService} from "../service/nutrient.service";
 import {amountPipe} from "../pipe/amount.pipe";
 
-declare var Chart: any;
+declare var Chart:any;
 
 @Component({
     selector: 'meal',
@@ -15,15 +15,15 @@ declare var Chart: any;
 })
 
 export class MealComponent implements OnInit {
-    meal: any;
+    meal:any;
     nutritionShareGroups = [];
+    foods;
 
-    constructor(
-        private _recommendationService: RecommendationService,
-        private _mealService: MealService,
-        private _foodService: FoodService,
-        private _nutrientService: NutrientService,
-        private _routeParams: RouteParams) {
+    constructor(private _recommendationService:RecommendationService,
+                private _mealService:MealService,
+                private _foodService:FoodService,
+                private _nutrientService:NutrientService,
+                private _routeParams:RouteParams) {
     }
 
     ngOnInit() {
@@ -51,7 +51,7 @@ export class MealComponent implements OnInit {
         };
         for (let food of foods) {
             this.meal.foods.push({
-                'name': food.name,
+                'food': food,
                 'amount': meal.foods.find(mealFood => mealFood.id == food.id).amount
             });
         }
@@ -81,7 +81,7 @@ export class MealComponent implements OnInit {
         return nutritionShareGroup;
     }
 
-    private getNutritionShare(nutrientValue, recommendation) {        
+    private getNutritionShare(nutrientValue, recommendation) {
         let nutritionShare = {
             'name': recommendation.name,
             'male': recommendation.male,
@@ -93,6 +93,7 @@ export class MealComponent implements OnInit {
                 'over': 0,
                 'tooMuch': 0,
             },
+            'recommendation': recommendation
         };
 
         if (nutrientValue) {
@@ -120,5 +121,47 @@ export class MealComponent implements OnInit {
 
     remove(food) {
         this.meal.foods.splice(this.meal.foods.indexOf(food), 1);
+        this.updateNutritionShares();
+    }
+
+    private updateNutritionShares() {
+        for (let nutritionShareGroup of this.nutritionShareGroups) {
+            for (let nutritionShare of nutritionShareGroup.nutrients) {
+                nutritionShare.amount = this.getUpdatedAmount(nutritionShare);
+                nutritionShare.percent = this.getUpdatedPercent(nutritionShare);
+            }
+        }
+    }
+
+    private getUpdatedAmount(nutritionShare) {
+        let amount = 0;
+        for (let food of this.meal.foods) {
+            let multiplier = food.amount / 100;
+            let nutrient = food.food.nutrients.find(nutrient => nutrient.nutrientId === nutritionShare.recommendation.nutrientId);
+            amount += nutrient.amount * multiplier
+        }
+
+        return amount;
+    }
+
+    private getUpdatedPercent(nutritionShare) {
+        let percent = {
+            'ok': 0,
+            'over': 0,
+            'tooMuch': 0
+        }
+        percent.ok = nutritionShare.amount / nutritionShare.male * 100;
+        if (nutritionShare.amount > nutritionShare.male) {
+            percent.ok = nutritionShare.male / nutritionShare.amount * 100;
+            let over = nutritionShare.amount - nutritionShare.male;
+            if (nutritionShare.amount > nutritionShare.max) {
+                let tooMuch = nutritionShare.max ? nutritionShare.amount - nutritionShare.max : 0;
+                over -= percent.tooMuch;
+                percent.tooMuch = tooMuch / nutritionShare.amount * 100;
+            }
+            percent.over = over / nutritionShare.amount * 100;
+        }
+
+        return percent;
     }
 }
