@@ -117,4 +117,8 @@ export class MealComponent implements OnInit {
             nutritionShare.percent.over = over / nutrientValue * 100;
         }
     }
+
+    remove(food) {
+        this.meal.foods.splice(this.meal.foods.indexOf(food), 1);
+    }
 }
