@@ -11,9 +11,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="#food of meal.foods" (click)="remove(food)">
+                <tr *ngFor="#food of meal.foods">
                     <td>{{food.food.name}}</td>
                     <td>{{food.amount}} g</td>
+                    <td class="delete">
+                        <button (click)="remove(food)" type="button" class="btn btn-danger btn-sm">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
