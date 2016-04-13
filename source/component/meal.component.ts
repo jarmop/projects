@@ -18,6 +18,7 @@ export class MealComponent implements OnInit {
     meal:any;
     nutritionShareGroups = [];
     foods;
+    editFoods = [];
 
     constructor(private _recommendationService:RecommendationService,
                 private _mealService:MealService,
@@ -165,15 +166,25 @@ export class MealComponent implements OnInit {
         return percent;
     }
 
-    editMode(food) {
-        return true;
+    editMode(food = null) {
+        if (food) {
+            return this.editFoods.indexOf(food) != -1;
+        }
+        console.log('checkedit');
+        console.log(this.editFoods.length > 0);
+        return this.editFoods.length > 0;
     }
 
     openEdit(food) {
+        this.editFoods.push(food);
         return true;
     }
 
     save(food) {
-        return true;
+        console.log(this.editFoods.length);
+
+        console.log('save');
+        console.log(this.editFoods.splice(this.editFoods.indexOf(food), 1));
+        console.log(this.editFoods.length);
     }
 }

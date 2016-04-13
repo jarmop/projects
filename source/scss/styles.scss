@@ -47,6 +47,11 @@ table .input-group {
   width: 86px;
 }
 
+td.meal-food-amount > input.form-control {
+  width: 52px;
+  display: inline-block;
+}
+
 td.delete {
   border:none;
 }
