@@ -18,7 +18,7 @@ export class MealComponent implements OnInit {
     meal:any;
     nutritionShareGroups = [];
     foods;
-    editFoods = [];
+    selectedFood;
 
     constructor(private _recommendationService:RecommendationService,
                 private _mealService:MealService,
@@ -168,23 +168,16 @@ export class MealComponent implements OnInit {
 
     editMode(food = null) {
         if (food) {
-            return this.editFoods.indexOf(food) != -1;
+            return this.selectedFood === food;
         }
-        console.log('checkedit');
-        console.log(this.editFoods.length > 0);
-        return this.editFoods.length > 0;
+        return this.selectedFood;
     }
 
     openEdit(food) {
-        this.editFoods.push(food);
-        return true;
+        this.selectedFood = food;
     }
 
     save(food) {
-        console.log(this.editFoods.length);
-
-        console.log('save');
-        console.log(this.editFoods.splice(this.editFoods.indexOf(food), 1));
-        console.log(this.editFoods.length);
+        this.selectedFood = null;
     }
 }
