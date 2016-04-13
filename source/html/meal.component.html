@@ -6,19 +6,62 @@
             <table class="table table-sm">
                 <thead class="thead-inverse">
                 <tr>
+                    <th>
+                        <button class="btn btn-secondary btn-sm">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                    </th>
                     <th>Ruoka-aine</th>
-                    <th>Määrä</th>
+                    <th>Määrä
+                        <!--<button class="btn btn-secondary btn-sm pull-right">-->
+                            <!--<i class="fa fa-edit" aria-hidden="true"></i>-->
+                        <!--</button>-->
+                    </th>
+                    <!--<th></th>-->
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="#food of meal.foods">
-                    <td>{{food.food.name}}</td>
-                    <td>{{food.amount}} g</td>
-                    <td class="delete">
-                        <button (click)="remove(food)" type="button" class="btn btn-danger btn-sm">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
+                    <td class="" *ngIf="editMode(food)">
+                        <button (click)="remove(food)" type="button" class="btn btn-default btn-sm">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
                         </button>
                     </td>
+                    <td>{{food.food.name}}</td>
+                    <!--<td>{{food.amount}} g</td>-->
+                    <!--<td>{{food.amount}} g-->
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <input type="text" value="{{food.amount}}" class="form-control">
+                            <span class="input-group-addon">
+                                g
+                            </span>
+                        </div>
+
+                        <!--<div class="input-group input-group-sm">-->
+                            <!--<input type="text" value="{{food.amount}}" class="form-control">-->
+                            <!--<span class="input-group-btn">-->
+                                <!--<button (click)="save(food)" type="button" class="btn btn-success">-->
+                                    <!--<i class="fa fa-check" aria-hidden="true"></i>-->
+                                <!--</button>-->
+                            <!--</span>-->
+                        <!--</div>-->
+                            <!--<input type="text" value="{{food.amount}}" class="form-control form-control-sm">-->
+                                <!--<button (click)="save(food)" type="button" class="btn btn-success btn-sm">-->
+                                    <!--<i class="fa fa-check" aria-hidden="true"></i>-->
+                                <!--</button>-->
+
+                    </td>
+                    <!--<td>
+                        <button (click)="save(food)" type="button" class="btn btn-success">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </button>
+                    </td>-->
+                    <!--<td class="actions" *ngIf="editMode(food)">
+                        <button (click)="remove(food)" type="button" class="btn btn-danger btn-sm">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </td>-->
                 </tr>
                 </tbody>
             </table>

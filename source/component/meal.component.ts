@@ -164,4 +164,16 @@ export class MealComponent implements OnInit {
 
         return percent;
     }
+
+    editMode(food) {
+        return true;
+    }
+
+    openEdit(food) {
+        return true;
+    }
+
+    save(food) {
+        return true;
+    }
 }
