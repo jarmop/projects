@@ -4,6 +4,9 @@
 @import "../../node_modules/bootstrap/scss/variables.scss";
 @import "../../node_modules/bootstrap/scss/mixins";
 
+// Custom variables to override bootstrap default variables
+@import "bootstrap-variables";
+
 // Reset and dependencies
 @import "../../node_modules/bootstrap/scss/normalize";
 @import "../../node_modules/bootstrap/scss/print";
@@ -20,9 +23,9 @@
 
 // Components
 //@import "../../node_modules/bootstrap/scss/animation";
-//@import "../../node_modules/bootstrap/scss/dropdown";
+@import "../../node_modules/bootstrap/scss/dropdown";
 //@import "../../node_modules/bootstrap/scss/button-group";
-//@import "../../node_modules/bootstrap/scss/input-group";
+@import "../../node_modules/bootstrap/scss/input-group";
 //@import "../../node_modules/bootstrap/scss/custom-forms";
 //@import "../../node_modules/bootstrap/scss/nav";
 //@import "../../node_modules/bootstrap/scss/navbar";

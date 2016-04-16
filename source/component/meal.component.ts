@@ -56,6 +56,7 @@ export class MealComponent implements OnInit {
                 'amount': meal.foods.find(mealFood => mealFood.id == food.id).amount
             });
         }
+        this.selectedFood = this.meal.foods[3];
     }
 
     private initNutritionShares(recommendations, foods, mealFoods) {
