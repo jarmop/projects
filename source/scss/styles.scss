@@ -4,6 +4,14 @@
   td {
     border:none;
     padding: 0 0.3rem;
+    &.name {
+      width: 70%
+    }
+    &.amount {
+      width: 30%;
+    }
+  }
+  .add-food {
   }
   form.form-inline {
     display: inline-block;
@@ -42,24 +50,33 @@
 }
 
 .recommendations {
-  th.bar {
-    width: 30%;
+  td {
+    border-width: 0 0 1px;
+    border-color: $table-border-color;
+    border-style: solid;
+    padding: 0 0.3rem;
+    &.name {
+      width: 7rem;
+    }
+    &.amount {
+      padding: 0;
+    }
+    &.percent {
+      width: 1rem;
+    }
   }
 
   td div.bar div {
     display: inline-block;
-    height: 20px;
+    height: 24px;
     float: left;
   }
-
   .ok {
     background-color: limegreen;
   }
-
   .over {
     background-color: yellow;
   }
-
   .too-much {
     background-color: red;
   }
