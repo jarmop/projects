@@ -6,40 +6,24 @@
             <table class="table table-sm">
                 <thead class="thead-inverse">
                 <tr>
-                    <!--<th>-->
-                        <!--<a href=""><i class="fa fa-edit"></i></a>-->
-                    <!--</th>-->
                     <th>Ruoka-aine</th>
                     <th>Määrä</th>
-                    <!--<th></th>-->
                 </tr>
                 </thead>
                 <tbody>
                 <template ngFor #food [ngForOf]="meal.foods">
                     <tr *ngIf="!editMode(food)" (click)="openEdit(food)">
-                        <!--<td class="action">-->
-                            <!--<i class="fa fa-remove"></i>-->
-                        <!--</td>-->
                         <td class="name">
                             {{food.food.name}}
                         </td>
                         <td class="amount">
                             {{food.amount}} g
                         </td>
-
-                        <!--<td>-->
-                            <!--<i class="fa fa-edit"></i>-->
-                        <!--</td>-->
                     </tr>
                     <tr *ngIf="editMode(food)">
                         <td colspan="2">
                             <form class="form-inline">
-                                <!--<div class="row">-->
-                                    <!--<div class="col-xs-8"></div>-->
-                                <!--</div>-->
-                                <!--<fieldset class="form-group">-->
-                                    <input type="text" value="{{food.food.name}}" class="form-control name">
-                                <!--</fieldset>-->
+                                <input type="text" value="{{food.food.name}}" class="form-control name">
                                 <fieldset class="form-group">
                                     <input type="text" value="{{food.amount}}" class="form-control amount">
                                     <select class="form-control measure">
@@ -58,67 +42,35 @@
                                         <i class="fa fa-remove" aria-hidden="true"></i>
                                     </button>
                                 </div>
-
                             </form>
                         </td>
-                        <!--<td>-->
-                            <!--<button (click)="remove(food)" type="button" class="btn btn-secondary">-->
-                                <!--<i class="fa fa-trash-o" aria-hidden="true"></i>-->
-                            <!--</button>-->
-                            <!--<i (click)="remove(food)" class="fa fa-remove"></i>-->
-                        <!--</td>-->
-                        <!--<td>-->
-                            <!--<input type="text" value="{{food.food.name}}" class="form-control form-control-sm">-->
-                        <!--</td>-->
-                        <!--<td class="meal-food-amount">-->
-                            <!--&lt;!&ndash;<input type="text" value="{{food.amount}}" class="form-control form-control-sm"> g&ndash;&gt;-->
-                            <!--<div class="input-group input-group-sm">-->
-                                <!--<input type="text" value="{{food.amount}}" class="form-control">-->
-                                <!--<span class="input-group-addon">g</span>-->
-                            <!--</div>-->
-
-                        <!--</td>-->
-                        <!--<td>-->
-                            <!--<button (click)="save(food)" class="btn btn-success">-->
-                                <!--<i class="fa fa-check"></i>-->
-                            <!--</button>-->
-                            <!--<i (click)="save(food)" class="fa fa-check"></i>-->
-                        <!--</td>-->
                     </tr>
                 </template>
-                <!--<tr>-->
-                    <!--<td>-->
-                        <!--<button class="btn btn-danger">-->
-                            <!--<i class="fa fa-trash-o" aria-hidden="true"></i>-->
-                        <!--</button>-->
-                        <!--<i class="fa fa-remove"></i>-->
-                        <!--<i class="fa fa-check"></i>-->
-                    <!--</td>-->
-                    <!--<td>-->
-
-
-                        <!--<input type="text" class="form-control form-control-sm name" placeholder="Lisää ruoka">-->
-                    <!--</td>-->
-                    <!--<td>-->
-                        <!--<div class="input-group input-group-sm">-->
-                            <!--<input type="text" value="" class="form-control" placeholder="määrä (g)">-->
-                            <!--<span class="input-group-addon">-->
-                                <!--g-->
-                            <!--</span>-->
-                        <!--</div>-->
-                        <!--<input type="text" value="" class="form-control form-control-sm amount">-->
-
-                        <!--<button class="btn btn-success">-->
-                            <!--<i class="fa fa-check"></i>-->
-                        <!--</button>-->
-                    <!--</td>-->
-                    <!--<td>-->
-                        <!--<i class="fa fa-check"></i>-->
-                    <!--</td>-->
-                <!--</tr>-->
-                <!--<tr>-->
-                    <!--<td><i class="fa fa-check"></i></td>-->
-                <!--</tr>-->
+                <tr>
+                    <td colspan="2">
+                        <a *ngIf="!isAddOpen" (click)="openAdd($event, test)" role="button">Lisää ruoka</a>
+                        <form *ngIf="isAddOpen" class="form-inline" #addForm="ngForm">
+                            <input #addName type="text" id="add-name" value="{{addName}}" class="form-control name" required [(ngModel)]="addForm.name"
+                                   ngControl="name" placeholder="ruoka">
+                            <fieldset class="form-group">
+                                <input type="text" value="{{addAmount}}" class="form-control amount" required [(ngModel)]="addForm.amount"
+                                       ngControl="amount" placeholder="0">
+                                <select class="form-control measure">
+                                    <option>g</option>
+                                    <option>ml</option>
+                                </select>
+                            </fieldset>
+                            <div class="actions">
+                                <button (click)="saveAdd()" class="btn btn-sm btn-success" type="button" [disabled]="!addForm.form.valid">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                                <button (click)="closeAdd()" class="btn btn-sm btn-secondary pull-right" type="button">
+                                    <i class="fa fa-remove" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>

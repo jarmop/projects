@@ -1,4 +1,4 @@
-import {Component, OnInit} from 'angular2/core';
+import {Component, OnInit, ViewChild, NgZone} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 import {RecommendationService} from '../service/recommendation.service';
 import {MealService} from '../service/meal.service';
@@ -15,17 +15,24 @@ declare var Chart:any;
 })
 
 export class MealComponent implements OnInit {
+    @ViewChild('addName') addName;
     meal:any;
     nutritionShareGroups = [];
     foods;
     selectedFood;
+    isAddOpen = false;
+    addForm = {
+        'name': null,
+        'amount': null
+    };
 
     constructor(private _recommendationService:RecommendationService,
                 private _mealService:MealService,
                 private _foodService:FoodService,
                 private _nutrientService:NutrientService,
-                private _routeParams:RouteParams) {
-    }
+                private _routeParams:RouteParams,
+                private _ngZone: NgZone
+    ) {}
 
     ngOnInit() {
         this._recommendationService.getRecommendations().then(recommendations => {
@@ -56,7 +63,7 @@ export class MealComponent implements OnInit {
                 'amount': meal.foods.find(mealFood => mealFood.id == food.id).amount
             });
         }
-        this.selectedFood = this.meal.foods[3];
+        // this.selectedFood = this.meal.foods[3];
     }
 
     private initNutritionShares(recommendations, foods, mealFoods) {
@@ -180,5 +187,22 @@ export class MealComponent implements OnInit {
 
     save(food) {
         this.selectedFood = null;
+    }
+
+    openAdd(el, a) {
+        this.isAddOpen = true;
+        this._ngZone.runOutsideAngular(() => {
+            setTimeout(() => {
+                this.addName.nativeElement.focus();
+            }, 0);
+        });
+    }
+
+    closeAdd() {
+        this.isAddOpen = false;
+    }
+    
+    saveAdd() {
+        this.closeAdd();
     }
 }
