@@ -5,15 +5,24 @@
     border:none;
     padding: 0 0.3rem;
   }
-  form {
+  form.form-inline {
     display: inline-block;
+    .form-group {
+      display: inline-block;
+      margin-bottom: 0;
+    }
     margin-bottom: 0.5rem;
     .form-control {
+      display: inline-block;
+      width: auto;
+      vertical-align: middle;
       border-width: 0 0 1px;
       border-radius: 0;
       padding: 0;
       &.name {
-        margin-bottom: -2px;
+        @include media-breakpoint-up(sm) {
+          margin-bottom: -2px;
+        }
       }
       &.amount {
         width: 34px;
