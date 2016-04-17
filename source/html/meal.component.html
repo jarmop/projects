@@ -28,11 +28,11 @@
                                     <button (click)="save(food)" class="btn btn-sm btn-success" type="button">
                                         <i class="fa fa-check"></i>
                                     </button>
-                                    <button (click)="remove(food)" class="btn btn-sm btn-danger" type="button">
-                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                    </button>
-                                    <button (click)="save(food)" class="btn btn-sm btn-secondary pull-right" type="button">
+                                    <button (click)="save(food)" class="btn btn-sm btn-secondary" type="button">
                                         <i class="fa fa-remove" aria-hidden="true"></i>
+                                    </button>
+                                    <button (click)="remove(food)" class="btn btn-sm btn-danger pull-right" type="button">
+                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </form>
@@ -58,7 +58,7 @@
                                 <button (click)="saveAdd()" class="btn btn-sm btn-success" type="button" [disabled]="!addForm.form.valid">
                                     <i class="fa fa-check"></i>
                                 </button>
-                                <button (click)="closeAdd()" class="btn btn-sm btn-secondary pull-right" type="button">
+                                <button (click)="closeAdd()" class="btn btn-sm btn-secondary" type="button">
                                     <i class="fa fa-remove" aria-hidden="true"></i>
                                 </button>
                             </div>
