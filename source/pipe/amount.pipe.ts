@@ -6,6 +6,6 @@ export class amountPipe implements PipeTransform {
         if (!amount || parseInt(amount) == amount) {
             return amount;
         }
-        return amount.toFixed(2).replace(/0$/, '').replace('.', ',');
+        return Number(amount.toPrecision(3)).toString().replace('.', ',');
     }
 }

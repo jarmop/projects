@@ -69,14 +69,15 @@ export class MealComponent implements OnInit {
 
     private initNutritionShares(recommendations, foods, mealFoods) {
         let vitaminRecommendations = this._recommendationService.getRecommendationVitamins(recommendations);
-        this.nutritionShareGroups.push(this.getNutritionShareGroup(vitaminRecommendations, foods, mealFoods, 'Vitamiinit'));
+        this.nutritionShareGroups.push(this.getNutritionShareGroup(vitaminRecommendations, foods, mealFoods, 'Vitamiinit', 'vitamins'));
         let dietaryElementRecommendations = this._recommendationService.getRecommendationDietaryElements(recommendations);
-        this.nutritionShareGroups.push(this.getNutritionShareGroup(dietaryElementRecommendations, foods, mealFoods, 'Kivennäis- ja hivenaineet'));
+        this.nutritionShareGroups.push(this.getNutritionShareGroup(dietaryElementRecommendations, foods, mealFoods, 'Kivennäis- ja hivenaineet', 'dietary-elements'));
     }
 
-    private getNutritionShareGroup(recommendations, foods, mealFoods, name) {
+    private getNutritionShareGroup(recommendations, foods, mealFoods, name, htmlClass) {
         let nutritionShareGroup = {
             'name': name,
+            'class': htmlClass,
             'nutrients': []
         };
         for (let recommendation of recommendations) {

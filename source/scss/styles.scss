@@ -5,15 +5,16 @@
     border:none;
     padding: 0 0.3rem;
     &.name {
-      width: 70%
+      width: 78%
     }
     &.amount {
-      width: 30%;
+      width: 22%;
     }
   }
   .add-food {
   }
   form.form-inline {
+    width: 100%;
     display: inline-block;
     .form-group {
       display: inline-block;
@@ -28,6 +29,7 @@
       border-radius: 0;
       padding: 0;
       &.name {
+        width: 70%;
         @include media-breakpoint-up(sm) {
           margin-bottom: -2px;
         }
@@ -50,34 +52,78 @@
 }
 
 .recommendations {
-  td {
-    border-width: 0 0 1px;
-    border-color: $table-border-color;
-    border-style: solid;
-    padding: 0 0.3rem;
-    &.name {
-      width: 7rem;
-    }
-    &.amount {
-      padding: 0;
-    }
-    &.percent {
-      width: 1rem;
+  .row-recommendations {
+    margin: 0;
+    .column {
+      padding: 0 1px;
+      &.vitamins {
+      }
+      &.dietary-elements {
+      }
     }
   }
+  .table {
+    margin: 0;
+    tbody {
+      background-color: $gray-lighter;
+    }
+    td {
+      border-width: 0;
+      //border-color: $table-border-color;
+      //border-style: solid;
+      padding: 0 0.3rem;
+      &.name {
+        width: 8rem;
+      }
+      &.bar {
+        width: 20rem;
+        padding: 0;
+      }
+    }
 
-  td div.bar div {
-    display: inline-block;
-    height: 24px;
-    float: left;
-  }
-  .ok {
-    background-color: limegreen;
-  }
-  .over {
-    background-color: yellow;
-  }
-  .too-much {
-    background-color: red;
+    th {
+      border-color: $gray-lighter;
+    }
+
+    td, th {
+      font-size: 14px;
+      line-height: 14px;
+      height: 20px;
+      vertical-align: middle;
+      &.amount {
+        //@include media-breakpoint-down(xs) {
+        //  display: none;
+        //}
+      }
+      &.recommendation {
+        @include media-breakpoint-only(sm) {
+          display: none;
+        }
+      }
+      &.max {
+        @include media-breakpoint-down(sm) {
+          display: none;
+        }
+      }
+    }
+
+    td div.bar div {
+      display: inline-block;
+      height: 18px;
+      float: left;
+      line-height: 18px;
+      &.ok {
+        background-color: $brand-success;
+        padding-left: 0.4rem;
+        color: $body-color;
+        white-space: nowrap;
+      }
+      //&.over {
+      //  background-color: yellow;
+      //}
+      //&.too-much {
+      //  background-color: red;
+      //}
+    }
   }
 }

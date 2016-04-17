@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="meal col-xs-9 col-sm-6 col-md-5">
+    <div class="meal col-xs-9 col-sm-6 col-md-4">
         <div *ngIf="meal">
             <h3>Ruoat</h3>
             <table class="table table-sm">
@@ -70,31 +70,42 @@
             </table>
         </div>
     </div>
-    <div class="recommendations col-xs-12 col-sm-6 col-md-7">
-        <div *ngIf="nutritionShareGroups">
+    <div class="recommendations col-xs-12 col-sm-6 col-md-8">
+        <div *ngIf="nutritionShareGroups[0]">
             <h3>Ravintoaineet</h3>
-            <table class="table table-sm">
-                <tbody>
-                    <template ngFor #nutritionShare [ngForOf]="nutritionShareGroups">
-                        <tr *ngFor="#nutrition of nutritionShare.nutrients">
-                            <td class="name">{{nutrition.name}}</td>
-                            <td class="amount">
-                                <div class="bar">
-                                    <div class="ok" [style.width]="nutrition.percent.ok + '%'"></div>
-                                    <div class="over" [style.width]="nutrition.percent.over + '%'"></div>
-                                    <div class="too-much" [style.width]="nutrition.percent.tooMuch + '%'"></div>
-                                </div>
-                            </td>
-                            <td class="percent">
-                                {{nutrition.percent.total | round}}
-                            </td>
-                            <!--<td>{{nutrition.amount | amount}}</td>-->
-                            <!--<td>{{nutrition.male | amount}}</td>-->
-                            <!--<td>{{nutrition.max | amount}}</td>-->
-                        </tr>
-                    </template>
-                </tbody>
-            </table>
+            <div class="row row-recommendations">
+                <template ngFor #nutritionShare [ngForOf]="nutritionShareGroups">
+                    <div class="col-md-6 column {{nutritionShare.class}}">
+                        <table class="table table-sm">
+                            <thead class="thead-inverse">
+                            <tr>
+                                <th colspan="2">{{nutritionShare.name}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="#nutrition of nutritionShare.nutrients">
+                                <td class="name">{{nutrition.name}}</td>
+                                <td class="bar">
+                                    <div class="bar">
+                                        <div class="ok" [style.width]="nutrition.percent.ok + '%'">
+                                            {{nutrition.percent.total | round}} %
+                                        </div>
+                                        <div class="over" [style.width]="nutrition.percent.over + '%'"></div>
+                                        <div class="too-much" [style.width]="nutrition.percent.tooMuch + '%'"></div>
+                                    </div>
+                                </td>
+                                <!--<td class="percent">-->
+                                <!--{{nutrition.percent.total | round}} %-->
+                                <!--</td>-->
+                                <!--<td class="amount">{{nutrition.amount | amount}}</td>-->
+                                <!--<td class="recommendation">{{nutrition.male | amount}}</td>-->
+                                <!--<td class="max">{{nutrition.max | amount}}</td>-->
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+            </div>
         </div>
     </div>
 </div>
