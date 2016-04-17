@@ -8,6 +8,7 @@ import {RecommendationComponent} from "./recommendation.component";
 import {RecommendationService} from "../service/recommendation.service";
 import {MealComponent} from "./meal.component";
 import {NutrientService} from "../service/nutrient.service";
+import {TypeaheadComponent} from "./typeahead.component";
 
 @Component({
     selector: 'app',
@@ -27,7 +28,7 @@ import {NutrientService} from "../service/nutrient.service";
         path: '/meal',
         name: 'Meal',
         component: MealComponent,
-        useAsDefault: true
+        // useAsDefault: true
     },
     {
         path: '/recommendation',
@@ -39,7 +40,13 @@ import {NutrientService} from "../service/nutrient.service";
         path: '/food/:id',
         name: 'Food',
         component: FoodComponent
-    }
+    },
+    {
+        path: '/typeahead',
+        name: 'Typeahead',
+        component: TypeaheadComponent,
+        useAsDefault: true
+    },
 ])
 
 export class AppComponent {
