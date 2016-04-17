@@ -52,6 +52,11 @@
 }
 
 .recommendations {
+  background-color: rgba(238, 238, 238, 0.19);
+  padding-bottom: 12px;
+  border: 1px solid $table-border-color;
+
+
   .row-recommendations {
     margin: 0;
     .column {
@@ -65,7 +70,7 @@
   .table {
     margin: 0;
     tbody {
-      background-color: $gray-lighter;
+      //background-color: $gray-lighter
     }
     td {
       border-width: 0;
@@ -73,16 +78,15 @@
       //border-style: solid;
       padding: 0 0.3rem;
       &.name {
-        width: 8rem;
+        width: 6rem;
       }
       &.bar {
-        width: 20rem;
         padding: 0;
       }
     }
 
     th {
-      border-color: $gray-lighter;
+      //border-color: $gray-lighter;
     }
 
     td, th {
@@ -107,23 +111,30 @@
       }
     }
 
-    td div.bar div {
-      display: inline-block;
-      height: 18px;
-      float: left;
-      line-height: 18px;
-      &.ok {
-        background-color: $brand-success;
-        padding-left: 0.4rem;
-        color: $body-color;
-        white-space: nowrap;
+    td.bar {
+      padding-bottom: 2px;
+      div.bar {
+        height:100%;
+        background-color: $table-border-color;
+        div {
+          display: inline-block;
+          height: 18px;
+          float: left;
+          line-height: 18px;
+          &.ok {
+            background-color: rgb(151, 236, 162);
+            padding-left: 0.4rem;
+            color: $body-color;
+            white-space: nowrap;
+          }
+          //&.over {
+          //  background-color: yellow;
+          //}
+          //&.too-much {
+          //  background-color: red;
+          //}
+        }
       }
-      //&.over {
-      //  background-color: yellow;
-      //}
-      //&.too-much {
-      //  background-color: red;
-      //}
     }
   }
 }
