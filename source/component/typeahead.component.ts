@@ -2,6 +2,7 @@ import {Component, OnInit, NgZone} from 'angular2/core';
 import {Router} from "angular2/router";
 
 declare var $: any;
+declare var Bloodhound: any;
 
 @Component({
     selector: 'food',
@@ -21,6 +22,7 @@ export class TypeaheadComponent implements OnInit {
         'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
         'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
     ];
+    bloodhound: any;
 
     constructor(
         private _router: Router,
@@ -28,6 +30,11 @@ export class TypeaheadComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.bloodhound = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: this.states
+        });
         this.initTypeahead();
     }
 
@@ -47,13 +54,19 @@ export class TypeaheadComponent implements OnInit {
                     },
                     {
                         name: 'states',
-                        source: this.substringMatcher(this.states)
+                        // source: this.substringMatcher(this.states)
+                        source: this.bloodhound
                     }
                 );
             }, 0);
         });
     }
 
+    /**
+     * Custom suggestion engine if not using Bloodhound
+     * @param strs
+     * @returns {function(any, any): undefined}
+     */
     private substringMatcher(strs) {
         return function findMatches(q, cb) {
             var matches, substringRegex;
