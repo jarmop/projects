@@ -44,8 +44,14 @@
                         <div class="add-food">
                         <a *ngIf="!isAddOpen" (click)="openAdd($event, test)" role="button">Lisää ruoka</a>
                         <form *ngIf="isAddOpen" class="form-inline" #addForm="ngForm">
+                            <!--<input #addName type="text" id="add-name" value="{{addName}}" class="form-control name" required [(ngModel)]="addForm.name"-->
+                                   <!--ngControl="name" placeholder="ruoka">-->
+
                             <input #addName type="text" id="add-name" value="{{addName}}" class="form-control name" required [(ngModel)]="addForm.name"
-                                   ngControl="name" placeholder="ruoka">
+                            ngControl="name" placeholder="ruoka">
+
+                            <!--<input #addName id="add-name" type="text" placeholder="ruoka">-->
+
                             <fieldset class="form-group">
                                 <input type="text" value="{{addAmount}}" class="form-control amount" required [(ngModel)]="addForm.amount"
                                        ngControl="amount" placeholder="0">
@@ -88,10 +94,8 @@
                                 <td class="bar">
                                     <div class="bar">
                                         <div class="ok" [style.width]="nutrition.percent.ok + '%'">
-                                            {{nutrition.percent.total | round}} %
+                                            <span class="bar-percent">{{nutrition.percent.total | round}} %</span>
                                         </div>
-                                        <div class="over" [style.width]="nutrition.percent.over + '%'"></div>
-                                        <div class="too-much" [style.width]="nutrition.percent.tooMuch + '%'"></div>
                                     </div>
                                 </td>
                                 <!--<td class="percent">-->

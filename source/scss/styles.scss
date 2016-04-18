@@ -14,6 +14,30 @@
   .add-food {
   }
   form.form-inline {
+    span.twitter-typeahead {
+      width: 70%;
+      .name {
+        width: 100%;
+      }
+      .tt-input {
+        vertical-align: middle !important;
+      }
+      .tt-menu {
+        width: 100%;
+        background-color: white;
+        border: 1px solid $table-border-color;
+        margin-top: 2px;
+      }
+
+      .tt-suggestion {
+        @extend .dropdown-item;
+        padding: 0 4px;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+
     width: 100%;
     display: inline-block;
     .form-group {
@@ -54,8 +78,6 @@
 .recommendations {
   //background-color: rgba(238, 238, 238, 0.19);
   padding-bottom: 12px;
-
-
   .row-recommendations {
     margin: 0;
     .column {
@@ -90,11 +112,9 @@
         padding: 0;
       }
     }
-
     th {
       //border-color: $gray-lighter;
     }
-
     td, th {
       font-size: 14px;
       line-height: 14px;
@@ -116,29 +136,22 @@
         }
       }
     }
-
     td.bar {
-      //padding-bottom: 2px;
       div.bar {
-        //height:100%;
-        //background-color: #B3BEC3;
         div {
           display: inline-block;
           height: 18px;
           float: left;
           line-height: 18px;
+          white-space: nowrap;
+          span.bar-percent {
+            padding-left: 0.4rem;
+          }
+          background-color: #9ED2FF;
           &.ok {
             background-color: rgb(151, 236, 162);
-            padding-left: 0.4rem;
-            color: $body-color;
-            white-space: nowrap;
+            color: #007200;
           }
-          //&.over {
-          //  background-color: yellow;
-          //}
-          //&.too-much {
-          //  background-color: red;
-          //}
         }
       }
     }

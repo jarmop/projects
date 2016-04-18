@@ -7,7 +7,8 @@ import {NutrientService} from "../service/nutrient.service";
 import {amountPipe} from "../pipe/amount.pipe";
 import {roundPipe} from "../pipe/round";
 
-declare var Chart:any;
+declare var $: any;
+declare var Bloodhound:any;
 
 @Component({
     selector: 'meal',
@@ -26,6 +27,8 @@ export class MealComponent implements OnInit {
         'name': null,
         'amount': null
     };
+    states = ['banaani','porkkana','puuro','peruna','papu'];
+    bloodhound;
 
     constructor(private _recommendationService:RecommendationService,
                 private _mealService:MealService,
@@ -48,6 +51,12 @@ export class MealComponent implements OnInit {
                 });
             });
         });
+        this.bloodhound = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: this.states
+        });
+        this.initTypeahead();
     }
 
     goBack() {
@@ -202,11 +211,7 @@ export class MealComponent implements OnInit {
 
     openAdd(el, a) {
         this.isAddOpen = true;
-        this._ngZone.runOutsideAngular(() => {
-            setTimeout(() => {
-                this.addName.nativeElement.focus();
-            }, 0);
-        });
+        this.initTypeahead();
     }
 
     closeAdd() {
@@ -215,5 +220,24 @@ export class MealComponent implements OnInit {
     
     saveAdd() {
         this.closeAdd();
+    }
+
+    private initTypeahead() {
+        this._ngZone.runOutsideAngular(() => {
+            setTimeout(() => {
+                $('#add-name').typeahead(
+                    {
+                        hint: true,
+                        highlight: true,
+                        minLength: 1
+                    },
+                    {
+                        name: 'states',
+                        // source: this.substringMatcher(this.states)
+                        source: this.bloodhound
+                    }
+                ).focus();
+            }, 0);
+        });
     }
 }
