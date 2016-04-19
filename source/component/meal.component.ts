@@ -1,5 +1,4 @@
 import {Component, OnInit, NgZone} from 'angular2/core';
-import {RouteParams} from 'angular2/router';
 import {RecommendationService} from '../service/recommendation.service';
 import {MealService} from '../service/meal.service';
 import {FoodService} from '../service/food.service';
@@ -22,7 +21,6 @@ export class MealComponent implements OnInit {
     meal;
     foods;
     nutrients;
-    nutrientGroups = [];
     recommendations;
     percents = [];
 
@@ -39,7 +37,6 @@ export class MealComponent implements OnInit {
                 private _mealService:MealService,
                 private _foodService:FoodService,
                 private _nutrientService:NutrientService,
-                private _routeParams:RouteParams,
                 private _ngZone: NgZone
     ) {}
 
@@ -57,14 +54,6 @@ export class MealComponent implements OnInit {
 
         this._nutrientService.getNutrients().then(nutrients => {
             this.nutrients = nutrients;
-            this.nutrientGroups.push({
-                'class': 'vitamins',
-                'nutrients': nutrients.filter(nutrient => this._nutrientService.vitaminIds.indexOf(nutrient.id) != -1)
-            });
-            this.nutrientGroups.push({
-                'class': 'dietary-elements',
-                'nutrients': nutrients.filter(nutrient => this._nutrientService.dietaryElementIds.indexOf(nutrient.id) != -1)
-            });
         });
 
         this._recommendationService.getRecommendationsGroup(1).then(recommendationsGroup => {

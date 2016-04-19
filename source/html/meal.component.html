@@ -71,28 +71,22 @@
         </div>
     </div>
     <div class="recommendations col-xs-12 col-sm-6 col-md-8">
-        <div *ngIf="nutrientGroups && recommendations">
+        <div *ngIf="nutrients && recommendations">
             <h4>Ravintoaineet</h4>
-            <div class="row row-recommendations">
-                <template ngFor #nutrientGroup [ngForOf]="nutrientGroups">
-                    <div class="col-xs-6 col-sm-12 col-md-6 column {{nutrientGroup.class}}">
-                        <table class="table table-sm">
-                            <tbody>
-                            <tr *ngFor="#nutrient of nutrientGroup.nutrients">
-                                <td class="name">{{nutrient.name}}</td>
-                                <td class="bar">
-                                    <div class="bar">
-                                        <div class="ok" [style.width]="getPercentMin(nutrient.id) + '%'">
-                                            <span class="bar-percent">{{getPercentTotal(nutrient.id) | round}} %</span>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </template>
-            </div>
+            <table class="table table-sm">
+                <tbody>
+                    <tr *ngFor="#nutrient of nutrients">
+                        <td class="name">{{nutrient.name}}</td>
+                        <td class="bar">
+                            <div class="bar">
+                                <div class="ok" [style.width]="getPercentMin(nutrient.id) + '%'">
+                                    <span class="bar-percent">{{getPercentTotal(nutrient.id) | round}} %</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

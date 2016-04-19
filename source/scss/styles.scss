@@ -84,33 +84,12 @@
 }
 
 .recommendations {
-  //background-color: rgba(238, 238, 238, 0.19);
-  padding-bottom: 12px;
-  .row-recommendations {
-    margin: 0;
-    .column {
-      padding: 0;
-      //background-color: $gray-lightest;
-      border: 1px solid $table-border-color;
-      &.vitamins {
-        background-color: #FBFFE8
-      }
-      &.dietary-elements {
-        background-color: $gray-lightest;
-      }
-    }
-  }
   .table {
-    //background-color: $gray-lightest;
-    //border: 1px solid $table-border-color;
+    background-color: $gray-lightest;
+    border: 1px solid $table-border-color;
     margin: 0;
-    tbody {
-      //background-color: $gray-lighter
-    }
     td {
       border-width: 0;
-      //border-color: $table-border-color;
-      //border-style: solid;
       padding: 0 0.3rem;
       &.name {
         width: 6rem;
@@ -120,29 +99,11 @@
         padding: 0;
       }
     }
-    th {
-      //border-color: $gray-lighter;
-    }
     td, th {
       font-size: 14px;
       line-height: 14px;
       height: 20px;
       vertical-align: middle;
-      &.amount {
-        //@include media-breakpoint-down(xs) {
-        //  display: none;
-        //}
-      }
-      &.recommendation {
-        @include media-breakpoint-only(sm) {
-          display: none;
-        }
-      }
-      &.max {
-        @include media-breakpoint-down(sm) {
-          display: none;
-        }
-      }
     }
     td.bar {
       div.bar {
