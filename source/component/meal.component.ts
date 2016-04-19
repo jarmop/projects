@@ -6,6 +6,7 @@ import {FoodService} from '../service/food.service';
 import {NutrientService} from "../service/nutrient.service";
 import {amountPipe} from "../pipe/amount.pipe";
 import {roundPipe} from "../pipe/round";
+import {NgClass} from 'angular2/common';
 
 declare var $: any;
 declare var Bloodhound:any;
@@ -13,7 +14,8 @@ declare var Bloodhound:any;
 @Component({
     selector: 'meal',
     templateUrl: 'component/meal.component.html',
-    pipes: [amountPipe, roundPipe]
+    pipes: [amountPipe, roundPipe],
+    directives: [NgClass]
 })
 
 export class MealComponent implements OnInit {
@@ -203,6 +205,7 @@ export class MealComponent implements OnInit {
 
     openEdit(food) {
         this.selectedFood = food;
+        this.closeAdd();
     }
 
     save(food) {
@@ -211,6 +214,7 @@ export class MealComponent implements OnInit {
 
     openAdd(el, a) {
         this.isAddOpen = true;
+        this.selectedFood = null;
         this.initTypeahead();
     }
 

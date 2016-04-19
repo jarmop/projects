@@ -13,7 +13,7 @@
                             {{food.amount}} g
                         </td>
                     </tr>
-                    <tr *ngIf="editMode(food)">
+                    <tr *ngIf="editMode(food)" class="tr-form">
                         <td colspan="2">
                             <form class="form-inline">
                                 <input type="text" value="{{food.food.name}}" class="form-control name">
@@ -39,7 +39,7 @@
                         </td>
                     </tr>
                 </template>
-                <tr>
+                <tr [ngClass]="{'tr-form': isAddOpen}">
                     <td colspan="2">
                         <div class="add-food">
                         <a *ngIf="!isAddOpen" (click)="openAdd($event, test)" role="button">Lisää ruoka</a>

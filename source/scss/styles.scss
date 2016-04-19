@@ -13,6 +13,13 @@
   }
   .add-food {
   }
+  tr {
+    cursor: pointer;
+    &:hover, &.tr-form {
+      background-color: #fbfbfb;
+    }
+  }
+
   form.form-inline {
     span.twitter-typeahead {
       width: 70%;
@@ -46,6 +53,7 @@
     }
     margin-bottom: 0.5rem;
     .form-control {
+      background-color: inherit;
       display: inline-block;
       width: auto;
       vertical-align: middle;
