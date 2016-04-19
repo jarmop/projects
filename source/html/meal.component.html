@@ -44,14 +44,8 @@
                         <div class="add-food">
                         <a *ngIf="!isAddOpen" (click)="openAdd($event, test)" role="button">Lisää ruoka</a>
                         <form *ngIf="isAddOpen" class="form-inline" #addForm="ngForm">
-                            <!--<input #addName type="text" id="add-name" value="{{addName}}" class="form-control name" required [(ngModel)]="addForm.name"-->
-                                   <!--ngControl="name" placeholder="ruoka">-->
-
-                            <input #addName type="text" id="add-name" value="{{addName}}" class="form-control name" required [(ngModel)]="addForm.name"
+                            <input type="text" id="add-name" class="form-control name" required [(ngModel)]="addForm.name"
                             ngControl="name" placeholder="ruoka">
-
-                            <!--<input #addName id="add-name" type="text" placeholder="ruoka">-->
-
                             <fieldset class="form-group">
                                 <input type="text" value="{{addAmount}}" class="form-control amount" required [(ngModel)]="addForm.amount"
                                        ngControl="amount" placeholder="0">

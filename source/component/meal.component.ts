@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, NgZone} from 'angular2/core';
+import {Component, OnInit, NgZone} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 import {RecommendationService} from '../service/recommendation.service';
 import {MealService} from '../service/meal.service';
@@ -19,7 +19,6 @@ declare var Bloodhound:any;
 })
 
 export class MealComponent implements OnInit {
-    @ViewChild('addName') addName;
     meal:any;
     nutritionShareGroups = [];
     foods;
