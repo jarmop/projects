@@ -4,8 +4,10 @@ import {NutrientService} from "./nutrient.service";
 
 @Injectable()
 export class RecommendationService {
-    getRecommendations() {
-        return Promise.resolve(RECOMMENDATIONS);
+    getRecommendationsGroup(id: number) {
+        return Promise.resolve(RECOMMENDATIONS).then(
+            recommendationsGroup => recommendationsGroup.filter(recommendationsData => recommendationsData.id === id)[0]
+        );
     }
 
     getRecommendationVitamins(recommendations) {

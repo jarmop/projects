@@ -1,13 +1,13 @@
 <div class="row">
     <div class="meal col-xs-9 col-sm-6 col-md-4">
-        <div *ngIf="meal">
-            <h4>Ruoat</h4>
+        <div *ngIf="meal && foods">
+            <h4>Ateria</h4>
             <table class="table table-sm">
                 <tbody>
                 <template ngFor #food [ngForOf]="meal.foods">
                     <tr *ngIf="!editMode(food)" (click)="openEdit(food)">
                         <td class="name">
-                            {{food.food.name}}
+                            {{getFoodName(food.id)}}
                         </td>
                         <td class="amount">
                             {{food.amount}} g
@@ -16,7 +16,7 @@
                     <tr *ngIf="editMode(food)" class="tr-form">
                         <td colspan="2">
                             <form class="form-inline">
-                                <input type="text" value="{{food.food.name}}" class="form-control name">
+                                <input type="text" value="{{getFoodName(food.id)}}" class="form-control name">
                                 <fieldset class="form-group">
                                     <input type="text" value="{{food.amount}}" class="form-control amount">
                                     <select class="form-control measure">
@@ -71,33 +71,22 @@
         </div>
     </div>
     <div class="recommendations col-xs-12 col-sm-6 col-md-8">
-        <div *ngIf="nutritionShareGroups[0]">
+        <div *ngIf="nutrientGroups && recommendations">
             <h4>Ravintoaineet</h4>
             <div class="row row-recommendations">
-                <template ngFor #nutritionShare [ngForOf]="nutritionShareGroups">
-                    <div class="col-xs-6 col-sm-12 col-md-6 column {{nutritionShare.class}}">
+                <template ngFor #nutrientGroup [ngForOf]="nutrientGroups">
+                    <div class="col-xs-6 col-sm-12 col-md-6 column {{nutrientGroup.class}}">
                         <table class="table table-sm">
-                            <!--<thead class="thead-inverse">-->
-                            <!--<tr>-->
-                                <!--<th colspan="2">{{nutritionShare.name}}</th>-->
-                            <!--</tr>-->
-                            <!--</thead>-->
                             <tbody>
-                            <tr *ngFor="#nutrition of nutritionShare.nutrients">
-                                <td class="name">{{nutrition.name}}</td>
+                            <tr *ngFor="#nutrient of nutrientGroup.nutrients">
+                                <td class="name">{{nutrient.name}}</td>
                                 <td class="bar">
                                     <div class="bar">
-                                        <div class="ok" [style.width]="nutrition.percent.ok + '%'">
-                                            <span class="bar-percent">{{nutrition.percent.total | round}} %</span>
+                                        <div class="ok" [style.width]="getPercentMin(nutrient.id) + '%'">
+                                            <span class="bar-percent">{{getPercentTotal(nutrient.id) | round}} %</span>
                                         </div>
                                     </div>
                                 </td>
-                                <!--<td class="percent">-->
-                                <!--{{nutrition.percent.total | round}} %-->
-                                <!--</td>-->
-                                <!--<td class="amount">{{nutrition.amount | amount}}</td>-->
-                                <!--<td class="recommendation">{{nutrition.male | amount}}</td>-->
-                                <!--<td class="max">{{nutrition.max | amount}}</td>-->
                             </tr>
                             </tbody>
                         </table>

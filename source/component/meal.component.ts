@@ -19,9 +19,13 @@ declare var Bloodhound:any;
 })
 
 export class MealComponent implements OnInit {
-    meal:any;
-    nutritionShareGroups = [];
+    meal;
     foods;
+    nutrients;
+    nutrientGroups = [];
+    recommendations;
+    percents = [];
+
     selectedFood;
     isAddOpen = false;
     addForm = {
@@ -40,18 +44,33 @@ export class MealComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this._recommendationService.getRecommendations().then(recommendations => {
-            this._mealService.getMeal(1).then(meal => {
-                let foodIds = [];
-                for (let food of meal.foods) {
-                    foodIds.push(food.id)
-                }
-                this._foodService.getFoodsByIds(foodIds).then(foods => {
-                    this.initMeal(meal, foods);
-                    this.initNutritionShares(recommendations, foods, meal.foods);
-                });
+        this._mealService.getMeal(1).then(meal => {
+            this.meal = meal;
+            let foodIds = [];
+            for (let food of meal.foods) {
+                foodIds.push(food.id)
+            }
+            this._foodService.getFoodsByIds(foodIds).then(foods => {
+                this.foods = foods;
             });
         });
+
+        this._nutrientService.getNutrients().then(nutrients => {
+            this.nutrients = nutrients;
+            this.nutrientGroups.push({
+                'class': 'vitamins',
+                'nutrients': nutrients.filter(nutrient => this._nutrientService.vitaminIds.indexOf(nutrient.id) != -1)
+            });
+            this.nutrientGroups.push({
+                'class': 'dietary-elements',
+                'nutrients': nutrients.filter(nutrient => this._nutrientService.dietaryElementIds.indexOf(nutrient.id) != -1)
+            });
+        });
+
+        this._recommendationService.getRecommendationsGroup(1).then(recommendationsGroup => {
+            this.recommendations = recommendationsGroup.recommendations;
+        });
+        
         this.bloodhound = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -63,69 +82,33 @@ export class MealComponent implements OnInit {
     goBack() {
         window.history.back();
     }
-
-    private initMeal(meal, foods) {
-        this.meal = {
-            'foods': []
-        };
-        for (let food of foods) {
-            this.meal.foods.push({
-                'food': food,
-                'amount': meal.foods.find(mealFood => mealFood.id == food.id).amount
-            });
-        }
-        // this.selectedFood = this.meal.foods[3];
+    
+    getFoodName(foodId) {
+        return this.foods.find(food => food.id == foodId).name;
     }
 
-    private initNutritionShares(recommendations, foods, mealFoods) {
-        let vitaminRecommendations = this._recommendationService.getRecommendationVitamins(recommendations);
-        this.nutritionShareGroups.push(this.getNutritionShareGroup(vitaminRecommendations, foods, mealFoods, 'Vitamiinit', 'vitamins'));
-        let dietaryElementRecommendations = this._recommendationService.getRecommendationDietaryElements(recommendations);
-        this.nutritionShareGroups.push(this.getNutritionShareGroup(dietaryElementRecommendations, foods, mealFoods, 'Kivennäis- ja hivenaineet', 'dietary-elements'));
-    }
-
-    private getNutritionShareGroup(recommendations, foods, mealFoods, name, htmlClass) {
-        let nutritionShareGroup = {
-            'name': name,
-            'class': htmlClass,
-            'nutrients': []
-        };
-        for (let recommendation of recommendations) {
-            let nutrientValue = 0;
-            for (let food of foods) {
-                let multiplier = mealFoods.find(mealFood => mealFood.id == food.id).amount / 100;
-                let nutrient = food.nutrients.find(nutrient => nutrient.nutrientId === recommendation.nutrientId);
-                nutrientValue += nutrient.amount * multiplier;
+    private getPercent(nutrientId) {
+        if (this.percents[nutrientId] == undefined) {
+            let amount = 0;
+            for (let mealFood of this.meal.foods) {
+                let food = this.foods.find(food => food.id == mealFood.id);
+                amount += food.nutrients.find(foodNutrient => foodNutrient.nutrientId == nutrientId).amount * mealFood.amount / 100;
             }
-            nutritionShareGroup.nutrients.push(this.getNutritionShare(nutrientValue, recommendation));
+            let recommendation = this.recommendations.find(recommendation => recommendation.nutrientId == nutrientId);
+            this.percents[nutrientId] = amount / recommendation.min * 100;
         }
-        return nutritionShareGroup;
+        return this.percents[nutrientId];
     }
 
-    private getNutritionShare(nutrientValue, recommendation) {
-        let nutritionShare = {
-            'name': recommendation.name,
-            'male': recommendation.male,
-            'max': recommendation.max,
-            'amount': 0,
-            'unit': recommendation.unit,
-            'percent': {
-                'ok': 0,
-                'over': 0,
-                'tooMuch': 0,
-                'total': 0,
-            },
-            'recommendation': recommendation
-        };
-
-        if (nutrientValue) {
-            nutritionShare.amount = nutrientValue;
-            nutritionShare.unit = recommendation.unit;
-            this.calculatePercent(nutritionShare, nutrientValue, recommendation);
-        }
-
-        return nutritionShare;
+    getPercentMin(nutrientId) {
+        return Math.min(this.getPercent(nutrientId), 100);
     }
+
+    getPercentTotal(nutrientId) {
+        return this.getPercent(nutrientId);
+    }
+
+
 
     private calculatePercent(nutritionShare, nutrientValue, recommendation) {
         // nutritionShare.percent.ok = nutrientValue / recommendation.male * 100;
@@ -149,12 +132,12 @@ export class MealComponent implements OnInit {
     }
 
     private updateNutritionShares() {
-        for (let nutritionShareGroup of this.nutritionShareGroups) {
-            for (let nutritionShare of nutritionShareGroup.nutrients) {
-                nutritionShare.amount = this.getUpdatedAmount(nutritionShare);
-                nutritionShare.percent = this.getUpdatedPercent(nutritionShare);
-            }
-        }
+        // for (let nutritionShareGroup of this.nutritionShareGroups) {
+        //     for (let nutritionShare of nutritionShareGroup.nutrients) {
+        //         nutritionShare.amount = this.getUpdatedAmount(nutritionShare);
+        //         nutritionShare.percent = this.getUpdatedPercent(nutritionShare);
+        //     }
+        // }
     }
 
     private getUpdatedAmount(nutritionShare) {
