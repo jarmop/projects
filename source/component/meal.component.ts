@@ -1,18 +1,15 @@
-import {Component, OnInit, NgZone} from 'angular2/core';
+import {Component, OnInit} from 'angular2/core';
 import {RecommendationService} from '../service/recommendation.service';
 import {MealService} from 'service/meal.service';
 import {FoodService} from 'service/food.service';
 import {NutrientService} from "service/nutrient.service";
-import {amountPipe} from "pipe/amount.pipe";
-import {roundPipe} from "pipe/round";
-import {NgClass} from 'angular2/common';
 import {MealFoodsComponent} from 'component/meal-foods.component';
+import {MealNutrientsComponent} from 'component/meal-nutrients.component';
 
 @Component({
     selector: 'meal',
     templateUrl: 'component/meal.component.html',
-    pipes: [amountPipe, roundPipe],
-    directives: [NgClass, MealFoodsComponent]
+    directives: [MealFoodsComponent, MealNutrientsComponent]
 })
 
 export class MealComponent implements OnInit {
@@ -24,11 +21,11 @@ export class MealComponent implements OnInit {
     private nutrients;
     private recommendations;
 
-    constructor(private _recommendationService:RecommendationService,
-                private _mealService:MealService,
-                private _foodService:FoodService,
-                private _nutrientService:NutrientService,
-                private _ngZone: NgZone
+    constructor(
+        private _recommendationService:RecommendationService,
+        private _mealService:MealService,
+        private _foodService:FoodService,
+        private _nutrientService:NutrientService
     ) {}
 
     ngOnInit() {
@@ -56,10 +53,6 @@ export class MealComponent implements OnInit {
 
     goBack() {
         window.history.back();
-    }
-
-    getPercentMin(percent) {
-        return Math.min(percent, 100);
     }
 
     onFoodRemoved(mealFood) {
