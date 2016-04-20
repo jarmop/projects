@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, NgZone} from 'angular2/core';
+import {Component, OnInit, EventEmitter, Input, Output, NgZone} from 'angular2/core';
 import {MealFoodsComponent} from 'component/meal-foods.component';
 
 declare var $: any;
@@ -10,6 +10,7 @@ declare var Bloodhound:any;
 })
 export class MealFoodsComponent implements OnInit {
     @Input() mealFoods: Array;
+    @Output() onFoodRemoved = new EventEmitter<boolean>();
 
     selectedFood;
     isAddOpen = false;
@@ -52,12 +53,8 @@ export class MealFoodsComponent implements OnInit {
     }
 
     remove(mealFood) {
-        // TODO emit event to parent
-        
-        // this.mealFoods.splice(this.mealFoods.indexOf(mealFood), 1);        
-        // let foodToDelete = this.foods.find(food => food.id == mealFood.foodId);
-        // this.foods.splice(this.foods.indexOf(foodToDelete), 1);        
-        // this.updateMealNutrients();
+        this.mealFoods.splice(this.mealFoods.indexOf(mealFood), 1);
+        this.onFoodRemoved.emit(mealFood);
     }
 
     editMode(food = null) {

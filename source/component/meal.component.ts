@@ -61,6 +61,12 @@ export class MealComponent implements OnInit {
     getPercentMin(percent) {
         return Math.min(percent, 100);
     }
+
+    onFoodRemoved(mealFood) {
+        let foodToDelete = this.foods.find(food => food.id == mealFood.foodId);
+        this.foods.splice(this.foods.indexOf(foodToDelete), 1);
+        this.updateMealNutrients();
+    }
     
     private initMealFoods() {
         for (let mealFood of this.meal.foods) {
