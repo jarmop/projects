@@ -4,27 +4,27 @@ export var MEALS = [
         "name": "Aamupala",
         "foods": [
             {
-                'id': 1,
+                'foodId': 1,
                 'amount': 40
             },
             {
-                'id': 2,
+                'foodId': 2,
                 'amount': 100
             },
             {
-                'id': 3,
+                'foodId': 3,
                 'amount': 425
             },
             {
-                'id': 4,
+                'foodId': 4,
                 'amount': 300
             },
             {
-                'id': 5,
+                'foodId': 5,
                 'amount': 20
             },
             {
-                'id': 6,
+                'foodId': 6,
                 'amount': 100
             }
         ]

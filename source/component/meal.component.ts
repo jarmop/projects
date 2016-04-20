@@ -18,11 +18,13 @@ declare var Bloodhound:any;
 })
 
 export class MealComponent implements OnInit {
-    meal;
-    foods;
-    nutrients;
-    recommendations;
-    percents = [];
+    mealFoods = [];
+    mealNutrients = [];
+
+    private meal;
+    private foods;
+    private nutrients;
+    private recommendations;
 
     selectedFood;
     isAddOpen = false;
@@ -45,21 +47,23 @@ export class MealComponent implements OnInit {
             this.meal = meal;
             let foodIds = [];
             for (let food of meal.foods) {
-                foodIds.push(food.id)
+                foodIds.push(food.foodId)
             }
             this._foodService.getFoodsByIds(foodIds).then(foods => {
                 this.foods = foods;
+                this._nutrientService.getNutrients().then(nutrients => {
+                    this.nutrients = nutrients;
+                    this._recommendationService.getRecommendationsGroup(1).then(recommendationsGroup => {
+                        this.recommendations = recommendationsGroup.recommendations;
+                        this.initMealFoods();
+                        this.initMealNutrients();
+                    });
+                });
+
+
             });
         });
 
-        this._nutrientService.getNutrients().then(nutrients => {
-            this.nutrients = nutrients;
-        });
-
-        this._recommendationService.getRecommendationsGroup(1).then(recommendationsGroup => {
-            this.recommendations = recommendationsGroup.recommendations;
-        });
-        
         this.bloodhound = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.whitespace,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -72,99 +76,69 @@ export class MealComponent implements OnInit {
         window.history.back();
     }
     
-    getFoodName(foodId) {
-        return this.foods.find(food => food.id == foodId).name;
+    private initMealFoods() {
+        for (let mealFood of this.meal.foods) {
+            this.mealFoods.push({
+                'foodId': mealFood.foodId,
+                'name': this.foods.find(food => food.id == mealFood.foodId).name,
+                'amount': mealFood.amount
+            });
+        }
+    }
+
+    private initMealNutrients() {
+        for (let nutrient of this.nutrients) {
+            this.mealNutrients.push({
+                'nutrientId': nutrient.id,
+                'name': nutrient.name,
+                'percent': this.getPercent(nutrient.id)
+            });
+        }
+    }
+
+    private initTypeahead() {
+        this._ngZone.runOutsideAngular(() => {
+            setTimeout(() => {
+                $('#add-name').typeahead(
+                    {
+                        hint: true,
+                        highlight: true,
+                        minLength: 1
+                    },
+                    {
+                        name: 'states',
+                        source: this.bloodhound
+                    }
+                ).focus();
+            }, 0);
+        });
     }
 
     private getPercent(nutrientId) {
-        if (this.percents[nutrientId] == undefined) {
-            let amount = 0;
-            for (let mealFood of this.meal.foods) {
-                let food = this.foods.find(food => food.id == mealFood.id);
-                amount += food.nutrients.find(foodNutrient => foodNutrient.nutrientId == nutrientId).amount * mealFood.amount / 100;
-            }
-            let recommendation = this.recommendations.find(recommendation => recommendation.nutrientId == nutrientId);
-            this.percents[nutrientId] = amount / recommendation.min * 100;
-        }
-        return this.percents[nutrientId];
-    }
-
-    getPercentMin(nutrientId) {
-        return Math.min(this.getPercent(nutrientId), 100);
-    }
-
-    getPercentTotal(nutrientId) {
-        return this.getPercent(nutrientId);
-    }
-
-
-
-    private calculatePercent(nutritionShare, nutrientValue, recommendation) {
-        // nutritionShare.percent.ok = nutrientValue / recommendation.male * 100;
-        // if (nutrientValue > recommendation.male) {
-        //     nutritionShare.percent.ok = recommendation.male / nutrientValue * 100;
-        //     let over = nutrientValue - recommendation.male;
-        //     if (nutrientValue > recommendation.max) {
-        //         let tooMuch = recommendation.max ? nutrientValue - recommendation.max : 0;
-        //         over -= nutritionShare.percent.tooMuch;
-        //         nutritionShare.percent.tooMuch = tooMuch / nutrientValue * 100;
-        //     }
-        //     nutritionShare.percent.over = over / nutrientValue * 100;
-        // }
-        nutritionShare.percent.total = nutrientValue / recommendation.male * 100;
-        nutritionShare.percent.ok = Math.min(nutritionShare.percent.total, 100);
-    }
-
-    remove(food) {
-        this.meal.foods.splice(this.meal.foods.indexOf(food), 1);
-        this.updateNutritionShares();
-    }
-
-    private updateNutritionShares() {
-        // for (let nutritionShareGroup of this.nutritionShareGroups) {
-        //     for (let nutritionShare of nutritionShareGroup.nutrients) {
-        //         nutritionShare.amount = this.getUpdatedAmount(nutritionShare);
-        //         nutritionShare.percent = this.getUpdatedPercent(nutritionShare);
-        //     }
-        // }
-    }
-
-    private getUpdatedAmount(nutritionShare) {
         let amount = 0;
-        for (let food of this.meal.foods) {
-            let multiplier = food.amount / 100;
-            let nutrient = food.food.nutrients.find(nutrient => nutrient.nutrientId === nutritionShare.recommendation.nutrientId);
-            amount += nutrient.amount * multiplier
+        for (let mealFood of this.mealFoods) {
+            let food = this.foods.find(food => food.id == mealFood.foodId);
+            amount += food.nutrients.find(foodNutrient => foodNutrient.nutrientId == nutrientId).amount * mealFood.amount / 100;
         }
-
-        return amount;
+        let recommendation = this.recommendations.find(recommendation => recommendation.nutrientId == nutrientId);
+        return amount / recommendation.min * 100;
     }
 
-    private getUpdatedPercent(nutritionShare) {
-        let percent = {
-            'ok': 0,
-            'over': 0,
-            'tooMuch': 0,
-            'total': 0,
+    private updateMealNutrients() {
+        for (let mealNutrient of this.mealNutrients) {
+            mealNutrient.percent = this.getPercent(mealNutrient.nutrientId);
         }
-        // percent.ok = nutritionShare.amount / nutritionShare.male * 100;
-        // if (nutritionShare.amount > nutritionShare.male) {
-        //     percent.ok = nutritionShare.male / nutritionShare.amount * 100;
-        //     let over = nutritionShare.amount - nutritionShare.male;
-        //     if (nutritionShare.amount > nutritionShare.max) {
-        //         let tooMuch = nutritionShare.max ? nutritionShare.amount - nutritionShare.max : 0;
-        //         over -= percent.tooMuch;
-        //         percent.tooMuch = tooMuch / nutritionShare.amount * 100;
-        //     }
-        //     percent.over = over / nutritionShare.amount * 100;
-        // }
-        percent.total = nutritionShare.amount / nutritionShare.male * 100;
-        percent.ok = Math.min(percent.total, 100);
-        // if (nutritionShare.amount > nutritionShare.male) {
-        //     percent.ok = 100;
-        // }
+    }
 
-        return percent;
+    getPercentMin(percent) {
+        return Math.min(percent, 100);
+    }
+
+    remove(mealFood) {
+        this.mealFoods.splice(this.mealFoods.indexOf(mealFood), 1);
+        let foodToDelete = this.foods.find(food => food.id == mealFood.foodId);
+        this.foods.splice(this.foods.indexOf(foodToDelete), 1);
+        this.updateMealNutrients();
     }
 
     editMode(food = null) {
@@ -195,24 +169,5 @@ export class MealComponent implements OnInit {
     
     saveAdd() {
         this.closeAdd();
-    }
-
-    private initTypeahead() {
-        this._ngZone.runOutsideAngular(() => {
-            setTimeout(() => {
-                $('#add-name').typeahead(
-                    {
-                        hint: true,
-                        highlight: true,
-                        minLength: 1
-                    },
-                    {
-                        name: 'states',
-                        // source: this.substringMatcher(this.states)
-                        source: this.bloodhound
-                    }
-                ).focus();
-            }, 0);
-        });
     }
 }

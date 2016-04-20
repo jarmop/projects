@@ -85,8 +85,8 @@
 
 .recommendations {
   .table {
-    background-color: $gray-lightest;
-    border: 1px solid $table-border-color;
+    //background-color: $gray-lightest;
+    //border: 1px solid $table-border-color;
     margin: 0;
     td {
       border-width: 0;
@@ -107,6 +107,8 @@
     }
     td.bar {
       div.bar {
+        height: 18px;
+        background-color: $gray-lighter;
         div {
           display: inline-block;
           height: 18px;

@@ -4,10 +4,10 @@
             <h4>Ateria</h4>
             <table class="table table-sm">
                 <tbody>
-                <template ngFor #food [ngForOf]="meal.foods">
+                <template ngFor #food [ngForOf]="mealFoods">
                     <tr *ngIf="!editMode(food)" (click)="openEdit(food)">
                         <td class="name">
-                            {{getFoodName(food.id)}}
+                            {{food.name}}
                         </td>
                         <td class="amount">
                             {{food.amount}} g
@@ -16,7 +16,7 @@
                     <tr *ngIf="editMode(food)" class="tr-form">
                         <td colspan="2">
                             <form class="form-inline">
-                                <input type="text" value="{{getFoodName(food.id)}}" class="form-control name">
+                                <input type="text" value="{{food.name}}" class="form-control name">
                                 <fieldset class="form-group">
                                     <input type="text" value="{{food.amount}}" class="form-control amount">
                                     <select class="form-control measure">
@@ -71,16 +71,16 @@
         </div>
     </div>
     <div class="recommendations col-xs-12 col-sm-6 col-md-8">
-        <div *ngIf="nutrients && recommendations">
+        <div *ngIf="mealNutrients">
             <h4>Ravintoaineet</h4>
             <table class="table table-sm">
                 <tbody>
-                    <tr *ngFor="#nutrient of nutrients">
+                    <tr *ngFor="#nutrient of mealNutrients">
                         <td class="name">{{nutrient.name}}</td>
                         <td class="bar">
                             <div class="bar">
-                                <div class="ok" [style.width]="getPercentMin(nutrient.id) + '%'">
-                                    <span class="bar-percent">{{getPercentTotal(nutrient.id) | round}} %</span>
+                                <div class="ok" [style.width]="getPercentMin(nutrient.percent) + '%'">
+                                    <span class="bar-percent">{{nutrient.percent | round}} %</span>
                                 </div>
                             </div>
                         </td>
