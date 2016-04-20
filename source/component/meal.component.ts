@@ -64,17 +64,14 @@ export class MealComponent implements OnInit {
 
             });
         });
-
-        this.bloodhound = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.whitespace,
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            local: this.states
-        });
-        this.initTypeahead();
     }
 
     goBack() {
         window.history.back();
+    }
+
+    getPercentMin(percent) {
+        return Math.min(percent, 100);
     }
     
     private initMealFoods() {
@@ -95,25 +92,7 @@ export class MealComponent implements OnInit {
                 'percent': this.getPercent(nutrient.id)
             });
         }
-    }
-
-    private initTypeahead() {
-        this._ngZone.runOutsideAngular(() => {
-            setTimeout(() => {
-                $('#add-name').typeahead(
-                    {
-                        hint: true,
-                        highlight: true,
-                        minLength: 1
-                    },
-                    {
-                        name: 'states',
-                        source: this.bloodhound
-                    }
-                ).focus();
-            }, 0);
-        });
-    }
+    }    
 
     private getPercent(nutrientId) {
         let amount = 0;
@@ -131,44 +110,5 @@ export class MealComponent implements OnInit {
         }
     }
 
-    getPercentMin(percent) {
-        return Math.min(percent, 100);
-    }
-
-    remove(mealFood) {
-        this.mealFoods.splice(this.mealFoods.indexOf(mealFood), 1);
-        let foodToDelete = this.foods.find(food => food.id == mealFood.foodId);
-        this.foods.splice(this.foods.indexOf(foodToDelete), 1);
-        this.updateMealNutrients();
-    }
-
-    editMode(food = null) {
-        if (food) {
-            return this.selectedFood === food;
-        }
-        return this.selectedFood;
-    }
-
-    openEdit(food) {
-        this.selectedFood = food;
-        this.closeAdd();
-    }
-
-    save(food) {
-        this.selectedFood = null;
-    }
-
-    openAdd(el, a) {
-        this.isAddOpen = true;
-        this.selectedFood = null;
-        this.initTypeahead();
-    }
-
-    closeAdd() {
-        this.isAddOpen = false;
-    }
     
-    saveAdd() {
-        this.closeAdd();
-    }
 }
