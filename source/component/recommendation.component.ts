@@ -18,7 +18,8 @@ export class RecommendationComponent implements OnInit {
     ) { }
 
     getRecommendations() {
-        this._recommendationService.getRecommendations().then(recommendations => {
+        this._recommendationService.getRecommendations(1).then(recommendations => {
+            console.log(recommendations);
             this.recommendationGroups = [
                 {
                     'name': 'Vitamiinit',

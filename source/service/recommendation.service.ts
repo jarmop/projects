@@ -6,7 +6,13 @@ import {NutrientService} from "./nutrient.service";
 export class RecommendationService {
     getRecommendationsGroup(id: number) {
         return Promise.resolve(RECOMMENDATIONS).then(
-            recommendationsGroup => recommendationsGroup.filter(recommendationsData => recommendationsData.id === id)[0]
+            recommendationsGroup => recommendationsGroup.find(recommendationsData => recommendationsData.id === id)
+        );
+    }
+
+    getRecommendations(id: number) {
+        return Promise.resolve(RECOMMENDATIONS).then(
+            recommendationsGroup => recommendationsGroup.find(recommendationsData => recommendationsData.id === id).recommendations
         );
     }
 

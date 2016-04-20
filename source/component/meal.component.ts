@@ -53,8 +53,8 @@ export class MealComponent implements OnInit {
                 this.foods = foods;
                 this._nutrientService.getNutrients().then(nutrients => {
                     this.nutrients = nutrients;
-                    this._recommendationService.getRecommendationsGroup(1).then(recommendationsGroup => {
-                        this.recommendations = recommendationsGroup.recommendations;
+                    this._recommendationService.getRecommendations(1).then(recommendations => {
+                        this.recommendations = recommendations;
                         this.initMealFoods();
                         this.initMealNutrients();
                     });
