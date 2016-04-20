@@ -1,11 +1,12 @@
 import {Component, OnInit, NgZone} from 'angular2/core';
 import {RecommendationService} from '../service/recommendation.service';
-import {MealService} from '../service/meal.service';
-import {FoodService} from '../service/food.service';
-import {NutrientService} from "../service/nutrient.service";
-import {amountPipe} from "../pipe/amount.pipe";
-import {roundPipe} from "../pipe/round";
+import {MealService} from 'service/meal.service';
+import {FoodService} from 'service/food.service';
+import {NutrientService} from "service/nutrient.service";
+import {amountPipe} from "pipe/amount.pipe";
+import {roundPipe} from "pipe/round";
 import {NgClass} from 'angular2/common';
+import {MealFoodsComponent} from 'component/meal-foods.component';
 
 declare var $: any;
 declare var Bloodhound:any;
@@ -14,7 +15,7 @@ declare var Bloodhound:any;
     selector: 'meal',
     templateUrl: 'component/meal.component.html',
     pipes: [amountPipe, roundPipe],
-    directives: [NgClass]
+    directives: [NgClass, MealFoodsComponent]
 })
 
 export class MealComponent implements OnInit {

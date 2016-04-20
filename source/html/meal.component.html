@@ -2,6 +2,7 @@
     <div class="meal col-xs-9 col-sm-6 col-md-4">
         <div *ngIf="meal && foods">
             <h4>Ateria</h4>
+            <meal-foods></meal-foods>
             <table class="table table-sm">
                 <tbody>
                 <template ngFor #food [ngForOf]="mealFoods">
