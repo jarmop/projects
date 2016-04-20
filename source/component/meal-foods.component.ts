@@ -1,11 +1,4 @@
 import {Component, OnInit, Input, NgZone} from 'angular2/core';
-import {RecommendationService} from '../service/recommendation.service';
-import {MealService} from 'service/meal.service';
-import {FoodService} from 'service/food.service';
-import {NutrientService} from "service/nutrient.service";
-import {amountPipe} from "pipe/amount.pipe";
-import {roundPipe} from "pipe/round";
-import {NgClass} from 'angular2/common';
 import {MealFoodsComponent} from 'component/meal-foods.component';
 
 declare var $: any;
@@ -18,11 +11,6 @@ declare var Bloodhound:any;
 export class MealFoodsComponent implements OnInit {
     @Input() mealFoods: Array;
 
-    // mealFoods = [];
-
-    // private meal;
-    // private foods;
-
     selectedFood;
     isAddOpen = false;
     addForm = {
@@ -32,11 +20,8 @@ export class MealFoodsComponent implements OnInit {
     states = ['banaani','porkkana','puuro','peruna','papu'];
     bloodhound;
 
-    constructor(private _recommendationService:RecommendationService,
-                private _mealService:MealService,
-                private _foodService:FoodService,
-                private _nutrientService:NutrientService,
-                private _ngZone: NgZone
+    constructor(
+        private _ngZone: NgZone
     ) {}
 
     ngOnInit() {

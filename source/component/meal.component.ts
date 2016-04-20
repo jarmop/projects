@@ -8,9 +8,6 @@ import {roundPipe} from "pipe/round";
 import {NgClass} from 'angular2/common';
 import {MealFoodsComponent} from 'component/meal-foods.component';
 
-declare var $: any;
-declare var Bloodhound:any;
-
 @Component({
     selector: 'meal',
     templateUrl: 'component/meal.component.html',
@@ -26,15 +23,6 @@ export class MealComponent implements OnInit {
     private foods;
     private nutrients;
     private recommendations;
-
-    selectedFood;
-    isAddOpen = false;
-    addForm = {
-        'name': null,
-        'amount': null
-    };
-    states = ['banaani','porkkana','puuro','peruna','papu'];
-    bloodhound;
 
     constructor(private _recommendationService:RecommendationService,
                 private _mealService:MealService,
@@ -109,6 +97,4 @@ export class MealComponent implements OnInit {
             mealNutrient.percent = this.getPercent(mealNutrient.nutrientId);
         }
     }
-
-    
 }
