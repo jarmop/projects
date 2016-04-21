@@ -13,7 +13,7 @@
         </tr>
         <tr *ngIf="editMode(mealFood)" class="tr-form">
             <td colspan="2">
-                <meal-food-form [mealFood]="mealFood" (onRemove)="removeMealFood($event)" (onSave)="saveMealFood($event)"></meal-food-form>
+                <meal-food-form [mealFood]="mealFood" (onRemove)="removeMealFood($event)" (onSave)="saveMealFood($event)" (onCancel)="closeEdit()"></meal-food-form>
             </td>
         </tr>
     </template>
@@ -21,7 +21,7 @@
         <td colspan="2">
             <div class="add-food">
                 <a *ngIf="!isAddOpen" (click)="openAdd()" role="button">Lisää ruoka</a>
-                <meal-food-form *ngIf="isAddOpen" (onSave)="addMealFood($event)" (onClose)="closeAdd()"></meal-food-form>
+                <meal-food-form *ngIf="isAddOpen" (onSave)="addMealFood($event)" (onCancel)="closeAdd()"></meal-food-form>
             </div>
         </td>
     </tr>

@@ -11,7 +11,7 @@
         <button (click)="save(mealFood)" class="btn btn-sm btn-success" type="button">
             <i class="fa fa-check"></i>
         </button>
-        <button (click)="save(mealFood)" class="btn btn-sm btn-secondary" type="button">
+        <button (click)="cancel()" class="btn btn-sm btn-secondary" type="button">
             <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <button *ngIf="editingOld" (click)="remove(mealFood)" class="btn btn-sm btn-danger pull-right" type="button">
@@ -19,24 +19,3 @@
         </button>
     </div>
 </form>
-
-<!--<form *ngIf="isAddOpen" class="form-inline" #addForm="ngForm">-->
-    <!--<input type="text" id="add-name" class="form-control name" required [(ngModel)]="addForm.name"-->
-           <!--ngControl="name" placeholder="ruoka">-->
-    <!--<fieldset class="form-group">-->
-        <!--<input type="text" value="{{addAmount}}" class="form-control amount" required [(ngModel)]="addForm.amount"-->
-               <!--ngControl="amount" placeholder="0">-->
-        <!--<select class="form-control measure">-->
-            <!--<option>g</option>-->
-            <!--<option>ml</option>-->
-        <!--</select>-->
-    <!--</fieldset>-->
-    <!--<div class="actions">-->
-        <!--<button (click)="saveAdd()" class="btn btn-sm btn-success" type="button" [disabled]="!addForm.form.valid">-->
-            <!--<i class="fa fa-check"></i>-->
-        <!--</button>-->
-        <!--<button (click)="closeAdd()" class="btn btn-sm btn-secondary" type="button">-->
-            <!--<i class="fa fa-remove" aria-hidden="true"></i>-->
-        <!--</button>-->
-    <!--</div>-->
-<!--</form>-->

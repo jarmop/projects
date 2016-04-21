@@ -12,6 +12,8 @@ export class MealFoodFormComponent implements OnInit {
         'name': null,
         'amount': null
     };
+    private foods = ['banaani','porkkana','puuro','peruna','papu'];
+    private bloodhound;
     editingOld = false;
 
     @Input()
@@ -23,34 +25,27 @@ export class MealFoodFormComponent implements OnInit {
     }
     get mealFood() { return this._mealFood; }
 
-    @Output() onRemove = new EventEmitter<boolean>();
     @Output() onSave = new EventEmitter<boolean>();
-
-    // selectedMealFood;
-    // blankMealFood = {
-    //     'name': null,
-    //     'amount': null
-    // };
-    states = ['banaani','porkkana','puuro','peruna','papu'];
-    bloodhound;
+    @Output() onCancel = new EventEmitter<boolean>();
+    @Output() onRemove = new EventEmitter<boolean>();
 
     constructor(
         private _ngZone: NgZone
     ) {}
 
     ngOnInit() {
-        this.bloodhound = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.whitespace,
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            local: this.states
-        });
         this.initTypeahead();
     }
 
     private initTypeahead() {
+        this.bloodhound = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: this.foods
+        });
         this._ngZone.runOutsideAngular(() => {
             setTimeout(() => {
-                $('#add-name').typeahead(
+                $('meal-food-form .form-control.name').typeahead(
                     {
                         hint: true,
                         highlight: true,
@@ -60,32 +55,20 @@ export class MealFoodFormComponent implements OnInit {
                         name: 'states',
                         source: this.bloodhound
                     }
-                ).focus();
+                ).select();
             }, 0);
         });
-    }
-
-    remove(mealFood) {
-        this.onRemove.emit(mealFood);
     }
 
     save(mealFood) {
         this.onSave.emit(mealFood);
     }
 
+    cancel() {
+        this.onCancel.emit(true);
+    }
 
-    // openAdd(el, a) {
-    //     this.isAddOpen = true;
-    //     this.selectedMealFood = null;
-    //     this.initTypeahead();
-    // }
-    //
-    // closeAdd() {
-    //     this.isAddOpen = false;
-    // }
-    //
-    // saveAdd() {
-    //     this.closeAdd();
-    // }
-
+    remove(mealFood) {
+        this.onRemove.emit(mealFood);
+    }
 }
