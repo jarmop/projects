@@ -55,10 +55,13 @@ export class MealComponent implements OnInit {
         window.history.back();
     }
 
-    onFoodRemoved(mealFood) {
+    removeMealFood(mealFood) {
         let foodToDelete = this.foods.find(food => food.id == mealFood.foodId);
         this.foods.splice(this.foods.indexOf(foodToDelete), 1);
         this.updateMealNutrients();
+    }
+
+    saveMealFood(mealFood) {
     }
     
     private initMealFoods() {
