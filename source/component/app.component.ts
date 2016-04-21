@@ -28,13 +28,12 @@ import {TypeaheadComponent} from "./typeahead.component";
         path: '/meal',
         name: 'Meal',
         component: MealComponent,
-        // useAsDefault: true
+        useAsDefault: true
     },
     {
         path: '/recommendation',
         name: 'Recommendation',
-        component: RecommendationComponent,
-        // useAsDefault: true
+        component: RecommendationComponent
     },
     {
         path: '/food/:id',
@@ -44,8 +43,7 @@ import {TypeaheadComponent} from "./typeahead.component";
     {
         path: '/typeahead',
         name: 'Typeahead',
-        component: TypeaheadComponent,
-        useAsDefault: true
+        component: TypeaheadComponent
     },
 ])
 

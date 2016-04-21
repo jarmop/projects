@@ -17,11 +17,11 @@
             </td>
         </tr>
     </template>
-    <tr *ngIf="false" [ngClass]="{'tr-form': isAddOpen}">
+    <tr [ngClass]="{'tr-form': isAddOpen}">
         <td colspan="2">
             <div class="add-food">
-                <a *ngIf="!isAddOpen" (click)="openAdd($event, test)" role="button">Lisää ruoka</a>
-                <meal-food-form></meal-food-form>
+                <a *ngIf="!isAddOpen" (click)="openAdd()" role="button">Lisää ruoka</a>
+                <meal-food-form *ngIf="isAddOpen" (onSave)="addMealFood($event)" (onClose)="closeAdd()"></meal-food-form>
             </div>
         </td>
     </tr>

@@ -86,7 +86,7 @@ export class MealFoodsComponent implements OnInit {
         this.isAddOpen = false;
     }
 
-    saveAdd() {
+    addMealFood() {
         this.closeAdd();
     }
 }
