@@ -1,12 +1,5 @@
 <form class="form-inline" #mealFoodForm="ngForm">
-    <div class="dropdown">
-        <input [(ngModel)]="mealFood.name" ngControl="name" required type="text" class="form-control name">
-        <div class="dropdown-menu">
-            <button class="dropdown-item" type="button">Action</button>
-            <button class="dropdown-item" type="button">Another action</button>
-            <button class="dropdown-item" type="button">Something else here</button>
-        </div>
-    </div>
+    <autocomplete [mealFood]="mealFood"></autocomplete>
     <fieldset class="form-group">
         <input [(ngModel)]="mealFood.amount" ngControl="amount" required type="text" class="form-control amount">
         <select class="form-control measure">

@@ -1,10 +1,12 @@
 import {Component, OnInit, EventEmitter, Input, Output} from 'angular2/core';
 import {MealFoodFormService} from 'service/meal-food-form.service';
+import {AutocompleteComponent} from 'component/autocomplete.component';
 
 @Component({
     selector: 'meal-food-form',
     templateUrl: 'component/meal-food-form.component.html',
-    providers: [MealFoodFormService]
+    providers: [MealFoodFormService],
+    directives: [AutocompleteComponent]
 })
 export class MealFoodFormComponent implements OnInit {
     private _mealFood = {
