@@ -1,19 +1,18 @@
 import {Component, OnInit, EventEmitter, Input, Output, NgZone} from 'angular2/core';
+import {MealFoodFormService} from 'service/meal-food-form.service';
 
 declare var $: any;
-declare var Bloodhound:any;
 
 @Component({
     selector: 'meal-food-form',
-    templateUrl: 'component/meal-food-form.component.html'
+    templateUrl: 'component/meal-food-form.component.html',
+    providers: [MealFoodFormService]
 })
 export class MealFoodFormComponent implements OnInit {
     private _mealFood = {
         'name': null,
         'amount': null
     };
-    private foods = ['banaani','porkkana','puuro','peruna','papu'];
-    private bloodhound;
     editingOld = false;
 
     @Input()
@@ -30,7 +29,8 @@ export class MealFoodFormComponent implements OnInit {
     @Output() onRemove = new EventEmitter<boolean>();
 
     constructor(
-        private _ngZone: NgZone
+        private _ngZone: NgZone,
+        private _mealFoodFormService: MealFoodFormService
     ) {}
 
     ngOnInit() {
@@ -38,11 +38,6 @@ export class MealFoodFormComponent implements OnInit {
     }
 
     private initTypeahead() {
-        this.bloodhound = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.whitespace,
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            local: this.foods
-        });
         this._ngZone.runOutsideAngular(() => {
             setTimeout(() => {
                 $('meal-food-form .form-control.name').typeahead(
@@ -52,8 +47,8 @@ export class MealFoodFormComponent implements OnInit {
                         minLength: 1
                     },
                     {
-                        name: 'states',
-                        source: this.bloodhound
+                        name: 'foods',
+                        source: this._mealFoodFormService.getTypeaheadSource()
                     }
                 ).select();
             }, 0);
