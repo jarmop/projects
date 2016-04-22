@@ -21,27 +21,11 @@
   }
 
   form.form-inline {
-    span.twitter-typeahead {
+    .dropdown {
+      display: inline-block;
       width: 70%;
-      .name {
-        width: 100%;
-      }
-      .tt-input {
-        vertical-align: middle !important;
-      }
-      .tt-menu {
-        width: 100%;
-        background-color: white;
-        border: 1px solid $table-border-color;
-        margin-top: 2px;
-      }
-
-      .tt-suggestion {
-        @extend .dropdown-item;
-        padding: 0 4px;
-        &:hover {
-          cursor: pointer;
-        }
+      .form-control.name, .dropdown-menu {
+        width: 100%
       }
     }
 

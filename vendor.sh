@@ -15,5 +15,4 @@ uglifyjs --output app/vendor.min.js \
     node_modules/angular2/bundles/angular2.dev.js \
     node_modules/angular2/bundles/router.dev.js \
     node_modules/jquery/dist/jquery.js \
-    node_modules/typeahead.js/dist/typeahead.jquery.js \
     node_modules/typeahead.js/dist/bloodhound.js

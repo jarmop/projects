@@ -13,7 +13,7 @@ export class MealFoodsComponent {
     @Output() onMealFoodAdded = new EventEmitter<boolean>();
 
     selectedFood;
-    isAddOpen = false;
+    isAddOpen = true;
     
     removeMealFood(mealFood) {
         this.mealFoods.splice(this.mealFoods.indexOf(mealFood), 1);

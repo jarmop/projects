@@ -1,14 +1,21 @@
-<form class="form-inline">
-    <input type="text" value="{{mealFood.name}}" class="form-control name">
+<form class="form-inline" #mealFoodForm="ngForm">
+    <div class="dropdown">
+        <input [(ngModel)]="mealFood.name" ngControl="name" required type="text" class="form-control name">
+        <div class="dropdown-menu">
+            <button class="dropdown-item" type="button">Action</button>
+            <button class="dropdown-item" type="button">Another action</button>
+            <button class="dropdown-item" type="button">Something else here</button>
+        </div>
+    </div>
     <fieldset class="form-group">
-        <input type="text" value="{{mealFood.amount}}" class="form-control amount">
+        <input [(ngModel)]="mealFood.amount" ngControl="amount" required type="text" class="form-control amount">
         <select class="form-control measure">
             <option>g</option>
             <option>ml</option>
         </select>
     </fieldset>
     <div class="actions">
-        <button (click)="save(mealFood)" class="btn btn-sm btn-success" type="button">
+        <button (click)="save(mealFood)" class="btn btn-sm btn-success" type="button" [disabled]="!mealFoodForm.form.valid">
             <i class="fa fa-check"></i>
         </button>
         <button (click)="cancel()" class="btn btn-sm btn-secondary" type="button">
