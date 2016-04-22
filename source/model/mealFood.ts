@@ -1,5 +1,5 @@
 export interface MealFood {
-    id:number;
+    foodId:number;
     name:string;
     amount:string;
 }

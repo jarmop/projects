@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "angular2/core";
+import {Component, Input} from "angular2/core";
 import {AutocompleteService} from "service/autocomplete.service";
 import {MealFood} from "model/mealFood";
 
@@ -8,21 +8,26 @@ import {MealFood} from "model/mealFood";
     providers: [AutocompleteService]
 })
 
-export class AutocompleteComponent implements OnInit{
+export class AutocompleteComponent {
     @Input()
     mealFood: MealFood;
-    
+    suggestions: string[] = ['hthy', 'rthtr'];
     dropdownOpen = false;
 
-    constructor(_autocompleteService: AutocompleteService) {}
-
-    ngOnInit() {
-
-    }
+    constructor(private _autocompleteService: AutocompleteService) {}
 
     onKeyUp(e) {
-        console.log(e);
-        console.log(this.mealFood.name);
+        let suggestions: string[];
+        let result = this._autocompleteService.getSuggestionEngine().search(this.mealFood.name, function(result) {
+            suggestions = result;
+        });
+        this.suggestions = suggestions;
         this.dropdownOpen = true;
+    }
+
+    selectSuggestion(suggestion) {
+        this.mealFood.name = suggestion;
+        this.mealFood.foodId = this._autocompleteService.getFoodIdByName(suggestion);
+        this.dropdownOpen = false;
     }
 }
