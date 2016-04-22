@@ -10,6 +10,7 @@ export class MealFoodsComponent {
     @Input() mealFoods: Array;
     @Output() onMealFoodRemoved = new EventEmitter<boolean>();
     @Output() onMealFoodSaved = new EventEmitter<boolean>();
+    @Output() onMealFoodAdded = new EventEmitter<boolean>();
 
     selectedFood;
     isAddOpen = false;
@@ -22,6 +23,11 @@ export class MealFoodsComponent {
     saveMealFood(mealFood) {
         this.selectedFood = null;
         this.onMealFoodSaved.emit(mealFood);
+    }
+
+    addMealFood(mealFood) {
+        this.closeAdd();
+        this.onMealFoodAdded.emit(mealFood);
     }
 
     editMode(mealFood = null) {
@@ -47,9 +53,5 @@ export class MealFoodsComponent {
 
     closeAdd() {
         this.isAddOpen = false;
-    }
-
-    addMealFood() {
-        this.closeAdd();
     }
 }

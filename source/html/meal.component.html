@@ -1,6 +1,6 @@
 <div class="row">
     <div class="meal col-xs-9 col-sm-6 col-md-4">
-        <meal-foods [mealFoods]="mealFoods" (onMealFoodRemoved)="removeMealFood($event)" (onMealFoodSaved)="saveMealFood($event)"></meal-foods>
+        <meal-foods [mealFoods]="mealFoods" (onMealFoodRemoved)="removeMealFood($event)" (onMealFoodSaved)="saveMealFood($event)" (onMealFoodAdded)="addMealFood($event)"></meal-foods>
     </div>
     <div class="recommendations col-xs-12 col-sm-6 col-md-8">
         <meal-nutrients [mealNutrients]="mealNutrients"></meal-nutrients>

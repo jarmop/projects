@@ -30,4 +30,8 @@ export class MealFoodFormService {
         }
         return foodNames;
     }
+
+    getFoodIdByName(foodName) {
+        return this.mapFoodNameToId[foodName];
+    }
 }

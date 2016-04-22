@@ -62,6 +62,13 @@ export class MealComponent implements OnInit {
     }
 
     saveMealFood(mealFood) {
+        console.log('save');
+        console.log(mealFood);
+    }
+
+    addMealFood(mealFood) {
+        console.log('add');
+        console.log(mealFood);
     }
     
     private initMealFoods() {
