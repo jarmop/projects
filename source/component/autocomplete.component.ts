@@ -1,11 +1,28 @@
-import {Component, Input} from "angular2/core";
+import {Component, Input, OnInit} from "angular2/core";
+import {AutocompleteService} from "service/autocomplete.service";
+import {MealFood} from "model/mealFood";
 
 @Component({
     selector: 'autocomplete',
-    templateUrl: 'component/autocomplete.component.html'
+    templateUrl: 'component/autocomplete.component.html',
+    providers: [AutocompleteService]
 })
 
-export class AutocompleteComponent {
+export class AutocompleteComponent implements OnInit{
     @Input()
-    mealFood: Object;
+    mealFood: MealFood;
+    
+    dropdownOpen = false;
+
+    constructor(_autocompleteService: AutocompleteService) {}
+
+    ngOnInit() {
+
+    }
+
+    onKeyUp(e) {
+        console.log(e);
+        console.log(this.mealFood.name);
+        this.dropdownOpen = true;
+    }
 }
