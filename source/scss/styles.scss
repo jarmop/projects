@@ -21,7 +21,7 @@
   }
 
   form.form-inline {
-    .dropdown {
+    autocomplete .dropdown {
       display: inline-block;
       width: 70%;
       .form-control.name, .dropdown-menu {
