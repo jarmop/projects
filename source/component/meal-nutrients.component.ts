@@ -1,5 +1,6 @@
 import {Component, Input} from 'angular2/core';
-import {roundPipe} from "pipe/round";
+import {roundPipe} from "../pipe/round";
+import {MealNutrient} from "../model/mealNutrient";
 
 @Component({
     selector: 'meal-nutrients',
@@ -8,7 +9,7 @@ import {roundPipe} from "pipe/round";
 })
 
 export class MealNutrientsComponent {
-    @Input() mealNutrients: Array;
+    @Input() mealNutrients: Array<MealNutrient>;
 
     getPercentMin(percent) {
         return Math.min(percent, 100);

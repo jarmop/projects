@@ -1,7 +1,6 @@
 import {Component, OnInit} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 import {FoodService} from '../service/food.service';
-import {Food} from "../model/food";
 import {NutrientService} from "../service/nutrient.service";
 
 @Component({

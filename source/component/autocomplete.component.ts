@@ -1,6 +1,6 @@
 import {Component, Input, ViewChild, AfterViewInit} from "angular2/core";
-import {AutocompleteService} from "service/autocomplete.service";
-import {MealFood} from "model/mealFood";
+import {AutocompleteService} from "../service/autocomplete.service";
+import {MealFood} from "../model/mealFood";
 
 @Component({
     selector: 'autocomplete',

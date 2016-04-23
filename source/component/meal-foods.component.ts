@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {MealFoodFormComponent} from 'component/meal-food-form.component';
+import {MealFoodFormComponent} from '../component/meal-food-form.component';
+import {MealNutrient} from "../model/mealNutrient";
 
 @Component({
     selector: 'meal-foods',
@@ -7,7 +8,7 @@ import {MealFoodFormComponent} from 'component/meal-food-form.component';
     directives: [MealFoodFormComponent]
 })
 export class MealFoodsComponent {
-    @Input() mealFoods: Array;
+    @Input() mealFoods: Array<MealNutrient>;
     @Output() onMealFoodRemoved = new EventEmitter<boolean>();
     @Output() onMealFoodSaved = new EventEmitter<boolean>();
     @Output() onMealFoodAdded = new EventEmitter<boolean>();

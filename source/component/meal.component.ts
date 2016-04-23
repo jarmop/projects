@@ -1,10 +1,10 @@
 import {Component, OnInit} from 'angular2/core';
 import {RecommendationService} from '../service/recommendation.service';
-import {MealService} from 'service/meal.service';
-import {FoodService} from 'service/food.service';
-import {NutrientService} from "service/nutrient.service";
-import {MealFoodsComponent} from 'component/meal-foods.component';
-import {MealNutrientsComponent} from 'component/meal-nutrients.component';
+import {MealService} from '../service/meal.service';
+import {FoodService} from '../service/food.service';
+import {NutrientService} from "../service/nutrient.service";
+import {MealFoodsComponent} from '../component/meal-foods.component';
+import {MealNutrientsComponent} from '../component/meal-nutrients.component';
 import {MealFood} from "../model/mealFood";
 
 @Component({

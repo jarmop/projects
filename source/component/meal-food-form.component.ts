@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from 'angular2/core';
-import {AutocompleteComponent} from 'component/autocomplete.component';
+import {AutocompleteComponent} from '../component/autocomplete.component';
 
 @Component({
     selector: 'meal-food-form',

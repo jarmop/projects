@@ -1,5 +1,5 @@
 import {Injectable} from 'angular2/core';
-import {MEALS} from 'mock/mock-meals';
+import {MEALS} from '../mock/mock-meals';
 
 @Injectable()
 export class MealService {
