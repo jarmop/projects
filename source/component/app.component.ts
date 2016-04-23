@@ -8,7 +8,6 @@ import {RecommendationComponent} from "./recommendation.component";
 import {RecommendationService} from "../service/recommendation.service";
 import {MealComponent} from "./meal.component";
 import {NutrientService} from "../service/nutrient.service";
-import {TypeaheadComponent} from "./typeahead.component";
 
 @Component({
     selector: 'app',
@@ -39,12 +38,7 @@ import {TypeaheadComponent} from "./typeahead.component";
         path: '/food/:id',
         name: 'Food',
         component: FoodComponent
-    },
-    {
-        path: '/typeahead',
-        name: 'Typeahead',
-        component: TypeaheadComponent
-    },
+    }
 ])
 
 export class AppComponent {
