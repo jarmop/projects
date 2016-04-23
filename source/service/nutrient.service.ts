@@ -1,6 +1,5 @@
 import {Injectable} from 'angular2/core';
-import {RECOMMENDATIONS} from './mock-recommendations';
-import {NUTRIENTS} from "./mock-nutrients";
+import {NUTRIENTS} from "mock/mock-nutrients";
 
 @Injectable()
 export class NutrientService {
