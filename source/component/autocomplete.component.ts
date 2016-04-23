@@ -1,4 +1,4 @@
-import {Component, Input} from "angular2/core";
+import {Component, Input, ViewChild, AfterViewInit} from "angular2/core";
 import {AutocompleteService} from "service/autocomplete.service";
 import {MealFood} from "model/mealFood";
 
@@ -8,14 +8,20 @@ import {MealFood} from "model/mealFood";
     providers: [AutocompleteService]
 })
 
-export class AutocompleteComponent {
+export class AutocompleteComponent implements AfterViewInit {
     @Input()
     mealFood: MealFood;
     suggestions: string[] = ['hthy', 'rthtr'];
     suggestion: string;
     dropdownOpen = false;
 
+    @ViewChild('input') input;
+
     constructor(private _autocompleteService: AutocompleteService) {}
+
+    ngAfterViewInit() {
+        this.input.nativeElement.select();
+    }
 
     onKeyUp() {
         let suggestions: string[];

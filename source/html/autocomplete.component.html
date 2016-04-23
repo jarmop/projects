@@ -1,6 +1,6 @@
 <div class="dropdown" [ngClass]="{open: dropdownOpen}">
     <span class="suggestion">{{suggestion}}</span>
-    <input (keyup)="onKeyUp()" (keyup.enter)="selectFirstSuggestion()" [(ngModel)]="mealFood.name" required type="text" class="form-control name" placeholder="Ruoka">
+    <input #input (keyup)="onKeyUp()" (keyup.enter)="selectFirstSuggestion()" [(ngModel)]="mealFood.name" required type="text" class="form-control name" placeholder="Ruoka">
     <div class="dropdown-menu">
         <button *ngFor="#suggestion of suggestions" (click)="selectSuggestion(suggestion)" (keyup.enter)="selectSuggestion(suggestion)" class="dropdown-item" type="button">{{suggestion}}</button>
     </div>
