@@ -19,19 +19,29 @@ export class AutocompleteComponent {
 
     onKeyUp() {
         let suggestions: string[];
-        let result = this._autocompleteService.getSuggestionEngine().search(this.mealFood.name, function(result) {
+        this._autocompleteService.getSuggestionEngine().search(this.mealFood.name, function(result) {
             suggestions = result;
         });
         if (suggestions.length > 0) {
             this.suggestion = this.mealFood.name + suggestions[0].substr(this.mealFood.name.length);
+            this.dropdownOpen = true;
+        } else {
+            this.suggestion = null;
+            this.dropdownOpen = false;
         }
         this.suggestions = suggestions;
-        this.dropdownOpen = true;
+    }
+
+    selectFirstSuggestion() {
+        if (this.suggestions.length > 0) {
+            this.selectSuggestion(this.suggestions[0]);
+        }
     }
 
     selectSuggestion(suggestion) {
         this.mealFood.name = suggestion;
         this.mealFood.foodId = this._autocompleteService.getFoodIdByName(suggestion);
+        this.suggestion = null;
         this.dropdownOpen = false;
     }
 }
