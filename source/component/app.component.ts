@@ -8,6 +8,7 @@ import {RecommendationComponent} from "./recommendation.component";
 import {RecommendationService} from "../service/recommendation.service";
 import {MealComponent} from "./meal.component";
 import {NutrientService} from "../service/nutrient.service";
+import {FoodsComponent} from "./foods.component";
 
 @Component({
     selector: 'app',
@@ -27,6 +28,12 @@ import {NutrientService} from "../service/nutrient.service";
         path: '/meal',
         name: 'Meal',
         component: MealComponent,
+        // useAsDefault: true
+    },
+    {
+        path: '/foods',
+        name: 'Foods',
+        component: FoodsComponent,
         useAsDefault: true
     },
     {

@@ -5,7 +5,8 @@ import {NutrientService} from "../service/nutrient.service";
 @Injectable()
 export class FoodService {
     getFoods() {
-        return Promise.resolve(FOODS);
+        // return Promise.resolve(FOODS);
+        console.log('test');
     }
 
     getFoodsByIds(ids: number[]) {
