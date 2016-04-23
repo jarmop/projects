@@ -5,6 +5,7 @@ import {FoodService} from 'service/food.service';
 import {NutrientService} from "service/nutrient.service";
 import {MealFoodsComponent} from 'component/meal-foods.component';
 import {MealNutrientsComponent} from 'component/meal-nutrients.component';
+import {MealFood} from "../model/mealFood";
 
 @Component({
     selector: 'meal',
@@ -55,20 +56,26 @@ export class MealComponent implements OnInit {
         window.history.back();
     }
 
-    removeMealFood(mealFood) {
+    removeMealFood() {
         this.updateMealNutrients();
     }
 
-    saveMealFood(mealFood) {
-        console.log('save');
-        console.log(mealFood);
-        console.log(this.foods);
+    saveMealFood(mealFood: MealFood) {
+        this.updateFoods(mealFood).then(() => this.updateMealNutrients());
     }
 
-    addMealFood(mealFood) {
-        console.log('add');
-        console.log(mealFood);
-        console.log(this.foods);
+    addMealFood(mealFood: MealFood) {
+        this.updateFoods(mealFood).then(() => this.updateMealNutrients());
+    }
+
+    private updateFoods(mealFood: MealFood) {
+        if (!this.foods.find(food => food.id == mealFood.foodId)) {
+            return this._foodService.getFood(mealFood.foodId).then(food => {
+                this.foods.push(food);
+            });
+        } else {
+            return Promise.resolve();
+        }
     }
     
     private initMealFoods() {
