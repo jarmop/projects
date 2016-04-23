@@ -27,6 +27,13 @@
       .form-control.name, .dropdown-menu {
         width: 100%
       }
+      .form-control.name {
+        position: relative;
+        z-index: 1;
+      }
+      .suggestion {
+        position: absolute;
+      }
     }
 
     width: 100%;
