@@ -56,19 +56,19 @@ export class MealComponent implements OnInit {
     }
 
     removeMealFood(mealFood) {
-        let foodToDelete = this.foods.find(food => food.id == mealFood.foodId);
-        this.foods.splice(this.foods.indexOf(foodToDelete), 1);
         this.updateMealNutrients();
     }
 
     saveMealFood(mealFood) {
         console.log('save');
         console.log(mealFood);
+        console.log(this.foods);
     }
 
     addMealFood(mealFood) {
         console.log('add');
         console.log(mealFood);
+        console.log(this.foods);
     }
     
     private initMealFoods() {

@@ -26,8 +26,9 @@ export class MealFoodsComponent {
     }
 
     addMealFood(mealFood) {
-        this.closeAdd();
+        this.mealFoods.push(mealFood);
         this.onMealFoodAdded.emit(mealFood);
+        this.closeAdd();
     }
 
     editMode(mealFood = null) {

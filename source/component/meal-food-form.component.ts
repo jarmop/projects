@@ -36,7 +36,6 @@ export class MealFoodFormComponent implements OnInit {
     }
 
     save(mealFood) {
-        mealFood.id = this._mealFoodFormService.getFoodIdByName(mealFood.name);
         this.onSave.emit(mealFood);
     }
 
