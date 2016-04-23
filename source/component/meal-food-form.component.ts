@@ -1,14 +1,12 @@
-import {Component, OnInit, EventEmitter, Input, Output} from 'angular2/core';
-import {MealFoodFormService} from 'service/meal-food-form.service';
+import {Component, EventEmitter, Input, Output} from 'angular2/core';
 import {AutocompleteComponent} from 'component/autocomplete.component';
 
 @Component({
     selector: 'meal-food-form',
     templateUrl: 'component/meal-food-form.component.html',
-    providers: [MealFoodFormService],
     directives: [AutocompleteComponent]
 })
-export class MealFoodFormComponent implements OnInit {
+export class MealFoodFormComponent {
     private _mealFood = {
         'name': null,
         'amount': null
@@ -27,13 +25,6 @@ export class MealFoodFormComponent implements OnInit {
     @Output() onSave = new EventEmitter<boolean>();
     @Output() onCancel = new EventEmitter<boolean>();
     @Output() onRemove = new EventEmitter<boolean>();
-
-    constructor(
-        private _mealFoodFormService: MealFoodFormService
-    ) {}
-
-    ngOnInit() {
-    }
 
     save(mealFood) {
         this.onSave.emit(mealFood);
