@@ -1,6 +1,8 @@
 // TODO make typescript compatible
-var fs = require('fs');
-var lineReader = require('readline').createInterface({
+/*
+import fs = require('fs');
+import lineReader = require('readline');
+lineReader = lineReader.createInterface({
   input: fs.createReadStream('recommendations.csv', {'start' : 50})
 });
 
@@ -22,4 +24,4 @@ lineReader.on('close', function (line) {
     if (err) throw err;
     console.log('JSON file saved!');
   });
-});
+});*/
