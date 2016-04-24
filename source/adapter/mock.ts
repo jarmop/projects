@@ -3,6 +3,7 @@ import {FOODS} from "../mock/mock-foods";
 
 export class Mock implements Adapter {
     getFoods() {
-        return Promise.resolve(FOODS);
+        // return Promise.resolve(FOODS);
+        return 'mock';
     }
 }

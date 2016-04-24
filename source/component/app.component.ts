@@ -1,4 +1,4 @@
-import {Component}       from 'angular2/core';
+import {Component, provide} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from 'angular2/router';
 
 import {FoodComponent} from './food.component';
@@ -10,6 +10,8 @@ import {MealComponent} from "./meal.component";
 import {NutrientService} from "../service/nutrient.service";
 import {FoodsComponent} from "./foods.component";
 import {Mock} from "../adapter/mock";
+import {Firebase} from "../adapter/firebase";
+import {Adapter} from "../adapter/adapter";
 
 @Component({
     selector: 'app',
@@ -21,7 +23,7 @@ import {Mock} from "../adapter/mock";
         RecommendationService,
         NutrientService,
         MealService,
-        Mock
+        provide('Adapter', {useClass: Firebase})
     ]
 })
 
