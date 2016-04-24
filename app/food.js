@@ -1,7 +1,16 @@
 var fs = require('fs');
 var request = require('request');
 
+var fineliFoods = [
+  {
+    id: 33122,
+    name: 'Soijapapu'
+  }
+];
+
 var data = [];
+
+
 //soijamaito 33122
 //kasvishernekeitto 29222
 // broileri jauheliha
@@ -9,11 +18,16 @@ var data = [];
 // auringonkukansiemen 11212
 // request('https://fineli.fi/fineli/fi/elintarvikkeet/28930/resultset.csv', function (error, response, body) {
 // kaurahiutale
-request('https://fineli.fi/fineli/fi/elintarvikkeet/3343/resultset.csv', function (error, response, body) {
+// request('https://fineli.fi/fineli/fi/elintarvikkeet/3343/resultset.csv', function (error, response, body) {
 // banaani
 // request('https://fineli.fi/fineli/fi/elintarvikkeet/28934/resultset.csv', function (error, response, body) {
 // soijapapu
 // request('https://fineli.fi/fineli/fi/elintarvikkeet/391/resultset.csv', function (error, response, body) {
+
+// var csvUrl = 'https://fineli.fi/fineli/fi/elintarvikkeet/' + fineliFoods[0].id + '/resultset.csv';
+var csvUrl = 'http://localhost:8080/soybean.csv';
+
+request(csvUrl, function (error, response, body) {
   if (!error && response.statusCode == 200) {
     var lines = body.split('\r\n');
     parseValues(lines[1].split(';'));
@@ -53,7 +67,7 @@ var mapNutrientIdToCsvIndex = {
 };
 
 function saveJson() {
-  fs.writeFile('soybean.json', JSON.stringify(data, null, 4), function(err) {
+  fs.writeFile('../json/soybean.json', JSON.stringify(data, null, 4), function(err) {
     if (err) throw err;
     console.log('JSON file saved!');
   });
