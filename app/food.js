@@ -1,6 +1,6 @@
 "use strict";
-var fs = require('fs');
-var request = require('request');
+const fs = require('fs');
+const request = require('request');
 // var csvUrl = 'https://fineli.fi/fineli/fi/elintarvikkeet/' + fineliFoods[0].id + '/resultset.csv';
 var csvUrl = 'http://localhost:8080/soybean.csv';
 request(csvUrl, function (error, response, body) {
