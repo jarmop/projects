@@ -1,12 +1,18 @@
 import {Injectable} from 'angular2/core';
 import {FOODS} from '../mock/mock-foods';
 import {NutrientService} from "../service/nutrient.service";
+import {Adapter} from "../adapter/adapter";
+import {Mock} from "../adapter/mock";
 
 @Injectable()
 export class FoodService {
+    constructor(
+        private _adapter: Mock
+    ) {}
+
     getFoods() {
-        // return Promise.resolve(FOODS);
-        console.log('test');
+        return this._adapter.getFoods();
+        // console.log('test');
     }
 
     getFoodsByIds(ids: number[]) {

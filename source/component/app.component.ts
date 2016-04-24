@@ -9,6 +9,7 @@ import {RecommendationService} from "../service/recommendation.service";
 import {MealComponent} from "./meal.component";
 import {NutrientService} from "../service/nutrient.service";
 import {FoodsComponent} from "./foods.component";
+import {Mock} from "../adapter/mock";
 
 @Component({
     selector: 'app',
@@ -19,7 +20,8 @@ import {FoodsComponent} from "./foods.component";
         FoodService,
         RecommendationService,
         NutrientService,
-        MealService
+        MealService,
+        Mock
     ]
 })
 
