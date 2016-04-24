@@ -7,5 +7,5 @@ browserSync.init({
       require('connect-history-api-fallback')({ index: '/index.html' })
     ]
   },
-  files: ['./app/*']
+  files: ['./app/**/*']
 });
