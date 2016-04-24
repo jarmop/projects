@@ -1,49 +1,39 @@
 var fs = require('fs');
 var request = require('request');
 
-var fineliFoods = [
-  {
-    id: 33122,
-    name: 'Soijapapu'
-  }
-];
-
-var data = [];
-
-
-//soijamaito 33122
-//kasvishernekeitto 29222
-// broileri jauheliha
-// parsakaali
-// auringonkukansiemen 11212
-// request('https://fineli.fi/fineli/fi/elintarvikkeet/28930/resultset.csv', function (error, response, body) {
-// kaurahiutale
-// request('https://fineli.fi/fineli/fi/elintarvikkeet/3343/resultset.csv', function (error, response, body) {
-// banaani
-// request('https://fineli.fi/fineli/fi/elintarvikkeet/28934/resultset.csv', function (error, response, body) {
-// soijapapu
-// request('https://fineli.fi/fineli/fi/elintarvikkeet/391/resultset.csv', function (error, response, body) {
-
 // var csvUrl = 'https://fineli.fi/fineli/fi/elintarvikkeet/' + fineliFoods[0].id + '/resultset.csv';
 var csvUrl = 'http://localhost:8080/soybean.csv';
 
 request(csvUrl, function (error, response, body) {
   if (!error && response.statusCode == 200) {
-    var lines = body.split('\r\n');
-    parseValues(lines[1].split(';'));
-    saveJson(data);
+    var nutrients = parseNutrients(body);
+    foodModel.id = 1;
+    foodModel.name = 'Soijapapu';
+    foodModel.nutrients = nutrients;
+    saveJson(foodModel);
   }
 });
 
-function parseValues(values) {
+function parseNutrients(body) {
+  var lines = body.split('\r\n');
+  var values = lines[1].split(';')
+  var nutrients = [];
   var counter = 0;
   for (var i in mapNutrientIdToCsvIndex) {
-    data.push({
+    nutrients.push({
       'nutrientId': parseInt(i),
       'amount': parseFloat(values[mapNutrientIdToCsvIndex[i]].replace(' ', '').replace(',','.'))
     });
     counter++;
   }
+  return nutrients;
+}
+
+function saveJson(data) {
+  fs.writeFile('../json/soybean.json', JSON.stringify(data, null, 4), function(err) {
+    if (err) throw err;
+    console.log('JSON file saved!');
+  });
 }
 
 var mapNutrientIdToCsvIndex = {
@@ -66,9 +56,40 @@ var mapNutrientIdToCsvIndex = {
   19: 41
 };
 
-function saveJson() {
-  fs.writeFile('../json/soybean.json', JSON.stringify(data, null, 4), function(err) {
-    if (err) throw err;
-    console.log('JSON file saved!');
-  });
+var fineliFoods = [
+  {
+    id: 33122,
+    name: 'Soijamaito'
+  },
+  {
+    id: 391,
+    name: 'Soijapapu'
+  },
+  {
+    id: 29222,
+    name: 'Kasvishernekeitto'
+  },
+  {
+    id: 11212,
+    name: 'Auringonkukansiemen'
+  },
+  {
+    id: 3343,
+    name: 'Kaurahiutale'
+  },
+  {
+    id: 28934,
+    name: 'Banaani'
+  }
+];
+
+var foodModel = {
+  'id': 1,
+  'name': 'Banaani',
+  'nutrients': [
+    {
+      'nutrientId': 1,
+      'amount': 2
+    }
+  ]
 };
