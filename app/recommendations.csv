@@ -1,0 +1,20 @@
+name,male,female,max,nutrientDensity (/1000 kcal)
+A-vitamiini RE,900,700,3000,336
+D-vitamiini µg,10,10,100,5.5
+E-vitamiini α-TE,10,8,300,3.8
+Tiamiini mg,1.5,1.1,,0.5
+Riboflaviini mg,1.7,1.3,,0.6
+Niasiini NE,20,15,,6.7
+B6-vitamiini mg,1.6,1.3,25,0.5
+Folaatti µg,300,400,1000,189
+B12-vitamiini µg,2,2,,0.8
+C-vitamiini mg,75,75,1000,34
+Kalsium mg,800,800,2500,420
+Fosfori mg,600,600,5000,336
+Kalium g,3.5,3.1,3.7,1500
+Magnesium mg,350,280,,147
+Rauta mg,9,15,25,6.7
+Sinkki mg,9,7,25,4.6
+Kupari mg,0.9,0.9,5,0.4
+Jodi µg,150,150,600,71
+Seleeni µg,60,50,300,23
