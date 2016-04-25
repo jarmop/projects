@@ -19,7 +19,7 @@ function Line(points) {
 }
 
 var inputs = [
-  new Input(60, 60),
+  new Input(60, 40),
   new Input(60, 120),
   new Input(60, 180)
 ];
@@ -61,7 +61,7 @@ function Diagram() {
 
   this.drawConnection = function(outGate, i) {
     outPort = {x: inputs[outGate.inputs[i]].x + 4*s + 2*s, y: inputs[outGate.inputs[i]].y + 2*s};
-    inPort = {x: outGate.x - l, y: outGate.y + 2*s + i*2*s};
+    inPort = {x: outGate.x - l, y: outGate.y + i*6*s};
     this.drawLine(outPort.x, outPort.y, inPort.x, inPort.y);
   }
 
@@ -107,9 +107,9 @@ function Diagram() {
           strokeWidth: this.strokeWidth
         }),
       //this.paper.text(x +.5*s, y+1.5*s, name),
-      this.drawLine(x-l, y+2*s, x, y+2*s),
+      this.drawLine(x-l, y, x, y),
       //this.paper.circle(x-l, y+2*s, 5),
-      this.drawLine(x-l, y+4*s, x, y+4*s),
+      this.drawLine(x-l, y+6*s, x, y+6*s),
       this.drawLine(x+width, y+height/2, x+width+l, y+height/2)
     ).drag(diagram.move, diagram.start, diagram.stop);
   };
