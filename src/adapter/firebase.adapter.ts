@@ -9,4 +9,8 @@ export class FirebaseAdapter {
         console.log(food);
         return this.firebase.child('foods').push(food);
     }
+
+    truncate() {
+        return this.firebase.child('foods').remove();
+    }
 }
