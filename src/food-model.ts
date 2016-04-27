@@ -1,5 +1,5 @@
 export interface Food {
-    id: number;
+    fineliId: number;
     name: string;
     nutrients: Array<FoodNutrient>;
 }

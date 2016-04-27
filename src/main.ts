@@ -1,10 +1,10 @@
 import {WebScraper} from "./web-scraper";
+import {FirebaseAdapter} from "./adapter/firebase.adapter";
 import {Food, FoodNutrient} from "./food-model";
-import Firebase = require('firebase');
 
 class Main {
   private webScraper = new WebScraper;
-  private firebase = new Firebase("https://nutrient.firebaseio.com/");
+  private firebase = new FirebaseAdapter;
 
   private fineliFoods = [
     {
@@ -33,17 +33,15 @@ class Main {
     }
   ];
 
-  updateFood() {
-    let id = 391;
+  updateFood(id:number) {
     this.webScraper.getNutrients(id).then((nutrients) => {
-      this.saveFood(this.getFoodModel(391, nutrients));
-      process.exit();
+      this.firebase.saveFood(this.getFoodModel(391, nutrients));
     });
   }
 
   private getFoodModel(id:number, nutrients:Array<FoodNutrient>): Food {
       return {
-          'id': id,
+          "fineliId": id,
           'name': this.getNameById(id),
           'nutrients': nutrients
       };
@@ -53,11 +51,7 @@ class Main {
       return this.fineliFoods.find(food => food.id == id).name;
   }
 
-  private saveFood(food: Food) {
-    console.log('save to firebase');
-    console.log(food);
-    this.firebase.set(food);
-  }
+
 }
 
-(new Main()).updateFood();
+(new Main()).updateFood(391);
