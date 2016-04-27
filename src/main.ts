@@ -33,10 +33,10 @@ class Main {
     }
   ];
 
-  updateFood(id:number) {
-    this.webScraper.getNutrients(id).then((nutrients) => {
-      this.firebase.saveFood(this.getFoodModel(391, nutrients));
-    });
+  addFood(id:number) {
+    return this.webScraper.getNutrients(id).then((nutrients) =>
+      this.firebase.saveFood(this.getFoodModel(391, nutrients))
+    );
   }
 
   private getFoodModel(id:number, nutrients:Array<FoodNutrient>): Food {
@@ -50,8 +50,9 @@ class Main {
   private getNameById(id:number): string {
       return this.fineliFoods.find(food => food.id == id).name;
   }
-
-
 }
 
-(new Main()).updateFood(391);
+(new Main()).addFood(391).then(() => {
+  console.log('DONE');
+  process.exit();
+});

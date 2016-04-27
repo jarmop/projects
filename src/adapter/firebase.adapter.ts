@@ -7,13 +7,6 @@ export class FirebaseAdapter {
     saveFood(food:Food) {
         console.log('save to firebase');
         console.log(food);
-        this.firebase.child('foods').push(food, function (error) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('DONE');
-                process.exit();
-            }
-        });
+        return this.firebase.child('foods').push(food);
     }
 }
