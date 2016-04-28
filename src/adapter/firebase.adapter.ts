@@ -10,7 +10,15 @@ export class FirebaseAdapter {
         return this.firebase.child('foods').push(food);
     }
 
-    truncate() {
+    truncateFoods() {
         return this.firebase.child('foods').remove();
+    }
+
+    addRecommendations(recommendations) {
+        return this.firebase.child('recommendations').push(recommendations);
+    }
+
+    truncateRecommendations() {
+        return this.firebase.child('recommendations').remove();
     }
 }

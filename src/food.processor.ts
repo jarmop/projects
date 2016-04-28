@@ -52,7 +52,7 @@ class FoodProcessor {
   }
 
   truncate() {
-    return this.firebase.truncate();
+    return this.firebase.truncateFoods();
   }
 }
 
