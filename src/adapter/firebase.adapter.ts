@@ -21,4 +21,12 @@ export class FirebaseAdapter {
     truncateRecommendations() {
         return this.firebase.child('recommendations').remove();
     }
+
+    addNutrient(nutrient) {
+        return this.firebase.child('nutrients').push(nutrient);
+    }
+
+    truncateNutrients() {
+        return this.firebase.child('nutrients').remove();
+    }
 }
