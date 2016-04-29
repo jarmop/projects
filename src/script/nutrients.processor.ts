@@ -1,5 +1,5 @@
-import {NUTRIENTS} from './mock-nutrients';
-import {FirebaseAdapter} from './adapter/firebase.adapter';
+import {NUTRIENTS} from '../lib/mock-nutrients';
+import {FirebaseAdapter} from '../lib/adapter/firebase.adapter';
 
 class NutrientsProcessor {
   private firebase = new FirebaseAdapter;

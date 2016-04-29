@@ -1,6 +1,6 @@
-import {WebScraper} from "./web-scraper";
-import {FirebaseAdapter} from "./adapter/firebase.adapter";
-import {Food, FoodNutrient} from "./food-model";
+import {WebScraper} from "../lib/web-scraper";
+import {FirebaseAdapter} from "../lib/adapter/firebase.adapter";
+import {Food, FoodNutrient} from "../lib/food-model";
 
 class FoodProcessor {
   private webScraper = new WebScraper;

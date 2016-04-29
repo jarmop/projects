@@ -1,5 +1,5 @@
-import {RECOMMENDATIONS} from './mock-recommendations';
-import {FirebaseAdapter} from './adapter/firebase.adapter';
+import {RECOMMENDATIONS} from '../lib/mock-recommendations';
+import {FirebaseAdapter} from '../lib/adapter/firebase.adapter';
 
 class RecommendationsProcessor {
   private firebase = new FirebaseAdapter;
