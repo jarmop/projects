@@ -29,4 +29,8 @@ export class FirebaseAdapter {
   truncateNutrients() {
     return this.firebase.child('nutrients').remove();
   }
+
+  getNutrients() {
+    return this.firebase.child('nutrients').once('value');
+  }
 }

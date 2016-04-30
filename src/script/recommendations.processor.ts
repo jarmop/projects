@@ -5,7 +5,23 @@ class RecommendationsProcessor {
   private firebase = new FirebaseAdapter;
 
   addRecommendations(recommendations) {
-    return this.firebase.addRecommendations(recommendations);
+    return this.linkRecommendationsToNutrients(recommendations)
+      .then(recommendations => this.firebase.addRecommendations(recommendations));
+  }
+  
+  linkRecommendationsToNutrients(recommendations) {
+    return this.firebase.getNutrients().then(result => {
+      let nutrients  = result.val();
+      let nutrientIds = Object.keys(nutrients);
+      let linkedRecommendations = [];
+      for(let i=0; i<nutrientIds.length; i++) {
+        let linkedRecommendation = recommendations.recommendations[i];
+        linkedRecommendation.nutrientId = nutrientIds[i];
+        linkedRecommendations.push(linkedRecommendation);
+      }
+      recommendations.recommendations = linkedRecommendations;
+      return recommendations;
+    });
   }
 
   truncate() {
