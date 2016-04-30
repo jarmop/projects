@@ -2,8 +2,6 @@ import {Injectable, Inject} from 'angular2/core';
 import {FOODS} from '../mock/mock-foods';
 import {NutrientService} from "../service/nutrient.service";
 import {Adapter} from "../adapter/adapter";
-import {Mock} from "../adapter/mock";
-import {Firebase} from "../adapter/firebase";
 
 @Injectable()
 export class FoodService {
@@ -12,8 +10,7 @@ export class FoodService {
     ) {}
 
     getFoods() {
-        // return this._adapter.getFoods();
-        console.log(this._adapter.getFoods());
+        return this._adapter.getFoods();
     }
 
     getFoodsByIds(ids: number[]) {

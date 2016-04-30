@@ -12,6 +12,7 @@ import {FoodsComponent} from "./foods.component";
 import {Mock} from "../adapter/mock";
 import {Firebase} from "../adapter/firebase";
 import {Adapter} from "../adapter/adapter";
+import {Http, HTTP_PROVIDERS} from "angular2/http";
 
 @Component({
     selector: 'app',
@@ -23,7 +24,9 @@ import {Adapter} from "../adapter/adapter";
         RecommendationService,
         NutrientService,
         MealService,
-        provide('Adapter', {useClass: Firebase})
+        provide('Adapter', {useClass: Firebase}),
+        Http,
+        HTTP_PROVIDERS
     ]
 })
 

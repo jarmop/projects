@@ -14,6 +14,6 @@ uglifyjs --output app/vendor.min.js \
     node_modules/rxjs/bundles/Rx.js \
     node_modules/angular2/bundles/angular2.dev.js \
     node_modules/angular2/bundles/router.dev.js \
+    node_modules/angular2/bundles/http.dev.js \
     node_modules/jquery/dist/jquery.js \
-    node_modules/typeahead.js/dist/bloodhound.js \
-    bower_components/firebase/firebase.js
+    node_modules/typeahead.js/dist/bloodhound.js
