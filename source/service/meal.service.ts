@@ -1,15 +1,18 @@
-import {Injectable} from 'angular2/core';
+import {Injectable, Inject} from 'angular2/core';
 import {MEALS} from '../mock/mock-meals';
+import {Adapter} from "../adapter/adapter";
 
 @Injectable()
 export class MealService {
-    getMeals() {
-        return Promise.resolve(MEALS);
-    }
+  constructor(
+    @Inject('Adapter') private _adapter:Adapter
+  ) {}
 
-    getMeal(id: number) {
-        return Promise.resolve(MEALS).then(
-            meals => meals.filter(meal => meal.id === id)[0]
-        );
-    }
+  getMeals() {
+    return Promise.resolve(MEALS);
+  }
+
+  getMeal(id:number) {
+    return this._adapter.getMeal(id);
+  }
 }
