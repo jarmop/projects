@@ -3,23 +3,23 @@ import {FoodNutrient} from "./food-model";
 
 export class WebScraper {
   private mapNutrientIdToCsvIndex = {
-    1: 52,
-    2: 54,
-    3: 55,
-    4: 49,
-    5: 48,
-    6: 46,
-    8: 44,
-    9: 50,
-    10: 51,
-    11: 33,
-    12: 40,
-    13: 36,
-    14: 37,
-    15: 34,
-    16: 42,
-    18: 35,
-    19: 41
+    '-KGVgcdCZmbVXLHZRkrX': 52,
+    '-KGVgd4rwRG18j1CO-Ep': 54,
+    '-KGVgd71cV38Lt-tYyrA': 55,
+    '-KGVgd9DTW6MOL2DXkSj': 49,
+    '-KGVgdBP00KTfT8nLmTt': 48,
+    '-KGVgdDc035sNQQo_TUq': 46,
+    '-KGVgdFnsVdVfyEEG37i': 44,
+    '-KGVgdHzLAdtSu0bAOOf': 50,
+    '-KGVgdKAvBda89ht5oTk': 51,
+    '-KGVgdMLHl7HL_FtD1We': 33,
+    '-KGVgdOWSGfdw1idtOb2': 40,
+    '-KGVgdQipHYexWY5FLLv': 36,
+    '-KGVgdSujck0WYhAkN6G': 37,
+    '-KGVgdV7M4SUf9UhBVHA': 34,
+    '-KGVgdXIpnMl5DmYLoZ5': 42,
+    '-KGVgdZV7oPYN2FTtqG5': 35,
+    '-KGVgdaiYWiaaH7sOnhE': 41
   };
 
   /**
@@ -47,10 +47,10 @@ export class WebScraper {
     var values = lines[1].split(';');
     var nutrients = [];
     var counter = 0;
-    for (var i in this.mapNutrientIdToCsvIndex) {
+    for (let nutrientId of Object.keys(this.mapNutrientIdToCsvIndex)) {
       nutrients.push({
-        'nutrientId': parseInt(i),
-        'amount': parseFloat(values[this.mapNutrientIdToCsvIndex[i]].replace(' ', '').replace(',', '.'))
+        'nutrientId': nutrientId,
+        'amount': parseFloat(values[this.mapNutrientIdToCsvIndex[nutrientId]].replace(' ', '').replace(',', '.'))
       });
       counter++;
     }
