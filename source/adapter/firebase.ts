@@ -15,10 +15,8 @@ export class Firebase implements Adapter {
   async getFoodsByIds(ids:Array<number>) {
     let foods = [];
     for (let id of ids) {
-      foods.push(
-        await this.http.get('https://nutrient.firebaseio.com/foods/' + id + '.json')
-          .toPromise().then(response => response.json())
-      );
+      foods[id] = await this.http.get('https://nutrient.firebaseio.com/foods/' + id + '.json')
+        .toPromise().then(response => response.json());
     }
     return foods;
   }

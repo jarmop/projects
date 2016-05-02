@@ -80,7 +80,7 @@ export class MealComponent implements OnInit {
     for (let mealFood of this.meal.foods) {
       this.mealFoods.push({
         'foodId': mealFood.foodId,
-        'name': this.foods.find(food => food.id == mealFood.foodId).name,
+        'name': this.foods[mealFood.foodId].name,
         'amount': mealFood.amount
       });
     }
