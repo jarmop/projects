@@ -27,4 +27,14 @@ export class Firebase implements Adapter {
     return this.http.get('https://nutrient.firebaseio.com/meals/' + id + '.json')
       .toPromise().then(response => response.json());
   }
+
+  getNutrients() {
+    return this.http.get('https://nutrient.firebaseio.com/nutrients.json')
+      .toPromise().then(response => response.json());
+  }
+
+  getRecommendations(id:string) {
+    return this.http.get('https://nutrient.firebaseio.com/recommendations/' + id + '.json')
+      .toPromise().then(response => response.json());
+  }
 }

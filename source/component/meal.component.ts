@@ -22,11 +22,12 @@ export class MealComponent implements OnInit {
   private nutrients;
   private recommendations;
 
-  constructor(private _recommendationService:RecommendationService,
-              private _mealService:MealService,
-              private _foodService:FoodService,
-              private _nutrientService:NutrientService) {
-  }
+  constructor(
+    private _recommendationService:RecommendationService,
+    private _mealService:MealService,
+    private _foodService:FoodService,
+    private _nutrientService:NutrientService
+  ) {}
 
   ngOnInit() {
     this._mealService.getMeal(0).then(meal => {
@@ -39,8 +40,8 @@ export class MealComponent implements OnInit {
         this.foods = foods;
         this._nutrientService.getNutrients().then(nutrients => {
           this.nutrients = nutrients;
-          this._recommendationService.getRecommendations(1).then(recommendations => {
-            this.recommendations = recommendations;
+          this._recommendationService.getRecommendations('-KGaiyy8KagLuplWuw70').then(recommendations => {
+            this.recommendations = recommendations.recommendations;
             this.initMealFoods();
             this.initMealNutrients();
           });
