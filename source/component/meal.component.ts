@@ -87,11 +87,12 @@ export class MealComponent implements OnInit {
   }
 
   private initMealNutrients() {
-    for (let nutrient of this.nutrients) {
+    for (let nutrientId of Object.keys(this.nutrients)) {
+      let nutrient = this.nutrients[nutrientId];
       this.mealNutrients.push({
-        'nutrientId': nutrient.id,
+        'nutrientId': nutrientId,
         'name': nutrient.name,
-        'percent': this.getPercent(nutrient.id)
+        'percent': this.getPercent(nutrientId)
       });
     }
   }
@@ -99,7 +100,7 @@ export class MealComponent implements OnInit {
   private getPercent(nutrientId) {
     let amount = 0;
     for (let mealFood of this.mealFoods) {
-      let food = this.foods.find(food => food.id == mealFood.foodId);
+      let food = this.foods[mealFood.foodId];
       amount += food.nutrients.find(foodNutrient => foodNutrient.nutrientId == nutrientId).amount * mealFood.amount / 100;
     }
     let recommendation = this.recommendations.find(recommendation => recommendation.nutrientId == nutrientId);
