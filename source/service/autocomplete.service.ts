@@ -24,7 +24,8 @@ export class AutocompleteService {
 
     getFoodNames(foods) {
         let foodNames = [];
-        for (let food of foods) {
+        for (let foodId of Object.keys(foods)) {
+            let food = foods[foodId];
             this.mapFoodNameToId[food.name] = food.id;
             foodNames.push(food.name);
         }
