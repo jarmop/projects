@@ -37,9 +37,9 @@ export class WebScraper {
 
   }
 
-  private getUrl(fooddId) {
-    // return 'https://fineli.fi/fineli/fi/elintarvikkeet/' + fooddId + '/resultset.csv';
-    return 'http://localhost:8080/soybean.csv';
+  private getUrl(foodId) {
+    return 'https://fineli.fi/fineli/fi/elintarvikkeet/' + foodId + '/resultset.csv';
+    // return 'http://localhost:8080/soybean.csv';
   }
 
   parseNutrients(body):Array<FoodNutrient> {
@@ -48,9 +48,13 @@ export class WebScraper {
     var nutrients = [];
     var counter = 0;
     for (let nutrientId of Object.keys(this.mapNutrientIdToCsvIndex)) {
+      let amount = values[this.mapNutrientIdToCsvIndex[nutrientId]];
+      if (amount == 'N/A') {
+        continue;
+      }
       nutrients.push({
         'nutrientId': nutrientId,
-        'amount': parseFloat(values[this.mapNutrientIdToCsvIndex[nutrientId]].replace(' ', '').replace(',', '.'))
+        'amount': parseFloat(amount.replace(' ', '').replace(',', '.').replace('<', ''))
       });
       counter++;
     }

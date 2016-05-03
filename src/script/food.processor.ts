@@ -15,22 +15,22 @@ class FoodProcessor {
       id: 391,
       name: 'Soijapapu'
     },
-    // {
-    //   id: 29222,
-    //   name: 'Kasvishernekeitto'
-    // },
-    // {
-    //   id: 11212,
-    //   name: 'Auringonkukansiemen'
-    // },
-    // {
-    //   id: 3343,
-    //   name: 'Kaurahiutale'
-    // },
-    // {
-    //   id: 28934,
-    //   name: 'Banaani'
-    // }
+    {
+      id: 29222,
+      name: 'Kasvishernekeitto'
+    },
+    {
+      id: 11212,
+      name: 'Auringonkukansiemen'
+    },
+    {
+      id: 3343,
+      name: 'Kaurahiutale'
+    },
+    {
+      id: 28934,
+      name: 'Banaani'
+    }
   ];
 
   addFood(fineliFood) {
