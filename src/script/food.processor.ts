@@ -15,34 +15,40 @@ class FoodProcessor {
       id: 391,
       name: 'Soijapapu'
     },
-    {
-      id: 29222,
-      name: 'Kasvishernekeitto'
-    },
-    {
-      id: 11212,
-      name: 'Auringonkukansiemen'
-    },
-    {
-      id: 3343,
-      name: 'Kaurahiutale'
-    },
-    {
-      id: 28934,
-      name: 'Banaani'
-    }
+    // {
+    //   id: 29222,
+    //   name: 'Kasvishernekeitto'
+    // },
+    // {
+    //   id: 11212,
+    //   name: 'Auringonkukansiemen'
+    // },
+    // {
+    //   id: 3343,
+    //   name: 'Kaurahiutale'
+    // },
+    // {
+    //   id: 28934,
+    //   name: 'Banaani'
+    // }
   ];
 
-  addFood(id:number) {
-    return this.webScraper.getNutrients(id).then((nutrients) => {
-      return this.firebase.saveFood(this.getFoodModel(391, nutrients));
+  addFood(fineliFood) {
+    return this.webScraper.getNutrients(fineliFood.id).then((nutrients) => {
+      return this.firebase.saveFood(this.getFoodModel(fineliFood, nutrients));
     });
   }
 
-  private getFoodModel(id:number, nutrients:Array<FoodNutrient>):Food {
+  async addFoods() {
+    for (let fineliFood of this.fineliFoods) {
+      await this.addFood(fineliFood);
+    }
+  }
+
+  private getFoodModel(fineliFood, nutrients:Array<FoodNutrient>):Food {
     return {
-      "fineliId": id,
-      'name': this.getNameById(id),
+      "fineliId": fineliFood.id,
+      'name': fineliFood.name,
       'nutrients': nutrients
     };
   }
@@ -67,5 +73,5 @@ let foodProcessor = new FoodProcessor();
 if (process.argv.indexOf('truncate') != -1) {
   foodProcessor.truncate().then(finish('Truncated!'));
 } else {
-  (new FoodProcessor()).addFood(391).then(finish('Added food!'));
+  (new FoodProcessor()).addFoods().then(finish('Added foods!'));
 }
