@@ -9,7 +9,7 @@ export class AutocompleteService {
     private mapFoodNameToId: Object = {};
 
     constructor(private _foodService: FoodService) {
-        this._foodService.getFoods().then(foods => {
+        this._foodService.getAllFoods().then(foods => {
             this.bloodhound = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.whitespace,
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -26,7 +26,7 @@ export class AutocompleteService {
         let foodNames = [];
         for (let foodId of Object.keys(foods)) {
             let food = foods[foodId];
-            this.mapFoodNameToId[food.name] = food.id;
+            this.mapFoodNameToId[food.name] = foodId;
             foodNames.push(food.name);
         }
         return foodNames;

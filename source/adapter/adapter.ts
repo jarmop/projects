@@ -1,6 +1,7 @@
 export interface Adapter {
-  getFoods();
-  getFoodsByIds(ids:Array<number>);
+  getFood(id:number);
+  getFoods(ids:Array<number>);
+  getAllFoods();
   getMeal(id:number);
   getNutrients();
   getRecommendations(id: string);

@@ -13,7 +13,7 @@ export class FoodsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this._foodService.getFoods().then((foods) => {
+    this._foodService.getAllFoods().then((foods) => {
       this.foodIds = Object.keys(foods);
       this.foods = foods;
     });

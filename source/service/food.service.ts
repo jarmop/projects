@@ -9,18 +9,16 @@ export class FoodService {
     @Inject('Adapter') private _adapter:Adapter
   ) {}
 
-  getFoods() {
-    return this._adapter.getFoods();
-  }
-
-  getFoodsByIds(ids:number[]) {
-    return this._adapter.getFoodsByIds(ids);
-  }
-
   getFood(id:number) {
-    return Promise.resolve(FOODS).then(
-      foods => foods.filter(food => food.id === id)[0]
-    );
+    return this._adapter.getFood(id);
+  }
+
+  getFoods(ids:number[]) {
+    return this._adapter.getFoods(ids);
+  }
+
+  getAllFoods() {
+    return this._adapter.getAllFoods();
   }
 
   getFoodVitamins(food) {

@@ -7,16 +7,20 @@ import 'rxjs/add/operator/toPromise';
 export class Firebase implements Adapter {
   constructor(private http: Http) {}
 
-  getFoods() {
+  getFood(id:number) {
+    return this.http.get('https://nutrient.firebaseio.com/foods/' + id + '.json')
+      .toPromise().then(response => response.json());
+  }
+
+  getAllFoods() {
     return this.http.get('https://nutrient.firebaseio.com/foods.json')
       .toPromise().then(response => response.json());
   }
 
-  async getFoodsByIds(ids:Array<number>) {
+  async getFoods(ids:Array<number>) {
     let foods = [];
     for (let id of ids) {
-      foods[id] = await this.http.get('https://nutrient.firebaseio.com/foods/' + id + '.json')
-        .toPromise().then(response => response.json());
+      foods[id] = await this.getFood(id);
     }
     return foods;
   }

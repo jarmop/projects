@@ -36,7 +36,7 @@ export class MealComponent implements OnInit {
       for (let food of meal.foods) {
         foodIds.push(food.foodId)
       }
-      this._foodService.getFoodsByIds(foodIds).then(foods => {
+      this._foodService.getFoods(foodIds).then(foods => {
         this.foods = foods;
         this._nutrientService.getNutrients().then(nutrients => {
           this.nutrients = nutrients;
@@ -67,9 +67,9 @@ export class MealComponent implements OnInit {
   }
 
   private updateFoods(mealFood:MealFood) {
-    if (!this.foods.find(food => food.id == mealFood.foodId)) {
+    if (this.foods.indexOf(mealFood.foodId) == -1) {
       return this._foodService.getFood(mealFood.foodId).then(food => {
-        this.foods.push(food);
+        this.foods[mealFood.foodId] = food;
       });
     } else {
       return Promise.resolve();
