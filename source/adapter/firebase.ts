@@ -17,12 +17,15 @@ export class Firebase implements Adapter {
       .toPromise().then(response => response.json());
   }
 
-  async getFoods(ids:Array<number>) {
+  getFoods(ids:Array<number>) {
     let foods = [];
+    let promises = [];
     for (let id of ids) {
-      foods[id] = await this.getFood(id);
+      promises.push(
+        this.getFood(id).then(food => foods[id] = food)
+      );
     }
-    return foods;
+    return Promise.all(promises).then(() => foods);
   }
 
   getMeal(id:number) {
