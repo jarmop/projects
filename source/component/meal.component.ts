@@ -31,26 +31,55 @@ export class MealComponent implements OnInit {
 
   ngOnInit() {
     Promise.all([
-      this._mealService.getMeal(0).then(meal => {
-        this.meal = meal;
-        let foodIds = [];
-        for (let food of meal.foods) {
-          foodIds.push(food.foodId)
-        }
-        return this._foodService.getFoods(foodIds).then(foods => {
-          this.foods = foods;
-          this.initMealFoods();
-        });
-      }),
-      this._nutrientService.getNutrients().then(nutrients => {
-        this.nutrients = nutrients;
-      }),
-      this._recommendationService.getRecommendations('-KGaiyy8KagLuplWuw70').then(recommendations => {
-        this.recommendations = recommendations.recommendations;
-      })
+      this.initMealFoods(),
+      this.initNutrients(),
+      this.initRecommendations()
     ]).then(() => {
       this.initMealNutrients();
     });
+  }
+
+  private initMealFoods() {
+    return this._mealService.getMeal(0).then(meal => {
+      this.meal = meal;
+      let foodIds = [];
+      for (let food of meal.foods) {
+        foodIds.push(food.foodId)
+      }
+      return this._foodService.getFoods(foodIds).then(foods => {
+        this.foods = foods;
+        for (let mealFood of this.meal.foods) {
+          this.mealFoods.push({
+            'foodId': mealFood.foodId,
+            'name': this.foods[mealFood.foodId].name,
+            'amount': mealFood.amount
+          });
+        }
+      });
+    });
+  }
+
+  private initNutrients() {
+    this._nutrientService.getNutrients().then(nutrients => {
+      this.nutrients = nutrients;
+    })
+  }
+
+  private initRecommendations() {
+    this._recommendationService.getRecommendations('-KGaiyy8KagLuplWuw70').then(recommendations => {
+      this.recommendations = recommendations.recommendations;
+    })
+  }
+
+  private initMealNutrients() {
+    for (let nutrientId of Object.keys(this.nutrients)) {
+      let nutrient = this.nutrients[nutrientId];
+      this.mealNutrients.push({
+        'nutrientId': nutrientId,
+        'name': nutrient.name,
+        'percent': this.getPercent(nutrientId)
+      });
+    }
   }
 
   goBack() {
@@ -73,27 +102,6 @@ export class MealComponent implements OnInit {
     if (this.foods.indexOf(mealFood.foodId) == -1) {
       await this._foodService.getFood(mealFood.foodId).then(food => {
         this.foods[mealFood.foodId] = food;
-      });
-    }
-  }
-
-  private initMealFoods() {
-    for (let mealFood of this.meal.foods) {
-      this.mealFoods.push({
-        'foodId': mealFood.foodId,
-        'name': this.foods[mealFood.foodId].name,
-        'amount': mealFood.amount
-      });
-    }
-  }
-
-  private initMealNutrients() {
-    for (let nutrientId of Object.keys(this.nutrients)) {
-      let nutrient = this.nutrients[nutrientId];
-      this.mealNutrients.push({
-        'nutrientId': nutrientId,
-        'name': nutrient.name,
-        'percent': this.getPercent(nutrientId)
       });
     }
   }
