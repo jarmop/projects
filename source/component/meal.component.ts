@@ -66,13 +66,11 @@ export class MealComponent implements OnInit {
     this.updateFoods(mealFood).then(() => this.updateMealNutrients());
   }
 
-  private updateFoods(mealFood:MealFood) {
+  private async updateFoods(mealFood:MealFood) {
     if (this.foods.indexOf(mealFood.foodId) == -1) {
-      return this._foodService.getFood(mealFood.foodId).then(food => {
+      await this._foodService.getFood(mealFood.foodId).then(food => {
         this.foods[mealFood.foodId] = food;
       });
-    } else {
-      return Promise.resolve();
     }
   }
 
