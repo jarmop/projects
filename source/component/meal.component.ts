@@ -30,30 +30,27 @@ export class MealComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.init();
-  }
-
-  private async init() {
-    let date = new Date();
-    let starttime = date.getTime();
-    await this._mealService.getMeal(0).then(meal => {
-      this.meal = meal;
-      let foodIds = [];
-      for (let food of meal.foods) {
-        foodIds.push(food.foodId)
-      }
-      this._foodService.getFoods(foodIds).then(foods => {
-        this.foods = foods;
-      });
+    Promise.all([
+      this._mealService.getMeal(0).then(meal => {
+        this.meal = meal;
+        let foodIds = [];
+        for (let food of meal.foods) {
+          foodIds.push(food.foodId)
+        }
+        return this._foodService.getFoods(foodIds).then(foods => {
+          this.foods = foods;
+          this.initMealFoods();
+        });
+      }),
+      this._nutrientService.getNutrients().then(nutrients => {
+        this.nutrients = nutrients;
+      }),
+      this._recommendationService.getRecommendations('-KGaiyy8KagLuplWuw70').then(recommendations => {
+        this.recommendations = recommendations.recommendations;
+      })
+    ]).then(() => {
+      this.initMealNutrients();
     });
-    await this._nutrientService.getNutrients().then(nutrients => {
-      this.nutrients = nutrients;
-    });
-    await this._recommendationService.getRecommendations('-KGaiyy8KagLuplWuw70').then(recommendations => {
-      this.recommendations = recommendations.recommendations;
-    });
-    this.initMealFoods();
-    this.initMealNutrients();
   }
 
   goBack() {
