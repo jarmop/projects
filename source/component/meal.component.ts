@@ -110,7 +110,9 @@ export class MealComponent implements OnInit {
     let amount = 0;
     for (let mealFood of this.mealFoods) {
       let food = this.foods[mealFood.foodId];
-      amount += food.nutrients.find(foodNutrient => foodNutrient.nutrientId == nutrientId).amount * mealFood.amount / 100;
+      let nutrient = food.nutrients.find(foodNutrient => foodNutrient.nutrientId == nutrientId);
+      // TODO show missing data
+      amount += nutrient ? nutrient.amount * mealFood.amount / 100 : 0;
     }
     let recommendation = this.recommendations.find(recommendation => recommendation.nutrientId == nutrientId);
     return amount / recommendation.min * 100;
