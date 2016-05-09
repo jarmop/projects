@@ -21,6 +21,7 @@ export class MealComponent implements OnInit {
   private foods;
   private nutrients;
   private recommendations;
+  private mealId = 0;
 
   constructor(
     private _recommendationService:RecommendationService,
@@ -40,15 +41,16 @@ export class MealComponent implements OnInit {
   }
 
   private initMealFoods() {
-    return this._mealService.getMeal(0).then(meal => {
+    return this._mealService.getMeal(this.mealId).then(meal => {
       this.meal = meal;
       let foodIds = [];
-      for (let food of meal.foods) {
-        foodIds.push(food.foodId)
+      for (let mealFoodId of Object.keys(meal.foods)) {
+        foodIds.push(meal.foods[mealFoodId].foodId);
       }
       return this._foodService.getFoods(foodIds).then(foods => {
         this.foods = foods;
-        for (let mealFood of this.meal.foods) {
+        for (let mealFoodId of Object.keys(meal.foods)) {
+          let mealFood = meal.foods[mealFoodId];
           this.mealFoods.push({
             'foodId': mealFood.foodId,
             'name': this.foods[mealFood.foodId].name,
@@ -95,6 +97,7 @@ export class MealComponent implements OnInit {
   }
 
   addMealFood(mealFood:MealFood) {
+    this._mealService.addFood(this.mealId, mealFood.foodId, mealFood.amount);
     this.updateFoods(mealFood).then(() => this.updateMealNutrients());
   }
 

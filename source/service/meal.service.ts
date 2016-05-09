@@ -15,4 +15,8 @@ export class MealService {
   getMeal(id:number) {
     return this._adapter.getMeal(id);
   }
+
+  addFood(mealId, foodId, foodAmount) {
+    this._adapter.addMealFood(mealId, foodId, foodAmount);
+  }
 }

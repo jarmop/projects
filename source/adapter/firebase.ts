@@ -42,4 +42,13 @@ export class Firebase implements Adapter {
     return this.http.get('https://nutrient.firebaseio.com/recommendations/' + id + '.json')
       .toPromise().then(response => response.json());
   }
+
+  addMealFood(mealId:number, foodId:string, foodAmount:number) {
+    this.http.post(
+      'https://nutrient.firebaseio.com/meals/' + mealId + '/foods.json',
+      JSON.stringify({foodId: foodId, amount: foodAmount})
+    ).toPromise().then(response => {
+      console.log(response);
+    });
+  }
 }

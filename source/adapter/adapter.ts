@@ -5,4 +5,5 @@ export interface Adapter {
   getMeal(id:number);
   getNutrients();
   getRecommendations(id: string);
+  addMealFood(mealId:number, foodId:string, foodAmount:number);
 }
