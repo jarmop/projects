@@ -19,4 +19,8 @@ export class MealService {
   addFood(mealId, foodId, foodAmount) {
     this._adapter.addMealFood(mealId, foodId, foodAmount);
   }
+  
+  removeFood(mealId:number, mealFoodId:string) {
+    this._adapter.removeMealFood(mealId, mealFoodId);
+  }  
 }

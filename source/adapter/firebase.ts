@@ -48,7 +48,15 @@ export class Firebase implements Adapter {
       'https://nutrient.firebaseio.com/meals/' + mealId + '/foods.json',
       JSON.stringify({foodId: foodId, amount: foodAmount})
     ).toPromise().then(response => {
-      console.log(response);
+      // console.log(response);
+    });
+  }
+  
+  removeMealFood(mealId:number, mealFoodId:string) {
+    this.http.delete(
+      'https://nutrient.firebaseio.com/meals/' + mealId + '/foods/' + mealFoodId + '.json'
+    ).toPromise().then(response => {
+        // console.log(response)
     });
   }
 }

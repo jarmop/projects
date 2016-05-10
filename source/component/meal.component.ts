@@ -42,7 +42,6 @@ export class MealComponent implements OnInit {
 
   private initMealFoods() {
     return this._mealService.getMeal(this.mealId).then(meal => {
-      this.meal = meal;
       let foodIds = [];
       for (let mealFoodId of Object.keys(meal.foods)) {
         foodIds.push(meal.foods[mealFoodId].foodId);
@@ -52,6 +51,7 @@ export class MealComponent implements OnInit {
         for (let mealFoodId of Object.keys(meal.foods)) {
           let mealFood = meal.foods[mealFoodId];
           this.mealFoods.push({
+            'id': mealFoodId,
             'foodId': mealFood.foodId,
             'name': this.foods[mealFood.foodId].name,
             'amount': mealFood.amount
@@ -88,7 +88,8 @@ export class MealComponent implements OnInit {
     window.history.back();
   }
 
-  removeMealFood() {
+  removeMealFood(mealFood:MealFood) {
+    this._mealService.removeFood(this.mealId, mealFood.id);
     this.updateMealNutrients();
   }
 

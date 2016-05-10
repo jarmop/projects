@@ -6,4 +6,5 @@ export interface Adapter {
   getNutrients();
   getRecommendations(id: string);
   addMealFood(mealId:number, foodId:string, foodAmount:number);
+  removeMealFood(mealId:number, mealFoodId:string);
 }
