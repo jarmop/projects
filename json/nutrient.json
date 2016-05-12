@@ -1,0 +1,663 @@
+{
+  "foods": {
+    "-KGryRKPL1dt_pvg4r6b": {
+      "fineliId": 33122,
+      "name": "Soijamaito",
+      "nutrients": [
+        {
+          "amount": 0.2,
+          "nutrientId": "-KGVgcdCZmbVXLHZRkrX"
+        },
+        {
+          "amount": 0.8,
+          "nutrientId": "-KGVgd4rwRG18j1CO-Ep"
+        },
+        {
+          "amount": 0.1,
+          "nutrientId": "-KGVgd71cV38Lt-tYyrA"
+        },
+        {
+          "amount": 0.09,
+          "nutrientId": "-KGVgd9DTW6MOL2DXkSj"
+        },
+        {
+          "amount": 0.21,
+          "nutrientId": "-KGVgdBP00KTfT8nLmTt"
+        },
+        {
+          "amount": 0.2,
+          "nutrientId": "-KGVgdDc035sNQQo_TUq"
+        },
+        {
+          "amount": 30.7,
+          "nutrientId": "-KGVgdFnsVdVfyEEG37i"
+        },
+        {
+          "amount": 0.4,
+          "nutrientId": "-KGVgdHzLAdtSu0bAOOf"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgdKAvBda89ht5oTk"
+        },
+        {
+          "amount": 120,
+          "nutrientId": "-KGVgdMLHl7HL_FtD1We"
+        },
+        {
+          "amount": 38.8,
+          "nutrientId": "-KGVgdOWSGfdw1idtOb2"
+        },
+        {
+          "amount": 143.6,
+          "nutrientId": "-KGVgdQipHYexWY5FLLv"
+        },
+        {
+          "amount": 18.7,
+          "nutrientId": "-KGVgdSujck0WYhAkN6G"
+        },
+        {
+          "amount": 0.7,
+          "nutrientId": "-KGVgdV7M4SUf9UhBVHA"
+        },
+        {
+          "amount": 0.1,
+          "nutrientId": "-KGVgdXIpnMl5DmYLoZ5"
+        },
+        {
+          "amount": 0.5,
+          "nutrientId": "-KGVgdZV7oPYN2FTtqG5"
+        },
+        {
+          "amount": 1.6,
+          "nutrientId": "-KGVgdaiYWiaaH7sOnhE"
+        }
+      ]
+    },
+    "-KGryRc7dHgvLoL0QMdk": {
+      "fineliId": 391,
+      "name": "Soijapapu",
+      "nutrients": [
+        {
+          "amount": 2,
+          "nutrientId": "-KGVgcdCZmbVXLHZRkrX"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgd4rwRG18j1CO-Ep"
+        },
+        {
+          "amount": 0.8,
+          "nutrientId": "-KGVgd71cV38Lt-tYyrA"
+        },
+        {
+          "amount": 1.1,
+          "nutrientId": "-KGVgd9DTW6MOL2DXkSj"
+        },
+        {
+          "amount": 0.31,
+          "nutrientId": "-KGVgdBP00KTfT8nLmTt"
+        },
+        {
+          "amount": 2.2,
+          "nutrientId": "-KGVgdDc035sNQQo_TUq"
+        },
+        {
+          "amount": 370,
+          "nutrientId": "-KGVgdFnsVdVfyEEG37i"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgdHzLAdtSu0bAOOf"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgdKAvBda89ht5oTk"
+        },
+        {
+          "amount": 163,
+          "nutrientId": "-KGVgdMLHl7HL_FtD1We"
+        },
+        {
+          "amount": 467,
+          "nutrientId": "-KGVgdOWSGfdw1idtOb2"
+        },
+        {
+          "amount": 1730,
+          "nutrientId": "-KGVgdQipHYexWY5FLLv"
+        },
+        {
+          "amount": 225,
+          "nutrientId": "-KGVgdSujck0WYhAkN6G"
+        },
+        {
+          "amount": 8.4,
+          "nutrientId": "-KGVgdV7M4SUf9UhBVHA"
+        },
+        {
+          "amount": 1,
+          "nutrientId": "-KGVgdXIpnMl5DmYLoZ5"
+        },
+        {
+          "amount": 6,
+          "nutrientId": "-KGVgdZV7oPYN2FTtqG5"
+        },
+        {
+          "amount": 19,
+          "nutrientId": "-KGVgdaiYWiaaH7sOnhE"
+        }
+      ]
+    },
+    "-KGryRf-f8D-S0vFlOCS": {
+      "fineliId": 29222,
+      "name": "Kasvishernekeitto",
+      "nutrients": [
+        {
+          "amount": 69.8,
+          "nutrientId": "-KGVgcdCZmbVXLHZRkrX"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgd4rwRG18j1CO-Ep"
+        },
+        {
+          "amount": 0.1,
+          "nutrientId": "-KGVgd71cV38Lt-tYyrA"
+        },
+        {
+          "amount": 0.1,
+          "nutrientId": "-KGVgd9DTW6MOL2DXkSj"
+        },
+        {
+          "amount": 0.02,
+          "nutrientId": "-KGVgdBP00KTfT8nLmTt"
+        },
+        {
+          "amount": 0.7,
+          "nutrientId": "-KGVgdDc035sNQQo_TUq"
+        },
+        {
+          "amount": 7.4,
+          "nutrientId": "-KGVgdFnsVdVfyEEG37i"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgdHzLAdtSu0bAOOf"
+        },
+        {
+          "amount": 0.6,
+          "nutrientId": "-KGVgdKAvBda89ht5oTk"
+        },
+        {
+          "amount": 20.3,
+          "nutrientId": "-KGVgdMLHl7HL_FtD1We"
+        },
+        {
+          "amount": 81,
+          "nutrientId": "-KGVgdOWSGfdw1idtOb2"
+        },
+        {
+          "amount": 230.9,
+          "nutrientId": "-KGVgdQipHYexWY5FLLv"
+        },
+        {
+          "amount": 24.9,
+          "nutrientId": "-KGVgdSujck0WYhAkN6G"
+        },
+        {
+          "amount": 1.1,
+          "nutrientId": "-KGVgdV7M4SUf9UhBVHA"
+        },
+        {
+          "amount": 0.7,
+          "nutrientId": "-KGVgdXIpnMl5DmYLoZ5"
+        },
+        {
+          "amount": 3.3,
+          "nutrientId": "-KGVgdZV7oPYN2FTtqG5"
+        },
+        {
+          "amount": 0.5,
+          "nutrientId": "-KGVgdaiYWiaaH7sOnhE"
+        }
+      ]
+    },
+    "-KGryRhmmVQSwrpSpRXf": {
+      "fineliId": 11212,
+      "name": "Auringonkukansiemen",
+      "nutrients": [
+        {
+          "amount": 2.5,
+          "nutrientId": "-KGVgcdCZmbVXLHZRkrX"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgd4rwRG18j1CO-Ep"
+        },
+        {
+          "amount": 34.5,
+          "nutrientId": "-KGVgd71cV38Lt-tYyrA"
+        },
+        {
+          "amount": 2.3,
+          "nutrientId": "-KGVgd9DTW6MOL2DXkSj"
+        },
+        {
+          "amount": 0.25,
+          "nutrientId": "-KGVgdBP00KTfT8nLmTt"
+        },
+        {
+          "amount": 4.5,
+          "nutrientId": "-KGVgdDc035sNQQo_TUq"
+        },
+        {
+          "amount": 60,
+          "nutrientId": "-KGVgdFnsVdVfyEEG37i"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgdHzLAdtSu0bAOOf"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgdKAvBda89ht5oTk"
+        },
+        {
+          "amount": 145,
+          "nutrientId": "-KGVgdMLHl7HL_FtD1We"
+        },
+        {
+          "amount": 947,
+          "nutrientId": "-KGVgdOWSGfdw1idtOb2"
+        },
+        {
+          "amount": 898,
+          "nutrientId": "-KGVgdQipHYexWY5FLLv"
+        },
+        {
+          "amount": 419,
+          "nutrientId": "-KGVgdSujck0WYhAkN6G"
+        },
+        {
+          "amount": 5.4,
+          "nutrientId": "-KGVgdV7M4SUf9UhBVHA"
+        },
+        {
+          "amount": 7.2,
+          "nutrientId": "-KGVgdXIpnMl5DmYLoZ5"
+        },
+        {
+          "amount": 49,
+          "nutrientId": "-KGVgdaiYWiaaH7sOnhE"
+        }
+      ]
+    },
+    "-KGryRkpOEfMstYu_cOS": {
+      "fineliId": 3343,
+      "name": "Kaurahiutale",
+      "nutrients": [
+        {
+          "amount": 77.4,
+          "nutrientId": "-KGVgcdCZmbVXLHZRkrX"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgd4rwRG18j1CO-Ep"
+        },
+        {
+          "amount": 0.7,
+          "nutrientId": "-KGVgd71cV38Lt-tYyrA"
+        },
+        {
+          "amount": 0.07,
+          "nutrientId": "-KGVgd9DTW6MOL2DXkSj"
+        },
+        {
+          "amount": 0.16,
+          "nutrientId": "-KGVgdBP00KTfT8nLmTt"
+        },
+        {
+          "amount": 0.9,
+          "nutrientId": "-KGVgdDc035sNQQo_TUq"
+        },
+        {
+          "amount": 79.1,
+          "nutrientId": "-KGVgdFnsVdVfyEEG37i"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgdHzLAdtSu0bAOOf"
+        },
+        {
+          "amount": 78,
+          "nutrientId": "-KGVgdKAvBda89ht5oTk"
+        },
+        {
+          "amount": 48,
+          "nutrientId": "-KGVgdMLHl7HL_FtD1We"
+        },
+        {
+          "amount": 90,
+          "nutrientId": "-KGVgdOWSGfdw1idtOb2"
+        },
+        {
+          "amount": 400,
+          "nutrientId": "-KGVgdQipHYexWY5FLLv"
+        },
+        {
+          "amount": 24,
+          "nutrientId": "-KGVgdSujck0WYhAkN6G"
+        },
+        {
+          "amount": 1.1,
+          "nutrientId": "-KGVgdV7M4SUf9UhBVHA"
+        },
+        {
+          "amount": 0.1,
+          "nutrientId": "-KGVgdXIpnMl5DmYLoZ5"
+        },
+        {
+          "amount": 1,
+          "nutrientId": "-KGVgdZV7oPYN2FTtqG5"
+        },
+        {
+          "amount": 0.4,
+          "nutrientId": "-KGVgdaiYWiaaH7sOnhE"
+        }
+      ]
+    },
+    "-KGryRnkfiwlUY4GDPyO": {
+      "fineliId": 28934,
+      "name": "Banaani",
+      "nutrients": [
+        {
+          "amount": 1.1,
+          "nutrientId": "-KGVgcdCZmbVXLHZRkrX"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgd4rwRG18j1CO-Ep"
+        },
+        {
+          "amount": 0.1,
+          "nutrientId": "-KGVgd71cV38Lt-tYyrA"
+        },
+        {
+          "amount": 0.03,
+          "nutrientId": "-KGVgd9DTW6MOL2DXkSj"
+        },
+        {
+          "amount": 0.04,
+          "nutrientId": "-KGVgdBP00KTfT8nLmTt"
+        },
+        {
+          "amount": 0.5,
+          "nutrientId": "-KGVgdDc035sNQQo_TUq"
+        },
+        {
+          "amount": 8.4,
+          "nutrientId": "-KGVgdFnsVdVfyEEG37i"
+        },
+        {
+          "amount": 0,
+          "nutrientId": "-KGVgdHzLAdtSu0bAOOf"
+        },
+        {
+          "amount": 6.7,
+          "nutrientId": "-KGVgdKAvBda89ht5oTk"
+        },
+        {
+          "amount": 4.7,
+          "nutrientId": "-KGVgdMLHl7HL_FtD1We"
+        },
+        {
+          "amount": 17.4,
+          "nutrientId": "-KGVgdOWSGfdw1idtOb2"
+        },
+        {
+          "amount": 241.2,
+          "nutrientId": "-KGVgdQipHYexWY5FLLv"
+        },
+        {
+          "amount": 22.1,
+          "nutrientId": "-KGVgdSujck0WYhAkN6G"
+        },
+        {
+          "amount": 0.3,
+          "nutrientId": "-KGVgdV7M4SUf9UhBVHA"
+        },
+        {
+          "amount": 0.1,
+          "nutrientId": "-KGVgdXIpnMl5DmYLoZ5"
+        },
+        {
+          "amount": 0.7,
+          "nutrientId": "-KGVgdZV7oPYN2FTtqG5"
+        },
+        {
+          "amount": 0.7,
+          "nutrientId": "-KGVgdaiYWiaaH7sOnhE"
+        }
+      ]
+    }
+  },
+  "meals": [
+    {
+      "foods": {
+        "0": {
+          "amount": 100,
+          "foodId": "-KGryRKPL1dt_pvg4r6b"
+        },
+        "1": {
+          "amount": 100,
+          "foodId": "-KGryRkpOEfMstYu_cOS"
+        },
+        "-KHMJzAqztTeHR6OtmH6": {
+          "amount": 45,
+          "foodId": "-KGryRnkfiwlUY4GDPyO"
+        },
+        "-KHOHJuuzhJ8AnS8xd6l": {
+          "amount": "56",
+          "foodId": "-KGryRf-f8D-S0vFlOCS"
+        },
+        "-KHOHkwhNJW0dSJoo9Yw": {
+          "amount": "45",
+          "foodId": "-KGryRf-f8D-S0vFlOCS"
+        }
+      },
+      "name": "Aamupala"
+    }
+  ],
+  "nutrients": {
+    "-KGVgcdCZmbVXLHZRkrX": {
+      "id": 1,
+      "name": "A-vitamiini",
+      "unit": "µg"
+    },
+    "-KGVgd4rwRG18j1CO-Ep": {
+      "id": 2,
+      "name": "D-vitamiini",
+      "unit": "µg"
+    },
+    "-KGVgd71cV38Lt-tYyrA": {
+      "id": 3,
+      "name": "E-vitamiini",
+      "unit": "mg"
+    },
+    "-KGVgd9DTW6MOL2DXkSj": {
+      "id": 4,
+      "name": "Tiamiini",
+      "unit": "mg"
+    },
+    "-KGVgdBP00KTfT8nLmTt": {
+      "id": 5,
+      "name": "Riboflaviini",
+      "unit": "mg"
+    },
+    "-KGVgdDc035sNQQo_TUq": {
+      "id": 6,
+      "name": "Niasiini",
+      "unit": "mg"
+    },
+    "-KGVgdFnsVdVfyEEG37i": {
+      "id": 8,
+      "name": "Folaatti",
+      "unit": "µg"
+    },
+    "-KGVgdHzLAdtSu0bAOOf": {
+      "id": 9,
+      "name": "B12-vitamiini",
+      "unit": "µg"
+    },
+    "-KGVgdKAvBda89ht5oTk": {
+      "id": 10,
+      "name": "C-vitamiini",
+      "unit": "mg"
+    },
+    "-KGVgdMLHl7HL_FtD1We": {
+      "id": 11,
+      "name": "Kalsium",
+      "unit": "mg"
+    },
+    "-KGVgdOWSGfdw1idtOb2": {
+      "id": 12,
+      "name": "Fosfori",
+      "unit": "mg"
+    },
+    "-KGVgdQipHYexWY5FLLv": {
+      "id": 13,
+      "name": "Kalium",
+      "unit": "mg"
+    },
+    "-KGVgdSujck0WYhAkN6G": {
+      "id": 14,
+      "name": "Magnesium",
+      "unit": "mg"
+    },
+    "-KGVgdV7M4SUf9UhBVHA": {
+      "id": 15,
+      "name": "Rauta",
+      "unit": "mg"
+    },
+    "-KGVgdXIpnMl5DmYLoZ5": {
+      "id": 16,
+      "name": "Sinkki",
+      "unit": "mg"
+    },
+    "-KGVgdZV7oPYN2FTtqG5": {
+      "id": 18,
+      "name": "Jodi",
+      "unit": "µg"
+    },
+    "-KGVgdaiYWiaaH7sOnhE": {
+      "id": 19,
+      "name": "Seleeni",
+      "unit": "µg"
+    }
+  },
+  "recommendations": {
+    "-KGaiyy8KagLuplWuw70": {
+      "age": 30,
+      "recommendations": [
+        {
+          "max": 3000,
+          "min": 900,
+          "nutrientDensity": 336,
+          "nutrientId": "-KGVgcdCZmbVXLHZRkrX"
+        },
+        {
+          "max": 100,
+          "min": 10,
+          "nutrientDensity": 5.5,
+          "nutrientId": "-KGVgd4rwRG18j1CO-Ep"
+        },
+        {
+          "max": 300,
+          "min": 10,
+          "nutrientDensity": 3.8,
+          "nutrientId": "-KGVgd71cV38Lt-tYyrA"
+        },
+        {
+          "min": 1.5,
+          "nutrientDensity": 0.5,
+          "nutrientId": "-KGVgd9DTW6MOL2DXkSj"
+        },
+        {
+          "min": 1.7,
+          "nutrientDensity": 0.6,
+          "nutrientId": "-KGVgdBP00KTfT8nLmTt"
+        },
+        {
+          "min": 20,
+          "nutrientDensity": 6.7,
+          "nutrientId": "-KGVgdDc035sNQQo_TUq"
+        },
+        {
+          "max": 1000,
+          "min": 300,
+          "nutrientDensity": 189,
+          "nutrientId": "-KGVgdFnsVdVfyEEG37i"
+        },
+        {
+          "min": 2,
+          "nutrientDensity": 0.8,
+          "nutrientId": "-KGVgdHzLAdtSu0bAOOf"
+        },
+        {
+          "max": 1000,
+          "min": 75,
+          "nutrientDensity": 34,
+          "nutrientId": "-KGVgdKAvBda89ht5oTk"
+        },
+        {
+          "max": 2500,
+          "min": 800,
+          "nutrientDensity": 420,
+          "nutrientId": "-KGVgdMLHl7HL_FtD1We"
+        },
+        {
+          "max": 5000,
+          "min": 600,
+          "nutrientDensity": 336,
+          "nutrientId": "-KGVgdOWSGfdw1idtOb2"
+        },
+        {
+          "max": 3700,
+          "min": 3500,
+          "nutrientDensity": 1500,
+          "nutrientId": "-KGVgdQipHYexWY5FLLv"
+        },
+        {
+          "min": 350,
+          "nutrientDensity": 147,
+          "nutrientId": "-KGVgdSujck0WYhAkN6G"
+        },
+        {
+          "max": 25,
+          "min": 9,
+          "nutrientDensity": 6.7,
+          "nutrientId": "-KGVgdV7M4SUf9UhBVHA"
+        },
+        {
+          "max": 25,
+          "min": 9,
+          "nutrientDensity": 4.6,
+          "nutrientId": "-KGVgdXIpnMl5DmYLoZ5"
+        },
+        {
+          "max": 600,
+          "min": 150,
+          "nutrientDensity": 71,
+          "nutrientId": "-KGVgdZV7oPYN2FTtqG5"
+        },
+        {
+          "max": 300,
+          "min": 60,
+          "nutrientDensity": 23,
+          "nutrientId": "-KGVgdaiYWiaaH7sOnhE"
+        }
+      ],
+      "sex": "m"
+    }
+  }
+}
