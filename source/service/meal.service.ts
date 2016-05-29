@@ -16,11 +16,15 @@ export class MealService {
     return this._adapter.getMeal(id);
   }
 
-  addFood(mealId, foodId, foodAmount) {
+  addFood(mealId:number, foodId:string, foodAmount:number) {
     this._adapter.addMealFood(mealId, foodId, foodAmount);
+  }
+
+  updateFood(mealId:number, mealFoodId:string, foodAmount:number) {
+    this._adapter.updateMealFood(mealId, mealFoodId, foodAmount);
   }
   
   removeFood(mealId:number, mealFoodId:string) {
     this._adapter.removeMealFood(mealId, mealFoodId);
-  }  
+  }
 }

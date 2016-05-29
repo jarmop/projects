@@ -64,13 +64,13 @@ export class MealComponent implements OnInit {
   private initNutrients() {
     this._nutrientService.getNutrients().then(nutrients => {
       this.nutrients = nutrients;
-    })
+    });
   }
 
   private initRecommendations() {
     this._recommendationService.getRecommendations('-KGaiyy8KagLuplWuw70').then(recommendations => {
       this.recommendations = recommendations.recommendations;
-    })
+    });
   }
 
   private initMealNutrients() {
@@ -94,6 +94,7 @@ export class MealComponent implements OnInit {
   }
 
   saveMealFood(mealFood:MealFood) {
+    this._mealService.updateFood(this.mealId, mealFood.id, mealFood.amount);
     this.updateFoods(mealFood).then(() => this.updateMealNutrients());
   }
 
