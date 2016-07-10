@@ -1,0 +1,14 @@
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /usr/local/Cellar/node/5.11.0/bin/node /usr/local/bin/firebase serve
+[debug] CLI Version:  3.0.4
+[debug] Platform:     darwin
+[debug] Node Version: v5.11.0
+[debug] Time:         Sun Jul 10 2016 14:53:44 GMT+0300 (EEST)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[info] Starting Firebase development server...
+[info] 
+[info] Project Directory: /Users/jarmo/development/projects/visual-algorithms
+[info] Public Directory: public
+[info] 
+[info] Server listening at: http://localhost:5000
