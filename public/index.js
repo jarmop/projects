@@ -1,11 +1,37 @@
 var config = {
   nodeSize: 30,
+  gridSize: 15,
+  canvasWidthGrids: 40, // grids
+  canvasHeightGrids: 40, // grids
   strokeWidth: 3,
   nodeDistance: 10,
-  treeNodeDistanceX: 10
+  treeNodeDistanceX: 10,
+  showGrid: true
 };
 
-var draw = SVG('drawing').size(600, 600);
+config.canvasWidth = config.canvasWidthGrids * config.gridSize;
+config.canvasHeight = config.canvasHeightGrids * config.gridSize;
+
+var draw = SVG('drawing').size(config.canvasWidth, config.canvasHeight);
+
+function drawGrid() {
+  var x = 0;
+  var y = config.gridSize;
+  for (var i = 0; i < config.canvasHeightGrids; i++) {
+    draw.line(0, y, config.canvasWidth, y).stroke({width: 1, color: '#aaa'});
+    y += config.gridSize;
+  }
+
+  x = config.gridSize;
+  for (var i = 0; i < config.canvasWidthGrids; i++) {
+    draw.line(x, 0, x, config.canvasHeight).stroke({width: 1, color: '#aaa'});
+    x += config.gridSize;
+  }
+}
+
+if (config.showGrid) {
+  drawGrid();
+}
 
 function drawNode(x, y, value) {
   var circle = draw.circle(config.nodeSize).attr({
@@ -77,7 +103,7 @@ function drawTree(data) {
   var levels = 4;
   var nodeAmountOnLastLevel = Math.pow(2, levels - 1);
   var width = nodeAmountOnLastLevel * config.nodeSize + (nodeAmountOnLastLevel - 1) * config.treeNodeDistanceX;
-  console.log(width);
+  // console.log(width);
   var i = 0;
   var x;
   var j;
@@ -85,7 +111,7 @@ function drawTree(data) {
   for (var level = 0; level < 4; level++) {
     var wut = Math.pow(2, levels - level - 1);
     x = (config.nodeDistance * wut + config.nodeSize * wut) / 2;
-    console.log(x);
+    // console.log(x);
     var dist = (config.nodeDistance * wut + config.nodeSize * wut);
     j = 0;
     while (j < Math.pow(2, level) && i < data.length) {
