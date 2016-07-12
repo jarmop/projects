@@ -1,12 +1,12 @@
 var config = {
-  nodeSize: 30,
-  gridSize: 15,
-  canvasWidthGrids: 40,
-  canvasHeightGrids: 40,
+  nodeSize: 32,
+  gridSize: 8,
+  canvasWidthGrids: 60,
+  canvasHeightGrids: 60,
   strokeWidth: 3,
-  nodeDistance: 10,
-  treeNodeDistanceX: 10,
-  showGrid: true
+  showGrid: true,
+  gridColor: '#ddd',
+  gridColorStrong: '#aaa',
 };
 
 config.canvasWidth = config.canvasWidthGrids * config.gridSize;
@@ -18,13 +18,21 @@ function drawGrid() {
   var x = 0;
   var y = config.gridSize;
   for (var i = 0; i < config.canvasHeightGrids; i++) {
-    draw.line(0, y, config.canvasWidth, y).stroke({width: 1, color: '#aaa'});
+    var color = config.gridColor;
+    if ((i + 1) % 4 == 0) {
+      color = config.gridColorStrong;
+    }
+    draw.line(0, y, config.canvasWidth, y).stroke({width: 1, color: color});
     y += config.gridSize;
   }
 
   x = config.gridSize;
   for (var i = 0; i < config.canvasWidthGrids; i++) {
-    draw.line(x, 0, x, config.canvasHeight).stroke({width: 1, color: '#aaa'});
+    var color = config.gridColor;
+    if ((i + 1) % 4 == 0) {
+      color = config.gridColorStrong;
+    }
+    draw.line(x, 0, x, config.canvasHeight).stroke({width: 1, color: color});
     x += config.gridSize;
   }
 }
@@ -65,7 +73,7 @@ function drawLink(node1, node2) {
 function drawData(data, x, y) {
   var x1 = x * config.gridSize + config.nodeSize / 2;
   var y1 = y * config.gridSize + config.nodeSize / 2;
-  var x2 = x1 + config.nodeDistance + config.nodeSize;
+  var x2 = x1 + config.gridSize + config.nodeSize;
   var y2 = y1;
   for (var i = 1; i < data.length; i++) {
     draw.line(x1,y1,x2,y2).stroke({width: config.strokeWidth});
@@ -75,7 +83,7 @@ function drawData(data, x, y) {
       data[i - 1]
     );
     x1 = x2;
-    x2 = x1 + config.nodeDistance + config.nodeSize;
+    x2 = x1 + config.gridSize + config.nodeSize;
   }
   drawNode(
     x1 - config.nodeSize / 2,
@@ -84,21 +92,31 @@ function drawData(data, x, y) {
   );
 }
 
-function drawTree(data, treeX, y) {
+
+
+function drawTree(data, treeX, treeY) {
+
+  var levelX = [
+    [21, 30],
+    [9, 20],
+    [3, 8],
+    [0, 2]
+  ];
+
   var levels = 4;
   var nodeAmountOnLastLevel = Math.pow(2, levels - 1);
   var i = 0;
   var x;
   var j;
-  y = y * config.gridSize;
+  var y = treeY * config.gridSize;
+  var parentCoordinates = [];
   for (var level = 0; level < 4; level++) {
-    x = (Math.pow(2, levels - level) - 2) * config.gridSize;
-    // console.log(x);
-    var nodeDistanceOnCurrentLevel = (Math.pow(2, levels - level) - 1) * 2 * config.gridSize + config.nodeSize;
-    console.log(nodeDistanceOnCurrentLevel);
-    // x = treeX * config.gridSize + x;
-    j = 0;
+    // x = treeX * config.gridSize + (Math.pow(2, levels - level) - 2) * config.gridSize;
+    x = treeX * config.gridSize + levelX[level][0] * config.gridSize;
+    // var nodeDistanceOnCurrentLevel = (Math.pow(2, levels - level) - 1) * 2 * config.gridSize + config.nodeSize;
+    var nodeDistanceOnCurrentLevel = levelX[level][1] * config.gridSize + config.nodeSize;
     var nodeAmountOnCurrentLevel = Math.pow(2, level);
+    j = 0;
     while (j < nodeAmountOnCurrentLevel && i < data.length) {
       drawNode(x, y, data[i]);
       x += nodeDistanceOnCurrentLevel;
@@ -124,4 +142,4 @@ for (var i = 0; i < 10; i++) {
 
 drawData(data, 1, 1);
 
-drawTree(data, 1, 4);
+drawTree(data, 1, 8);
