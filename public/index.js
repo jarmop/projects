@@ -71,25 +71,32 @@ function drawLink(node1, node2) {
 }
 
 function drawData(data, x, y) {
+  var arrayNodes = [];
+
   var x1 = x * config.gridSize + config.nodeSize / 2;
   var y1 = y * config.gridSize + config.nodeSize / 2;
   var x2 = x1 + config.gridSize + config.nodeSize;
   var y2 = y1;
+
+  // draw lines
   for (var i = 1; i < data.length; i++) {
     draw.line(x1,y1,x2,y2).stroke({width: config.strokeWidth});
-    drawNode(
-      x1 - config.nodeSize / 2,
-      y1 - config.nodeSize / 2,
-      data[i - 1]
-    );
     x1 = x2;
     x2 = x1 + config.gridSize + config.nodeSize;
   }
-  drawNode(
-    x1 - config.nodeSize / 2,
-    y1 - config.nodeSize / 2,
-    data[i - 1]
-  );
+
+  // draw nodes
+  var x1 = x * config.gridSize + config.nodeSize / 2;
+  for (var i = 0; i < data.length; i++) {
+    arrayNodes.push(drawNode(
+      x1 - config.nodeSize / 2,
+      y1 - config.nodeSize / 2,
+      data[i]
+    ));
+    x1 += config.gridSize + config.nodeSize;
+  }
+
+  return arrayNodes;
 }
 
 
@@ -140,6 +147,10 @@ for (var i = 0; i < 10; i++) {
   data.push(randomInt());
 }
 
-drawData(data, 1, 1);
+var dataArray = drawData(data, 1, 1);
+console.log(dataArray[0].x());
+
+dataArray[0].animate().x(dataArray[1].x());
+dataArray[1].animate().x(dataArray[0].x());
 
 drawTree(data, 1, 8);
