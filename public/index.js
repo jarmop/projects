@@ -2,7 +2,7 @@ var config = {
   nodeSize: 32,
   gridSize: 8,
   canvasWidthGrids: 60,
-  canvasHeightGrids: 60,
+  canvasHeightGrids: 8,
   strokeWidth: 3,
   showGrid: true,
   gridColor: '#ddd',
@@ -35,6 +35,10 @@ function drawGrid() {
     draw.line(x, 0, x, config.canvasHeight).stroke({width: 1, color: color});
     x += config.gridSize;
   }
+}
+
+class Node {
+
 }
 
 function drawNode(x, y, value) {
@@ -138,6 +142,57 @@ function randomInt() {
   return Math.floor((Math.random() * 9) + 1)
 }
 
+var swapCount;
+
+function swapNodes(node1, node2, callback) {
+  console.log('swap');
+  swapCount++;
+  // console.log('jgf');
+  var node1X = node1.x();
+  node1.animate().x(node2.x());
+  node2.animate().x(node1X);
+
+}
+
+function sort(data, dataArray, i) {
+  if (i >= data.length) {
+    return;
+  }
+
+  if (data[i - 1] > data[i]) {
+    var temp = data[i - 1];
+    data[i - 1] = data[i];
+    data[i] = temp;
+    swapNodes(dataArray[i - 1], dataArray[i], function () {
+      sort(data, dataArray, ++i);
+    });
+    //   .after(sort(
+    //   data, dataArray, ++i
+    // ));
+  } else {
+    sort(
+      data, dataArray, ++i
+    )
+  }
+}
+
+function bubbleSort(data, dataArray) {
+  swapCount = 1;
+  while (swapCount > 0) {
+    swapCount = 0;
+    sort(data, dataArray, 1);
+    // console.log(swapCount);
+  }
+  // for (var i = 1; i < data.length; i++) {
+  //   if (data[i - 1] > data[i]) {
+  //     var temp = data[i - 1];
+  //     data[i - 1] = data[i];
+  //     data[i] = temp;
+  //     swapNodes(dataArray[i - 1], dataArray[i]);
+  //   }
+  // }
+}
+
 if (config.showGrid) {
   drawGrid();
 }
@@ -148,9 +203,33 @@ for (var i = 0; i < 10; i++) {
 }
 
 var dataArray = drawData(data, 1, 1);
-console.log(dataArray[0].x());
+console.log(dataArray[0]);
 
-dataArray[0].animate().x(dataArray[1].x());
-dataArray[1].animate().x(dataArray[0].x());
+// swapNodes(dataArray[0], dataArray[1]);
 
-drawTree(data, 1, 8);
+// bubbleSort(data, dataArray);
+
+// drawTree(data, 1, 8);
+
+
+var i = 1;
+function bubbleSortStep() {
+  // dataArray[i].fill('#555');
+  if (i >= data.length) {
+    i = 1;
+  }
+  if (data[i - 1] > data[i]) {
+    var temp = data[i - 1];
+    data[i - 1] = data[i];
+    data[i] = temp;
+    swapNodes(dataArray[i - 1], dataArray[i]);
+    var temp = dataArray[i - 1];
+    dataArray[i - 1] = dataArray[i];
+    dataArray[i] = temp;
+  }
+  i++;
+}
+
+$('#play').on('click', function () {
+  bubbleSortStep();
+});
