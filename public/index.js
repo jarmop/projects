@@ -9,7 +9,7 @@ var config = {
   strokeWidth: 3,
   showGrid: true,
   gridColor: '#ddd',
-  gridColorStrong: '#aaa',
+  gridColorStrong: '#aaa'
 };
 
 config.canvasWidth = config.canvasWidthGrids * config.gridSize;
@@ -38,10 +38,6 @@ function drawGrid() {
     draw.line(x, 0, x, config.canvasHeight).stroke({width: 1, color: color});
     x += config.gridSize;
   }
-}
-
-class Node {
-
 }
 
 function drawNode(x, y, value) {
@@ -145,57 +141,6 @@ function randomInt() {
   return Math.floor((Math.random() * 9) + 1)
 }
 
-var swapCount;
-
-function swapNodes(node1, node2, callback) {
-  console.log('swap');
-  swapCount++;
-  // console.log('jgf');
-  var node1X = node1.x();
-  node1.animate(500).x(node2.x());
-  node2.animate(500).x(node1X);
-
-}
-
-function sort(data, dataArray, i) {
-  if (i >= data.length) {
-    return;
-  }
-
-  if (data[i - 1] > data[i]) {
-    var temp = data[i - 1];
-    data[i - 1] = data[i];
-    data[i] = temp;
-    swapNodes(dataArray[i - 1], dataArray[i], function () {
-      sort(data, dataArray, ++i);
-    });
-    //   .after(sort(
-    //   data, dataArray, ++i
-    // ));
-  } else {
-    sort(
-      data, dataArray, ++i
-    )
-  }
-}
-
-function bubbleSort(data, dataArray) {
-  swapCount = 1;
-  while (swapCount > 0) {
-    swapCount = 0;
-    sort(data, dataArray, 1);
-    // console.log(swapCount);
-  }
-  // for (var i = 1; i < data.length; i++) {
-  //   if (data[i - 1] > data[i]) {
-  //     var temp = data[i - 1];
-  //     data[i - 1] = data[i];
-  //     data[i] = temp;
-  //     swapNodes(dataArray[i - 1], dataArray[i]);
-  //   }
-  // }
-}
-
 if (config.showGrid) {
   drawGrid();
 }
@@ -214,24 +159,7 @@ console.log(dataArray[0]);
 
 // drawTree(data, 1, 8);
 
-
-var i = 1;
-function bubbleSortStep() {
-  // dataArray[i].fill('#555');
-  if (i >= data.length) {
-    i = 1;
-  }
-  if (data[i - 1] > data[i]) {
-    var temp = data[i - 1];
-    data[i - 1] = data[i];
-    data[i] = temp;
-    swapNodes(dataArray[i - 1], dataArray[i]);
-    var temp = dataArray[i - 1];
-    dataArray[i - 1] = dataArray[i];
-    dataArray[i] = temp;
-  }
-  i++;
-}
+var bubbleSort = new BubbleSort();
 
 // bootstrap the demo
 new Vue({
@@ -242,7 +170,7 @@ new Vue({
   // },
   methods: {
     forward: function (e) {
-      bubbleSortStep();
+      bubbleSort.step();
     }
   }
 });
