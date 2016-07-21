@@ -1,3 +1,6 @@
+// visual sort algo class, jonka perii bubble ja heap
+// aja sorttaus kerran läpi ja tallenna swapit, tallennusta voi sitten ajaa edestakaisin
+
 var config = {
   nodeSize: 32,
   gridSize: 8,
@@ -16,20 +19,20 @@ var draw = SVG('drawing').size(config.canvasWidth, config.canvasHeight);
 
 function drawGrid() {
   var x = 0;
-  var y = config.gridSize;
-  for (var i = 0; i < config.canvasHeightGrids; i++) {
+  var y = 0;
+  for (var i = 0; i < config.canvasHeightGrids + 1; i++) {
     var color = config.gridColor;
-    if ((i + 1) % 4 == 0) {
+    if (i % 4 == 0) {
+      console.log(i);
       color = config.gridColorStrong;
     }
     draw.line(0, y, config.canvasWidth, y).stroke({width: 1, color: color});
     y += config.gridSize;
   }
 
-  x = config.gridSize;
-  for (var i = 0; i < config.canvasWidthGrids; i++) {
+  for (var i = 0; i < config.canvasWidthGrids + 1; i++) {
     var color = config.gridColor;
-    if ((i + 1) % 4 == 0) {
+    if (i % 4 == 0) {
       color = config.gridColorStrong;
     }
     draw.line(x, 0, x, config.canvasHeight).stroke({width: 1, color: color});
@@ -149,8 +152,8 @@ function swapNodes(node1, node2, callback) {
   swapCount++;
   // console.log('jgf');
   var node1X = node1.x();
-  node1.animate().x(node2.x());
-  node2.animate().x(node1X);
+  node1.animate(500).x(node2.x());
+  node2.animate(500).x(node1X);
 
 }
 
@@ -230,6 +233,6 @@ function bubbleSortStep() {
   i++;
 }
 
-$('#play').on('click', function () {
+$('#forward').on('click', function () {
   bubbleSortStep();
 });
