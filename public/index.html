@@ -2,16 +2,22 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <script   src="https://code.jquery.com/jquery-3.1.0.js"   integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="   crossorigin="anonymous"></script>
 </head>
-<body>
-<h1>Bubble Sort</h1>
-<div id="drawing"></div>
-<button class="btn btn-secondary"><i class="fa fa-fast-backward" aria-hidden="true"></i></button>
-<button class="btn btn-secondary"><i class="fa fa-backward" aria-hidden="true"></i></button>
-<button id="play" class="btn btn-secondary"><i class="fa fa-play" aria-hidden="true"></i></button>
-<button id="forward" class="btn btn-secondary"><i class="fa fa-forward" aria-hidden="true"></i></button>
-<button class="btn btn-secondary"><i class="fa fa-fast-forward" aria-hidden="true"></i></button>
-<script src="svg.js"></script>
-<script src="index.js"></script>
+<body id="container">
+    <h1>Bubble Sort</h1>
+
+    <div id="drawing"></div>
+
+    <div id="dashboard">
+        <button class="btn btn-secondary"><i class="fa fa-fast-backward" aria-hidden="true"></i></button>
+        <button class="btn btn-secondary"><i class="fa fa-backward" aria-hidden="true"></i></button>
+        <button class="btn btn-secondary"><i class="fa fa-play" aria-hidden="true"></i></button>
+        <button @click="forward" class="btn btn-secondary"><i class="fa fa-forward" aria-hidden="true"></i></button>
+        <button class="btn btn-secondary"><i class="fa fa-fast-forward" aria-hidden="true"></i></button>
+    </div>
+
+    <script src="vue.js"></script>
+    <script src="svg.js"></script>
+    <script src="bubble-sort.js"></script>
+    <script src="index.js"></script>
 </body>

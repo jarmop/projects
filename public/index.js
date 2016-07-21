@@ -233,6 +233,17 @@ function bubbleSortStep() {
   i++;
 }
 
-$('#forward').on('click', function () {
-  bubbleSortStep();
+// bootstrap the demo
+new Vue({
+  el: 'body',
+  // data: {
+  //   newLabel: '',
+  //   stats: stats
+  // },
+  methods: {
+    forward: function (e) {
+      bubbleSortStep();
+    }
+  }
 });
+     
