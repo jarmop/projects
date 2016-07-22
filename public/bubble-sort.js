@@ -1,4 +1,4 @@
-var BubbleSort = function () {
+var BubbleSort = function (data, dataArray) {
   var i = 1;
   this.step = function() {
     // dataArray[i].fill('#555');
@@ -18,7 +18,7 @@ var BubbleSort = function () {
   };
 
   var swapCount;
-  this.swapNodes = function(node1, node2, callback) {
+  this.swapNodes = function(node1, node2) {
     console.log('swap');
     swapCount++;
     // console.log('jgf');
