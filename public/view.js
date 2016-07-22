@@ -141,14 +141,14 @@ var View = function () {
   // }
 
   this.focus = function (indexes) {
-    // first blur previously focused nodes
-    for (var i = 0; i < focusedNodes.length; i++) {
-      arrayNodes[focusedNodes[i]].blur();
+    for (var i = 0; i < indexes.length; i++) {
+      arrayNodes[indexes[i]].focus();
     }
+  };
 
-    focusedNodes = indexes;
-    for (var i = 0; i < focusedNodes.length; i++) {
-      arrayNodes[focusedNodes[i]].focus();
+  this.blur = function (indexes) {
+    for (var i = 0; i < indexes.length; i++) {
+      arrayNodes[indexes[i]].blur();
     }
   };
 

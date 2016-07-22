@@ -1,34 +1,59 @@
 var Player = function (film, view) {
-  var step = -1;
+  var step = 0;
+  var previousStepForward = false;
+
+  function previousStepWasForward() {
+    return previousStepForward;
+  }
+
+  function previousStepWasBackward() {
+    return !previousStepForward;
+  }
 
   this.forward = function () {
-    if (step + 1 >= film.length) {
-      console.log('The end!');
-      return;
+    if (previousStepWasForward()) {
+      if (step + 1 >= film.length) {
+        console.log('The end!');
+        return;
+      }
+      ++step;
     }
-    ++step;
 
     this.show(film[step]);
+
+    previousStepForward = true;
   };
 
   this.backward = function () {
-    if (step - 1 < 0) {
-      console.log('The beginning!');
-      return;
+    if (previousStepWasBackward()) {
+      if (step - 1 < 0) {
+        console.log('The beginning!');
+        return;
+      }
+      --step;
     }
-    --step;
 
-    this.show(film[step]);
+    // swap focus and blur when going backwards
+    var filmActions = Object.assign({}, film[step]);
+    filmActions.focus = film[step].blur;
+    filmActions.blur = film[step].focus;
+
+    this.show(filmActions);
+
+    previousStepForward = false;
   };
   
-  this.show = function (currentState) {
+  this.show = function (filmActions) {
+    if (filmActions.blur) {
+      view.blur(filmActions.blur);
+    }
 
-    console.log(currentState);
+    if (filmActions.focus) {
+      view.focus(filmActions.focus);
+    }
 
-    view.focus(currentState.focus);
-
-    if (currentState.swap) {
-      view.swap(currentState.focus);
+    if (filmActions.swap) {
+        view.swap(filmActions.swap);
     }
   }
 };

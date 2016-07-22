@@ -15,10 +15,14 @@
       focus: [0,1]
     },
     {
-      focus: [1,2],
-      swap: true
+      blur: [0,1],
+      focus: [1,2]
     },
     {
+      swap: [1,2]
+    },
+    {
+      blur: [1,2],
       focus: [2,3]
     }
   ];
