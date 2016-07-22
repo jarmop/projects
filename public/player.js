@@ -8,7 +8,7 @@ var Player = function (film, view) {
     }
     ++step;
 
-    this.showTransition(film[step]);
+    this.show(film[step]);
   };
 
   this.backward = function () {
@@ -18,16 +18,17 @@ var Player = function (film, view) {
     }
     --step;
 
-    this.showTransition(film[step]);
+    this.show(film[step]);
   };
   
-  this.showTransition = function (currentState) {
+  this.show = function (currentState) {
 
     console.log(currentState);
 
-    switch (currentState.action) {
-      case Player.actions.FOCUS:
-        view.focus(currentState.args)
+    view.focus(currentState.focus);
+
+    if (currentState.swap) {
+      view.swap(currentState.focus);
     }
   }
 };

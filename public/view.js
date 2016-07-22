@@ -10,7 +10,8 @@ var View = function () {
     gridColorStrong: '#aaa',
     paddingGrids: 1,
     focusColor: '#595',
-    blurColor: '#000'
+    blurColor: '#000',
+    animationSpeed: 500
   };
 
   config.canvasWidth = config.canvasWidthGrids * config.gridSize;
@@ -139,10 +140,6 @@ var View = function () {
   //   }
   // }
 
-  this.swap = function (index1, index2) {
-    console.log('swap');
-  };
-
   this.focus = function (indexes) {
     // first blur previously focused nodes
     for (var i = 0; i < focusedNodes.length; i++) {
@@ -155,10 +152,17 @@ var View = function () {
     }
   };
 
-  // this.blur = function (indexes) {
-  //   focusedNodes.splice(focusedNodes.indexOf(index), 1);
-  //   arrayNodes[index].blur();
-  // };
+  this.swap = function (indexes) {
+    var node1 = arrayNodes[indexes[0]];
+    var node2 = arrayNodes[indexes[1]];
+
+    var node1X = node1.x();
+    node1.animate().x(node2.x());
+    node2.animate().x(node1X);
+
+    arrayNodes[indexes[0]] = node2;
+    arrayNodes[indexes[1]] = node1;
+  };
 
   var Node = function (circle, content, group) {
     // console.log(circle);
@@ -177,5 +181,17 @@ var View = function () {
       circle.stroke(config.blurColor);
       content.fill(config.blurColor);
     };
+
+    this.x = function () {
+      return group.x();
+    };
+
+    this.y = function () {
+      return group.y();
+    };
+
+    this.animate = function () {
+      return group.animate(config.animationSpeed);
+    }
   };
 };

@@ -12,22 +12,15 @@
 
   var film = [
     {
-      action: Player.actions.FOCUS,
-      args: [0,1]
+      focus: [0,1]
     },
     {
-      action: Player.actions.FOCUS,
-      args: [1,2]
+      focus: [1,2],
+      swap: true
     },
-    // {
-    //   action: {
-    //     method: Player.actions.SWAP,
-    //     args: [1,2]
-    //   }
-    // },
-    // {
-    //   focus: [2,3]
-    // }
+    {
+      focus: [2,3]
+    }
   ];
   
   var player = new Player(film, view);
