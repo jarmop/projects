@@ -1,12 +1,5 @@
-var Player = function () {
-  this.actions = {
-    SWAP: 0
-  };
-  var step = 0;
-
-  this.setFilm = function(film) {
-    this.film = film;
-  };
+var Player = function (film, view) {
+  var step = -1;
 
   // this.play = function (film) {
   //   for (var step = 0; step < film.length(); step++) {
@@ -15,36 +8,46 @@ var Player = function () {
   // };
 
   this.forward = function () {
-    var previousStep = step;
-    var nextStep = ++step;
+    var previousState = step;
+    var currentState = ++step;
     if (step >= film.length) {
-      alert('The end!');
+      console.log('The end!');
       return;
     }
 
-    this.showTransition(film[previousStep, nextStep]);
+    this.showTransition(film[previousState], film[currentState]);
   };
 
-  this.showTransition = function (previousState, currentState) {
-    screen.setFocus(currentState.focus);
-    switch (step.action) {
-      case this.actions.SWAP:
-        screen.swap(step.action.args[0], step.action.args[1])
+  this.backward = function () {
+    var previousState = step;
+    var currentState = --step;
+    if (step < 0) {
+      console.log('In the beginning!');
+      return;
     }
+
+    this.showTransition(film[previousState], film[currentState]);
+  };
+  
+  this.showTransition = function (previousState, currentState) {
+    // console.log(previousState);
+    // console.log(currentState);
+
+    if (previousState) {
+      for (var i = 0; i < previousState.focus.length; i++) {
+        view.blur(previousState.focus[i]);
+      }
+    }
+    for (var i = 0; i < currentState.focus.length; i++) {
+      view.focus(currentState.focus[i]);
+    }
+    // switch (step.action) {
+    //   case this.actions.SWAP:
+    //     view.swap(step.action.args[0], step.action.args[1])
+    // }
   }
 };
 
-var player = new Player();
-
-var film = [
-  {
-    focus: 0
-  },
-  {
-    focus: 1,
-    action: {
-      method: player.actions.SWAP,
-      args: [1,2]
-    }
-  }
-];
+Player.actions = {
+  SWAP: 0
+};

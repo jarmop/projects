@@ -1,54 +1,48 @@
-// visual sort algo class, jonka perii bubble ja heap
-// aja sorttaus kerran läpi ja tallenna swapit, tallennusta voi sitten ajaa edestakaisin
-
 (function () {
-  var config = {
-    nodeSize: 32,
-    gridSize: 8,
-    canvasWidthGrids: 60,
-    canvasHeightGrids: 8,
-    strokeWidth: 3,
-    showGrid: true,
-    gridColor: '#ddd',
-    gridColorStrong: '#aaa'
-  };
-
-  function randomInt() {
-    return Math.floor((Math.random() * 9) + 1)
-  }
+  var view = new View();
 
   var data = [];
   for (var i = 0; i < 10; i++) {
     data.push(randomInt());
   }
+  var dataArray = view.drawArray(data);
 
-  var view = new View(config);
+  // var bubbleSort = new BubbleSort(data, dataArray);
+  // var film = bubbleSort.sort(data);
 
-
-  var dataArray = view.drawData(data, 1, 1);
-// console.log(dataArray[0]);
-
-
-// swapNodes(dataArray[0], dataArray[1]);
-
-// bubbleSort(data, dataArray);
-
-// drawTree(data, 1, 8);
-
-  var bubbleSort = new BubbleSort(data, dataArray);
-
-// bootstrap the demo
-  new Vue({
-    el: 'body',
-    // data: {
-    //   newLabel: '',
-    //   stats: stats
-    // },
-    methods: {
-      forward: function (e) {
-        bubbleSort.step();
+  var film = [
+    {
+      focus: [0,1]
+    },
+    {
+      focus: [1,2],
+      action: {
+        method: Player.actions.SWAP,
+        args: [1,2]
       }
     }
-  });
+  ];
+  
+  var player = new Player(film, view);
+
+  initDashBoard();  
+
+  function randomInt() {
+    return Math.floor((Math.random() * 9) + 1)
+  }
+
+  function initDashBoard() {
+    new Vue({
+      el: 'body',
+      methods: {
+        forward: function (e) {
+          player.forward();
+        },
+        backward: function (e) {
+          player.backward();
+        }
+      }
+    });
+  }
 }) ();
      
