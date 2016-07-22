@@ -9,7 +9,7 @@ var View = function () {
     gridColor: '#ddd',
     gridColorStrong: '#aaa',
     paddingGrids: 1,
-    focusColor: '#595',
+    focusColor: '#5e5',
     blurColor: '#000',
     animationSpeed: 500
   };
@@ -103,8 +103,6 @@ var View = function () {
       ));
       x1 += config.gridSize + config.nodeSize;
     }
-
-    return arrayNodes;
   };
 
   // function drawTree(data, treeX, treeY) {
@@ -171,15 +169,11 @@ var View = function () {
     var group = group;
 
     this.focus = function () {
-      // console.log(circle);
-      circle.stroke(config.focusColor);
-      content.fill(config.focusColor);
+      circle.fill(config.focusColor);
     };
 
     this.blur = function () {
-      // console.log(circle);
-      circle.stroke(config.blurColor);
-      content.fill(config.blurColor);
+      circle.fill('#fff');
     };
 
     this.x = function () {
