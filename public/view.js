@@ -5,7 +5,7 @@ var View = function () {
     canvasWidthGrids: 60,
     canvasHeightGrids: 8,
     strokeWidth: 3,
-    showGrid: true,
+    showGrid: false,
     gridColor: '#ddd',
     gridColorStrong: '#aaa',
     paddingGrids: 1,
@@ -18,6 +18,7 @@ var View = function () {
 
   var draw = SVG('drawing').size(config.canvasWidth, config.canvasHeight);
   var arrayNodes = [];
+  var focusedNodes = [];
 
   if (config.showGrid) {
     drawGrid();
@@ -142,13 +143,22 @@ var View = function () {
     console.log('swap');
   };
 
-  this.focus = function (index) {
-    arrayNodes[index].focus();
+  this.focus = function (indexes) {
+    // first blur previously focused nodes
+    for (var i = 0; i < focusedNodes.length; i++) {
+      arrayNodes[focusedNodes[i]].blur();
+    }
+
+    focusedNodes = indexes;
+    for (var i = 0; i < focusedNodes.length; i++) {
+      arrayNodes[focusedNodes[i]].focus();
+    }
   };
 
-  this.blur = function (index) {
-    arrayNodes[index].blur();
-  };
+  // this.blur = function (indexes) {
+  //   focusedNodes.splice(focusedNodes.indexOf(index), 1);
+  //   arrayNodes[index].blur();
+  // };
 
   var Node = function (circle, content, group) {
     // console.log(circle);
