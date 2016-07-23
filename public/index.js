@@ -40,12 +40,23 @@
   function initDashBoard() {
     new Vue({
       el: 'body',
+      data: {
+        enabled: true
+      },
       methods: {
         forward: function (e) {
-          player.forward();
+          if (!this.enabled) {
+            return;
+          }
+          this.enabled = false;
+          player.forward().then(() => this.enabled = true);
         },
         backward: function (e) {
-          player.backward();
+          if (!this.enabled) {
+            return;
+          }
+          this.enabled = false;
+          player.backward().then(() => this.enabled = true);
         }
       }
     });

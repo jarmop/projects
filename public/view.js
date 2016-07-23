@@ -142,24 +142,36 @@ var View = function () {
     for (var i = 0; i < indexes.length; i++) {
       arrayNodes[indexes[i]].focus();
     }
+    return Promise.resolve();
   };
 
   this.blur = function (indexes) {
     for (var i = 0; i < indexes.length; i++) {
       arrayNodes[indexes[i]].blur();
     }
+    return Promise.resolve();
   };
 
   this.swap = function (indexes) {
     var node1 = arrayNodes[indexes[0]];
     var node2 = arrayNodes[indexes[1]];
 
-    var node1X = node1.x();
-    node1.animate().x(node2.x());
-    node2.animate().x(node1X);
-
     arrayNodes[indexes[0]] = node2;
     arrayNodes[indexes[1]] = node1;
+
+    var node1X = node1.x();
+    return Promise.all([
+      new Promise(function (resolve, reject) {
+        node1.animate().x(node2.x()).after(function () {
+          resolve();
+        });
+      }),
+      new Promise(function (resolve, reject) {
+        node2.animate().x(node1X).after(function () {
+          resolve();
+        });
+      })
+    ]);
   };
 
   var Node = function (circle, content, group) {

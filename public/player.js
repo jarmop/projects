@@ -14,47 +14,48 @@ var Player = function (film, view) {
     if (previousStepWasForward()) {
       if (step + 1 >= film.length) {
         console.log('The end!');
-        return;
+        return Promise.resolve();
       }
       ++step;
     }
-
-    this.show(film[step]);
-
     previousStepForward = true;
+
+    return this.show(film[step]);
   };
 
   this.backward = function () {
     if (previousStepWasBackward()) {
       if (step - 1 < 0) {
         console.log('The beginning!');
-        return;
+        return Promise.resolve();
       }
       --step;
     }
+    previousStepForward = false;
 
     // swap focus and blur when going backwards
     var filmActions = Object.assign({}, film[step]);
     filmActions.focus = film[step].blur;
     filmActions.blur = film[step].focus;
 
-    this.show(filmActions);
-
-    previousStepForward = false;
+    return this.show(filmActions);
   };
   
   this.show = function (filmActions) {
+    var promisedActions = [];
     if (filmActions.blur) {
-      view.blur(filmActions.blur);
+      promisedActions.push(view.blur(filmActions.blur));
     }
 
     if (filmActions.focus) {
-      view.focus(filmActions.focus);
+      promisedActions.push(view.focus(filmActions.focus));
     }
 
     if (filmActions.swap) {
-        view.swap(filmActions.swap);
+      promisedActions.push(view.swap(filmActions.swap));
     }
+
+    return Promise.all(promisedActions);
   }
 };
 
