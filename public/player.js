@@ -10,11 +10,18 @@ var Player = function (film, view) {
     return !previousStepForward;
   }
 
+  this.play = function () {
+    this.forward().then(
+      () => this.play(),
+      () => {return Promise.resolve()}
+    );
+  };
+
   this.forward = function () {
     if (previousStepWasForward()) {
       if (step + 1 >= film.length) {
         console.log('The end!');
-        return Promise.resolve();
+        return Promise.reject();
       }
       ++step;
     }

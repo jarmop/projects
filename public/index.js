@@ -44,6 +44,9 @@
         enabled: true
       },
       methods: {
+        play: function () {
+          player.play();
+        },
         forward: function (e) {
           if (!this.enabled) {
             return;
