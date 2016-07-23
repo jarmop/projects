@@ -12,7 +12,11 @@ var Player = function (film, view) {
 
   this.play = function () {
     this.forward().then(
-      () => this.play(),
+      () => {
+        (new Promise((resolve, reject) => {
+          setTimeout(() => {resolve()}, 200);
+        })).then(() => this.play());
+      },
       () => {return Promise.resolve()}
     );
   };
