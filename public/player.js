@@ -38,7 +38,7 @@ var Player = function (film, view) {
     if (previousStepWasBackward()) {
       if (step - 1 < 0) {
         console.log('The beginning!');
-        return Promise.resolve();
+        return Promise.reject();
       }
       --step;
     }
@@ -67,7 +67,11 @@ var Player = function (film, view) {
     }
 
     return Promise.all(promisedActions);
-  }
+  };
+  
+  this.getFilmActions = function () {
+    return film[step];
+  };
 };
 
 Player.actions = {

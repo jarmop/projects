@@ -38,31 +38,64 @@
   }
 
   function initDashBoard() {
-    new Vue({
+    var enabled = true;
+    var enable = () => enabled = true;
+    var disable = () => enabled = false;
+
+    function updateStats() {
+      filmActions = player.getFilmActions();
+      vue.comparisons = filmActions.comparisons;
+      vue.swaps = filmActions.swaps;
+    }
+
+    function play() {
+      return player.forward().then(
+        () => {
+          updateStats();
+          (new Promise((resolve, reject) => {
+            setTimeout(() => {resolve()}, 200);
+          })).then(() => play());
+        },
+        () => Promise.resolve()
+      );
+    }
+
+    var vue = new Vue({
       el: 'body',
       data: {
-        enabled: true
+        comparisons: 0,
+        swaps: 0
       },
       methods: {
         play: function () {
-          player.play();
+          play().then(() => enable(), () => enable());
         },
         forward: function (e) {
-          if (!this.enabled) {
+          if (!enabled) {
             return;
           }
-          this.enabled = false;
-          player.forward().then(() => this.enabled = true);
+          disable();
+          player.forward().then(() => {
+            updateStats();
+            enable();
+          }, () => enable());
         },
         backward: function (e) {
-          if (!this.enabled) {
+          if (!enabled) {
             return;
           }
-          this.enabled = false;
-          player.backward().then(() => this.enabled = true);
+          disable();
+          player.backward().then(() => {
+            updateStats();
+            enable();
+          }, () => enable());
         }
       }
     });
+  }
+
+  function showStats() {
+
   }
 }) ();
      
