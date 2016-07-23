@@ -5,9 +5,10 @@ var BubbleSort = function () {
     var swapCount = 1;
     var film = [];
 
+    var unsortedDataLength = data.length;
     while (swapCount > 0) {
       swapCount = 0;
-      for (var i = 1; i < data.length; i++) {
+      for (var i = 1; i < unsortedDataLength; i++) {
         var filmActions = {
           blur: previousFocus,
           focus: [i - 1, i]
@@ -26,6 +27,7 @@ var BubbleSort = function () {
           });
         }
       }
+      unsortedDataLength--;
     }
 
     return film;
