@@ -1,7 +1,9 @@
-var BubbleSort = function () {
+export class BubbleSort {
   film = [];
 
-  this.sort = function(data) {
+  constructor() {}
+
+  sort(data) {
     var totalComparisonCount = 0;
     var totalSwapCount = 0;
     var swapCount = 1;
@@ -39,5 +41,5 @@ var BubbleSort = function () {
     }
 
     return film;
-  };
-};
+  }
+}

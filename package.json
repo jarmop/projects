@@ -13,6 +13,9 @@
     "svgjs": "^2.2.5"
   },
   "devDependencies": {
-    "browser-sync": "^2.13.0"
+    "browser-sync": "^2.13.0",
+    "ts-loader": "^0.8.2",
+    "typescript": "^1.8.10",
+    "webpack": "^1.13.1"
   }
 }
