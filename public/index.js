@@ -434,6 +434,7 @@
 	    constructor(...args) {
 	        super(...args);
 	        this.enabled = true;
+	        this.playing = false;
 	    }
 	    enable() {
 	        this.enabled = true;
@@ -442,18 +443,32 @@
 	        this.enabled = false;
 	    }
 	    recursivePlay() {
-	        return this.props.player.forward().then(() => {
+	        if (!this.playing) {
+	            return;
+	        }
+	        this.props.player.forward().then(() => {
 	            (new Promise((resolve, reject) => {
 	                setTimeout(() => { resolve(); }, 200);
 	            })).then(() => this.recursivePlay());
-	        }, () => Promise.resolve());
+	        }, () => { this.enable(); this.playing = false; });
 	    }
 	    play() {
+	        if (this.playing) {
+	            this.pause();
+	            return;
+	        }
 	        if (!this.enabled) {
 	            return;
 	        }
 	        this.disable();
-	        this.recursivePlay().then(() => this.enable(), () => this.enable());
+	        this.playing = true;
+	        this.setState({});
+	        this.recursivePlay();
+	    }
+	    pause() {
+	        this.playing = false;
+	        this.enable();
+	        this.setState({});
 	    }
 	    forward() {
 	        if (!this.enabled) {
@@ -470,7 +485,7 @@
 	        this.props.player.backward().then(() => this.enable(), () => this.enable());
 	    }
 	    render() {
-	        return (React.createElement("div", {className: "commentBox"}, React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.backward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.play(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-play", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.forward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-forward", "aria-hidden": "true"})), React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-forward", "aria-hidden": "true"}))));
+	        return (React.createElement("div", {className: "commentBox"}, React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.backward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.play(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa " + (this.playing ? "fa-pause" : "fa-play"), "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.forward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-forward", "aria-hidden": "true"})), React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-forward", "aria-hidden": "true"}))));
 	    }
 	}
 	exports.Dashboard = Dashboard;
