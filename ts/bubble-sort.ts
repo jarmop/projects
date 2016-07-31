@@ -1,11 +1,10 @@
 export class BubbleSort {
-  film = [];
-
-  constructor() {}
+  film;
+  previousFocus;
 
   sort(data) {
     var swapCount = 1;
-    var film = {
+    this.film = {
       startState: data.slice(0),
       endState: {
         data: [],
@@ -19,14 +18,7 @@ export class BubbleSort {
     while (swapCount > 0) {
       swapCount = 0;
       for (var i = 1; i < unsortedDataLength; i++) {
-        var filmActions = {
-          blur: previousFocus,
-          focus: [i - 1, i],
-          increaseComparisons: true,
-        };
-        film.endState.comparisons++;
-        var previousFocus = filmActions.focus;
-        film.actions.push(filmActions);
+        this.recordComparison(i - 1, i);
 
         if (data[i - 1] > data[i]) {
           var temp = data[i - 1];
@@ -34,18 +26,33 @@ export class BubbleSort {
           data[i] = temp;
           swapCount++;
 
-          film.actions.push({
-            swap: filmActions.focus,
-            increaseSwaps: true
-          });
-          film.endState.swaps++;
+          this.recordSwap(i - 1, i);
         }
       }
       unsortedDataLength--;
     }
 
-    film.endState.data = data;
+    this.film.endState.data = data;
 
-    return film;
+    return this.film;
+  }
+
+  recordComparison(index1, index2) {
+    var filmActions = {
+      blur: this.previousFocus,
+      focus: [index1, index2],
+      increaseComparisons: true,
+    };
+    this.film.endState.comparisons++;
+    this.previousFocus = filmActions.focus;
+    this.film.actions.push(filmActions);
+  }
+
+  recordSwap(index1, index2) {
+    this.film.actions.push({
+      swap: [index1, index2],
+      increaseSwaps: true
+    });
+    this.film.endState.swaps++;
   }
 }
