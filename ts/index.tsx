@@ -2,7 +2,12 @@ import {View} from './view';
 import {BubbleSort} from './bubble-sort';
 import {Player} from './player';
 
-declare var Vue:any;
+import {CommentBox} from './react-view';
+
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+
+// declare var Vue:any;
 
 (function () {
   var view = new View();
@@ -34,10 +39,10 @@ declare var Vue:any;
   //     focus: [2,3]
   //   }
   // ];
-  
+
   var player = new Player(film, view);
 
-  initDashBoard();  
+  initDashBoard();
 
   function randomInt() {
     return Math.floor((Math.random() * 9) + 1)
@@ -50,8 +55,8 @@ declare var Vue:any;
 
     function updateStats() {
       let filmActions = player.getFilmActions();
-      vue.comparisons = filmActions.comparisons;
-      vue.swaps = filmActions.swaps;
+      // vue.comparisons = filmActions.comparisons;
+      // vue.swaps = filmActions.swaps;
     }
 
     function play() {
@@ -66,42 +71,52 @@ declare var Vue:any;
       );
     }
 
-    var vue = new Vue({
-      el: 'body',
-      data: {
-        comparisons: 0,
-        swaps: 0
-      },
-      methods: {
-        play: function () {
-          play().then(() => enable(), () => enable());
-        },
-        forward: function (e) {
-          if (!enabled) {
-            return;
-          }
-          disable();
-          player.forward().then(() => {
-            updateStats();
-            enable();
-          }, () => enable());
-        },
-        backward: function (e) {
-          if (!enabled) {
-            return;
-          }
-          disable();
-          player.backward().then(() => {
-            updateStats();
-            enable();
-          }, () => enable());
-        }
-      }
-    });
+    // var vue = new Vue({
+    //   el: 'body',
+    //   data: {
+    //     comparisons: 0,
+    //     swaps: 0
+    //   },
+    //   methods: {
+    //     play: function () {
+    //       play().then(() => enable(), () => enable());
+        {/*},*/}
+        {/*pause: function () {*/}
+
+        {/*},*/}
+        {/*forward: function (e) {*/}
+    //       if (!enabled) {
+    //         return;
+    //       }
+    //       disable();
+    //       player.forward().then(() => {
+    //         updateStats();
+    //         enable();
+    //       }, () => enable());
+    //     },
+    //     backward: function (e) {
+    //       if (!enabled) {
+    //         return;
+    //       }
+    //       disable();
+    //       player.backward().then(() => {
+    //         updateStats();
+    //         enable();
+    //       }, () => enable());
+    //     }
+    //   }
+    // });
   }
 
   function showStats() {
 
   }
+
+
+  ReactDOM.render(
+    <CommentBox player={player}/>,
+    document.getElementById('content')
+  );
 }) ();
-     
+
+

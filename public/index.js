@@ -48,6 +48,10 @@
 	const view_1 = __webpack_require__(1);
 	const bubble_sort_1 = __webpack_require__(2);
 	const player_1 = __webpack_require__(3);
+	const react_view_1 = __webpack_require__(4);
+	const React = __webpack_require__(5);
+	const ReactDOM = __webpack_require__(6);
+	// declare var Vue:any;
 	(function () {
 	    var view = new view_1.View();
 	    var data = [];
@@ -84,8 +88,8 @@
 	        var disable = () => enabled = false;
 	        function updateStats() {
 	            let filmActions = player.getFilmActions();
-	            vue.comparisons = filmActions.comparisons;
-	            vue.swaps = filmActions.swaps;
+	            // vue.comparisons = filmActions.comparisons;
+	            // vue.swaps = filmActions.swaps;
 	        }
 	        function play() {
 	            return player.forward().then(() => {
@@ -95,41 +99,44 @@
 	                })).then(() => play());
 	            }, () => Promise.resolve());
 	        }
-	        var vue = new Vue({
-	            el: 'body',
-	            data: {
-	                comparisons: 0,
-	                swaps: 0
-	            },
-	            methods: {
-	                play: function () {
-	                    play().then(() => enable(), () => enable());
-	                },
-	                forward: function (e) {
-	                    if (!enabled) {
-	                        return;
-	                    }
-	                    disable();
-	                    player.forward().then(() => {
-	                        updateStats();
-	                        enable();
-	                    }, () => enable());
-	                },
-	                backward: function (e) {
-	                    if (!enabled) {
-	                        return;
-	                    }
-	                    disable();
-	                    player.backward().then(() => {
-	                        updateStats();
-	                        enable();
-	                    }, () => enable());
-	                }
-	            }
-	        });
+	        // var vue = new Vue({
+	        //   el: 'body',
+	        //   data: {
+	        //     comparisons: 0,
+	        //     swaps: 0
+	        //   },
+	        //   methods: {
+	        //     play: function () {
+	        //       play().then(() => enable(), () => enable());
+	        { }
+	        { }
+	        { }
+	        { }
+	        //       if (!enabled) {
+	        //         return;
+	        //       }
+	        //       disable();
+	        //       player.forward().then(() => {
+	        //         updateStats();
+	        //         enable();
+	        //       }, () => enable());
+	        //     },
+	        //     backward: function (e) {
+	        //       if (!enabled) {
+	        //         return;
+	        //       }
+	        //       disable();
+	        //       player.backward().then(() => {
+	        //         updateStats();
+	        //         enable();
+	        //       }, () => enable());
+	        //     }
+	        //   }
+	        // });
 	    }
 	    function showStats() {
 	    }
+	    ReactDOM.render(React.createElement(react_view_1.CommentBox, {player: player}), document.getElementById('content'));
 	})();
 
 
@@ -206,14 +213,6 @@
 	        group.y(y);
 	        return new ViewNode(border, content, group);
 	    }
-	    // function this.drawLink(node1, node2) {
-	    //   console.log(node1.x());
-	    //   var x1 = node1.x() + this.config.nodeSize / 2;
-	    //   var y1 = node1.y() + this.config.nodeSize / 2;
-	    //   var x2 = node2.x() + this.config.nodeSize / 2;
-	    //   var y2 = node2.y() + this.config.nodeSize / 2;
-	    //   this.draw.line(x1,y1,x2,y2).stroke({width: this.config.strokeWidth});
-	    // }
 	    drawArray(data) {
 	        var x1 = this.config.paddingGrids * this.config.gridSize + this.config.nodeSize / 2;
 	        var y1 = this.config.paddingGrids * this.config.gridSize + this.config.nodeSize / 2;
@@ -458,6 +457,63 @@
 	exports.Player = Player;
 	;
 
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	const React = __webpack_require__(5);
+	class CommentBox extends React.Component {
+	    constructor(...args) {
+	        super(...args);
+	        this.enabled = true;
+	    }
+	    enable() {
+	        this.enabled = true;
+	    }
+	    disable() {
+	        this.enabled = false;
+	    }
+	    play() {
+	        if (!this.enabled) {
+	            return;
+	        }
+	        this.disable();
+	        this.props.player.play().then(() => this.enable(), () => this.enable());
+	    }
+	    forward() {
+	        if (!this.enabled) {
+	            return;
+	        }
+	        this.disable();
+	        this.props.player.forward().then(() => this.enable(), () => this.enable());
+	    }
+	    backward() {
+	        if (!this.enabled) {
+	            return;
+	        }
+	        this.disable();
+	        this.props.player.backward().then(() => this.enable(), () => this.enable());
+	    }
+	    render() {
+	        return (React.createElement("div", {className: "commentBox"}, React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.backward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.play(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-play", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.forward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-forward", "aria-hidden": "true"})), React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-forward", "aria-hidden": "true"}))));
+	    }
+	}
+	exports.CommentBox = CommentBox;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	module.exports = React;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	module.exports = ReactDOM;
 
 /***/ }
 /******/ ]);
