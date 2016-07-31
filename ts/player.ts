@@ -1,6 +1,7 @@
 export class Player {
   film;
   view;
+  statistics;
   step = 0;
   previousStepForward = false;
 
@@ -9,9 +10,10 @@ export class Player {
     SWAP: 1
   };
 
-  constructor (film, view) {
+  constructor (film, view, statistics) {
     this.film = film;
     this.view = view;
+    this.statistics = statistics;
   }
 
 
@@ -22,17 +24,6 @@ export class Player {
   previousStepWasBackward() {
     return !this.previousStepForward;
   }
-
-  play() {
-    this.forward().then(
-      () => {
-        (new Promise((resolve, reject) => {
-          setTimeout(() => {resolve()}, 200);
-        })).then(() => this.play());
-      },
-      () => {return Promise.resolve()}
-    );
-  };
 
   forward() : Promise<any> {
     if (this.previousStepWasForward()) {
@@ -57,10 +48,14 @@ export class Player {
     }
     this.previousStepForward = false;
 
-    // swap focus and blur when going backwards
+    // reverse actions when going backwards
     var filmActions = Object.assign({}, this.film[this.step]);
     filmActions.focus = this.film[this.step].blur;
     filmActions.blur = this.film[this.step].focus;
+    filmActions.decreaseComparisons = this.film[this.step].increaseComparisons;
+    filmActions.increaseComparisons = null;
+    filmActions.decreaseSwaps = this.film[this.step].increaseSwaps;
+    filmActions.increaseSwaps = null;
 
     return this.show(filmActions);
   };
@@ -77,6 +72,22 @@ export class Player {
 
     if (filmActions.swap) {
       promisedActions.push(this.view.swap(filmActions.swap));
+    }
+
+    if (filmActions.increaseComparisons) {
+      this.statistics.increaseComparisons();
+    }
+
+    if (filmActions.increaseSwaps) {
+      this.statistics.increaseSwaps();
+    }
+
+    if (filmActions.decreaseComparisons) {
+      this.statistics.decreaseComparisons();
+    }
+
+    if (filmActions.decreaseSwaps) {
+      this.statistics.decreaseSwaps();
     }
 
     return Promise.all(promisedActions);

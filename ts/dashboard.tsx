@@ -7,8 +7,6 @@ interface Props {
 
 export class Dashboard extends React.Component<Props,{}> {
   enabled = true;
-  comparisons = 0;
-  swaps = 0;
 
   enable() {
     this.enabled = true;
@@ -21,7 +19,6 @@ export class Dashboard extends React.Component<Props,{}> {
   recursivePlay() {
     return this.props.player.forward().then(
       () => {
-        this.updateStats();
         (new Promise((resolve, reject) => {
           setTimeout(() => {resolve()}, 200);
         })).then(() => this.recursivePlay());
@@ -45,7 +42,7 @@ export class Dashboard extends React.Component<Props,{}> {
     }
     this.disable();
     this.props.player.forward().then(
-      () => {this.updateStats(); this.enable();},
+      () => this.enable(),
       () => this.enable()
     );
   }
@@ -56,17 +53,12 @@ export class Dashboard extends React.Component<Props,{}> {
     }
     this.disable();
     this.props.player.backward().then(
-      () => {this.updateStats(); this.enable();},
+      () => this.enable(),
       () => this.enable()
     );
   }
 
-  updateStats() {
-    let filmActions = this.props.player.getFilmActions();
-    this.comparisons = filmActions.comparisons;
-    this.swaps = filmActions.swaps;
-    this.setState({});
-  }
+
 
   render() {
     return (
@@ -76,11 +68,6 @@ export class Dashboard extends React.Component<Props,{}> {
         <button onClick={e => this.play()} className="btn btn-secondary"><i className="fa fa-play" aria-hidden="true"></i></button>
         <button onClick={e => this.forward()} className="btn btn-secondary"><i className="fa fa-forward" aria-hidden="true"></i></button>
         <button className="btn btn-secondary"><i className="fa fa-fast-forward" aria-hidden="true"></i></button>
-        <div class="stats">
-          comparisons: {this.comparisons}
-          <br/>
-          swaps: {this.swaps}
-        </div>
       </div>
     );
   }

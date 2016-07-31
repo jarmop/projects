@@ -50,7 +50,8 @@
 	const view_1 = __webpack_require__(1);
 	const bubble_sort_1 = __webpack_require__(2);
 	const player_1 = __webpack_require__(3);
-	const react_view_1 = __webpack_require__(4);
+	const dashboard_1 = __webpack_require__(7);
+	const statistics_1 = __webpack_require__(8);
 	(function () {
 	    function randomInt() {
 	        return Math.floor((Math.random() * 9) + 1);
@@ -65,22 +66,27 @@
 	    var film = bubbleSort.sort(data);
 	    // var film = [
 	    //   {
-	    //     focus: [0,1]
+	    //     focus: [0,1],
+	    //     increaseComparisons: 1,
 	    //   },
 	    //   {
 	    //     blur: [0,1],
-	    //     focus: [1,2]
+	    //     focus: [1,2],
+	    //     increaseComparisons: 1
 	    //   },
 	    //   {
-	    //     swap: [1,2]
+	    //     swap: [1,2],
+	    //     increaseSwaps: 1
 	    //   },
 	    //   {
 	    //     blur: [1,2],
-	    //     focus: [2,3]
+	    //     focus: [2,3],
+	    //     increaseComparisons: 1
 	    //   }
 	    // ];
-	    var player = new player_1.Player(film, view);
-	    ReactDOM.render(React.createElement(react_view_1.Dashboard, {player: player}), document.getElementById('dashboard'));
+	    let statistics = ReactDOM.render(React.createElement(statistics_1.Statistics, null), document.getElementById('statistics'));
+	    let player = new player_1.Player(film, view, statistics);
+	    ReactDOM.render(React.createElement(dashboard_1.Dashboard, {player: player}), document.getElementById('dashboard'));
 	})();
 
 
@@ -283,20 +289,16 @@
 	        this.film = [];
 	    }
 	    sort(data) {
-	        var totalComparisonCount = 0;
-	        var totalSwapCount = 0;
 	        var swapCount = 1;
 	        var film = [];
 	        var unsortedDataLength = data.length;
 	        while (swapCount > 0) {
 	            swapCount = 0;
 	            for (var i = 1; i < unsortedDataLength; i++) {
-	                totalComparisonCount++;
 	                var filmActions = {
 	                    blur: previousFocus,
 	                    focus: [i - 1, i],
-	                    comparisons: totalComparisonCount,
-	                    swaps: totalSwapCount
+	                    increaseComparisons: true,
 	                };
 	                var previousFocus = filmActions.focus;
 	                film.push(filmActions);
@@ -305,11 +307,9 @@
 	                    data[i - 1] = data[i];
 	                    data[i] = temp;
 	                    swapCount++;
-	                    totalSwapCount++;
 	                    film.push({
 	                        swap: filmActions.focus,
-	                        comparisons: totalComparisonCount,
-	                        swaps: totalSwapCount
+	                        increaseSwaps: true
 	                    });
 	                }
 	            }
@@ -327,11 +327,12 @@
 
 	"use strict";
 	class Player {
-	    constructor(film, view) {
+	    constructor(film, view, statistics) {
 	        this.step = 0;
 	        this.previousStepForward = false;
 	        this.film = film;
 	        this.view = view;
+	        this.statistics = statistics;
 	    }
 	    previousStepWasForward() {
 	        return this.previousStepForward;
@@ -339,14 +340,6 @@
 	    previousStepWasBackward() {
 	        return !this.previousStepForward;
 	    }
-	    play() {
-	        this.forward().then(() => {
-	            (new Promise((resolve, reject) => {
-	                setTimeout(() => { resolve(); }, 200);
-	            })).then(() => this.play());
-	        }, () => { return Promise.resolve(); });
-	    }
-	    ;
 	    forward() {
 	        if (this.previousStepWasForward()) {
 	            if (this.step + 1 >= this.film.length) {
@@ -368,10 +361,14 @@
 	            --this.step;
 	        }
 	        this.previousStepForward = false;
-	        // swap focus and blur when going backwards
+	        // reverse actions when going backwards
 	        var filmActions = Object.assign({}, this.film[this.step]);
 	        filmActions.focus = this.film[this.step].blur;
 	        filmActions.blur = this.film[this.step].focus;
+	        filmActions.decreaseComparisons = this.film[this.step].increaseComparisons;
+	        filmActions.increaseComparisons = null;
+	        filmActions.decreaseSwaps = this.film[this.step].increaseSwaps;
+	        filmActions.increaseSwaps = null;
 	        return this.show(filmActions);
 	    }
 	    ;
@@ -385,6 +382,18 @@
 	        }
 	        if (filmActions.swap) {
 	            promisedActions.push(this.view.swap(filmActions.swap));
+	        }
+	        if (filmActions.increaseComparisons) {
+	            this.statistics.increaseComparisons();
+	        }
+	        if (filmActions.increaseSwaps) {
+	            this.statistics.increaseSwaps();
+	        }
+	        if (filmActions.decreaseComparisons) {
+	            this.statistics.decreaseComparisons();
+	        }
+	        if (filmActions.decreaseSwaps) {
+	            this.statistics.decreaseSwaps();
 	        }
 	        return Promise.all(promisedActions);
 	    }
@@ -403,7 +412,20 @@
 
 
 /***/ },
-/* 4 */
+/* 4 */,
+/* 5 */
+/***/ function(module, exports) {
+
+	module.exports = React;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	module.exports = ReactDOM;
+
+/***/ },
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -412,8 +434,6 @@
 	    constructor(...args) {
 	        super(...args);
 	        this.enabled = true;
-	        this.comparisons = 0;
-	        this.swaps = 0;
 	    }
 	    enable() {
 	        this.enabled = true;
@@ -423,7 +443,6 @@
 	    }
 	    recursivePlay() {
 	        return this.props.player.forward().then(() => {
-	            this.updateStats();
 	            (new Promise((resolve, reject) => {
 	                setTimeout(() => { resolve(); }, 200);
 	            })).then(() => this.recursivePlay());
@@ -441,39 +460,56 @@
 	            return;
 	        }
 	        this.disable();
-	        this.props.player.forward().then(() => { this.updateStats(); this.enable(); }, () => this.enable());
+	        this.props.player.forward().then(() => this.enable(), () => this.enable());
 	    }
 	    backward() {
 	        if (!this.enabled) {
 	            return;
 	        }
 	        this.disable();
-	        this.props.player.backward().then(() => { this.updateStats(); this.enable(); }, () => this.enable());
-	    }
-	    updateStats() {
-	        let filmActions = this.props.player.getFilmActions();
-	        this.comparisons = filmActions.comparisons;
-	        this.swaps = filmActions.swaps;
-	        this.setState({});
+	        this.props.player.backward().then(() => this.enable(), () => this.enable());
 	    }
 	    render() {
-	        return (React.createElement("div", {className: "commentBox"}, React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.backward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.play(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-play", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.forward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-forward", "aria-hidden": "true"})), React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-forward", "aria-hidden": "true"})), React.createElement("div", {class: "stats"}, "comparisons: ", this.comparisons, React.createElement("br", null), "swaps: ", this.swaps)));
+	        return (React.createElement("div", {className: "commentBox"}, React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.backward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.play(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-play", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.forward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-forward", "aria-hidden": "true"})), React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-forward", "aria-hidden": "true"}))));
 	    }
 	}
 	exports.Dashboard = Dashboard;
 
 
 /***/ },
-/* 5 */
-/***/ function(module, exports) {
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = React;
+	"use strict";
+	const React = __webpack_require__(5);
+	class Statistics extends React.Component {
+	    constructor(...args) {
+	        super(...args);
+	        this.comparisons = 0;
+	        this.swaps = 0;
+	    }
+	    increaseComparisons() {
+	        this.comparisons++;
+	        this.setState({});
+	    }
+	    increaseSwaps() {
+	        this.swaps++;
+	        this.setState({});
+	    }
+	    decreaseComparisons() {
+	        this.comparisons--;
+	        this.setState({});
+	    }
+	    decreaseSwaps() {
+	        this.swaps--;
+	        this.setState({});
+	    }
+	    render() {
+	        return (React.createElement("div", {class: "stats"}, "comparisons: ", this.comparisons, React.createElement("br", null), "swaps: ", this.swaps));
+	    }
+	}
+	exports.Statistics = Statistics;
 
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	module.exports = ReactDOM;
 
 /***/ }
 /******/ ]);

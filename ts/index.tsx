@@ -4,7 +4,8 @@ import * as ReactDOM from "react-dom";
 import {View} from './view';
 import {BubbleSort} from './bubble-sort';
 import {Player} from './player';
-import {Dashboard} from './react-view';
+import {Dashboard} from './dashboard';
+import {Statistics} from "./statistics";
 
 (function () {
   function randomInt() {
@@ -24,22 +25,31 @@ import {Dashboard} from './react-view';
 
   // var film = [
   //   {
-  //     focus: [0,1]
+  //     focus: [0,1],
+  //     increaseComparisons: 1,
   //   },
   //   {
   //     blur: [0,1],
-  //     focus: [1,2]
+  //     focus: [1,2],
+  //     increaseComparisons: 1
   //   },
   //   {
-  //     swap: [1,2]
+  //     swap: [1,2],
+  //     increaseSwaps: 1
   //   },
   //   {
   //     blur: [1,2],
-  //     focus: [2,3]
+  //     focus: [2,3],
+  //     increaseComparisons: 1
   //   }
   // ];
 
-  var player = new Player(film, view);
+  let statistics = ReactDOM.render(
+    <Statistics />,
+    document.getElementById('statistics')
+  );
+
+  let player = new Player(film, view, statistics);
 
   ReactDOM.render(
     <Dashboard player={player}/>,
