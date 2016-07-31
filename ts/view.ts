@@ -20,7 +20,6 @@ export class View {
 
   draw;
   arrayNodes = [];
-  focusedNodes = [];
 
   constructor() {
     this.config.canvasWidth = this.config.canvasWidthGrids * this.config.gridSize;
@@ -100,7 +99,7 @@ export class View {
       ));
       x1 += this.config.gridSize + this.config.nodeSize;
     }
-  };
+  }
 
   // function drawTree(data, treeX, treeY) {
   //
@@ -140,14 +139,14 @@ export class View {
       this.arrayNodes[indexes[i]].focus();
     }
     return Promise.resolve();
-  };
+  }
 
   blur(indexes) : Promise<void> {
     for (var i = 0; i < indexes.length; i++) {
       this.arrayNodes[indexes[i]].blur();
     }
     return Promise.resolve();
-  };
+  }
 
   swap(indexes) {
     var node1 = this.arrayNodes[indexes[0]];
@@ -169,8 +168,17 @@ export class View {
         });
       })
     ]);
-  };
-};
+  }
+
+  reDrawArray(data) {
+    let i = 0;
+    for (let node of this.arrayNodes) {
+      node.content.text(data[i].toString());
+      node.blur();
+      i++;
+    }
+  }
+}
 
 class ViewNode {
   circle;

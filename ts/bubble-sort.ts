@@ -5,7 +5,11 @@ export class BubbleSort {
 
   sort(data) {
     var swapCount = 1;
-    var film = [];
+    var film = {
+      startState: data.slice(0),
+      endState: [],
+      actions: []
+    };
 
     var unsortedDataLength = data.length;
     while (swapCount > 0) {
@@ -17,7 +21,7 @@ export class BubbleSort {
           increaseComparisons: true,
         };
         var previousFocus = filmActions.focus;
-        film.push(filmActions);
+        film.actions.push(filmActions);
 
         if (data[i - 1] > data[i]) {
           var temp = data[i - 1];
@@ -25,7 +29,7 @@ export class BubbleSort {
           data[i] = temp;
           swapCount++;
 
-          film.push({
+          film.actions.push({
             swap: filmActions.focus,
             increaseSwaps: true
           });
@@ -33,6 +37,8 @@ export class BubbleSort {
       }
       unsortedDataLength--;
     }
+
+    film.endState = data;
 
     return film;
   }

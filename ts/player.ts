@@ -27,7 +27,7 @@ export class Player {
 
   forward() : Promise<any> {
     if (this.previousStepWasForward()) {
-      if (this.step + 1 >= this.film.length) {
+      if (this.step + 1 >= this.film.actions.length) {
         console.log('The end!');
         return Promise.reject('Film is at the end');
       }
@@ -35,7 +35,7 @@ export class Player {
     }
     this.previousStepForward = true;
 
-    return this.show(this.film[this.step]);
+    return this.show(this.film.actions[this.step]);
   };
 
   backward() : Promise<any> {
@@ -49,51 +49,60 @@ export class Player {
     this.previousStepForward = false;
 
     // reverse actions when going backwards
-    var filmActions = Object.assign({}, this.film[this.step]);
-    filmActions.focus = this.film[this.step].blur;
-    filmActions.blur = this.film[this.step].focus;
-    filmActions.decreaseComparisons = this.film[this.step].increaseComparisons;
-    filmActions.increaseComparisons = null;
-    filmActions.decreaseSwaps = this.film[this.step].increaseSwaps;
-    filmActions.increaseSwaps = null;
+    let originalActionSequence = this.film.actions[this.step];
+    let actionSequence = Object.assign({}, originalActionSequence);
+    actionSequence.focus = originalActionSequence.blur;
+    actionSequence.blur = originalActionSequence.focus;
+    actionSequence.decreaseComparisons = originalActionSequence.increaseComparisons;
+    actionSequence.increaseComparisons = null;
+    actionSequence.decreaseSwaps = originalActionSequence.increaseSwaps;
+    actionSequence.increaseSwaps = null;
 
-    return this.show(filmActions);
+    return this.show(actionSequence);
   };
   
-  show(filmActions) {
+  show(actionSequence) {
     var promisedActions = [];
-    if (filmActions.blur) {
-      promisedActions.push(this.view.blur(filmActions.blur));
+    if (actionSequence.blur) {
+      promisedActions.push(this.view.blur(actionSequence.blur));
     }
 
-    if (filmActions.focus) {
-      promisedActions.push(this.view.focus(filmActions.focus));
+    if (actionSequence.focus) {
+      promisedActions.push(this.view.focus(actionSequence.focus));
     }
 
-    if (filmActions.swap) {
-      promisedActions.push(this.view.swap(filmActions.swap));
+    if (actionSequence.swap) {
+      promisedActions.push(this.view.swap(actionSequence.swap));
     }
 
-    if (filmActions.increaseComparisons) {
+    if (actionSequence.increaseComparisons) {
       this.statistics.increaseComparisons();
     }
 
-    if (filmActions.increaseSwaps) {
+    if (actionSequence.increaseSwaps) {
       this.statistics.increaseSwaps();
     }
 
-    if (filmActions.decreaseComparisons) {
+    if (actionSequence.decreaseComparisons) {
       this.statistics.decreaseComparisons();
     }
 
-    if (filmActions.decreaseSwaps) {
+    if (actionSequence.decreaseSwaps) {
       this.statistics.decreaseSwaps();
     }
 
     return Promise.all(promisedActions);
-  };
-  
-  getFilmActions() {
-    return this.film[this.step];
-  };
-};
+  }
+
+  gotoBeginning() {
+    this.step = 0;
+    this.view.reDrawArray(this.film.startState);
+    this.previousStepForward = false;
+    this.statistics.reset();
+  }
+
+  // gotoEnd() {
+  //   this.step = 0;
+  //   this.view.reDrawArray(this.film.startState);
+  // }
+}
