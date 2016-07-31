@@ -29,8 +29,12 @@ export class Statistics extends React.Component<Props,{}> {
   }
 
   public reset() {
-    this.comparisons = 0;
-    this.swaps = 0;
+    this.set(0,0);
+  }
+
+  public set(comparisons: number, swaps: number) {
+    this.comparisons = comparisons;
+    this.swaps = swaps;
     this.setState({});
   }
 

@@ -101,8 +101,13 @@ export class Player {
     this.statistics.reset();
   }
 
-  // gotoEnd() {
-  //   this.step = 0;
-  //   this.view.reDrawArray(this.film.startState);
-  // }
+  gotoEnd() {
+    this.step = this.film.actions.length - 1;
+    this.view.reDrawArray(this.film.endState.data);
+    this.previousStepForward = true;
+    this.statistics.set(
+      this.film.endState.comparisons,
+      this.film.endState.swaps
+    );
+  }
 }

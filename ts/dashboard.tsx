@@ -78,7 +78,7 @@ export class Dashboard extends React.Component<Props,{}> {
   }
 
   public gotoEnd() {
-
+    this.props.player.gotoEnd();
   }
 
   render() {
@@ -88,7 +88,7 @@ export class Dashboard extends React.Component<Props,{}> {
         <button onClick={e => this.backward()} className="btn btn-secondary"><i className="fa fa-backward" aria-hidden="true"></i></button>
         <button onClick={e => this.play()} className="btn btn-secondary"><i className={"fa " + (this.playing ? "fa-pause" : "fa-play")} aria-hidden="true"></i></button>
         <button onClick={e => this.forward()} className="btn btn-secondary"><i className="fa fa-forward" aria-hidden="true"></i></button>
-        <button className="btn btn-secondary"><i className="fa fa-fast-forward" aria-hidden="true"></i></button>
+        <button onClick={e => this.gotoEnd()} className="btn btn-secondary"><i className="fa fa-fast-forward" aria-hidden="true"></i></button>
       </div>
     );
   }
