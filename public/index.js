@@ -45,14 +45,16 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	const React = __webpack_require__(5);
+	const ReactDOM = __webpack_require__(6);
 	const view_1 = __webpack_require__(1);
 	const bubble_sort_1 = __webpack_require__(2);
 	const player_1 = __webpack_require__(3);
 	const react_view_1 = __webpack_require__(4);
-	const React = __webpack_require__(5);
-	const ReactDOM = __webpack_require__(6);
-	// declare var Vue:any;
 	(function () {
+	    function randomInt() {
+	        return Math.floor((Math.random() * 9) + 1);
+	    }
 	    var view = new view_1.View();
 	    var data = [];
 	    for (var i = 0; i < 10; i++) {
@@ -78,65 +80,7 @@
 	    //   }
 	    // ];
 	    var player = new player_1.Player(film, view);
-	    initDashBoard();
-	    function randomInt() {
-	        return Math.floor((Math.random() * 9) + 1);
-	    }
-	    function initDashBoard() {
-	        var enabled = true;
-	        var enable = () => enabled = true;
-	        var disable = () => enabled = false;
-	        function updateStats() {
-	            let filmActions = player.getFilmActions();
-	            // vue.comparisons = filmActions.comparisons;
-	            // vue.swaps = filmActions.swaps;
-	        }
-	        function play() {
-	            return player.forward().then(() => {
-	                updateStats();
-	                (new Promise((resolve, reject) => {
-	                    setTimeout(() => { resolve(); }, 200);
-	                })).then(() => play());
-	            }, () => Promise.resolve());
-	        }
-	        // var vue = new Vue({
-	        //   el: 'body',
-	        //   data: {
-	        //     comparisons: 0,
-	        //     swaps: 0
-	        //   },
-	        //   methods: {
-	        //     play: function () {
-	        //       play().then(() => enable(), () => enable());
-	        { }
-	        { }
-	        { }
-	        { }
-	        //       if (!enabled) {
-	        //         return;
-	        //       }
-	        //       disable();
-	        //       player.forward().then(() => {
-	        //         updateStats();
-	        //         enable();
-	        //       }, () => enable());
-	        //     },
-	        //     backward: function (e) {
-	        //       if (!enabled) {
-	        //         return;
-	        //       }
-	        //       disable();
-	        //       player.backward().then(() => {
-	        //         updateStats();
-	        //         enable();
-	        //       }, () => enable());
-	        //     }
-	        //   }
-	        // });
-	    }
-	    function showStats() {
-	    }
-	    ReactDOM.render(React.createElement(react_view_1.CommentBox, {player: player}), document.getElementById('content'));
+	    ReactDOM.render(React.createElement(react_view_1.Dashboard, {player: player}), document.getElementById('dashboard'));
 	})();
 
 
@@ -464,10 +408,12 @@
 
 	"use strict";
 	const React = __webpack_require__(5);
-	class CommentBox extends React.Component {
+	class Dashboard extends React.Component {
 	    constructor(...args) {
 	        super(...args);
 	        this.enabled = true;
+	        this.comparisons = 0;
+	        this.swaps = 0;
 	    }
 	    enable() {
 	        this.enabled = true;
@@ -475,32 +421,46 @@
 	    disable() {
 	        this.enabled = false;
 	    }
+	    recursivePlay() {
+	        return this.props.player.forward().then(() => {
+	            this.updateStats();
+	            (new Promise((resolve, reject) => {
+	                setTimeout(() => { resolve(); }, 200);
+	            })).then(() => this.recursivePlay());
+	        }, () => Promise.resolve());
+	    }
 	    play() {
 	        if (!this.enabled) {
 	            return;
 	        }
 	        this.disable();
-	        this.props.player.play().then(() => this.enable(), () => this.enable());
+	        this.recursivePlay().then(() => this.enable(), () => this.enable());
 	    }
 	    forward() {
 	        if (!this.enabled) {
 	            return;
 	        }
 	        this.disable();
-	        this.props.player.forward().then(() => this.enable(), () => this.enable());
+	        this.props.player.forward().then(() => { this.updateStats(); this.enable(); }, () => this.enable());
 	    }
 	    backward() {
 	        if (!this.enabled) {
 	            return;
 	        }
 	        this.disable();
-	        this.props.player.backward().then(() => this.enable(), () => this.enable());
+	        this.props.player.backward().then(() => { this.updateStats(); this.enable(); }, () => this.enable());
+	    }
+	    updateStats() {
+	        let filmActions = this.props.player.getFilmActions();
+	        this.comparisons = filmActions.comparisons;
+	        this.swaps = filmActions.swaps;
+	        this.setState({});
 	    }
 	    render() {
-	        return (React.createElement("div", {className: "commentBox"}, React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.backward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.play(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-play", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.forward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-forward", "aria-hidden": "true"})), React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-forward", "aria-hidden": "true"}))));
+	        return (React.createElement("div", {className: "commentBox"}, React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.backward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-backward", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.play(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-play", "aria-hidden": "true"})), React.createElement("button", {onClick: e => this.forward(), className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-forward", "aria-hidden": "true"})), React.createElement("button", {className: "btn btn-secondary"}, React.createElement("i", {className: "fa fa-fast-forward", "aria-hidden": "true"})), React.createElement("div", {class: "stats"}, "comparisons: ", this.comparisons, React.createElement("br", null), "swaps: ", this.swaps)));
 	    }
 	}
-	exports.CommentBox = CommentBox;
+	exports.Dashboard = Dashboard;
 
 
 /***/ },

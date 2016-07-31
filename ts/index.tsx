@@ -1,15 +1,16 @@
-import {View} from './view';
-import {BubbleSort} from './bubble-sort';
-import {Player} from './player';
-
-import {CommentBox} from './react-view';
-
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-// declare var Vue:any;
+import {View} from './view';
+import {BubbleSort} from './bubble-sort';
+import {Player} from './player';
+import {Dashboard} from './react-view';
 
 (function () {
+  function randomInt() {
+    return Math.floor((Math.random() * 9) + 1)
+  }
+
   var view = new View();
 
   var data = [];
@@ -17,8 +18,6 @@ import * as ReactDOM from "react-dom";
     data.push(randomInt());
   }
   view.drawArray(data);
-
-
 
   var bubbleSort = new BubbleSort();
   var film = bubbleSort.sort(data);
@@ -42,80 +41,9 @@ import * as ReactDOM from "react-dom";
 
   var player = new Player(film, view);
 
-  initDashBoard();
-
-  function randomInt() {
-    return Math.floor((Math.random() * 9) + 1)
-  }
-
-  function initDashBoard() {
-    var enabled = true;
-    var enable = () => enabled = true;
-    var disable = () => enabled = false;
-
-    function updateStats() {
-      let filmActions = player.getFilmActions();
-      // vue.comparisons = filmActions.comparisons;
-      // vue.swaps = filmActions.swaps;
-    }
-
-    function play() {
-      return player.forward().then(
-        () => {
-          updateStats();
-          (new Promise((resolve, reject) => {
-            setTimeout(() => {resolve()}, 200);
-          })).then(() => play());
-        },
-        () => Promise.resolve()
-      );
-    }
-
-    // var vue = new Vue({
-    //   el: 'body',
-    //   data: {
-    //     comparisons: 0,
-    //     swaps: 0
-    //   },
-    //   methods: {
-    //     play: function () {
-    //       play().then(() => enable(), () => enable());
-        {/*},*/}
-        {/*pause: function () {*/}
-
-        {/*},*/}
-        {/*forward: function (e) {*/}
-    //       if (!enabled) {
-    //         return;
-    //       }
-    //       disable();
-    //       player.forward().then(() => {
-    //         updateStats();
-    //         enable();
-    //       }, () => enable());
-    //     },
-    //     backward: function (e) {
-    //       if (!enabled) {
-    //         return;
-    //       }
-    //       disable();
-    //       player.backward().then(() => {
-    //         updateStats();
-    //         enable();
-    //       }, () => enable());
-    //     }
-    //   }
-    // });
-  }
-
-  function showStats() {
-
-  }
-
-
   ReactDOM.render(
-    <CommentBox player={player}/>,
-    document.getElementById('content')
+    <Dashboard player={player}/>,
+    document.getElementById('dashboard')
   );
 }) ();
 
