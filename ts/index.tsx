@@ -3,6 +3,7 @@ import * as ReactDOM from "react-dom";
 
 import {View} from './view';
 import {BubbleSort} from './bubble-sort';
+import {MergeSort} from './merge-sort';
 import {Player} from './player';
 import {Dashboard} from './dashboard';
 import {Statistics} from "./statistics";
@@ -20,8 +21,11 @@ import {Statistics} from "./statistics";
   }
   view.drawArray(data);
 
-  var bubbleSort = new BubbleSort();
-  var film = bubbleSort.sort(data);
+  let bubbleSort = new BubbleSort();
+  let film = [];//bubbleSort.sort(data);
+
+  let mergeSort = new MergeSort();
+  mergeSort.sort(data);
 
   // var film = [
   //   {
