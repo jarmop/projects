@@ -1,0 +1,29 @@
+{
+  "name": "nutrient-data",
+  "version": "1.0.0",
+  "description": "Web scraper",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jarmop/nutrient-data.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server csv",
+    "clean": "rm -rf app/*",
+    "build": "concurrently \"npm run clean\" \"npm run tsc\"",
+    "typings": "typings",
+    "postinstall": "typings install"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^2.4.2",
+    "request": "^2.72.0",
+    "request-promise": "^3.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^2.0.0",
+    "typings": "^0.8.1"
+  }
+}
