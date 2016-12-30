@@ -1,0 +1,7 @@
+<h1>Ruoat</h1>
+<table *ngIf="foods" class="table">
+    <tr *ngFor="#foodId of foodIds">
+        <td>{{foods[foodId].fineliId}}</td>
+        <td>{{foods[foodId].name}}</td>
+    </tr>
+</table>

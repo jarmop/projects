@@ -1,0 +1,29 @@
+<h4>Ateria</h4>
+<meal-foods></meal-foods>
+<table class="table table-sm">
+    <tbody>
+    <template ngFor #mealFood [ngForOf]="mealFoods">
+        <tr *ngIf="!editMode(mealFood)" (click)="openEdit(mealFood)">
+            <td class="name">
+                {{mealFood.name}}
+            </td>
+            <td class="amount">
+                {{mealFood.amount}} g
+            </td>
+        </tr>
+        <tr *ngIf="editMode(mealFood)" class="tr-form">
+            <td colspan="2">
+                <meal-food-form [mealFood]="mealFood" (onRemove)="removeMealFood($event)" (onSave)="saveMealFood($event)" (onCancel)="closeEdit()"></meal-food-form>
+            </td>
+        </tr>
+    </template>
+    <tr [ngClass]="{'tr-form': isAddOpen}">
+        <td colspan="2">
+            <div class="add-food">
+                <a *ngIf="!isAddOpen" (click)="openAdd()" role="button">Lisää ruoka</a>
+                <meal-food-form *ngIf="isAddOpen" (onSave)="addMealFood($event)" (onCancel)="closeAdd()"></meal-food-form>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>

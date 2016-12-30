@@ -1,0 +1,17 @@
+<div *ngIf="mealNutrients">
+    <h4>Ravintoaineet</h4>
+    <table class="table table-sm">
+        <tbody>
+        <tr *ngFor="#nutrient of mealNutrients">
+            <td class="name">{{nutrient.name}}</td>
+            <td class="bar">
+                <div class="bar">
+                    <div class="ok" [style.width]="getPercentMin(nutrient.percent) + '%'">
+                        <span class="bar-percent">{{nutrient.percent | round}} %</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

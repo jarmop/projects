@@ -1,0 +1,122 @@
+@import "bootstrap";
+
+.meal .table {
+  td {
+    border:none;
+    padding: 0 0.3rem;
+    &.name {
+      width: 78%
+    }
+    &.amount {
+      width: 22%;
+    }
+  }
+  .add-food {
+  }
+  tr {
+    cursor: pointer;
+    &:hover, &.tr-form {
+      background-color: #fbfbfb;
+    }
+  }
+
+  form.form-inline {
+    autocomplete .dropdown {
+      display: inline-block;
+      width: 70%;
+      .form-control.name, .dropdown-menu {
+        width: 100%
+      }
+      .form-control.name {
+        position: relative;
+        z-index: 1;
+      }
+      .suggestion {
+        position: absolute;
+        color: $text-muted;
+      }
+    }
+
+    width: 100%;
+    display: inline-block;
+    .form-group {
+      display: inline-block;
+      margin-bottom: 0;
+    }
+    margin-bottom: 0.5rem;
+    .form-control {
+      background-color: inherit;
+      display: inline-block;
+      width: auto;
+      vertical-align: middle;
+      border-width: 0 0 1px;
+      border-radius: 0;
+      padding: 0;
+      &.name {
+        width: 70%;
+        @include media-breakpoint-up(sm) {
+          margin-bottom: -2px;
+        }
+      }
+      &.amount {
+        width: 34px;
+      }
+      &.measure {
+        -webkit-appearance: none;
+        -webkit-border-radius: 0;
+      }
+    }
+    .actions {
+      margin-top: 5px;
+      .btn.btn-success {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+.recommendations {
+  .table {
+    //background-color: $gray-lightest;
+    //border: 1px solid $table-border-color;
+    margin: 0;
+    td {
+      border-width: 0;
+      padding: 0 0.3rem;
+      &.name {
+        width: 6rem;
+        text-align: right;
+      }
+      &.bar {
+        padding: 0;
+      }
+    }
+    td, th {
+      font-size: 14px;
+      line-height: 14px;
+      height: 20px;
+      vertical-align: middle;
+    }
+    td.bar {
+      div.bar {
+        height: 18px;
+        background-color: $gray-lighter;
+        div {
+          display: inline-block;
+          height: 18px;
+          float: left;
+          line-height: 18px;
+          white-space: nowrap;
+          span.bar-percent {
+            padding-left: 0.4rem;
+          }
+          background-color: #9ED2FF;
+          &.ok {
+            background-color: rgb(151, 236, 162);
+            color: #007200;
+          }
+        }
+      }
+    }
+  }
+}

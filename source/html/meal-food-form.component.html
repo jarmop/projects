@@ -1,0 +1,21 @@
+<form class="form-inline" #mealFoodForm="ngForm">
+    <autocomplete [mealFood]="mealFood"></autocomplete>
+    <fieldset class="form-group">
+        <input [(ngModel)]="mealFood.amount" ngControl="amount" required type="text" class="form-control amount" placeholder="100">
+        <select class="form-control measure">
+            <option>g</option>
+            <option>ml</option>
+        </select>
+    </fieldset>
+    <div class="actions">
+        <button (click)="save(mealFood)" class="btn btn-sm btn-success" type="button" [disabled]="!mealFoodForm.form.valid">
+            <i class="fa fa-check"></i>
+        </button>
+        <button (click)="cancel()" class="btn btn-sm btn-secondary" type="button">
+            <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+        <button *ngIf="editingOld" (click)="remove(mealFood)" class="btn btn-sm btn-secondary pull-right" type="button">
+            <i class="fa fa-trash-o" aria-hidden="true"></i>
+        </button>
+    </div>
+</form>
