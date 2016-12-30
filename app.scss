@@ -1,0 +1,20 @@
+@import "bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
+
+.container {
+  width: 1240px !important;
+}
+
+table.truth-table {
+  th {
+    border-bottom: 1px solid black;
+  }
+  td, th {
+    &:first-child, &:last-child {
+      padding: 0 5px;
+    }
+    &:last-child {
+      border-left: 1px solid black;
+    }
+    padding: 0 5px 0 0;
+  }
+}
