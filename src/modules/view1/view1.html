@@ -1,0 +1,100 @@
+<h1>Example 1</h1>
+<span data-placement="top-right" title="titteli" data-content="testi" data-trigger="click" bs-popover>
+</span>
+<div class="row">
+  <div class="col-xs-12">
+    <h2>Description</h2>
+    <div class="well">
+      {{getDescription()}}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12 col-sm-6 col-md-4">
+    <h2>Code</h2>
+    <div bs-tabs>
+      <div bs-pane title="Assembly">
+        <button disabled ng-click="backward()" class="btn btn-default btn-mini">
+          <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
+        </button>
+        <button ng-click="forward()" class="btn btn-default btn-mini">
+          <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
+        </button>
+        <button ng-click="rewind()" class="btn btn-default btn-mini">Rewind</button>
+        <div class="well code">
+          <table>
+            <tbody>
+              <tr ng-repeat="(address,line) in code" class="line-of-code" ng-class="{active: isActiveLine(address)}" ng-click="setActive(address)">
+                <td class="address">{{address}}</td>
+                <td class="instruction">{{line.instruction}}</td>
+                <td class="arguments">{{line.arguments.join(',')}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div bs-pane title="C">
+<pre><code class="c">int sub() {
+  return 0xbeef;
+}
+int main() {
+  sub();
+  return 0xf00d;
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-6 col-sm-6 col-md-4">
+    <h2>Stack</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Address</th><th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="(address, value) in stack" ng-class="{modified: isActiveStack(address)}">
+          <td>
+            {{address}}
+          </td>
+          <td>
+            {{value}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-xs-6 col-sm-6 col-md-4">
+    <h2>Registers</h2>
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>Name</th><th>Value</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="(name,value) in registers" ng-class="{modified: isActiveRegister(name)}">
+        <td>
+          {{name}}
+        </td>
+        <td>
+          {{value}}
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-6">
+    <h2>Input</h2>
+    <pre><code>
+    </code></pre>
+  </div>
+  <div class="col-xs-6">
+    <h2>Output</h2>
+    <pre><code>
+    </code></pre>
+  </div>
+</div>
