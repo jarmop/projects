@@ -1,0 +1,15 @@
+@(data: String, yAxisTickFormat: String)
+<nvd3-stacked-area-chart
+    data="@data"
+    height="200"
+    margin="{left:42,top:10,bottom:40,right:25}"
+    showXAxis="true"
+    showYAxis="true"
+    tooltips="true"
+    interactive="true"
+    useInteractiveGuideline="true"
+    toolTipContent="toolTipContentFunction()"
+    xAxisTickFormat="formatSum()"
+    yAxisTickFormat="@yAxisTickFormat">
+  <svg></svg>
+</nvd3-stacked-area-chart>

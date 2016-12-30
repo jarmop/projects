@@ -1,0 +1,43 @@
+@(title: String, assets: List[String], tabs: List[Tab])
+
+@import play.twirl.api.Html
+
+@lineChartPercent(data: String) = {
+  @lineChart(data, yAxisTickFormat="formatPercent()")
+}
+
+@lineChartSum(data: String) = {
+  @lineChart(data, yAxisTickFormat="formatSum()")
+}
+
+@main(title, assets, "CompareController as ctrl") {
+
+  <h1>@title</h1>
+
+  <div class="row">
+    <div class="col-sm-6">
+      <h3>Veroprosentti</h3>
+      @lineChartPercent(data="percentData")
+    </div>
+    <div class="col-sm-6">
+      <h3>Nettotulot</h3>
+      @lineChartSum(data="netIncomeData")
+    </div>
+  </div>
+
+  <tabset>
+    @for(tab <- tabs) {
+      <tab heading="@tab.heading" select="@tab.select" active="@tab.active">
+        <div class="row">
+          @for(chart <- tab.charts) {
+            <div class="col-xs-6 col-sm-4 col-lg-3">
+              <h3>@chart.title</h3>
+              @chart.graph
+            </div>
+          }
+        </div>
+      </tab>
+    }
+  </tabset>
+
+}

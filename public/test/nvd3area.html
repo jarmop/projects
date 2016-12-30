@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="nv.d3.css" rel="stylesheet">
+<style>
+
+    #chart svg {
+        height: 400px;
+    }
+
+</style>
+<body>
+<div id="chart">
+    <svg></svg>
+</div>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="nv.d3.js"></script>
+<!--script src="nvd3area.js"></script-->
+<script>
+
+    /*Data sample:
+     {
+     "key" : "North America" ,
+     "values" : [ [ 1025409600000 , 23.041422681023] , [ 1028088000000 , 19.854291255832],
+     [ 1030766400000 , 21.02286281168],
+     [ 1033358400000 , 22.093608385173],
+     [ 1036040400000 , 25.108079299458],
+     [ 1038632400000 , 26.982389242348]
+     ...
+
+     */
+    d3.json('nvd3area.json', function(data) {
+        nv.addGraph(function() {
+            var chart = nv.models.stackedAreaChart()
+                            .x(function(d) { return d[0] })
+                            .y(function(d) { return d[1] })
+                            .clipEdge(true)
+                            .useInteractiveGuideline(true)
+                    ;
+
+            chart.xAxis
+                    .showMaxMin(false)
+                    .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)) });
+
+            chart.yAxis
+                    .tickFormat(d3.format(',.2f'));
+
+            d3.select('#chart svg')
+                    .datum(data)
+                    .transition().duration(500).call(chart);
+
+            nv.utils.windowResize(chart.update);
+
+            return chart;
+        });
+    })
+</script>
+</body>

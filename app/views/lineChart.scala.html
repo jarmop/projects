@@ -1,0 +1,14 @@
+@(data: String, yAxisTickFormat: String)
+<nvd3-line-chart
+  data="@data"
+  height="250"
+  showXAxis="true"
+  showYAxis="true"
+  tooltips="true"
+  interactive="true"
+  useInteractiveGuideline="true"
+  showLegend="true"
+  xAxisTickFormat="formatSum()"
+  yAxisTickFormat="@yAxisTickFormat"
+  >
+</nvd3-line-chart>
