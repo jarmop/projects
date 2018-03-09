@@ -1,29 +1,35 @@
 const STATS_URL = 'https://statsapi.web.nhl.com/api/v1/people/[PLAYER_ID]/stats/?stats=gameLog';
 const IMAGE_URL = 'https://nhl.bamcontent.com/images/headshots/current/60x60/[PLAYER_ID]@2x.jpg';
 
+let currentDate = (new Date());
+currentDate.setDate(currentDate.getDate() - 1);
+let dayOfMonthYesterday = currentDate.getDate();
+
 export const getStats = (players) => {
   return new Promise((resolve, reject) => {
     let stats = [];
-    players.map(player => {
+    let processCount = 0;
+
+    for (let player of players) {
       fetch(STATS_URL.replace(/\[PLAYER_ID\]/, player.id)).
           then(res => res.json()).
           then(
               (result) => {
-                let splits = result.stats[0].splits;
-                let {goals, assists, timeOnIce} = splits[0].stat;
-                let date = splits[0].date;
-                // console.log(splits);
-                // console.log(latestGame);
+                processCount++;
+                let split = result.stats[0].splits[0];
+                let gameDayOfMonth = new Date(split.date).getDate();
+                let {goals, assists, points, timeOnIce} = split.stat;
 
-                stats.push({
-                  playerId: player.id,
-                  goals: goals,
-                  assists: assists,
-                  timeOnIce: timeOnIce,
-                  date: date,
-                });
+                if (gameDayOfMonth === dayOfMonthYesterday && points > 0) {
+                  stats.push({
+                    playerId: player.id,
+                    goals: goals,
+                    assists: assists,
+                    timeOnIce: timeOnIce,
+                  });
+                }
 
-                if (stats.length === players.length) {
+                if (processCount === players.length) {
                   resolve(stats);
                 }
               },
@@ -31,13 +37,12 @@ export const getStats = (players) => {
               // instead of a catch() block so that we don't swallow
               // exceptions from actual bugs in components.
               (error) => {
-                this.setState({
-                  isLoaded: true,
-                  error,
-                });
+                if (processCount === players.length) {
+                  resolve(stats);
+                }
               },
           );
-    });
+    }
   });
 };
 

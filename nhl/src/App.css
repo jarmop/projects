@@ -2,6 +2,9 @@
   display: flex;
   justify-content: center;
 }
+.card-container {
+  display: inline-block;
+}
 .card {
   display: flex;
 }
