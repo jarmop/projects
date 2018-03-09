@@ -6,12 +6,13 @@ class App extends Component {
   render() {
     return (
       <div className="app">
-        <Stats player={8479339}/>
+        <div>
+          <h1>Tilastoja viime pelistä</h1>
+          <Stats/>
+        </div>
       </div>
     );
   }
 }
 
 export default App;
-
-
