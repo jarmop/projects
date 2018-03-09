@@ -1,28 +1,29 @@
-.App {
+.app {
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  display: flex;
+}
+
+.card__player {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4em;
+  padding: 0 20px;
+  border-bottom: 1px solid black;
+}
+
+table, td, th {
+  border: 1px solid black;
+}
+
+td {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.card__stats {
+  border-collapse: collapse;
 }
