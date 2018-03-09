@@ -1,15 +1,24 @@
 const STATS_URL = 'https://statsapi.web.nhl.com/api/v1/people/[PLAYER_ID]/stats/?stats=gameLog';
 const IMAGE_URL = 'https://nhl.bamcontent.com/images/headshots/current/60x60/[PLAYER_ID]@2x.jpg';
 
-let currentDate = (new Date());
-currentDate.setDate(currentDate.getDate() - 1);
-let dayOfMonthYesterday = currentDate.getDate();
+let yesterdayDate = (new Date());
+yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+yesterdayDate.setHours(0, 0, 0, 0);
+let startOfYesterday = yesterdayDate.getTime();
+let cacheKey = 'stats' + startOfYesterday;
 
 export const getStats = (players) => {
+  if (localStorage.getItem(cacheKey)) {
+    return new Promise(
+        (resolve, reject) => resolve(
+            JSON.parse(localStorage.getItem(cacheKey)),
+        ),
+    );
+  }
+
   let fetchStats = new Promise((resolve, reject) => {
     let stats = [];
     let processCount = 0;
-
     for (let player of players) {
       fetch(STATS_URL.replace(/\[PLAYER_ID\]/, player.id)).
           then(res => res.json()).
@@ -17,10 +26,10 @@ export const getStats = (players) => {
               (result) => {
                 processCount++;
                 let split = result.stats[0].splits[0];
-                let gameDayOfMonth = new Date(split.date).getDate();
+                let gameTime = new Date(split.date).getTime();
                 let {goals, assists, points, timeOnIce} = split.stat;
 
-                if (gameDayOfMonth === dayOfMonthYesterday && points > 0) {
+                if (gameTime > startOfYesterday && points > 0) {
                   stats.push({
                     playerId: player.id,
                     goals: goals,
@@ -53,7 +62,10 @@ export const getStats = (players) => {
           return statsB.goals - statsA.goals;
         }
       },
-  ));
+  )).then(stats => {
+    localStorage.setItem(cacheKey, JSON.stringify(stats));
+    return stats;
+  });
 };
 
 export const getImageUrl = (playerId) => {
