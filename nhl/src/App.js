@@ -7,7 +7,6 @@ class App extends Component {
     return (
       <div className="app">
         <div>
-          <h1>Tilastoja viime pelistä</h1>
           <Stats/>
         </div>
       </div>

@@ -2,29 +2,34 @@
   display: flex;
   justify-content: center;
 }
-
 .card {
   display: flex;
 }
-
 .card__player {
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.4em;
-  padding: 0 20px;
-  border-bottom: 1px solid black;
-  width: 200px;
+  padding: 20px;
 }
-
-table, td, th {
-  border: 1px solid black;
+th {
+  text-align: right;
+  padding-right: 10px;
 }
-
 td {
-  text-align: center;
+  text-align: left;
 }
-
 .card__stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card__stats table {
   border-collapse: collapse;
+}
+.headshot {
+  border: 1px solid black;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
 }

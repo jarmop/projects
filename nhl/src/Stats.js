@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
-const STATS_URL = 'https://statsapi.web.nhl.com/api/v1/people/[ID]/stats/?stats=gameLog';
-// const IMAGE_URL = 'https://nhl.bamcontent.com/images/headshots/current/60x60/[ID]@2x.jpg';
+const STATS_URL = 'https://statsapi.web.nhl.com/api/v1/people/[PLAYER_ID]/stats/?stats=gameLog';
+const IMAGE_URL = 'https://nhl.bamcontent.com/images/headshots/current/60x60/[PLAYER_ID]@2x.jpg';
 
 const players = [
   {
@@ -16,13 +16,13 @@ const players = [
 
 const mockStats = [
   {
-    id: 8479339,
+    playerId: 8479339,
     goals: 1,
     assists: 0,
     timeOnIce: '16:31',
   },
   {
-    id: 8477493,
+    playerId: 8477493,
     goals: 0,
     assists: 2,
     timeOnIce: '15:36',
@@ -33,20 +33,22 @@ const fetchStats = () => {
   return new Promise((resolve, reject) => {
     let stats = [];
     players.map(player => {
-      fetch(STATS_URL.replace(/\[ID\]/, player.id)).
+      fetch(STATS_URL.replace(/\[PLAYER_ID\]/, player.id)).
           then(res => res.json()).
           then(
               (result) => {
                 let splits = result.stats[0].splits;
-                let latestGame = splits[0].stat;
+                let {goals, assists, timeOnIce} = splits[0].stat;
+                let date = splits[0].date;
                 // console.log(splits);
                 // console.log(latestGame);
 
                 stats.push({
-                  id: player.id,
-                  goals: latestGame.goals,
-                  assists: latestGame.assists,
-                  timeOnIce: latestGame.timeOnIce,
+                  playerId: player.id,
+                  goals: goals,
+                  assists: assists,
+                  timeOnIce: timeOnIce,
+                  date: date,
                 });
 
                 if (stats.length === players.length) {
@@ -71,8 +73,8 @@ class Stats extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // stats: [],
-      stats: mockStats,
+      stats: [],
+      // stats: mockStats,
     };
   }
 
@@ -91,25 +93,34 @@ class Stats extends Component {
 
     if (stats.length === players.length) {
       return (
-          stats.map(({id, goals, assists, timeOnIce}) =>
-              <div key={id} className="card">
+          stats.map(({playerId, goals, assists, timeOnIce, date}) =>
+              <div key={playerId} className="card">
                 <div className="card__player">
-                  {players.find(player => player.id === id).name}
+                  <img
+                      src={IMAGE_URL.replace(/\[PLAYER_ID\]/, playerId)}
+                      className="headshot"
+                      alt={players.find(player => player.id === playerId).name}
+                      title={players.find(player => player.id === playerId).name}
+                  />
                 </div>
-                <div>
-                  <table className="card__stats">
-                    <thead>
-                    <tr>
-                      <th>Goals</th>
-                      <th>Assists</th>
-                      <th>Time on Ice</th>
-                    </tr>
-                    </thead>
+                <div className="card__stats">
+                  <table>
                     <tbody>
                     <tr>
+                      <th>Goals:</th>
                       <td>{goals}</td>
+                    </tr>
+                    <tr>
+                      <th>Assists:</th>
                       <td>{assists}</td>
+                    </tr>
+                    <tr>
+                      <th>Time on ice:</th>
                       <td>{timeOnIce}</td>
+                    </tr>
+                    <tr>
+                      <th>Date:</th>
+                      <td>{date}</td>
                     </tr>
                     </tbody>
                   </table>
