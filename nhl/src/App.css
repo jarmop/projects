@@ -7,32 +7,30 @@
 }
 .card {
   display: flex;
+  flex-direction: column;
+  border: 1px solid #dadada;
+  border-radius: 5%;
+  margin: 10px;
+  padding: 5px;
 }
 .card__player {
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.4em;
-  padding: 20px;
+  margin-bottom: 5px;
 }
-th {
-  text-align: right;
-  padding-right: 10px;
-}
-td {
-  text-align: left;
-}
-.card__stats {
+.card__points {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 1.7em;
+  font-weight: bold;
 }
-.card__stats table {
-  border-collapse: collapse;
-}
-.headshot {
-  border: 1px solid black;
+.card__headshot {
+  border: 1px solid #e3e3e3;
   border-radius: 50%;
+  overflow: hidden;
   width: 90px;
   height: 90px;
 }

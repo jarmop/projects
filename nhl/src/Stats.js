@@ -49,6 +49,7 @@ class Stats extends Component {
     this.state = {
       statsReady: false,
       stats: [],
+      // statsReady: true,
       // stats: mockStats,
     };
   }
@@ -76,30 +77,15 @@ class Stats extends Component {
                     <div className="card__player">
                       <img
                           src={getImageUrl(playerId)}
-                          className="headshot"
+                          className="card__headshot"
                           alt={players.find(
                               player => player.id === playerId).name}
                           title={players.find(
                               player => player.id === playerId).name}
                       />
                     </div>
-                    <div className="card__stats">
-                      <table>
-                        <tbody>
-                        <tr>
-                          <th>Goals:</th>
-                          <td>{goals}</td>
-                        </tr>
-                        <tr>
-                          <th>Assists:</th>
-                          <td>{assists}</td>
-                        </tr>
-                        <tr>
-                          <th>Time on ice:</th>
-                          <td>{timeOnIce}</td>
-                        </tr>
-                        </tbody>
-                      </table>
+                    <div className="card__points">
+                      {goals + ' + ' + assists}
                     </div>
                   </div>
                 </div>,

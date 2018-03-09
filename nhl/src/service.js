@@ -6,7 +6,7 @@ currentDate.setDate(currentDate.getDate() - 1);
 let dayOfMonthYesterday = currentDate.getDate();
 
 export const getStats = (players) => {
-  return new Promise((resolve, reject) => {
+  let fetchStats = new Promise((resolve, reject) => {
     let stats = [];
     let processCount = 0;
 
@@ -44,6 +44,16 @@ export const getStats = (players) => {
           );
     }
   });
+
+  return fetchStats.then(stats => stats.sort(
+      (statsA, statsB) => {
+        if (statsB.goals - statsA.goals === 0) {
+          return statsB.assists - statsA.assists;
+        } else {
+          return statsB.goals - statsA.goals;
+        }
+      },
+  ));
 };
 
 export const getImageUrl = (playerId) => {
