@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {getStats, getImageUrl} from './service';
+import {getStats, getImageUrl, getPlayerUrl} from './service';
 
 const players = [
   {
@@ -94,21 +94,23 @@ class Stats extends Component {
         return (
             stats.map(({playerId, goals, assists, timeOnIce, date}) =>
                 <div key={playerId} className="card-container">
-                  <div className="card">
-                    <div className="card__player">
-                      <img
-                          src={getImageUrl(playerId)}
-                          className="card__headshot"
-                          alt={players.find(
-                              player => player.id === playerId).name}
-                          title={players.find(
-                              player => player.id === playerId).name}
-                      />
+                  <a href={getPlayerUrl(playerId)} className="player-link">
+                    <div className="card">
+                      <div className="card__player">
+                        <img
+                            src={getImageUrl(playerId)}
+                            className="card__headshot"
+                            alt={players.find(
+                                player => player.id === playerId).name}
+                            title={players.find(
+                                player => player.id === playerId).name}
+                        />
+                      </div>
+                      <div className="card__points">
+                        {goals + ' + ' + assists}
+                      </div>
                     </div>
-                    <div className="card__points">
-                      {goals + ' + ' + assists}
-                    </div>
-                  </div>
+                  </a>
                 </div>,
             )
         );

@@ -1,6 +1,7 @@
 const STATS_URL = 'https://statsapi.web.nhl.com/api/v1/people/[PLAYER_ID]/stats/?stats=gameLog';
 const SCHEDULE_URL = 'https://statsapi.web.nhl.com/api/v1/schedule?date=';
 const IMAGE_URL = 'https://nhl.bamcontent.com/images/headshots/current/60x60/[PLAYER_ID]@2x.jpg';
+const PLAYER_URL = 'https://www.nhl.com/player/[PLAYER_ID]';
 const GAME_STATUS_CODE_FINAL = '7';
 
 let endDate = (new Date());
@@ -133,4 +134,8 @@ export const getStats = (players) => {
 
 export const getImageUrl = (playerId) => {
   return IMAGE_URL.replace(/\[PLAYER_ID\]/, playerId);
+};
+
+export const getPlayerUrl = (playerId) => {
+  return PLAYER_URL.replace(/\[PLAYER_ID\]/, playerId);
 };
