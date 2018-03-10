@@ -5,12 +5,10 @@ const GAME_URL = 'https://www.nhl.com/gamecenter/[GAME_PK]';
 const GAME_STATUS_CODE_FINAL = '7';
 const ERROR_MESSAGE = 'Something went wrong.';
 
-let endDate = (new Date());
-endDate.setHours(0, 0, 0, 0);
 let startDate = (new Date());
 startDate.setHours(0, 0, 0, 0);
 startDate.setDate(startDate.getDate() - 1);
-let cacheKey = 'stats' + startDate.getTime() + endDate.getTime();
+let cacheKey = 'stats' + startDate.getTime();
 
 /**
  * @param value
