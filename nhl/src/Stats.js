@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {getStats, getImageUrl, getGameUrl} from './service';
 
-const players = [
+const playerData = [
   {
     id: 8479339,
     name: 'Patrik Laine',
@@ -46,7 +46,22 @@ const players = [
     id: 8475287,
     name: 'Erik Haula',
   },
+  {
+    id: 8475820,
+    name: 'Joonas Donskoi',
+  },
+  {
+    id: 8470047,
+    name: 'Valtteri Filppula',
+  },
 ];
+
+// Array of player ids
+let playerIds = playerData.map(player => player.id);
+
+// Player data mapped to player ids
+let players = {};
+playerData.map(player => players[player.id] = {name: player.name});
 
 // eslint-disable-next-line
 const mockStats = [
@@ -77,7 +92,7 @@ class Stats extends Component {
 
   componentDidMount() {
     if (this.state.stats.length === 0) {
-      getStats(players).then(stats => {
+      getStats(playerIds).then(stats => {
         this.setState({
           statsReady: true,
           stats: stats,
@@ -94,16 +109,14 @@ class Stats extends Component {
         return (
             stats.map(({playerId, goals, assists, gamePk}) =>
                 <div key={playerId} className="card-container">
-                  <a href={getGameUrl(gamePk)} className="player-link">
+                  <a href={getGameUrl(gamePk)} className="player-link" target="_blank">
                     <div className="card">
                       <div className="card__player">
                         <img
                             src={getImageUrl(playerId)}
                             className="card__headshot"
-                            alt={players.find(
-                                player => player.id === playerId).name}
-                            title={players.find(
-                                player => player.id === playerId).name}
+                            alt={players[playerId].name}
+                            title={players[playerId].name}
                         />
                       </div>
                       <div className="card__points">

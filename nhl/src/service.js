@@ -59,12 +59,12 @@ const checkIfGamesFinished = () => {
   });
 };
 
-const fetchStats = (players) => {
+const fetchStats = (playerIds) => {
   return new Promise((resolve, reject) => {
     let stats = [];
     let processCount = 0;
-    for (let player of players) {
-      fetch(STATS_URL.replace(/\[PLAYER_ID\]/, player.id))
+    for (let playerId of playerIds) {
+      fetch(STATS_URL.replace(/\[PLAYER_ID\]/, playerId))
           .then(res => res.json())
           .then(
               // eslint-disable-next-line
@@ -76,14 +76,14 @@ const fetchStats = (players) => {
 
                 if (gameTime > startDate.getTime() && points > 0) {
                   stats.push({
-                    playerId: player.id,
+                    playerId: playerId,
                     goals: goals,
                     assists: assists,
                     gamePk: split.game.gamePk,
                   });
                 }
 
-                if (processCount === players.length) {
+                if (processCount === playerIds.length) {
                   resolve(stats);
                 }
               },
@@ -92,7 +92,7 @@ const fetchStats = (players) => {
               // exceptions from actual bugs in components.
               // eslint-disable-next-line
               (error) => {
-                if (processCount === players.length) {
+                if (processCount === playerIds.length) {
                   resolve(stats);
                 }
               },
@@ -101,7 +101,7 @@ const fetchStats = (players) => {
   });
 };
 
-export const getStats = (players) => {
+export const getStats = (playerIds) => {
   if (localStorage.getItem(cacheKey)) {
     return new Promise(
         (resolve, reject) => resolve(
@@ -115,7 +115,7 @@ export const getStats = (players) => {
         // Games not finished
         return [];
       })
-      .then(() => fetchStats(players))
+      .then(() => fetchStats(playerIds))
       .then(stats => stats.sort(
           (statsA, statsB) => {
             if (statsB.goals - statsA.goals === 0) {
