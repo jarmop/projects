@@ -3,6 +3,7 @@ const SCHEDULE_URL = 'https://statsapi.web.nhl.com/api/v1/schedule?date=';
 const IMAGE_URL = 'https://nhl.bamcontent.com/images/headshots/current/60x60/[PLAYER_ID]@2x.jpg';
 const GAME_URL = 'https://www.nhl.com/gamecenter/[GAME_PK]';
 const GAME_STATUS_CODE_FINAL = '7';
+const ERROR_MESSAGE = 'Something went wrong.';
 
 let endDate = (new Date());
 endDate.setHours(0, 0, 0, 0);
@@ -29,34 +30,41 @@ const formatDate = (date) => {
 
 const checkIfGamesFinished = () => {
   let date = formatDate(startDate);
-  return new Promise((resolve, reject) => {
-    fetch(SCHEDULE_URL + date).then(res => res.json())
-        .then(
-            (result) => {
-              let gamesFinished = true;
-
-              for (let game of result.dates[0].games) {
-                if (game.status.statusCode !== GAME_STATUS_CODE_FINAL) {
-                  gamesFinished = false;
-                  break;
-                }
+  // let date = 'bad-request';
+  // let date = '2018-06-06';
+  return fetch(SCHEDULE_URL + date)
+      .then(response => {
+        if (response.status !== 200) {
+          return Promise.reject();
+        }
+        return response.json();
+      })
+      .then(
+          (result) => {
+            if (result.totalGames === 0) {
+              return Promise.reject('No games today.');
+            }
+            let gamesFinished = true;
+            for (let game of result.dates[0].games) {
+              if (game.status.statusCode !== GAME_STATUS_CODE_FINAL) {
+                gamesFinished = false;
+                break;
               }
-
-              if (gamesFinished) {
-                resolve();
-              }
-              else {
-                reject();
-              }
-            },
-            // Note: it's important to handle errors here
-            // instead of a catch() block so that we don't swallow
-            // exceptions from actual bugs in components.
-            (error) => {
-              reject();
-            },
-        );
-  });
+            }
+            if (gamesFinished) {
+              return Promise.resolve();
+            }
+            else {
+              return Promise.reject('Games are still running.');
+            }
+          },
+          // Note: it's important to handle errors here
+          // instead of a catch() block so that we don't swallow
+          // exceptions from actual bugs in components.
+          (error) => {
+            return Promise.reject(ERROR_MESSAGE);
+          },
+      );
 };
 
 const fetchStats = (playerIds) => {
@@ -84,7 +92,12 @@ const fetchStats = (playerIds) => {
                 }
 
                 if (processCount === playerIds.length) {
-                  resolve(stats);
+                  if (stats.length > 0) {
+                    resolve(stats);
+                  }
+                  else {
+                    reject('Nobody scored.');
+                  }
                 }
               },
               // Note: it's important to handle errors here
@@ -103,18 +116,11 @@ const fetchStats = (playerIds) => {
 
 export const getStats = (playerIds) => {
   if (localStorage.getItem(cacheKey)) {
-    return new Promise(
-        (resolve, reject) => resolve(
-            JSON.parse(localStorage.getItem(cacheKey)),
-        ),
-    );
+    let stats = JSON.parse(localStorage.getItem(cacheKey));
+    return Promise.resolve(stats);
   }
 
   return checkIfGamesFinished()
-      .catch(() => {
-        // Games not finished
-        return [];
-      })
       .then(() => fetchStats(playerIds))
       .then(stats => stats.sort(
           (statsA, statsB) => {

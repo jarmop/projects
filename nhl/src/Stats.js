@@ -63,22 +63,6 @@ let playerIds = playerData.map(player => player.id);
 let players = {};
 playerData.map(player => players[player.id] = {name: player.name});
 
-// eslint-disable-next-line
-const mockStats = [
-  {
-    playerId: 8479339,
-    goals: 1,
-    assists: 0,
-    timeOnIce: '16:31',
-  },
-  {
-    playerId: 8477493,
-    goals: 0,
-    assists: 2,
-    timeOnIce: '15:36',
-  },
-];
-
 class Stats extends Component {
   constructor(props) {
     super(props);
@@ -92,24 +76,32 @@ class Stats extends Component {
 
   componentDidMount() {
     if (this.state.stats.length === 0) {
-      getStats(playerIds).then(stats => {
-        this.setState({
-          statsReady: true,
-          stats: stats,
-        });
-      });
+      getStats(playerIds)
+          .then(stats => {
+            this.setState({
+              statsReady: true,
+              stats: stats,
+            });
+          })
+          .catch((message) => {
+            this.setState({
+              statsReady: true,
+              message: message,
+            });
+          });
     }
   }
 
   render() {
-    let {statsReady, stats} = this.state;
+    let {statsReady, stats, message} = this.state;
 
     if (statsReady) {
       if (stats.length > 0) {
         return (
             stats.map(({playerId, goals, assists, gamePk}) =>
                 <div key={playerId} className="card-container">
-                  <a href={getGameUrl(gamePk)} className="player-link" target="_blank">
+                  <a href={getGameUrl(gamePk)} className="player-link"
+                     target="_blank">
                     <div className="card">
                       <div className="card__player">
                         <img
@@ -130,7 +122,7 @@ class Stats extends Component {
       }
       else {
         return (
-            <span>:(</span>
+            <span>{message}</span>
         );
       }
 
