@@ -79,10 +79,10 @@ const fetchStats = (playerIds) => {
               (result) => {
                 processCount++;
                 let split = result.stats[0].splits[0];
-                let gameTime = new Date(split.date).getTime();
+                let gameDate = new Date(split.date).getDate();
                 let {goals, assists, points} = split.stat;
 
-                if (gameTime > startDate.getTime() && points > 0) {
+                if (gameDate === startDate.getDate() && points > 0) {
                   stats.push({
                     playerId: playerId,
                     goals: goals,
