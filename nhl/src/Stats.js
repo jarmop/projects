@@ -26,6 +26,26 @@ const players = [
     id: 8478420,
     name: 'Mikko Rantanen',
   },
+  {
+    id: 8469638,
+    name: 'Jussi Jokinen',
+  },
+  {
+    id: 8475798,
+    name: 'Mikael Granlund',
+  },
+  {
+    id: 8469459,
+    name: 'Mikko Koivu',
+  },
+  {
+    id: 8476469,
+    name: 'Joel Armia',
+  },
+  {
+    id: 8475287,
+    name: 'Erik Haula',
+  },
 ];
 
 const mockStats = [
