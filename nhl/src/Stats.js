@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {getStats, getImageUrl, getPlayerUrl} from './service';
+import {getStats, getImageUrl, getGameUrl} from './service';
 
 const players = [
   {
@@ -92,9 +92,9 @@ class Stats extends Component {
     if (statsReady) {
       if (stats.length > 0) {
         return (
-            stats.map(({playerId, goals, assists, timeOnIce, date}) =>
+            stats.map(({playerId, goals, assists, gamePk}) =>
                 <div key={playerId} className="card-container">
-                  <a href={getPlayerUrl(playerId)} className="player-link">
+                  <a href={getGameUrl(gamePk)} className="player-link">
                     <div className="card">
                       <div className="card__player">
                         <img

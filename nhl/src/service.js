@@ -1,7 +1,7 @@
 const STATS_URL = 'https://statsapi.web.nhl.com/api/v1/people/[PLAYER_ID]/stats/?stats=gameLog';
 const SCHEDULE_URL = 'https://statsapi.web.nhl.com/api/v1/schedule?date=';
 const IMAGE_URL = 'https://nhl.bamcontent.com/images/headshots/current/60x60/[PLAYER_ID]@2x.jpg';
-const PLAYER_URL = 'https://www.nhl.com/player/[PLAYER_ID]';
+const GAME_URL = 'https://www.nhl.com/gamecenter/[GAME_PK]';
 const GAME_STATUS_CODE_FINAL = '7';
 
 let endDate = (new Date());
@@ -72,14 +72,14 @@ const fetchStats = (players) => {
                 processCount++;
                 let split = result.stats[0].splits[0];
                 let gameTime = new Date(split.date).getTime();
-                let {goals, assists, points, timeOnIce} = split.stat;
+                let {goals, assists, points} = split.stat;
 
                 if (gameTime > startDate.getTime() && points > 0) {
                   stats.push({
                     playerId: player.id,
                     goals: goals,
                     assists: assists,
-                    timeOnIce: timeOnIce,
+                    gamePk: split.game.gamePk,
                   });
                 }
 
@@ -136,6 +136,6 @@ export const getImageUrl = (playerId) => {
   return IMAGE_URL.replace(/\[PLAYER_ID\]/, playerId);
 };
 
-export const getPlayerUrl = (playerId) => {
-  return PLAYER_URL.replace(/\[PLAYER_ID\]/, playerId);
+export const getGameUrl = (gamePk) => {
+  return GAME_URL.replace(/\[GAME_PK\]/, gamePk);
 };
