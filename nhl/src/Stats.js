@@ -48,6 +48,7 @@ const players = [
   },
 ];
 
+// eslint-disable-next-line
 const mockStats = [
   {
     playerId: 8479339,
@@ -111,13 +112,15 @@ class Stats extends Component {
                 </div>,
             )
         );
-      } else {
+      }
+      else {
         return (
             <span>:(</span>
         );
       }
 
-    } else {
+    }
+    else {
       return (
           <span>Loading...</span>
       );

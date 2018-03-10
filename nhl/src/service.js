@@ -19,15 +19,18 @@ const addLeadingZero = (value) => {
 };
 
 const formatDate = (date) => {
-  return date.getFullYear() + '-' + addLeadingZero(date.getMonth() + 1) + '-' + addLeadingZero(date.getDate())
+  return date.getFullYear()
+      + '-'
+      + addLeadingZero(date.getMonth() + 1)
+      + '-'
+      + addLeadingZero(date.getDate());
 };
 
 const checkIfGamesFinished = () => {
   let date = formatDate(startDate);
   return new Promise((resolve, reject) => {
-    fetch(SCHEDULE_URL + date).
-        then(res => res.json()).
-        then(
+    fetch(SCHEDULE_URL + date).then(res => res.json())
+        .then(
             (result) => {
               let gamesFinished = true;
 
@@ -40,7 +43,8 @@ const checkIfGamesFinished = () => {
 
               if (gamesFinished) {
                 resolve();
-              } else {
+              }
+              else {
                 reject();
               }
             },
@@ -59,9 +63,10 @@ const fetchStats = (players) => {
     let stats = [];
     let processCount = 0;
     for (let player of players) {
-      fetch(STATS_URL.replace(/\[PLAYER_ID\]/, player.id)).
-          then(res => res.json()).
-          then(
+      fetch(STATS_URL.replace(/\[PLAYER_ID\]/, player.id))
+          .then(res => res.json())
+          .then(
+              // eslint-disable-next-line
               (result) => {
                 processCount++;
                 let split = result.stats[0].splits[0];
@@ -84,6 +89,7 @@ const fetchStats = (players) => {
               // Note: it's important to handle errors here
               // instead of a catch() block so that we don't swallow
               // exceptions from actual bugs in components.
+              // eslint-disable-next-line
               (error) => {
                 if (processCount === players.length) {
                   resolve(stats);
@@ -103,22 +109,23 @@ export const getStats = (players) => {
     );
   }
 
-  return checkIfGamesFinished().
-      catch(() => {
+  return checkIfGamesFinished()
+      .catch(() => {
         // Games not finished
         return [];
-      }).
-      then(() => fetchStats(players)).
-      then(stats => stats.sort(
+      })
+      .then(() => fetchStats(players))
+      .then(stats => stats.sort(
           (statsA, statsB) => {
             if (statsB.goals - statsA.goals === 0) {
               return statsB.assists - statsA.assists;
-            } else {
+            }
+            else {
               return statsB.goals - statsA.goals;
             }
           },
-      )).
-      then(stats => {
+      ))
+      .then(stats => {
         localStorage.setItem(cacheKey, JSON.stringify(stats));
         return stats;
       });
