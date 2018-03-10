@@ -1,67 +1,5 @@
 import React, {Component} from 'react';
-import {getStats, getImageUrl, getGameUrl} from './service';
-
-const playerData = [
-  {
-    id: 8479339,
-    name: 'Patrik Laine',
-  },
-  {
-    id: 8479344,
-    name: 'Jesse Puljujärvi',
-  },
-  {
-    id: 8477493,
-    name: 'Aleksander Barkov',
-  },
-  {
-    id: 8478427,
-    name: 'Sebastian Aho',
-  },
-  {
-    id: 8476882,
-    name: 'Teuvo Teräväinen',
-  },
-  {
-    id: 8478420,
-    name: 'Mikko Rantanen',
-  },
-  {
-    id: 8469638,
-    name: 'Jussi Jokinen',
-  },
-  {
-    id: 8475798,
-    name: 'Mikael Granlund',
-  },
-  {
-    id: 8469459,
-    name: 'Mikko Koivu',
-  },
-  {
-    id: 8476469,
-    name: 'Joel Armia',
-  },
-  {
-    id: 8475287,
-    name: 'Erik Haula',
-  },
-  {
-    id: 8475820,
-    name: 'Joonas Donskoi',
-  },
-  {
-    id: 8470047,
-    name: 'Valtteri Filppula',
-  },
-];
-
-// Array of player ids
-let playerIds = playerData.map(player => player.id);
-
-// Player data mapped to player ids
-let players = {};
-playerData.map(player => players[player.id] = {name: player.name});
+import {getStats, getImageUrl, getGameUrl, getPlayer} from './service';
 
 class Stats extends Component {
   constructor(props) {
@@ -76,7 +14,7 @@ class Stats extends Component {
 
   componentDidMount() {
     if (this.state.stats.length === 0) {
-      getStats(playerIds)
+      getStats()
           .then(stats => {
             this.setState({
               statsReady: true,
@@ -107,8 +45,8 @@ class Stats extends Component {
                         <img
                             src={getImageUrl(playerId)}
                             className="card__headshot"
-                            alt={players[playerId].name}
-                            title={players[playerId].name}
+                            alt={getPlayer(playerId).name}
+                            title={getPlayer(playerId).name}
                         />
                       </div>
                       <div className="card__points">
