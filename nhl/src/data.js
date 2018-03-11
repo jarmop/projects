@@ -38,10 +38,19 @@ export const players = {
   8470047: {
     name: 'Valtteri Filppula',
   },
-  8470047: {
+  8477476: {
     name: 'Artturi Lehkonen',
   },
-  8470047: {
+  8473463: {
     name: 'Leo Komarov',
   },
+  8477953: {
+    name: 'Kasperi Kapanen',
+  },
+  8475222: {
+    name: 'Sami Vatanen',
+  },
+  8474627: {
+    name: 'Jori Lehterä',
+  }
 };

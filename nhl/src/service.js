@@ -1,7 +1,7 @@
 import {players} from './data';
 
-const STATS_URL = 'https://statsapi.web.nhl.com/api/v1/people/[PLAYER_ID]/stats/?stats=gameLog';
 const SCHEDULE_URL = 'https://statsapi.web.nhl.com/api/v1/schedule?date=';
+const GAME_FEED_URL = 'https://statsapi.web.nhl.com/api/v1/game/[GAME_PK]/feed/live';
 const IMAGE_URL = 'https://nhl.bamcontent.com/images/headshots/current/60x60/[PLAYER_ID]@2x.jpg';
 const GAME_URL = 'https://www.nhl.com/gamecenter/[GAME_PK]';
 const GAME_STATUS_CODE_FINAL = '7';
@@ -30,7 +30,7 @@ const formatDate = (date) => {
       + addLeadingZero(date.getDate());
 };
 
-const checkIfGamesFinished = () => {
+const fetchFinishedGames = () => {
   let date = formatDate(startDate);
   // let date = 'bad-request';
   // let date = '2018-06-06';
@@ -46,15 +46,16 @@ const checkIfGamesFinished = () => {
             if (result.totalGames === 0) {
               return Promise.reject('No games today.');
             }
-            let gamesFinished = true;
-            for (let game of result.dates[0].games) {
+            let games = result.dates[0].games;
+            let gamePks = [];
+            for (let game of games) {
               if (game.status.statusCode !== GAME_STATUS_CODE_FINAL) {
-                gamesFinished = false;
                 break;
               }
+              gamePks.push(game.gamePk);
             }
-            if (gamesFinished) {
-              return Promise.resolve();
+            if (gamePks.length === games.length) {
+              return Promise.resolve(gamePks);
             }
             else {
               return Promise.reject('Games are still running.');
@@ -69,37 +70,45 @@ const checkIfGamesFinished = () => {
       );
 };
 
-const fetchStats = (playerIds) => {
+const fetchScores = (gamePks) => {
   return new Promise((resolve, reject) => {
     let stats = [];
     let processCount = 0;
-    for (let playerId of playerIds) {
-      fetch(STATS_URL.replace(/\[PLAYER_ID\]/, playerId))
-          .then(res => res.json())
+    let score = {};
+    for (let gamePk of gamePks) {
+      fetch(GAME_FEED_URL.replace(/\[GAME_PK\]/, gamePk))
+          .then(response => response.json())
           .then(
               // eslint-disable-next-line
               (result) => {
                 processCount++;
-                let split = result.stats[0].splits[0];
-                let gameDate = new Date(split.date).getDate();
-                let {goals, assists, points} = split.stat;
-
-                if (gameDate === startDate.getDate() && points > 0) {
-                  stats.push({
-                    playerId: playerId,
-                    goals: goals,
-                    assists: assists,
-                    gamePk: split.game.gamePk,
-                  });
+                let scoringPlayIds = result.liveData.plays.scoringPlays;
+                let allPlays = result.liveData.plays.allPlays;
+                for (let playId of scoringPlayIds) {
+                  let play = allPlays[playId];
+                  for (let player of play.players) {
+                    if (player.playerType !== 'Scorer' &&
+                        player.playerType !== 'Assist') {
+                      continue;
+                    }
+                    if (!score.hasOwnProperty(player.player.id)) {
+                      score[player.player.id] = {
+                        goals: 0,
+                        assists: 0,
+                        gamePk: gamePk,
+                      };
+                    }
+                    if (player.playerType === 'Scorer') {
+                      score[player.player.id].goals++;
+                    }
+                    else if (player.playerType === 'Assist') {
+                      score[player.player.id].assists++;
+                    }
+                  }
                 }
 
-                if (processCount === playerIds.length) {
-                  if (stats.length > 0) {
-                    resolve(stats);
-                  }
-                  else {
-                    reject('Nobody scored.');
-                  }
+                if (processCount === gamePks.length) {
+                  resolve(score);
                 }
               },
               // Note: it's important to handle errors here
@@ -107,13 +116,27 @@ const fetchStats = (playerIds) => {
               // exceptions from actual bugs in components.
               // eslint-disable-next-line
               (error) => {
-                if (processCount === playerIds.length) {
-                  resolve(stats);
-                }
+                reject(ERROR_MESSAGE);
               },
           );
     }
   });
+};
+
+const parseFinns = (score) => {
+  let stats = [];
+  for (let playerId of playerIds) {
+    if (score.hasOwnProperty(playerId)) {
+      stats.push({
+        playerId: playerId,
+        goals: score[playerId].goals,
+        assists: score[playerId].assists,
+        gamePk: score[playerId].gamePk,
+      });
+    }
+  }
+
+  return Promise.resolve(stats);
 };
 
 export const getStats = () => {
@@ -122,8 +145,9 @@ export const getStats = () => {
     return Promise.resolve(stats);
   }
 
-  return checkIfGamesFinished()
-      .then(() => fetchStats(playerIds))
+  return fetchFinishedGames()
+      .then((gamePks) => fetchScores(gamePks))
+      .then(score => parseFinns(score))
       .then(stats => stats.sort(
           (statsA, statsB) => {
             if (statsB.goals - statsA.goals === 0) {
