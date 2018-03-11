@@ -1,57 +1,18 @@
+import {players} from './data';
+
 const STATS_URL = 'https://statsapi.web.nhl.com/api/v1/people/[PLAYER_ID]/stats/?stats=gameLog';
 const SCHEDULE_URL = 'https://statsapi.web.nhl.com/api/v1/schedule?date=';
 const IMAGE_URL = 'https://nhl.bamcontent.com/images/headshots/current/60x60/[PLAYER_ID]@2x.jpg';
 const GAME_URL = 'https://www.nhl.com/gamecenter/[GAME_PK]';
 const GAME_STATUS_CODE_FINAL = '7';
 const ERROR_MESSAGE = 'Something went wrong.';
+const CACHE_VERSION = 1;
 
-const players = {
-  8479339: {
-    name: 'Patrik Laine',
-  },
-  8479344: {
-    name: 'Jesse Puljujärvi',
-  },
-  8477493: {
-    name: 'Aleksander Barkov',
-  },
-  8478427: {
-    name: 'Sebastian Aho',
-  },
-  8476882: {
-    name: 'Teuvo Teräväinen',
-  },
-  8478420: {
-    name: 'Mikko Rantanen',
-  },
-  8469638: {
-    name: 'Jussi Jokinen',
-  },
-  8475798: {
-    name: 'Mikael Granlund',
-  },
-  8469459: {
-    name: 'Mikko Koivu',
-  },
-  8476469: {
-    name: 'Joel Armia',
-  },
-  8475287: {
-    name: 'Erik Haula',
-  },
-  8475820: {
-    name: 'Joonas Donskoi',
-  },
-  8470047: {
-    name: 'Valtteri Filppula',
-  },
-};
 let playerIds = Object.keys(players);
-
 let startDate = (new Date());
 startDate.setHours(0, 0, 0, 0);
 startDate.setDate(startDate.getDate() - 1);
-let cacheKey = 'stats' + startDate.getTime();
+let cacheKey = 'stats' + startDate.getTime() + CACHE_VERSION;
 
 /**
  * @param value
