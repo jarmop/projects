@@ -1,3 +1,5 @@
 # NHL player watcher
 
-Daily Stats of some Finnish NHL players.
+Daily scores of Finnish NHL players.
+
+https://jarmop.github.io/projects/nhl/
