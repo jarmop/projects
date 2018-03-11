@@ -2,8 +2,9 @@
   "name": "nhl",
   "version": "0.1.0",
   "private": true,
-  "homepage" : "http://jarmop.github.io/projects/nhl",
+  "homepage": "http://jarmop.github.io/projects/nhl",
   "dependencies": {
+    "font-awesome": "^4.7.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.1"

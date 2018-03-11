@@ -10,6 +10,7 @@
 .card {
   display: flex;
   flex-direction: column;
+  position: relative;
   border: 1px solid #dadada;
   border-radius: 5%;
   padding: 5px;
@@ -34,6 +35,21 @@
   overflow: hidden;
   width: 90px;
   height: 90px;
+}
+.card__star {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  font-size: 27px !important;
+  color: goldenrod;
+}
+.card__star-value {
+  position: absolute;
+  color: white;
+  left: 9px;
+  top: 6px;
+  font-size: 14px;
+  font-weight: bold;
 }
 .player-link {
   text-decoration: none;

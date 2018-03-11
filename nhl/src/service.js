@@ -6,7 +6,7 @@ const IMAGE_URL = 'https://nhl.bamcontent.com/images/headshots/current/60x60/[PL
 const YOU_TUBE_SEARCH_URL = 'https://www.youtube.com/results?search_query=[QUERY]';
 const GAME_STATUS_CODE_FINAL = '7';
 const ERROR_MESSAGE = 'Something went wrong.';
-const CACHE_VERSION = 1;
+const CACHE_VERSION = 2;
 
 let playerIds = Object.keys(players);
 let startDate = (new Date());
@@ -70,6 +70,18 @@ const fetchFinishedGames = () => {
       );
 };
 
+const addStar = (score, playerId, starValue) => {
+  if (!score.hasOwnProperty(playerId)) {
+    score[playerId] = {
+      goals: 0,
+      assists: 0,
+    };
+  }
+  score[playerId].star = starValue;
+
+  return score;
+};
+
 const fetchScores = (gamePks) => {
   return new Promise((resolve, reject) => {
     let processCount = 0;
@@ -105,6 +117,10 @@ const fetchScores = (gamePks) => {
                   }
                 }
 
+                score = addStar(score, result.liveData.decisions.firstStar.id, 1);
+                score = addStar(score, result.liveData.decisions.secondStar.id, 2);
+                score = addStar(score, result.liveData.decisions.thirdStar.id, 3);
+
                 if (processCount === gamePks.length) {
                   resolve(score);
                 }
@@ -129,6 +145,7 @@ const parseFinns = (score) => {
         playerId: playerId,
         goals: score[playerId].goals,
         assists: score[playerId].assists,
+        star: score[playerId].star,
       });
     }
   }

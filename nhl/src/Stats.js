@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import 'font-awesome/css/font-awesome.min.css';
 import {getStats, getImageUrl, getYouTubeSearchUrl, getPlayer} from './service';
 
 class Stats extends Component {
@@ -36,10 +37,13 @@ class Stats extends Component {
     if (statsReady) {
       if (stats.length > 0) {
         return (
-            stats.map(({playerId, goals, assists}) =>
+            stats.map(({playerId, goals, assists, star = null}) =>
                 <div key={playerId} className="card-container">
-                  <a href={getYouTubeSearchUrl(getPlayer(playerId).name)} className="player-link"
-                     target="_blank">
+                  <a
+                      href={getYouTubeSearchUrl(getPlayer(playerId).name)}
+                      className="player-link"
+                      target="_blank"
+                  >
                     <div className="card">
                       <div className="card__player">
                         <img
@@ -52,6 +56,14 @@ class Stats extends Component {
                       <div className="card__points">
                         {goals + ' + ' + assists}
                       </div>
+                      {star &&
+                      <i
+                          className="fa fa-star card__star"
+                          title={star}
+                      >
+                        <span className="card__star-value">{star}</span>
+                      </i>
+                      }
                     </div>
                   </a>
                 </div>,
