@@ -106,7 +106,7 @@ const fetchScores = (gamePks) => {
                       score[player.player.id] = {
                         goals: 0,
                         assists: 0,
-                        star: 0,
+                        star: null,
                       };
                     }
                     if (player.playerType === 'Scorer') {
@@ -157,14 +157,16 @@ const parseFinns = (score) => {
 const sortByPoints = (stats) => {
   return stats.sort(
       (statsA, statsB) => {
+        if (statsA.star || statsB.star) {
+          return (statsA.star ? statsA.star : 4) - (statsB.star ? statsB.star : 4);
+        }
         if (statsB.goals - statsA.goals !== 0) {
           return statsB.goals - statsA.goals;
         }
-        else if (statsB.assists - statsA.assists !== 0) {
+        if (statsB.assists - statsA.assists !== 0) {
           return statsB.assists - statsA.assists;
-        } else {
-          return statsA.star - statsB.star;
         }
+        return 0;
       },
   )
 };
