@@ -89,4 +89,32 @@ export const players = {
   8479511: {
     name: 'Janne kuokkanen',
   },
+  // Goalies
+  8471469: {
+    name: 'Pekka Rinne',
+  },
+  8471695: {
+    name: 'Tuukka Rask',
+  },
+  8477293: {
+    name: 'Antti Raanta',
+  },
+  8470140: {
+    name: 'Kari Lehtonen',
+  },
+  8477424: {
+    name: 'Juuse Saros',
+  },
+  8474550: {
+    name: 'Antti Niemi',
+  },
+  8476914: {
+    name: 'Joonas Korpisalo',
+  },
+  8474667: {
+    name: 'Harri Säteri',
+  },
+  8476444: {
+    name: 'Christopher Gibson',
+  },
 };
