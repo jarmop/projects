@@ -56,7 +56,7 @@ class Stats extends Component {
                       <div className="card__points">
                         {goals + ' + ' + assists}
                       </div>
-                      {star &&
+                      {star > 0 &&
                       <i
                           className="fa fa-star card__star"
                           title={star}
