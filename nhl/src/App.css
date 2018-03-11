@@ -1,10 +1,11 @@
 .app {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
+  --margin: 5px;
+  margin: var(--margin);
 }
 .card-container {
-  display: inline-block;
-  margin: 10px;
+  margin: var(--margin);
 }
 .card {
   display: flex;
