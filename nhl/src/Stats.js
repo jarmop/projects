@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {getStats, getImageUrl, getGameUrl, getPlayer} from './service';
+import {getStats, getImageUrl, getYouTubeSearchUrl, getPlayer} from './service';
 
 class Stats extends Component {
   constructor(props) {
@@ -36,9 +36,9 @@ class Stats extends Component {
     if (statsReady) {
       if (stats.length > 0) {
         return (
-            stats.map(({playerId, goals, assists, gamePk}) =>
+            stats.map(({playerId, goals, assists}) =>
                 <div key={playerId} className="card-container">
-                  <a href={getGameUrl(gamePk)} className="player-link"
+                  <a href={getYouTubeSearchUrl(getPlayer(playerId).name)} className="player-link"
                      target="_blank">
                     <div className="card">
                       <div className="card__player">

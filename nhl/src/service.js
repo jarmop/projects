@@ -3,7 +3,7 @@ import {players} from './data';
 const SCHEDULE_URL = 'https://statsapi.web.nhl.com/api/v1/schedule?date=';
 const GAME_FEED_URL = 'https://statsapi.web.nhl.com/api/v1/game/[GAME_PK]/feed/live';
 const IMAGE_URL = 'https://nhl.bamcontent.com/images/headshots/current/60x60/[PLAYER_ID]@2x.jpg';
-const GAME_URL = 'https://www.nhl.com/gamecenter/[GAME_PK]';
+const YOU_TUBE_SEARCH_URL = 'https://www.youtube.com/results?search_query=[QUERY]';
 const GAME_STATUS_CODE_FINAL = '7';
 const ERROR_MESSAGE = 'Something went wrong.';
 const CACHE_VERSION = 1;
@@ -95,7 +95,6 @@ const fetchScores = (gamePks) => {
                       score[player.player.id] = {
                         goals: 0,
                         assists: 0,
-                        gamePk: gamePk,
                       };
                     }
                     if (player.playerType === 'Scorer') {
@@ -131,7 +130,6 @@ const parseFinns = (score) => {
         playerId: playerId,
         goals: score[playerId].goals,
         assists: score[playerId].assists,
-        gamePk: score[playerId].gamePk,
       });
     }
   }
@@ -168,8 +166,8 @@ export const getImageUrl = (playerId) => {
   return IMAGE_URL.replace(/\[PLAYER_ID\]/, playerId);
 };
 
-export const getGameUrl = (gamePk) => {
-  return GAME_URL.replace(/\[GAME_PK\]/, gamePk);
+export const getYouTubeSearchUrl = (name) => {
+  return YOU_TUBE_SEARCH_URL.replace(/\[QUERY\]/, name.replace(/\s/, '+'));
 };
 
 export const getPlayer = (playerId) => {
