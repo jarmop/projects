@@ -133,7 +133,20 @@ const parseFinns = (score) => {
     }
   }
 
-  return Promise.resolve(stats);
+  return stats;
+};
+
+const sortByPoints = (stats) => {
+  return stats.sort(
+      (statsA, statsB) => {
+        if (statsB.goals - statsA.goals === 0) {
+          return statsB.assists - statsA.assists;
+        }
+        else {
+          return statsB.goals - statsA.goals;
+        }
+      },
+  )
 };
 
 export const getStats = () => {
@@ -145,16 +158,7 @@ export const getStats = () => {
   return fetchFinishedGames()
       .then((gamePks) => fetchScores(gamePks))
       .then(score => parseFinns(score))
-      .then(stats => stats.sort(
-          (statsA, statsB) => {
-            if (statsB.goals - statsA.goals === 0) {
-              return statsB.assists - statsA.assists;
-            }
-            else {
-              return statsB.goals - statsA.goals;
-            }
-          },
-      ))
+      .then(stats => sortByPoints(stats))
       .then(stats => {
         localStorage.setItem(cacheKey, JSON.stringify(stats));
         return stats;
