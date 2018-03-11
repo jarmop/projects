@@ -52,5 +52,41 @@ export const players = {
   },
   8474627: {
     name: 'Jori Lehterä',
-  }
+  },
+  8477499: {
+    name: 'Rasmus Ristolainen',
+  },
+  8476874: {
+    name: 'Olli Määttä',
+  },
+  8476902: {
+    name: 'Esa Lindell',
+  },
+  8476440: {
+    name: 'Markus Granlund',
+  },
+  8478906: {
+    name: 'Markus Nutivaara',
+  },
+  8476447: {
+    name: 'Miikka Salomäki',
+  },
+  8478541: {
+    name: 'Markus Hännikäinen',
+  },
+  8477945: {
+    name: 'Julius Honka',
+  },
+  8476336: {
+    name: 'Iiro Pakarinen',
+  },
+  8479290: {
+    name: 'Kalle Kossila',
+  },
+  8480164: {
+    name: 'Henrik Haapala',
+  },
+  8479511: {
+    name: 'Janne kuokkanen',
+  },
 };

@@ -72,7 +72,6 @@ const fetchFinishedGames = () => {
 
 const fetchScores = (gamePks) => {
   return new Promise((resolve, reject) => {
-    let stats = [];
     let processCount = 0;
     let score = {};
     for (let gamePk of gamePks) {
