@@ -40,7 +40,7 @@ class Stats extends Component {
             stats.map(
                 ({playerId, goals = null, assists = null, saves = null, shots = null, star = null}) => {
                   let points = '';
-                  if (goals && assists) {
+                  if (goals || assists) {
                     points =
                         <div className="card__points">
                           {goals + ' + ' + assists}

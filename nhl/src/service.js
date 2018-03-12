@@ -82,6 +82,25 @@ const addStar = (score, playerId, starValue) => {
   return score;
 };
 
+const fillScore = (score, playersData) => {
+  Object.keys(playersData).map(playerId => {
+    let players = playersData[playerId];
+    if (players.position.code === 'G') {
+      let {saves, shots} = players.stats.goalieStats;
+      if (saves && shots) {
+        score[players.person.id] = {goals: 0, assists: 0, saves, shots}
+      }
+    } else if (['C', 'L', 'R', 'D'].includes(players.position.code)) {
+      let {goals, assists} = players.stats.skaterStats;
+      if (goals || assists) {
+        score[players.person.id] = {goals,assists}
+      }
+    }
+  });
+
+  return score;
+};
+
 const fetchScores = (gamePks) => {
   return new Promise((resolve, reject) => {
     let processCount = 0;
@@ -94,20 +113,8 @@ const fetchScores = (gamePks) => {
               (result) => {
                 processCount++;
                 let {away, home} = result.liveData.boxscore.teams;
-                Object.keys(away.players).map(playerId => {
-                  let players = away.players[playerId];
-                  if (players.position.code === 'G') {
-                    score[players.person.id] = {
-                      saves: players.stats.goalieStats.saves,
-                      shots: players.stats.goalieStats.shots,
-                    }
-                  } else if (['C', 'L', 'R', 'D'].includes(players.position.code)) {
-                    score[players.person.id] = {
-                      goals: players.stats.skaterStats.goals,
-                      assists: players.stats.skaterStats.assists,
-                    }
-                  }
-                });
+                score = fillScore(score, away.players);
+                score = fillScore(score, home.players);
 
                 score = addStar(score, result.liveData.decisions.firstStar.id, 1);
                 score = addStar(score, result.liveData.decisions.secondStar.id, 2);
@@ -171,7 +178,7 @@ export const getStats = () => {
   }
 
   return fetchFinishedGames()
-  // return Promise.resolve([2017021060])
+  // return Promise.resolve([2017021051])
       .then((gamePks) => fetchScores(gamePks))
       .then(score => parseFinns(score))
       .then(stats => sortByPoints(stats))
