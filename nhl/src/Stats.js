@@ -37,37 +37,51 @@ class Stats extends Component {
     if (statsReady) {
       if (stats.length > 0) {
         return (
-            stats.map(({playerId, goals, assists, star = null}) =>
-                <div key={playerId} className="card-container">
-                  <a
-                      href={getYouTubeSearchUrl(getPlayer(playerId).name)}
-                      className="player-link"
-                      target="_blank"
-                  >
-                    <div className="card">
-                      <div className="card__player">
-                        <img
-                            src={getImageUrl(playerId)}
-                            className="card__headshot"
-                            alt={getPlayer(playerId).name}
-                            title={getPlayer(playerId).name}
-                        />
+            stats.map(
+                ({playerId, goals = null, assists = null, saves = null, shots = null, star = null}) => {
+                  let points = '';
+                  if (goals && assists) {
+                    points =
+                        <div className="card__points">
+                          {goals + ' + ' + assists}
+                        </div>
+                  } else if (saves && shots) {
+                    points =
+                        <div className="card__points">
+                          {saves + ' / ' + shots}
+                        </div>
+                  }
+
+                  return (
+                      <div key={playerId} className="card-container">
+                        <a
+                            href={getYouTubeSearchUrl(getPlayer(playerId).name)}
+                            className="player-link"
+                            target="_blank"
+                        >
+                          <div className="card">
+                            <div className="card__player">
+                              <img
+                                  src={getImageUrl(playerId)}
+                                  className="card__headshot"
+                                  alt={getPlayer(playerId).name}
+                                  title={getPlayer(playerId).name}
+                              />
+                            </div>
+                            {points}
+                            {star &&
+                            <i
+                                className="fa fa-star card__star"
+                                title={star}
+                            >
+                              <span className="card__star-value">{star}</span>
+                            </i>
+                            }
+                          </div>
+                        </a>
                       </div>
-                      <div className="card__points">
-                        {goals + ' + ' + assists}
-                      </div>
-                      {star &&
-                      <i
-                          className="fa fa-star card__star"
-                          title={star}
-                      >
-                        <span className="card__star-value">{star}</span>
-                      </i>
-                      }
-                    </div>
-                  </a>
-                </div>,
-            )
+                  );
+                })
         );
       }
       else {

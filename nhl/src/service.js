@@ -93,30 +93,21 @@ const fetchScores = (gamePks) => {
               // eslint-disable-next-line
               (result) => {
                 processCount++;
-                let scoringPlayIds = result.liveData.plays.scoringPlays;
-                let allPlays = result.liveData.plays.allPlays;
-                for (let playId of scoringPlayIds) {
-                  let play = allPlays[playId];
-                  for (let player of play.players) {
-                    if (player.playerType !== 'Scorer' &&
-                        player.playerType !== 'Assist') {
-                      continue;
+                let {away, home} = result.liveData.boxscore.teams;
+                Object.keys(away.players).map(playerId => {
+                  let players = away.players[playerId];
+                  if (players.position.code === 'G') {
+                    score[players.person.id] = {
+                      saves: players.stats.goalieStats.saves,
+                      shots: players.stats.goalieStats.shots,
                     }
-                    if (!score.hasOwnProperty(player.player.id)) {
-                      score[player.player.id] = {
-                        goals: 0,
-                        assists: 0,
-                        star: null,
-                      };
-                    }
-                    if (player.playerType === 'Scorer') {
-                      score[player.player.id].goals++;
-                    }
-                    else if (player.playerType === 'Assist') {
-                      score[player.player.id].assists++;
+                  } else if (['C', 'L', 'R', 'D'].includes(players.position.code)) {
+                    score[players.person.id] = {
+                      goals: players.stats.skaterStats.goals,
+                      assists: players.stats.skaterStats.assists,
                     }
                   }
-                }
+                });
 
                 score = addStar(score, result.liveData.decisions.firstStar.id, 1);
                 score = addStar(score, result.liveData.decisions.secondStar.id, 2);
@@ -146,6 +137,8 @@ const parseFinns = (score) => {
         playerId: playerId,
         goals: score[playerId].goals,
         assists: score[playerId].assists,
+        shots: score[playerId].shots,
+        saves: score[playerId].saves,
         star: score[playerId].star,
       });
     }
@@ -178,6 +171,7 @@ export const getStats = () => {
   }
 
   return fetchFinishedGames()
+  // return Promise.resolve([2017021060])
       .then((gamePks) => fetchScores(gamePks))
       .then(score => parseFinns(score))
       .then(stats => sortByPoints(stats))
