@@ -1,28 +1,49 @@
-const axios = require('axios');
-const jsonfile = require('jsonfile');
+const {getKeharataTrackSections} = require('./data');
 
-const URL_TRACK_SECTIONS = 'https://rata.digitraffic.fi/api/v1/metadata/track-sections';
-const KEHARATA_TRACK_NUMBER = '123';
-const KEHARATA_FILENAME = 'keharata.json';
-
-const initializeKeharata = () => {
-  axios.get(URL_TRACK_SECTIONS)
-      .then(response => response.data.filter(
-          section => section.ranges[0].startLocation.track === KEHARATA_TRACK_NUMBER)
-      )
-      .then(sections => jsonfile.writeFile(KEHARATA_FILENAME, sections, (error) => {
-        if (error) {
-          Promise.reject(error);
-        }
-        console.log(KEHARATA_FILENAME + ' saved!');
-      }))
-      .catch(error => {
-        console.log(error);
-      });
+const getSectionLocationMetres = (section) => {
+  return section.ranges[0].startLocation.kilometres * 1000 +
+      section.ranges[0].startLocation.metres;
 };
 
-initializeKeharata();
+const getSectionLength = (section) => {
+  let {startLocation, endLocation} = section.ranges[0];
+  return (endLocation.kilometres * 1000 + endLocation.metres) -
+      (startLocation.kilometres * 1000 + startLocation.metres);
+};
 
+const removeDuplicates = (sections) => {
+  let mapCodeToSection = {};
+  for (section of sections) {
+    mapCodeToSection[section.trackSectionCode] = section;
+  }
+  return Object.values(mapCodeToSection);
+};
+
+getKeharataTrackSections()
+    .then(sections => removeDuplicates(sections))
+    .then(sections => sections.filter(section => getSectionLength(section) > 0))
+    .then(sections => sections.sort((sectionA, sectionB) => {
+      // return sectionA.ranges[0].startLocation.kilometres -
+      //     sectionB.ranges[0].startLocation.kilometres;
+      return getSectionLocationMetres(sectionA) -
+          getSectionLocationMetres(sectionB);
+    }))
+    .then(sections => {
+      console.log(sections.length);
+      for (section of sections) {
+        console.log(
+            section.id,
+            section.station,
+            section.trackSectionCode,
+            getSectionLocationMetres(section),
+            getSectionLength(section),
+            // section.ranges[0].startLocation.kilometres,
+            // section.ranges[0].startLocation.metres,
+            // section.ranges[0].endLocation.kilometres,
+            // section.ranges[0].endLocation.metres,
+        );
+      }
+    });
 
 // const geolib = require('geolib');
 //
