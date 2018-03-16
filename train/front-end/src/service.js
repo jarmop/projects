@@ -1,40 +1,31 @@
-import geolib from 'geolib';
+// const TRAIN_URL = 'https://junatkartalla-cal-prod.herokuapp.com/trains/1520974201460';
+// const TRAIN_URL = 'https://rata.digitraffic.fi/api/v1/trains/latest/[TRAIN_NUMBER]';
+const URL_TRAIN_TRACKING = 'https://rata.digitraffic.fi/api/v1/train-tracking/[DATE]/[TRAIN_NUMBER]?version=1000';
 
-const TRAIN_URL = 'https://junatkartalla-cal-prod.herokuapp.com/trains/1520974201460';
+/**
+ * @param value
+ * @returns {string}
+ */
+const addLeadingZero = (value) => {
+  return value < 10 ? '0' + value : '' + value;
+};
+
+const formatDate = (date) => {
+  return date.getFullYear()
+      + '-'
+      + addLeadingZero(date.getMonth() + 1)
+      + '-'
+      + addLeadingZero(date.getDate());
+};
 
 export const getTrain = () => {
-  // fetch(TRAIN_URL)
-  //     .then(response => response.json())
-  //     .then(json => {
-  //       let trains = json.trains;
-  //       let trainIds = Object.keys(trains).filter(trainId => trains[trainId].title === 'P');
-  //       console.log(trainIds);
-  //       // console.log(trains[8768]);
-  //       // console.log(trains[8769]);
-  //     });
+  let date = new Date();
+  let trainNumber = 9174;
+  console.log(formatDate(date));
 
-  let train1 = {
-    lat: 60.17171747413841,
-    lon: 24.942053947481092,
-    delta: 17,
-    direction: 0,
-    status: 1,
-    action: 'deleted',
-  };
+  let url = URL_TRAIN_TRACKING
+      .replace(/\[DATE\]/, formatDate(date))
+      .replace(/\[TRAIN_NUMBER\]/, trainNumber)
 
-  let train2 = {
-    lat: 60.30315743603303,
-    lon: 25.04952444568184,
-    delta: -38,
-    direction: 0,
-    status: 1,
-    action: 'modified',
-  };
-
-  let distance = geolib.getDistance(
-      {latitude: train1.lat, longitude: train1.lon},
-      {latitude: train2.lat, longitude: train2.lon},
-  );
-
-  console.log(distance);
+  console.log(url);
 };
