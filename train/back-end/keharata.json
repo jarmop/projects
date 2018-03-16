@@ -20,67 +20,241 @@
     ]
   },
   {
-    "id": 196098,
-    "station": "HPL",
-    "trackSectionCode": "V103",
+    "id": 196025,
+    "station": "HKH",
+    "trackSectionCode": "262",
     "ranges": [
       {
-        "id": 187447,
+        "id": 186862,
         "startLocation": {
-          "track": "123",
-          "kilometres": 6,
-          "metres": 637
+          "track": "003",
+          "kilometres": 17,
+          "metres": 96
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 6,
-          "metres": 637
-        }
-      },
-      {
-        "id": 187448,
-        "startLocation": {
-          "track": "001",
-          "kilometres": 6,
-          "metres": 637
-        },
-        "endLocation": {
-          "track": "001",
-          "kilometres": 6,
-          "metres": 637
+          "track": "003",
+          "kilometres": 18,
+          "metres": 307
         }
       }
     ]
   },
   {
-    "id": 196098,
-    "station": "HPL",
-    "trackSectionCode": "V103",
+    "id": 196049,
+    "station": "HKI",
+    "trackSectionCode": "002a",
     "ranges": [
       {
-        "id": 187447,
+        "id": 187041,
         "startLocation": {
-          "track": "123",
-          "kilometres": 6,
-          "metres": 637
+          "track": "003",
+          "kilometres": 0,
+          "metres": 360
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 6,
-          "metres": 637
+          "track": "003",
+          "kilometres": 0,
+          "metres": 544
         }
-      },
+      }
+    ]
+  },
+  {
+    "id": 196050,
+    "station": "HKI",
+    "trackSectionCode": "007a",
+    "ranges": [
       {
-        "id": 187448,
+        "id": 187051,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 190
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        }
+      }
+    ]
+  },
+  {
+    "id": 196051,
+    "station": "HKI",
+    "trackSectionCode": "009a",
+    "ranges": [
+      {
+        "id": 187055,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 190
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        }
+      }
+    ]
+  },
+  {
+    "id": 196052,
+    "station": "HKI",
+    "trackSectionCode": "016b",
+    "ranges": [
+      {
+        "id": 187070,
         "startLocation": {
           "track": "001",
-          "kilometres": 6,
-          "metres": 637
+          "kilometres": 0,
+          "metres": 492
         },
         "endLocation": {
           "track": "001",
-          "kilometres": 6,
-          "metres": 637
+          "kilometres": 0,
+          "metres": 571
+        }
+      }
+    ]
+  },
+  {
+    "id": 196053,
+    "station": "HKI",
+    "trackSectionCode": "019",
+    "ranges": [
+      {
+        "id": 187077,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 296
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 566
+        }
+      }
+    ]
+  },
+  {
+    "id": 196054,
+    "station": "HKI",
+    "trackSectionCode": "115",
+    "ranges": [
+      {
+        "id": 187080,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 713
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 45
+        }
+      }
+    ]
+  },
+  {
+    "id": 196055,
+    "station": "HKI",
+    "trackSectionCode": "221",
+    "ranges": [
+      {
+        "id": 187087,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 10
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 196
+        }
+      }
+    ]
+  },
+  {
+    "id": 196056,
+    "station": "HKI",
+    "trackSectionCode": "225",
+    "ranges": [
+      {
+        "id": 187091,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 925
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 383
+        }
+      }
+    ]
+  },
+  {
+    "id": 196057,
+    "station": "HKI",
+    "trackSectionCode": "228",
+    "ranges": [
+      {
+        "id": 187094,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 60
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 270
+        }
+      }
+    ]
+  },
+  {
+    "id": 196058,
+    "station": "HKI",
+    "trackSectionCode": "418",
+    "ranges": [
+      {
+        "id": 187116,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 393
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 908
+        }
+      }
+    ]
+  },
+  {
+    "id": 196059,
+    "station": "HKI",
+    "trackSectionCode": "431",
+    "ranges": [
+      {
+        "id": 187125,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 450
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 796
         }
       }
     ]
@@ -126,6 +300,146 @@
     ]
   },
   {
+    "id": 196101,
+    "station": "HPL",
+    "trackSectionCode": "202",
+    "ranges": [
+      {
+        "id": 187461,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 310
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 596
+        }
+      }
+    ]
+  },
+  {
+    "id": 196102,
+    "station": "HPL",
+    "trackSectionCode": "241",
+    "ranges": [
+      {
+        "id": 187470,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 635
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 7,
+          "metres": 320
+        }
+      }
+    ]
+  },
+  {
+    "id": 196103,
+    "station": "HPL",
+    "trackSectionCode": "242",
+    "ranges": [
+      {
+        "id": 187471,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 596
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 7,
+          "metres": 320
+        }
+      }
+    ]
+  },
+  {
+    "id": 196104,
+    "station": "HPL",
+    "trackSectionCode": "261",
+    "ranges": [
+      {
+        "id": 187474,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 7,
+          "metres": 320
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 150
+        }
+      }
+    ]
+  },
+  {
+    "id": 196105,
+    "station": "HPL",
+    "trackSectionCode": "264",
+    "ranges": [
+      {
+        "id": 187477,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 7,
+          "metres": 330
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 150
+        }
+      }
+    ]
+  },
+  {
+    "id": 196106,
+    "station": "HPL",
+    "trackSectionCode": "282",
+    "ranges": [
+      {
+        "id": 187479,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 150
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 583
+        }
+      }
+    ]
+  },
+  {
+    "id": 196107,
+    "station": "HPL",
+    "trackSectionCode": "352",
+    "ranges": [
+      {
+        "id": 187487,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 300
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 770
+        }
+      }
+    ]
+  },
+  {
     "id": 196396,
     "station": "KTÖ",
     "trackSectionCode": "533",
@@ -146,21 +460,41 @@
     ]
   },
   {
-    "id": 196490,
-    "station": "LNÄ",
-    "trackSectionCode": "V617",
+    "id": 196442,
+    "station": "KÄP",
+    "trackSectionCode": "503",
     "ranges": [
       {
-        "id": 190679,
+        "id": 190331,
         "startLocation": {
-          "track": "123",
-          "kilometres": 31,
-          "metres": 595
+          "track": "003",
+          "kilometres": 5,
+          "metres": 657
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 31,
-          "metres": 595
+          "track": "003",
+          "kilometres": 5,
+          "metres": 970
+        }
+      }
+    ]
+  },
+  {
+    "id": 196443,
+    "station": "KÄP",
+    "trackSectionCode": "551",
+    "ranges": [
+      {
+        "id": 190338,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 873
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 657
         }
       }
     ]
@@ -206,21 +540,61 @@
     ]
   },
   {
-    "id": 196540,
-    "station": "MLO",
-    "trackSectionCode": "V113",
+    "id": 196537,
+    "station": "ML",
+    "trackSectionCode": "001",
     "ranges": [
       {
-        "id": 191078,
+        "id": 191053,
         "startLocation": {
-          "track": "123",
-          "kilometres": 9,
-          "metres": 535
+          "track": "003",
+          "kilometres": 10,
+          "metres": 741
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 9,
-          "metres": 535
+          "track": "003",
+          "kilometres": 11,
+          "metres": 250
+        }
+      }
+    ]
+  },
+  {
+    "id": 196538,
+    "station": "ML",
+    "trackSectionCode": "043",
+    "ranges": [
+      {
+        "id": 191059,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 11,
+          "metres": 485
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 11,
+          "metres": 961
+        }
+      }
+    ]
+  },
+  {
+    "id": 196539,
+    "station": "ML",
+    "trackSectionCode": "051",
+    "ranges": [
+      {
+        "id": 191061,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 10,
+          "metres": 125
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 10,
+          "metres": 741
         }
       }
     ]
@@ -266,6 +640,106 @@
     ]
   },
   {
+    "id": 196609,
+    "station": "OLK",
+    "trackSectionCode": "562",
+    "ranges": [
+      {
+        "id": 191587,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 152
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 585
+        }
+      }
+    ]
+  },
+  {
+    "id": 196651,
+    "station": "PLA",
+    "trackSectionCode": "081",
+    "ranges": [
+      {
+        "id": 191911,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 160
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 846
+        }
+      }
+    ]
+  },
+  {
+    "id": 196652,
+    "station": "PLA",
+    "trackSectionCode": "082",
+    "ranges": [
+      {
+        "id": 191913,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 160
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 846
+        }
+      }
+    ]
+  },
+  {
+    "id": 196653,
+    "station": "PLA",
+    "trackSectionCode": "082/272",
+    "ranges": [
+      {
+        "id": 191914,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 846
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 500
+        }
+      }
+    ]
+  },
+  {
+    "id": 196654,
+    "station": "PLA",
+    "trackSectionCode": "271",
+    "ranges": [
+      {
+        "id": 191919,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 500
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 995
+        }
+      }
+    ]
+  },
+  {
     "id": 196712,
     "station": "POH",
     "trackSectionCode": "172",
@@ -286,6 +760,126 @@
     ]
   },
   {
+    "id": 196724,
+    "station": "PSL",
+    "trackSectionCode": "R462",
+    "ranges": [
+      {
+        "id": 192414,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 830
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 175
+        }
+      }
+    ]
+  },
+  {
+    "id": 196728,
+    "station": "PSL",
+    "trackSectionCode": "294",
+    "ranges": [
+      {
+        "id": 192446,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 560
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 95
+        }
+      }
+    ]
+  },
+  {
+    "id": 196729,
+    "station": "PSL",
+    "trackSectionCode": "428/448",
+    "ranges": [
+      {
+        "id": 192452,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 780
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 145
+        }
+      }
+    ]
+  },
+  {
+    "id": 196730,
+    "station": "PSL",
+    "trackSectionCode": "4601",
+    "ranges": [
+      {
+        "id": 192473,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 590
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 729
+        }
+      }
+    ]
+  },
+  {
+    "id": 196731,
+    "station": "PSL",
+    "trackSectionCode": "492",
+    "ranges": [
+      {
+        "id": 192481,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 444
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 873
+        }
+      }
+    ]
+  },
+  {
+    "id": 196732,
+    "station": "PSL",
+    "trackSectionCode": "493",
+    "ranges": [
+      {
+        "id": 192482,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 444
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 873
+        }
+      }
+    ]
+  },
+  {
     "id": 196808,
     "station": "RSM",
     "trackSectionCode": "565",
@@ -301,6 +895,86 @@
           "track": "123",
           "kilometres": 24,
           "metres": 230
+        }
+      }
+    ]
+  },
+  {
+    "id": 196905,
+    "station": "TKL",
+    "trackSectionCode": "206",
+    "ranges": [
+      {
+        "id": 194197,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 15,
+          "metres": 823
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 16,
+          "metres": 204
+        }
+      }
+    ]
+  },
+  {
+    "id": 196906,
+    "station": "TKL",
+    "trackSectionCode": "375",
+    "ranges": [
+      {
+        "id": 194200,
+        "startLocation": {
+          "track": "TKL HAK",
+          "kilometres": 16,
+          "metres": 122
+        },
+        "endLocation": {
+          "track": "TKL HAK",
+          "kilometres": 17,
+          "metres": 812
+        }
+      }
+    ]
+  },
+  {
+    "id": 196942,
+    "station": "TNA",
+    "trackSectionCode": "061/081",
+    "ranges": [
+      {
+        "id": 194528,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 12,
+          "metres": 693
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 160
+        }
+      }
+    ]
+  },
+  {
+    "id": 196943,
+    "station": "TNA",
+    "trackSectionCode": "063",
+    "ranges": [
+      {
+        "id": 194531,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 11,
+          "metres": 961
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 12,
+          "metres": 693
         }
       }
     ]
@@ -386,6 +1060,226 @@
     ]
   },
   {
+    "id": 197162,
+    "station": "HKI",
+    "trackSectionCode": "003a",
+    "ranges": [
+      {
+        "id": 187043,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 360
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 544
+        }
+      }
+    ]
+  },
+  {
+    "id": 197163,
+    "station": "HKI",
+    "trackSectionCode": "004b",
+    "ranges": [
+      {
+        "id": 187046,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 599
+        }
+      }
+    ]
+  },
+  {
+    "id": 197164,
+    "station": "HKI",
+    "trackSectionCode": "008b",
+    "ranges": [
+      {
+        "id": 187054,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 688
+        }
+      }
+    ]
+  },
+  {
+    "id": 197165,
+    "station": "HKI",
+    "trackSectionCode": "010a",
+    "ranges": [
+      {
+        "id": 187057,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 190
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        }
+      }
+    ]
+  },
+  {
+    "id": 197166,
+    "station": "HKI",
+    "trackSectionCode": "011a",
+    "ranges": [
+      {
+        "id": 187059,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 190
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        }
+      }
+    ]
+  },
+  {
+    "id": 197167,
+    "station": "HKI",
+    "trackSectionCode": "011b",
+    "ranges": [
+      {
+        "id": 187060,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 544
+        }
+      }
+    ]
+  },
+  {
+    "id": 197168,
+    "station": "HKI",
+    "trackSectionCode": "013a",
+    "ranges": [
+      {
+        "id": 187063,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 314
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 492
+        }
+      }
+    ]
+  },
+  {
+    "id": 197169,
+    "station": "HKI",
+    "trackSectionCode": "014a",
+    "ranges": [
+      {
+        "id": 187065,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 296
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 492
+        }
+      }
+    ]
+  },
+  {
+    "id": 197170,
+    "station": "HKI",
+    "trackSectionCode": "120",
+    "ranges": [
+      {
+        "id": 187085,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 655
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 955
+        }
+      }
+    ]
+  },
+  {
+    "id": 197171,
+    "station": "HKI",
+    "trackSectionCode": "414",
+    "ranges": [
+      {
+        "id": 187112,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 624
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 908
+        }
+      }
+    ]
+  },
+  {
+    "id": 197172,
+    "station": "HKI",
+    "trackSectionCode": "425",
+    "ranges": [
+      {
+        "id": 187119,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 266
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 796
+        }
+      }
+    ]
+  },
+  {
     "id": 197213,
     "station": "HPL",
     "trackSectionCode": "171",
@@ -406,6 +1300,72 @@
     ]
   },
   {
+    "id": 197214,
+    "station": "HPL",
+    "trackSectionCode": "203",
+    "ranges": [
+      {
+        "id": 187463,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 310
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 596
+        }
+      },
+      {
+        "id": 187462,
+        "startLocation": {
+          "track": "123",
+          "kilometres": 6,
+          "metres": 310
+        },
+        "endLocation": {
+          "track": "123",
+          "kilometres": 6,
+          "metres": 596
+        }
+      }
+    ]
+  },
+  {
+    "id": 197214,
+    "station": "HPL",
+    "trackSectionCode": "203",
+    "ranges": [
+      {
+        "id": 187463,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 310
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 596
+        }
+      },
+      {
+        "id": 187462,
+        "startLocation": {
+          "track": "123",
+          "kilometres": 6,
+          "metres": 310
+        },
+        "endLocation": {
+          "track": "123",
+          "kilometres": 6,
+          "metres": 596
+        }
+      }
+    ]
+  },
+  {
     "id": 197215,
     "station": "HPL",
     "trackSectionCode": "204",
@@ -472,41 +1432,61 @@
     ]
   },
   {
-    "id": 197589,
-    "station": "LAV",
-    "trackSectionCode": "V162",
+    "id": 197216,
+    "station": "HPL",
+    "trackSectionCode": "283",
     "ranges": [
       {
-        "id": 190422,
+        "id": 187480,
         "startLocation": {
-          "track": "123",
-          "kilometres": 14,
-          "metres": 530
+          "track": "001",
+          "kilometres": 8,
+          "metres": 150
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 14,
-          "metres": 530
+          "track": "001",
+          "kilometres": 8,
+          "metres": 583
         }
       }
     ]
   },
   {
-    "id": 197614,
-    "station": "LOH",
-    "trackSectionCode": "V134",
+    "id": 197668,
+    "station": "ML",
+    "trackSectionCode": "003",
     "ranges": [
       {
-        "id": 190697,
+        "id": 191055,
         "startLocation": {
-          "track": "123",
-          "kilometres": 12,
-          "metres": 435
+          "track": "003",
+          "kilometres": 10,
+          "metres": 707
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 12,
-          "metres": 435
+          "track": "003",
+          "kilometres": 11,
+          "metres": 250
+        }
+      }
+    ]
+  },
+  {
+    "id": 197669,
+    "station": "ML",
+    "trackSectionCode": "041",
+    "ranges": [
+      {
+        "id": 191057,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 11,
+          "metres": 485
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 11,
+          "metres": 961
         }
       }
     ]
@@ -532,6 +1512,46 @@
     ]
   },
   {
+    "id": 197769,
+    "station": "PLA",
+    "trackSectionCode": "083",
+    "ranges": [
+      {
+        "id": 191915,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 160
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 846
+        }
+      }
+    ]
+  },
+  {
+    "id": 197770,
+    "station": "PLA",
+    "trackSectionCode": "273",
+    "ranges": [
+      {
+        "id": 191921,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 500
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 995
+        }
+      }
+    ]
+  },
+  {
     "id": 197814,
     "station": "POH",
     "trackSectionCode": "132",
@@ -547,6 +1567,186 @@
           "track": "123",
           "kilometres": 9,
           "metres": 112
+        }
+      }
+    ]
+  },
+  {
+    "id": 197822,
+    "station": "PSL",
+    "trackSectionCode": "R2942",
+    "ranges": [
+      {
+        "id": 192410,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 0
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 285
+        }
+      }
+    ]
+  },
+  {
+    "id": 197823,
+    "station": "PSL",
+    "trackSectionCode": "R445/635",
+    "ranges": [
+      {
+        "id": 192413,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 526
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 660
+        }
+      }
+    ]
+  },
+  {
+    "id": 197829,
+    "station": "PSL",
+    "trackSectionCode": "291",
+    "ranges": [
+      {
+        "id": 192443,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 560
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 426
+        }
+      }
+    ]
+  },
+  {
+    "id": 197830,
+    "station": "PSL",
+    "trackSectionCode": "293",
+    "ranges": [
+      {
+        "id": 192445,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 560
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 285
+        }
+      }
+    ]
+  },
+  {
+    "id": 197831,
+    "station": "PSL",
+    "trackSectionCode": "424/444",
+    "ranges": [
+      {
+        "id": 192448,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 796
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 145
+        }
+      }
+    ]
+  },
+  {
+    "id": 197832,
+    "station": "PSL",
+    "trackSectionCode": "430/440",
+    "ranges": [
+      {
+        "id": 192454,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 796
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 163
+        }
+      }
+    ]
+  },
+  {
+    "id": 197833,
+    "station": "PSL",
+    "trackSectionCode": "442",
+    "ranges": [
+      {
+        "id": 192463,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 151
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 602
+        }
+      }
+    ]
+  },
+  {
+    "id": 197834,
+    "station": "PSL",
+    "trackSectionCode": "4631",
+    "ranges": [
+      {
+        "id": 192478,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 260
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 444
+        }
+      }
+    ]
+  },
+  {
+    "id": 197835,
+    "station": "PSL",
+    "trackSectionCode": "862",
+    "ranges": [
+      {
+        "id": 192485,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 890
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 1035
         }
       }
     ]
@@ -632,21 +1832,41 @@
     ]
   },
   {
-    "id": 198161,
-    "station": "VMS",
-    "trackSectionCode": "V611",
+    "id": 197998,
+    "station": "TKL",
+    "trackSectionCode": "R243",
     "ranges": [
       {
-        "id": 195490,
+        "id": 194150,
         "startLocation": {
-          "track": "123",
-          "kilometres": 25,
-          "metres": 704
+          "track": "003",
+          "kilometres": 16,
+          "metres": 763
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 25,
-          "metres": 704
+          "track": "003",
+          "kilometres": 17,
+          "metres": 10
+        }
+      }
+    ]
+  },
+  {
+    "id": 198038,
+    "station": "TNA",
+    "trackSectionCode": "061",
+    "ranges": [
+      {
+        "id": 194527,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 11,
+          "metres": 961
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 12,
+          "metres": 693
         }
       }
     ]
@@ -752,21 +1972,221 @@
     ]
   },
   {
-    "id": 198668,
-    "station": "LAV",
-    "trackSectionCode": "V154",
+    "id": 198275,
+    "station": "HKI",
+    "trackSectionCode": "009b",
     "ranges": [
       {
-        "id": 190420,
+        "id": 187056,
         "startLocation": {
-          "track": "123",
-          "kilometres": 14,
-          "metres": 464
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 14,
-          "metres": 464
+          "track": "003",
+          "kilometres": 0,
+          "metres": 588
+        }
+      }
+    ]
+  },
+  {
+    "id": 198276,
+    "station": "HKI",
+    "trackSectionCode": "012b",
+    "ranges": [
+      {
+        "id": 187062,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 492
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 649
+        }
+      }
+    ]
+  },
+  {
+    "id": 198277,
+    "station": "HKI",
+    "trackSectionCode": "015a",
+    "ranges": [
+      {
+        "id": 187067,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 296
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 492
+        }
+      }
+    ]
+  },
+  {
+    "id": 198278,
+    "station": "HKI",
+    "trackSectionCode": "117",
+    "ranges": [
+      {
+        "id": 187082,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 617
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 812
+        }
+      }
+    ]
+  },
+  {
+    "id": 198279,
+    "station": "HKI",
+    "trackSectionCode": "280",
+    "ranges": [
+      {
+        "id": 187099,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 379
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 633
+        }
+      }
+    ]
+  },
+  {
+    "id": 198280,
+    "station": "HKI",
+    "trackSectionCode": "413",
+    "ranges": [
+      {
+        "id": 187110,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 668
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 84
+        }
+      }
+    ]
+  },
+  {
+    "id": 198281,
+    "station": "HKI",
+    "trackSectionCode": "415",
+    "ranges": [
+      {
+        "id": 187113,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 624
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 908
+        }
+      }
+    ]
+  },
+  {
+    "id": 198316,
+    "station": "HPL",
+    "trackSectionCode": "201",
+    "ranges": [
+      {
+        "id": 187460,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 310
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 635
+        }
+      }
+    ]
+  },
+  {
+    "id": 198317,
+    "station": "HPL",
+    "trackSectionCode": "351",
+    "ranges": [
+      {
+        "id": 187486,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 300
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 770
+        }
+      }
+    ]
+  },
+  {
+    "id": 198659,
+    "station": "KÄP",
+    "trackSectionCode": "R884",
+    "ranges": [
+      {
+        "id": 190322,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 415
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 660
+        }
+      }
+    ]
+  },
+  {
+    "id": 198660,
+    "station": "KÄP",
+    "trackSectionCode": "502",
+    "ranges": [
+      {
+        "id": 190330,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 657
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 970
         }
       }
     ]
@@ -852,21 +2272,21 @@
     ]
   },
   {
-    "id": 198765,
-    "station": "MLO",
-    "trackSectionCode": "V111",
+    "id": 198760,
+    "station": "ML",
+    "trackSectionCode": "054",
     "ranges": [
       {
-        "id": 191076,
+        "id": 191064,
         "startLocation": {
-          "track": "123",
-          "kilometres": 9,
-          "metres": 473
+          "track": "003",
+          "kilometres": 10,
+          "metres": 125
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 9,
-          "metres": 473
+          "track": "003",
+          "kilometres": 10,
+          "metres": 745
         }
       }
     ]
@@ -907,6 +2327,166 @@
           "track": "123",
           "kilometres": 14,
           "metres": 186
+        }
+      }
+    ]
+  },
+  {
+    "id": 198833,
+    "station": "OLK",
+    "trackSectionCode": "542",
+    "ranges": [
+      {
+        "id": 191584,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 6,
+          "metres": 948
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 7,
+          "metres": 620
+        }
+      }
+    ]
+  },
+  {
+    "id": 198834,
+    "station": "OLK",
+    "trackSectionCode": "563",
+    "ranges": [
+      {
+        "id": 191588,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 281
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 585
+        }
+      }
+    ]
+  },
+  {
+    "id": 198938,
+    "station": "PSL",
+    "trackSectionCode": "R470",
+    "ranges": [
+      {
+        "id": 192417,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 534
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 785
+        }
+      }
+    ]
+  },
+  {
+    "id": 198939,
+    "station": "PSL",
+    "trackSectionCode": "440",
+    "ranges": [
+      {
+        "id": 192457,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 163
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 602
+        }
+      }
+    ]
+  },
+  {
+    "id": 198940,
+    "station": "PSL",
+    "trackSectionCode": "4402",
+    "ranges": [
+      {
+        "id": 192459,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 548
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 602
+        }
+      }
+    ]
+  },
+  {
+    "id": 198942,
+    "station": "PSL",
+    "trackSectionCode": "462",
+    "ranges": [
+      {
+        "id": 192476,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 802
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 444
+        }
+      }
+    ]
+  },
+  {
+    "id": 198943,
+    "station": "PSL",
+    "trackSectionCode": "860",
+    "ranges": [
+      {
+        "id": 192483,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 584
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 774
+        }
+      }
+    ]
+  },
+  {
+    "id": 199174,
+    "station": "TNA",
+    "trackSectionCode": "062",
+    "ranges": [
+      {
+        "id": 194529,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 11,
+          "metres": 961
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 12,
+          "metres": 693
         }
       }
     ]
@@ -972,21 +2552,281 @@
     ]
   },
   {
-    "id": 199291,
-    "station": "VMS",
-    "trackSectionCode": "V613",
+    "id": 199384,
+    "station": "HKI",
+    "trackSectionCode": "R283",
     "ranges": [
       {
-        "id": 195492,
+        "id": 186876,
         "startLocation": {
-          "track": "123",
-          "kilometres": 26,
-          "metres": 17
+          "track": "003",
+          "kilometres": 1,
+          "metres": 431
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 26,
-          "metres": 17
+          "track": "003",
+          "kilometres": 1,
+          "metres": 668
+        }
+      }
+    ]
+  },
+  {
+    "id": 199385,
+    "station": "HKI",
+    "trackSectionCode": "R4141",
+    "ranges": [
+      {
+        "id": 186878,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 110
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 266
+        }
+      }
+    ]
+  },
+  {
+    "id": 199408,
+    "station": "HKI",
+    "trackSectionCode": "012a",
+    "ranges": [
+      {
+        "id": 187061,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 314
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 492
+        }
+      }
+    ]
+  },
+  {
+    "id": 199409,
+    "station": "HKI",
+    "trackSectionCode": "013b",
+    "ranges": [
+      {
+        "id": 187064,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 492
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 566
+        }
+      }
+    ]
+  },
+  {
+    "id": 199410,
+    "station": "HKI",
+    "trackSectionCode": "015b",
+    "ranges": [
+      {
+        "id": 187068,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 492
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 566
+        }
+      }
+    ]
+  },
+  {
+    "id": 199411,
+    "station": "HKI",
+    "trackSectionCode": "017b",
+    "ranges": [
+      {
+        "id": 187073,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 456
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 566
+        }
+      }
+    ]
+  },
+  {
+    "id": 199412,
+    "station": "HKI",
+    "trackSectionCode": "018a",
+    "ranges": [
+      {
+        "id": 187075,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 300
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 456
+        }
+      }
+    ]
+  },
+  {
+    "id": 199413,
+    "station": "HKI",
+    "trackSectionCode": "116",
+    "ranges": [
+      {
+        "id": 187081,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 660
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 45
+        }
+      }
+    ]
+  },
+  {
+    "id": 199414,
+    "station": "HKI",
+    "trackSectionCode": "223",
+    "ranges": [
+      {
+        "id": 187089,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 0
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 286
+        }
+      }
+    ]
+  },
+  {
+    "id": 199415,
+    "station": "HKI",
+    "trackSectionCode": "237",
+    "ranges": [
+      {
+        "id": 187098,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 392
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 518
+        }
+      }
+    ]
+  },
+  {
+    "id": 199416,
+    "station": "HKI",
+    "trackSectionCode": "411/431",
+    "ranges": [
+      {
+        "id": 187107,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 84
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 450
+        }
+      }
+    ]
+  },
+  {
+    "id": 199417,
+    "station": "HKI",
+    "trackSectionCode": "424",
+    "ranges": [
+      {
+        "id": 187118,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 266
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 796
+        }
+      }
+    ]
+  },
+  {
+    "id": 199418,
+    "station": "HKI",
+    "trackSectionCode": "432",
+    "ranges": [
+      {
+        "id": 187126,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 450
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 796
+        }
+      }
+    ]
+  },
+  {
+    "id": 199419,
+    "station": "HKI",
+    "trackSectionCode": "433",
+    "ranges": [
+      {
+        "id": 187127,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 450
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 796
         }
       }
     ]
@@ -1032,6 +2872,86 @@
     ]
   },
   {
+    "id": 199463,
+    "station": "HPL",
+    "trackSectionCode": "211",
+    "ranges": [
+      {
+        "id": 187466,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 5,
+          "metres": 310
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 310
+        }
+      }
+    ]
+  },
+  {
+    "id": 199464,
+    "station": "HPL",
+    "trackSectionCode": "243",
+    "ranges": [
+      {
+        "id": 187472,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 844
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 7,
+          "metres": 320
+        }
+      }
+    ]
+  },
+  {
+    "id": 199465,
+    "station": "HPL",
+    "trackSectionCode": "263",
+    "ranges": [
+      {
+        "id": 187476,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 7,
+          "metres": 320
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 150
+        }
+      }
+    ]
+  },
+  {
+    "id": 199466,
+    "station": "HPL",
+    "trackSectionCode": "284",
+    "ranges": [
+      {
+        "id": 187481,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 150
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 583
+        }
+      }
+    ]
+  },
+  {
     "id": 199746,
     "station": "KTÖ",
     "trackSectionCode": "536",
@@ -1047,6 +2967,106 @@
           "track": "123",
           "kilometres": 18,
           "metres": 700
+        }
+      }
+    ]
+  },
+  {
+    "id": 199796,
+    "station": "KÄP",
+    "trackSectionCode": "501",
+    "ranges": [
+      {
+        "id": 190329,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 657
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 6,
+          "metres": 120
+        }
+      }
+    ]
+  },
+  {
+    "id": 199797,
+    "station": "KÄP",
+    "trackSectionCode": "504",
+    "ranges": [
+      {
+        "id": 190332,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 660
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 898
+        }
+      }
+    ]
+  },
+  {
+    "id": 199798,
+    "station": "KÄP",
+    "trackSectionCode": "550",
+    "ranges": [
+      {
+        "id": 190337,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 873
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 657
+        }
+      }
+    ]
+  },
+  {
+    "id": 199799,
+    "station": "KÄP",
+    "trackSectionCode": "552",
+    "ranges": [
+      {
+        "id": 190339,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 873
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 657
+        }
+      }
+    ]
+  },
+  {
+    "id": 199800,
+    "station": "KÄP",
+    "trackSectionCode": "553",
+    "ranges": [
+      {
+        "id": 190340,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 873
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 657
         }
       }
     ]
@@ -1172,6 +3192,26 @@
     ]
   },
   {
+    "id": 199894,
+    "station": "ML",
+    "trackSectionCode": "052",
+    "ranges": [
+      {
+        "id": 191062,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 10,
+          "metres": 125
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 10,
+          "metres": 707
+        }
+      }
+    ]
+  },
+  {
     "id": 199905,
     "station": "MRL",
     "trackSectionCode": "R151",
@@ -1187,6 +3227,106 @@
           "track": "123",
           "kilometres": 13,
           "metres": 834
+        }
+      }
+    ]
+  },
+  {
+    "id": 199956,
+    "station": "OLK",
+    "trackSectionCode": "540",
+    "ranges": [
+      {
+        "id": 191582,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 6,
+          "metres": 948
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 7,
+          "metres": 620
+        }
+      }
+    ]
+  },
+  {
+    "id": 199999,
+    "station": "PLA",
+    "trackSectionCode": "083/273",
+    "ranges": [
+      {
+        "id": 191916,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 846
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 500
+        }
+      }
+    ]
+  },
+  {
+    "id": 200000,
+    "station": "PLA",
+    "trackSectionCode": "084",
+    "ranges": [
+      {
+        "id": 191917,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 160
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 846
+        }
+      }
+    ]
+  },
+  {
+    "id": 200035,
+    "station": "PMK",
+    "trackSectionCode": "582/072",
+    "ranges": [
+      {
+        "id": 192187,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 860
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 9,
+          "metres": 729
+        }
+      }
+    ]
+  },
+  {
+    "id": 200036,
+    "station": "PMK",
+    "trackSectionCode": "584/074",
+    "ranges": [
+      {
+        "id": 192189,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 860
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 9,
+          "metres": 729
         }
       }
     ]
@@ -1232,21 +3372,81 @@
     ]
   },
   {
-    "id": 200169,
-    "station": "RSM",
-    "trackSectionCode": "V514",
+    "id": 200066,
+    "station": "PSL",
+    "trackSectionCode": "R444",
     "ranges": [
       {
-        "id": 193119,
+        "id": 192412,
         "startLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 367
+          "track": "003",
+          "kilometres": 3,
+          "metres": 145
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 367
+          "track": "003",
+          "kilometres": 3,
+          "metres": 592
+        }
+      }
+    ]
+  },
+  {
+    "id": 200070,
+    "station": "PSL",
+    "trackSectionCode": "426/446",
+    "ranges": [
+      {
+        "id": 192450,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 780
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 145
+        }
+      }
+    ]
+  },
+  {
+    "id": 200071,
+    "station": "PSL",
+    "trackSectionCode": "4412",
+    "ranges": [
+      {
+        "id": 192462,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 548
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 602
+        }
+      }
+    ]
+  },
+  {
+    "id": 200072,
+    "station": "PSL",
+    "trackSectionCode": "444/634",
+    "ranges": [
+      {
+        "id": 192465,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 592
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 660
         }
       }
     ]
@@ -1287,6 +3487,66 @@
           "track": "123",
           "kilometres": 23,
           "metres": 977
+        }
+      }
+    ]
+  },
+  {
+    "id": 200278,
+    "station": "TKL",
+    "trackSectionCode": "203",
+    "ranges": [
+      {
+        "id": 194194,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 15,
+          "metres": 766
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 16,
+          "metres": 200
+        }
+      }
+    ]
+  },
+  {
+    "id": 200320,
+    "station": "TNA",
+    "trackSectionCode": "064",
+    "ranges": [
+      {
+        "id": 194533,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 11,
+          "metres": 961
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 12,
+          "metres": 693
+        }
+      }
+    ]
+  },
+  {
+    "id": 200321,
+    "station": "TNA",
+    "trackSectionCode": "064/084",
+    "ranges": [
+      {
+        "id": 194534,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 12,
+          "metres": 693
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 160
         }
       }
     ]
@@ -1352,26 +3612,6 @@
     ]
   },
   {
-    "id": 200508,
-    "station": "ASO",
-    "trackSectionCode": "V615",
-    "ranges": [
-      {
-        "id": 186626,
-        "startLocation": {
-          "track": "123",
-          "kilometres": 31,
-          "metres": 532
-        },
-        "endLocation": {
-          "track": "123",
-          "kilometres": 31,
-          "metres": 532
-        }
-      }
-    ]
-  },
-  {
     "id": 200509,
     "station": "ASO",
     "trackSectionCode": "682",
@@ -1387,6 +3627,246 @@
           "track": "123",
           "kilometres": 31,
           "metres": 519
+        }
+      }
+    ]
+  },
+  {
+    "id": 200557,
+    "station": "HKI",
+    "trackSectionCode": "001a",
+    "ranges": [
+      {
+        "id": 187039,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 360
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 544
+        }
+      }
+    ]
+  },
+  {
+    "id": 200558,
+    "station": "HKI",
+    "trackSectionCode": "010b",
+    "ranges": [
+      {
+        "id": 187058,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 558
+        }
+      }
+    ]
+  },
+  {
+    "id": 200559,
+    "station": "HKI",
+    "trackSectionCode": "019b",
+    "ranges": [
+      {
+        "id": 187079,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 456
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 566
+        }
+      }
+    ]
+  },
+  {
+    "id": 200560,
+    "station": "HKI",
+    "trackSectionCode": "220",
+    "ranges": [
+      {
+        "id": 187086,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 10
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 244
+        }
+      }
+    ]
+  },
+  {
+    "id": 200561,
+    "station": "HKI",
+    "trackSectionCode": "222",
+    "ranges": [
+      {
+        "id": 187088,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 975
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 244
+        }
+      }
+    ]
+  },
+  {
+    "id": 200562,
+    "station": "HKI",
+    "trackSectionCode": "224",
+    "ranges": [
+      {
+        "id": 187090,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 888
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 325
+        }
+      }
+    ]
+  },
+  {
+    "id": 200563,
+    "station": "HKI",
+    "trackSectionCode": "226",
+    "ranges": [
+      {
+        "id": 187092,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 983
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 411
+        }
+      }
+    ]
+  },
+  {
+    "id": 200564,
+    "station": "HKI",
+    "trackSectionCode": "410",
+    "ranges": [
+      {
+        "id": 187104,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 633
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 84
+        }
+      }
+    ]
+  },
+  {
+    "id": 200565,
+    "station": "HKI",
+    "trackSectionCode": "412",
+    "ranges": [
+      {
+        "id": 187108,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 661
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 84
+        }
+      }
+    ]
+  },
+  {
+    "id": 200566,
+    "station": "HKI",
+    "trackSectionCode": "427",
+    "ranges": [
+      {
+        "id": 187121,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 266
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 780
+        }
+      }
+    ]
+  },
+  {
+    "id": 200567,
+    "station": "HKI",
+    "trackSectionCode": "840",
+    "ranges": [
+      {
+        "id": 187128,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 266
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 548
+        }
+      }
+    ]
+  },
+  {
+    "id": 200568,
+    "station": "HKI",
+    "trackSectionCode": "841",
+    "ranges": [
+      {
+        "id": 187129,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 48
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 142
         }
       }
     ]
@@ -1412,21 +3892,121 @@
     ]
   },
   {
-    "id": 200635,
-    "station": "HVK",
-    "trackSectionCode": "R288",
+    "id": 200618,
+    "station": "HPL",
+    "trackSectionCode": "212",
     "ranges": [
       {
-        "id": 187581,
+        "id": 187467,
         "startLocation": {
-          "track": "123",
-          "kilometres": 32,
-          "metres": 977
+          "track": "001",
+          "kilometres": 5,
+          "metres": 310
         },
         "endLocation": {
-          "track": "003",
-          "kilometres": 17,
-          "metres": 679
+          "track": "001",
+          "kilometres": 6,
+          "metres": 310
+        }
+      }
+    ]
+  },
+  {
+    "id": 200619,
+    "station": "HPL",
+    "trackSectionCode": "214",
+    "ranges": [
+      {
+        "id": 187469,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 5,
+          "metres": 310
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 310
+        }
+      }
+    ]
+  },
+  {
+    "id": 200620,
+    "station": "HPL",
+    "trackSectionCode": "332",
+    "ranges": [
+      {
+        "id": 187485,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 770
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 11,
+          "metres": 18
+        }
+      }
+    ]
+  },
+  {
+    "id": 200621,
+    "station": "HPL",
+    "trackSectionCode": "373",
+    "ranges": [
+      {
+        "id": 187492,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 583
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 300
+        }
+      }
+    ]
+  },
+  {
+    "id": 200657,
+    "station": "ILA",
+    "trackSectionCode": "271",
+    "ranges": [
+      {
+        "id": 187744,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 470
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 546
+        }
+      }
+    ]
+  },
+  {
+    "id": 200658,
+    "station": "ILA",
+    "trackSectionCode": "272",
+    "ranges": [
+      {
+        "id": 187745,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 285
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 576
         }
       }
     ]
@@ -1452,21 +4032,21 @@
     ]
   },
   {
-    "id": 201007,
-    "station": "LOH",
-    "trackSectionCode": "V133",
+    "id": 201045,
+    "station": "ML",
+    "trackSectionCode": "002",
     "ranges": [
       {
-        "id": 190696,
+        "id": 191054,
         "startLocation": {
-          "track": "123",
-          "kilometres": 12,
-          "metres": 378
+          "track": "003",
+          "kilometres": 10,
+          "metres": 707
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 12,
-          "metres": 378
+          "track": "003",
+          "kilometres": 11,
+          "metres": 250
         }
       }
     ]
@@ -1532,21 +4112,81 @@
     ]
   },
   {
-    "id": 201075,
-    "station": "MYR",
-    "trackSectionCode": "V132",
+    "id": 201106,
+    "station": "OLK",
+    "trackSectionCode": "R533",
     "ranges": [
       {
-        "id": 191297,
+        "id": 191563,
         "startLocation": {
-          "track": "123",
-          "kilometres": 12,
-          "metres": 373
+          "track": "003",
+          "kilometres": 6,
+          "metres": 761
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 12,
-          "metres": 373
+          "track": "003",
+          "kilometres": 6,
+          "metres": 948
+        }
+      }
+    ]
+  },
+  {
+    "id": 201107,
+    "station": "OLK",
+    "trackSectionCode": "544",
+    "ranges": [
+      {
+        "id": 191586,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 6,
+          "metres": 306
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 7,
+          "metres": 620
+        }
+      }
+    ]
+  },
+  {
+    "id": 201108,
+    "station": "OLK",
+    "trackSectionCode": "584",
+    "ranges": [
+      {
+        "id": 191593,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 585
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 860
+        }
+      }
+    ]
+  },
+  {
+    "id": 201149,
+    "station": "PLA",
+    "trackSectionCode": "084/274",
+    "ranges": [
+      {
+        "id": 191918,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 846
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 500
         }
       }
     ]
@@ -1572,41 +4212,101 @@
     ]
   },
   {
-    "id": 201316,
-    "station": "RSM",
-    "trackSectionCode": "V513",
+    "id": 201223,
+    "station": "PSL",
+    "trackSectionCode": "429/449",
     "ranges": [
       {
-        "id": 193118,
+        "id": 192453,
         "startLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 367
+          "track": "001",
+          "kilometres": 2,
+          "metres": 780
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 367
+          "track": "001",
+          "kilometres": 3,
+          "metres": 145
         }
       }
     ]
   },
   {
-    "id": 201317,
-    "station": "RSM",
-    "trackSectionCode": "V515",
+    "id": 201224,
+    "station": "PSL",
+    "trackSectionCode": "441",
     "ranges": [
       {
-        "id": 193120,
+        "id": 192460,
         "startLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 156
+          "track": "003",
+          "kilometres": 3,
+          "metres": 176
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 156
+          "track": "003",
+          "kilometres": 3,
+          "metres": 602
+        }
+      }
+    ]
+  },
+  {
+    "id": 201225,
+    "station": "PSL",
+    "trackSectionCode": "4611",
+    "ranges": [
+      {
+        "id": 192475,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 560
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 729
+        }
+      }
+    ]
+  },
+  {
+    "id": 201226,
+    "station": "PSL",
+    "trackSectionCode": "481",
+    "ranges": [
+      {
+        "id": 192480,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 729
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 873
+        }
+      }
+    ]
+  },
+  {
+    "id": 201227,
+    "station": "PSL",
+    "trackSectionCode": "861t",
+    "ranges": [
+      {
+        "id": 192484,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 866
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 890
         }
       }
     ]
@@ -1692,6 +4392,26 @@
     ]
   },
   {
+    "id": 201431,
+    "station": "TKL",
+    "trackSectionCode": "202",
+    "ranges": [
+      {
+        "id": 194193,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 15,
+          "metres": 770
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 16,
+          "metres": 214
+        }
+      }
+    ]
+  },
+  {
     "id": 201556,
     "station": "VEH",
     "trackSectionCode": "538",
@@ -1707,26 +4427,6 @@
           "track": "123",
           "kilometres": 18,
           "metres": 120
-        }
-      }
-    ]
-  },
-  {
-    "id": 201579,
-    "station": "VMS",
-    "trackSectionCode": "V612",
-    "ranges": [
-      {
-        "id": 195491,
-        "startLocation": {
-          "track": "123",
-          "kilometres": 26,
-          "metres": 86
-        },
-        "endLocation": {
-          "track": "123",
-          "kilometres": 26,
-          "metres": 86
         }
       }
     ]
@@ -1767,6 +4467,386 @@
           "track": "123",
           "kilometres": 32,
           "metres": 977
+        }
+      }
+    ]
+  },
+  {
+    "id": 201669,
+    "station": "HKI",
+    "trackSectionCode": "R374",
+    "ranges": [
+      {
+        "id": 186877,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 265
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 393
+        }
+      }
+    ]
+  },
+  {
+    "id": 201687,
+    "station": "HKI",
+    "trackSectionCode": "001b",
+    "ranges": [
+      {
+        "id": 187040,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 544
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 632
+        }
+      }
+    ]
+  },
+  {
+    "id": 201688,
+    "station": "HKI",
+    "trackSectionCode": "003b",
+    "ranges": [
+      {
+        "id": 187044,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 544
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 632
+        }
+      }
+    ]
+  },
+  {
+    "id": 201689,
+    "station": "HKI",
+    "trackSectionCode": "016a",
+    "ranges": [
+      {
+        "id": 187069,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 296
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 492
+        }
+      }
+    ]
+  },
+  {
+    "id": 201690,
+    "station": "HKI",
+    "trackSectionCode": "017",
+    "ranges": [
+      {
+        "id": 187071,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 296
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 566
+        }
+      }
+    ]
+  },
+  {
+    "id": 201691,
+    "station": "HKI",
+    "trackSectionCode": "018b",
+    "ranges": [
+      {
+        "id": 187076,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 456
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 566
+        }
+      }
+    ]
+  },
+  {
+    "id": 201692,
+    "station": "HKI",
+    "trackSectionCode": "019a",
+    "ranges": [
+      {
+        "id": 187078,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 300
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 456
+        }
+      }
+    ]
+  },
+  {
+    "id": 201693,
+    "station": "HKI",
+    "trackSectionCode": "118",
+    "ranges": [
+      {
+        "id": 187083,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 607
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 862
+        }
+      }
+    ]
+  },
+  {
+    "id": 201694,
+    "station": "HKI",
+    "trackSectionCode": "410/430",
+    "ranges": [
+      {
+        "id": 187105,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 84
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 450
+        }
+      }
+    ]
+  },
+  {
+    "id": 201695,
+    "station": "HKI",
+    "trackSectionCode": "413/433",
+    "ranges": [
+      {
+        "id": 187111,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 84
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 450
+        }
+      }
+    ]
+  },
+  {
+    "id": 201696,
+    "station": "HKI",
+    "trackSectionCode": "416",
+    "ranges": [
+      {
+        "id": 187114,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 393
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 908
+        }
+      }
+    ]
+  },
+  {
+    "id": 201697,
+    "station": "HKI",
+    "trackSectionCode": "417",
+    "ranges": [
+      {
+        "id": 187115,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 393
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 908
+        }
+      }
+    ]
+  },
+  {
+    "id": 201740,
+    "station": "HPL",
+    "trackSectionCode": "213",
+    "ranges": [
+      {
+        "id": 187468,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 5,
+          "metres": 310
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 310
+        }
+      }
+    ]
+  },
+  {
+    "id": 201741,
+    "station": "HPL",
+    "trackSectionCode": "244",
+    "ranges": [
+      {
+        "id": 187473,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 6,
+          "metres": 890
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 7,
+          "metres": 330
+        }
+      }
+    ]
+  },
+  {
+    "id": 201742,
+    "station": "HPL",
+    "trackSectionCode": "281",
+    "ranges": [
+      {
+        "id": 187478,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 150
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 583
+        }
+      }
+    ]
+  },
+  {
+    "id": 201743,
+    "station": "HPL",
+    "trackSectionCode": "302",
+    "ranges": [
+      {
+        "id": 187483,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 11,
+          "metres": 18
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 11,
+          "metres": 450
+        }
+      }
+    ]
+  },
+  {
+    "id": 201744,
+    "station": "HPL",
+    "trackSectionCode": "371",
+    "ranges": [
+      {
+        "id": 187490,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 583
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 300
+        }
+      }
+    ]
+  },
+  {
+    "id": 201776,
+    "station": "ILA",
+    "trackSectionCode": "273",
+    "ranges": [
+      {
+        "id": 187746,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 285
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 576
+        }
+      }
+    ]
+  },
+  {
+    "id": 201777,
+    "station": "ILA",
+    "trackSectionCode": "274",
+    "ranges": [
+      {
+        "id": 187747,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 285
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 546
         }
       }
     ]
@@ -1832,21 +4912,21 @@
     ]
   },
   {
-    "id": 202081,
-    "station": "LAV",
-    "trackSectionCode": "V153",
+    "id": 202075,
+    "station": "KÄP",
+    "trackSectionCode": "890",
     "ranges": [
       {
-        "id": 190419,
+        "id": 190341,
         "startLocation": {
-          "track": "123",
-          "kilometres": 14,
-          "metres": 530
+          "track": "003",
+          "kilometres": 5,
+          "metres": 11
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 14,
-          "metres": 530
+          "track": "003",
+          "kilometres": 5,
+          "metres": 415
         }
       }
     ]
@@ -1892,6 +4972,46 @@
     ]
   },
   {
+    "id": 202142,
+    "station": "ML",
+    "trackSectionCode": "042",
+    "ranges": [
+      {
+        "id": 191058,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 11,
+          "metres": 614
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 11,
+          "metres": 961
+        }
+      }
+    ]
+  },
+  {
+    "id": 202143,
+    "station": "ML",
+    "trackSectionCode": "053",
+    "ranges": [
+      {
+        "id": 191063,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 10,
+          "metres": 125
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 10,
+          "metres": 707
+        }
+      }
+    ]
+  },
+  {
     "id": 202146,
     "station": "MLO",
     "trackSectionCode": "121",
@@ -1932,21 +5052,101 @@
     ]
   },
   {
-    "id": 202172,
-    "station": "MYR",
-    "trackSectionCode": "V131",
+    "id": 202212,
+    "station": "OLK",
+    "trackSectionCode": "532",
     "ranges": [
       {
-        "id": 191296,
+        "id": 191581,
         "startLocation": {
-          "track": "123",
-          "kilometres": 12,
-          "metres": 317
+          "track": "003",
+          "kilometres": 5,
+          "metres": 970
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 12,
-          "metres": 317
+          "track": "003",
+          "kilometres": 6,
+          "metres": 948
+        }
+      }
+    ]
+  },
+  {
+    "id": 202213,
+    "station": "OLK",
+    "trackSectionCode": "543",
+    "ranges": [
+      {
+        "id": 191585,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 6,
+          "metres": 948
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 7,
+          "metres": 620
+        }
+      }
+    ]
+  },
+  {
+    "id": 202279,
+    "station": "PMK",
+    "trackSectionCode": "073",
+    "ranges": [
+      {
+        "id": 192184,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 9,
+          "metres": 729
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 10,
+          "metres": 125
+        }
+      }
+    ]
+  },
+  {
+    "id": 202280,
+    "station": "PMK",
+    "trackSectionCode": "074",
+    "ranges": [
+      {
+        "id": 192185,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 9,
+          "metres": 729
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 10,
+          "metres": 125
+        }
+      }
+    ]
+  },
+  {
+    "id": 202281,
+    "station": "PMK",
+    "trackSectionCode": "581/071",
+    "ranges": [
+      {
+        "id": 192186,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 860
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 9,
+          "metres": 729
         }
       }
     ]
@@ -1972,6 +5172,166 @@
     ]
   },
   {
+    "id": 202309,
+    "station": "PSL",
+    "trackSectionCode": "R293",
+    "ranges": [
+      {
+        "id": 192409,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 558
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 285
+        }
+      }
+    ]
+  },
+  {
+    "id": 202310,
+    "station": "PSL",
+    "trackSectionCode": "R861",
+    "ranges": [
+      {
+        "id": 192418,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 774
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 866
+        }
+      }
+    ]
+  },
+  {
+    "id": 202314,
+    "station": "PSL",
+    "trackSectionCode": "2941",
+    "ranges": [
+      {
+        "id": 192447,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 560
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 0
+        }
+      }
+    ]
+  },
+  {
+    "id": 202315,
+    "station": "PSL",
+    "trackSectionCode": "4401",
+    "ranges": [
+      {
+        "id": 192458,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 163
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 548
+        }
+      }
+    ]
+  },
+  {
+    "id": 202316,
+    "station": "PSL",
+    "trackSectionCode": "4411",
+    "ranges": [
+      {
+        "id": 192461,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 210
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 548
+        }
+      }
+    ]
+  },
+  {
+    "id": 202317,
+    "station": "PSL",
+    "trackSectionCode": "447",
+    "ranges": [
+      {
+        "id": 192469,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 145
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 560
+        }
+      }
+    ]
+  },
+  {
+    "id": 202318,
+    "station": "PSL",
+    "trackSectionCode": "463",
+    "ranges": [
+      {
+        "id": 192477,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 842
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 444
+        }
+      }
+    ]
+  },
+  {
+    "id": 202319,
+    "station": "PSL",
+    "trackSectionCode": "480",
+    "ranges": [
+      {
+        "id": 192479,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 729
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 873
+        }
+      }
+    ]
+  },
+  {
     "id": 202395,
     "station": "RSM",
     "trackSectionCode": "544",
@@ -1987,6 +5347,66 @@
           "track": "123",
           "kilometres": 21,
           "metres": 180
+        }
+      }
+    ]
+  },
+  {
+    "id": 202501,
+    "station": "TKL",
+    "trackSectionCode": "R241",
+    "ranges": [
+      {
+        "id": 194149,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 16,
+          "metres": 406
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 17,
+          "metres": 41
+        }
+      }
+    ]
+  },
+  {
+    "id": 202505,
+    "station": "TKL",
+    "trackSectionCode": "244b",
+    "ranges": [
+      {
+        "id": 194199,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 16,
+          "metres": 831
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 17,
+          "metres": 64
+        }
+      }
+    ]
+  },
+  {
+    "id": 202549,
+    "station": "TNA",
+    "trackSectionCode": "063/083",
+    "ranges": [
+      {
+        "id": 194532,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 12,
+          "metres": 693
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 160
         }
       }
     ]
@@ -2052,6 +5472,266 @@
     ]
   },
   {
+    "id": 202732,
+    "station": "HKH",
+    "trackSectionCode": "261",
+    "ranges": [
+      {
+        "id": 186861,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 17,
+          "metres": 96
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 18,
+          "metres": 307
+        }
+      }
+    ]
+  },
+  {
+    "id": 202733,
+    "station": "HKH",
+    "trackSectionCode": "263",
+    "ranges": [
+      {
+        "id": 186863,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 17,
+          "metres": 10
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 17,
+          "metres": 475
+        }
+      }
+    ]
+  },
+  {
+    "id": 202753,
+    "station": "HKI",
+    "trackSectionCode": "004a",
+    "ranges": [
+      {
+        "id": 187045,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 190
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        }
+      }
+    ]
+  },
+  {
+    "id": 202754,
+    "station": "HKI",
+    "trackSectionCode": "005a",
+    "ranges": [
+      {
+        "id": 187047,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 190
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        }
+      }
+    ]
+  },
+  {
+    "id": 202755,
+    "station": "HKI",
+    "trackSectionCode": "006b",
+    "ranges": [
+      {
+        "id": 187050,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 617
+        }
+      }
+    ]
+  },
+  {
+    "id": 202756,
+    "station": "HKI",
+    "trackSectionCode": "014b",
+    "ranges": [
+      {
+        "id": 187066,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 492
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 570
+        }
+      }
+    ]
+  },
+  {
+    "id": 202757,
+    "station": "HKI",
+    "trackSectionCode": "227",
+    "ranges": [
+      {
+        "id": 187093,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 56
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 317
+        }
+      }
+    ]
+  },
+  {
+    "id": 202758,
+    "station": "HKI",
+    "trackSectionCode": "231",
+    "ranges": [
+      {
+        "id": 187097,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 27
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 147
+        }
+      }
+    ]
+  },
+  {
+    "id": 202759,
+    "station": "HKI",
+    "trackSectionCode": "282",
+    "ranges": [
+      {
+        "id": 187101,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 393
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 661
+        }
+      }
+    ]
+  },
+  {
+    "id": 202760,
+    "station": "HKI",
+    "trackSectionCode": "412/432",
+    "ranges": [
+      {
+        "id": 187109,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 84
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 450
+        }
+      }
+    ]
+  },
+  {
+    "id": 202761,
+    "station": "HKI",
+    "trackSectionCode": "426",
+    "ranges": [
+      {
+        "id": 187120,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 266
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 780
+        }
+      }
+    ]
+  },
+  {
+    "id": 202762,
+    "station": "HKI",
+    "trackSectionCode": "428",
+    "ranges": [
+      {
+        "id": 187122,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 266
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 780
+        }
+      }
+    ]
+  },
+  {
+    "id": 202763,
+    "station": "HKI",
+    "trackSectionCode": "429",
+    "ranges": [
+      {
+        "id": 187123,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 266
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 780
+        }
+      }
+    ]
+  },
+  {
     "id": 202800,
     "station": "HPL",
     "trackSectionCode": "131",
@@ -2072,21 +5752,61 @@
     ]
   },
   {
-    "id": 203216,
-    "station": "LAV",
-    "trackSectionCode": "V161",
+    "id": 202801,
+    "station": "HPL",
+    "trackSectionCode": "301",
     "ranges": [
       {
-        "id": 190421,
+        "id": 187482,
         "startLocation": {
-          "track": "123",
-          "kilometres": 14,
-          "metres": 464
+          "track": "001",
+          "kilometres": 11,
+          "metres": 18
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 14,
-          "metres": 464
+          "track": "001",
+          "kilometres": 11,
+          "metres": 450
+        }
+      }
+    ]
+  },
+  {
+    "id": 202802,
+    "station": "HPL",
+    "trackSectionCode": "354",
+    "ranges": [
+      {
+        "id": 187489,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 300
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 770
+        }
+      }
+    ]
+  },
+  {
+    "id": 203201,
+    "station": "KÄP",
+    "trackSectionCode": "5061",
+    "ranges": [
+      {
+        "id": 190335,
+        "startLocation": {
+          "track": "ILR 650",
+          "kilometres": 5,
+          "metres": 445
+        },
+        "endLocation": {
+          "track": "ILR 650",
+          "kilometres": 5,
+          "metres": 845
         }
       }
     ]
@@ -2112,41 +5832,41 @@
     ]
   },
   {
-    "id": 203303,
-    "station": "MLO",
-    "trackSectionCode": "V112",
+    "id": 203301,
+    "station": "ML",
+    "trackSectionCode": "004",
     "ranges": [
       {
-        "id": 191077,
+        "id": 191056,
         "startLocation": {
-          "track": "123",
-          "kilometres": 9,
-          "metres": 534
+          "track": "003",
+          "kilometres": 10,
+          "metres": 745
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 9,
-          "metres": 534
+          "track": "003",
+          "kilometres": 11,
+          "metres": 250
         }
       }
     ]
   },
   {
-    "id": 203304,
-    "station": "MLO",
-    "trackSectionCode": "V114",
+    "id": 203302,
+    "station": "ML",
+    "trackSectionCode": "044",
     "ranges": [
       {
-        "id": 191079,
+        "id": 191060,
         "startLocation": {
-          "track": "123",
-          "kilometres": 9,
-          "metres": 595
+          "track": "003",
+          "kilometres": 11,
+          "metres": 618
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 9,
-          "metres": 595
+          "track": "003",
+          "kilometres": 11,
+          "metres": 961
         }
       }
     ]
@@ -2192,21 +5912,301 @@
     ]
   },
   {
-    "id": 203535,
-    "station": "RSM",
-    "trackSectionCode": "V511",
+    "id": 203353,
+    "station": "OLK",
+    "trackSectionCode": "530",
     "ranges": [
       {
-        "id": 193116,
+        "id": 191579,
         "startLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 156
+          "track": "003",
+          "kilometres": 6,
+          "metres": 120
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 156
+          "track": "003",
+          "kilometres": 6,
+          "metres": 948
+        }
+      }
+    ]
+  },
+  {
+    "id": 203354,
+    "station": "OLK",
+    "trackSectionCode": "531",
+    "ranges": [
+      {
+        "id": 191580,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 6,
+          "metres": 120
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 6,
+          "metres": 948
+        }
+      }
+    ]
+  },
+  {
+    "id": 203355,
+    "station": "OLK",
+    "trackSectionCode": "541",
+    "ranges": [
+      {
+        "id": 191583,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 6,
+          "metres": 948
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 7,
+          "metres": 620
+        }
+      }
+    ]
+  },
+  {
+    "id": 203356,
+    "station": "OLK",
+    "trackSectionCode": "564",
+    "ranges": [
+      {
+        "id": 191589,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 7,
+          "metres": 722
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 7,
+          "metres": 993
+        }
+      }
+    ]
+  },
+  {
+    "id": 203357,
+    "station": "OLK",
+    "trackSectionCode": "581",
+    "ranges": [
+      {
+        "id": 191590,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 585
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 860
+        }
+      }
+    ]
+  },
+  {
+    "id": 203394,
+    "station": "PLA",
+    "trackSectionCode": "274",
+    "ranges": [
+      {
+        "id": 191922,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 500
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 995
+        }
+      }
+    ]
+  },
+  {
+    "id": 203423,
+    "station": "PMK",
+    "trackSectionCode": "071",
+    "ranges": [
+      {
+        "id": 192182,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 9,
+          "metres": 729
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 10,
+          "metres": 125
+        }
+      }
+    ]
+  },
+  {
+    "id": 203424,
+    "station": "PMK",
+    "trackSectionCode": "072",
+    "ranges": [
+      {
+        "id": 192183,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 9,
+          "metres": 729
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 10,
+          "metres": 125
+        }
+      }
+    ]
+  },
+  {
+    "id": 203425,
+    "station": "PMK",
+    "trackSectionCode": "583/073",
+    "ranges": [
+      {
+        "id": 192188,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 860
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 9,
+          "metres": 729
+        }
+      }
+    ]
+  },
+  {
+    "id": 203452,
+    "station": "PSL",
+    "trackSectionCode": "292",
+    "ranges": [
+      {
+        "id": 192444,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 560
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 4,
+          "metres": 285
+        }
+      }
+    ]
+  },
+  {
+    "id": 203453,
+    "station": "PSL",
+    "trackSectionCode": "425/445",
+    "ranges": [
+      {
+        "id": 192449,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 796
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 145
+        }
+      }
+    ]
+  },
+  {
+    "id": 203454,
+    "station": "PSL",
+    "trackSectionCode": "427/447",
+    "ranges": [
+      {
+        "id": 192451,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 2,
+          "metres": 780
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 145
+        }
+      }
+    ]
+  },
+  {
+    "id": 203455,
+    "station": "PSL",
+    "trackSectionCode": "431/441",
+    "ranges": [
+      {
+        "id": 192455,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 796
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 210
+        }
+      }
+    ]
+  },
+  {
+    "id": 203456,
+    "station": "PSL",
+    "trackSectionCode": "439",
+    "ranges": [
+      {
+        "id": 192456,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 125
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 605
+        }
+      }
+    ]
+  },
+  {
+    "id": 203457,
+    "station": "PSL",
+    "trackSectionCode": "445",
+    "ranges": [
+      {
+        "id": 192466,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 145
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 526
         }
       }
     ]
@@ -2292,6 +6292,86 @@
     ]
   },
   {
+    "id": 203647,
+    "station": "TKL",
+    "trackSectionCode": "R211",
+    "ranges": [
+      {
+        "id": 194148,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 15,
+          "metres": 92
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 15,
+          "metres": 598
+        }
+      }
+    ]
+  },
+  {
+    "id": 203651,
+    "station": "TKL",
+    "trackSectionCode": "201",
+    "ranges": [
+      {
+        "id": 194192,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 15,
+          "metres": 770
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 16,
+          "metres": 276
+        }
+      }
+    ]
+  },
+  {
+    "id": 203652,
+    "station": "TKL",
+    "trackSectionCode": "204",
+    "ranges": [
+      {
+        "id": 194195,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 15,
+          "metres": 770
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 16,
+          "metres": 124
+        }
+      }
+    ]
+  },
+  {
+    "id": 203653,
+    "station": "TKL",
+    "trackSectionCode": "205",
+    "ranges": [
+      {
+        "id": 194196,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 15,
+          "metres": 823
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 16,
+          "metres": 200
+        }
+      }
+    ]
+  },
+  {
     "id": 203788,
     "station": "VEH",
     "trackSectionCode": "551",
@@ -2332,41 +6412,401 @@
     ]
   },
   {
-    "id": 203875,
-    "station": "ASO",
-    "trackSectionCode": "V616",
+    "id": 203899,
+    "station": "HKH",
+    "trackSectionCode": "R245",
     "ranges": [
       {
-        "id": 186627,
+        "id": 186860,
         "startLocation": {
-          "track": "123",
-          "kilometres": 31,
-          "metres": 532
+          "track": "003",
+          "kilometres": 16,
+          "metres": 390
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 31,
-          "metres": 532
+          "track": "003",
+          "kilometres": 16,
+          "metres": 757
         }
       }
     ]
   },
   {
-    "id": 203876,
-    "station": "ASO",
-    "trackSectionCode": "V618",
+    "id": 203900,
+    "station": "HKH",
+    "trackSectionCode": "264",
     "ranges": [
       {
-        "id": 186629,
+        "id": 186864,
         "startLocation": {
-          "track": "123",
-          "kilometres": 31,
-          "metres": 673
+          "track": "003",
+          "kilometres": 16,
+          "metres": 757
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 31,
-          "metres": 673
+          "track": "003",
+          "kilometres": 17,
+          "metres": 455
+        }
+      }
+    ]
+  },
+  {
+    "id": 203902,
+    "station": "HKI",
+    "trackSectionCode": "R260",
+    "ranges": [
+      {
+        "id": 186875,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 244
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 379
+        }
+      }
+    ]
+  },
+  {
+    "id": 203903,
+    "station": "HKI",
+    "trackSectionCode": "R4151",
+    "ranges": [
+      {
+        "id": 186879,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 60
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 266
+        }
+      }
+    ]
+  },
+  {
+    "id": 203926,
+    "station": "HKI",
+    "trackSectionCode": "002b",
+    "ranges": [
+      {
+        "id": 187042,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 544
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 632
+        }
+      }
+    ]
+  },
+  {
+    "id": 203927,
+    "station": "HKI",
+    "trackSectionCode": "005b",
+    "ranges": [
+      {
+        "id": 187048,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 601
+        }
+      }
+    ]
+  },
+  {
+    "id": 203928,
+    "station": "HKI",
+    "trackSectionCode": "006a",
+    "ranges": [
+      {
+        "id": 187049,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 190
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        }
+      }
+    ]
+  },
+  {
+    "id": 203929,
+    "station": "HKI",
+    "trackSectionCode": "007b",
+    "ranges": [
+      {
+        "id": 187052,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 632
+        }
+      }
+    ]
+  },
+  {
+    "id": 203930,
+    "station": "HKI",
+    "trackSectionCode": "008a",
+    "ranges": [
+      {
+        "id": 187053,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 190
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 0,
+          "metres": 396
+        }
+      }
+    ]
+  },
+  {
+    "id": 203931,
+    "station": "HKI",
+    "trackSectionCode": "017a",
+    "ranges": [
+      {
+        "id": 187072,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 300
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 456
+        }
+      }
+    ]
+  },
+  {
+    "id": 203932,
+    "station": "HKI",
+    "trackSectionCode": "018",
+    "ranges": [
+      {
+        "id": 187074,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 296
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 566
+        }
+      }
+    ]
+  },
+  {
+    "id": 203933,
+    "station": "HKI",
+    "trackSectionCode": "119",
+    "ranges": [
+      {
+        "id": 187084,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 655
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 0,
+          "metres": 900
+        }
+      }
+    ]
+  },
+  {
+    "id": 203934,
+    "station": "HKI",
+    "trackSectionCode": "229",
+    "ranges": [
+      {
+        "id": 187095,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 16
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 90
+        }
+      }
+    ]
+  },
+  {
+    "id": 203935,
+    "station": "HKI",
+    "trackSectionCode": "230",
+    "ranges": [
+      {
+        "id": 187096,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 27
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 144
+        }
+      }
+    ]
+  },
+  {
+    "id": 203936,
+    "station": "HKI",
+    "trackSectionCode": "281",
+    "ranges": [
+      {
+        "id": 187100,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 345
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 638
+        }
+      }
+    ]
+  },
+  {
+    "id": 203937,
+    "station": "HKI",
+    "trackSectionCode": "283",
+    "ranges": [
+      {
+        "id": 187102,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 540
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 668
+        }
+      }
+    ]
+  },
+  {
+    "id": 203938,
+    "station": "HKI",
+    "trackSectionCode": "321",
+    "ranges": [
+      {
+        "id": 187103,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 38
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 126
+        }
+      }
+    ]
+  },
+  {
+    "id": 203939,
+    "station": "HKI",
+    "trackSectionCode": "411",
+    "ranges": [
+      {
+        "id": 187106,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 1,
+          "metres": 638
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 84
+        }
+      }
+    ]
+  },
+  {
+    "id": 203940,
+    "station": "HKI",
+    "trackSectionCode": "419",
+    "ranges": [
+      {
+        "id": 187117,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 393
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 1,
+          "metres": 908
+        }
+      }
+    ]
+  },
+  {
+    "id": 203941,
+    "station": "HKI",
+    "trackSectionCode": "430",
+    "ranges": [
+      {
+        "id": 187124,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 450
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 796
         }
       }
     ]
@@ -2392,21 +6832,101 @@
     ]
   },
   {
-    "id": 203992,
-    "station": "HVK",
-    "trackSectionCode": "R287",
+    "id": 203977,
+    "station": "HPL",
+    "trackSectionCode": "262",
     "ranges": [
       {
-        "id": 187580,
+        "id": 187475,
         "startLocation": {
-          "track": "123",
-          "kilometres": 32,
-          "metres": 963
+          "track": "001",
+          "kilometres": 7,
+          "metres": 320
         },
         "endLocation": {
-          "track": "003",
-          "kilometres": 17,
-          "metres": 710
+          "track": "001",
+          "kilometres": 8,
+          "metres": 150
+        }
+      }
+    ]
+  },
+  {
+    "id": 203978,
+    "station": "HPL",
+    "trackSectionCode": "331",
+    "ranges": [
+      {
+        "id": 187484,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 770
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 11,
+          "metres": 18
+        }
+      }
+    ]
+  },
+  {
+    "id": 203979,
+    "station": "HPL",
+    "trackSectionCode": "353",
+    "ranges": [
+      {
+        "id": 187488,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 300
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 770
+        }
+      }
+    ]
+  },
+  {
+    "id": 203980,
+    "station": "HPL",
+    "trackSectionCode": "372",
+    "ranges": [
+      {
+        "id": 187491,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 583
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 300
+        }
+      }
+    ]
+  },
+  {
+    "id": 203981,
+    "station": "HPL",
+    "trackSectionCode": "374",
+    "ranges": [
+      {
+        "id": 187493,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 8,
+          "metres": 583
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 9,
+          "metres": 300
         }
       }
     ]
@@ -2472,6 +6992,86 @@
     ]
   },
   {
+    "id": 204337,
+    "station": "KÄP",
+    "trackSectionCode": "500",
+    "ranges": [
+      {
+        "id": 190328,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 657
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 6,
+          "metres": 120
+        }
+      }
+    ]
+  },
+  {
+    "id": 204338,
+    "station": "KÄP",
+    "trackSectionCode": "505",
+    "ranges": [
+      {
+        "id": 190333,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 728
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 865
+        }
+      }
+    ]
+  },
+  {
+    "id": 204339,
+    "station": "KÄP",
+    "trackSectionCode": "506",
+    "ranges": [
+      {
+        "id": 190334,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 684
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 865
+        }
+      }
+    ]
+  },
+  {
+    "id": 204340,
+    "station": "KÄP",
+    "trackSectionCode": "525",
+    "ranges": [
+      {
+        "id": 190336,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 5,
+          "metres": 942
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 6,
+          "metres": 275
+        }
+      }
+    ]
+  },
+  {
     "id": 204381,
     "station": "LNÄ",
     "trackSectionCode": "667",
@@ -2512,41 +7112,301 @@
     ]
   },
   {
-    "id": 204681,
-    "station": "RSM",
-    "trackSectionCode": "Sp517",
+    "id": 204497,
+    "station": "OLK",
+    "trackSectionCode": "R517",
     "ranges": [
       {
-        "id": 193115,
+        "id": 191561,
         "startLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 156
+          "track": "003",
+          "kilometres": 7,
+          "metres": 752
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 156
+          "track": "003",
+          "kilometres": 8,
+          "metres": 390
         }
       }
     ]
   },
   {
-    "id": 204682,
-    "station": "RSM",
-    "trackSectionCode": "V512",
+    "id": 204498,
+    "station": "OLK",
+    "trackSectionCode": "R523",
     "ranges": [
       {
-        "id": 193117,
+        "id": 191562,
         "startLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 300
+          "track": "003",
+          "kilometres": 6,
+          "metres": 270
         },
         "endLocation": {
-          "track": "123",
-          "kilometres": 20,
-          "metres": 300
+          "track": "003",
+          "kilometres": 6,
+          "metres": 761
+        }
+      }
+    ]
+  },
+  {
+    "id": 204503,
+    "station": "OLK",
+    "trackSectionCode": "582",
+    "ranges": [
+      {
+        "id": 191591,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 585
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 860
+        }
+      }
+    ]
+  },
+  {
+    "id": 204504,
+    "station": "OLK",
+    "trackSectionCode": "583",
+    "ranges": [
+      {
+        "id": 191592,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 585
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 8,
+          "metres": 860
+        }
+      }
+    ]
+  },
+  {
+    "id": 204541,
+    "station": "PLA",
+    "trackSectionCode": "081/271",
+    "ranges": [
+      {
+        "id": 191912,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 846
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 500
+        }
+      }
+    ]
+  },
+  {
+    "id": 204542,
+    "station": "PLA",
+    "trackSectionCode": "272",
+    "ranges": [
+      {
+        "id": 191920,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 500
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 14,
+          "metres": 995
+        }
+      }
+    ]
+  },
+  {
+    "id": 204600,
+    "station": "PSL",
+    "trackSectionCode": "R428/448",
+    "ranges": [
+      {
+        "id": 192411,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 2,
+          "metres": 780
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 128
+        }
+      }
+    ]
+  },
+  {
+    "id": 204601,
+    "station": "PSL",
+    "trackSectionCode": "R4621",
+    "ranges": [
+      {
+        "id": 192415,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 350
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 550
+        }
+      }
+    ]
+  },
+  {
+    "id": 204602,
+    "station": "PSL",
+    "trackSectionCode": "R463",
+    "ranges": [
+      {
+        "id": 192416,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 910
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 130
+        }
+      }
+    ]
+  },
+  {
+    "id": 204606,
+    "station": "PSL",
+    "trackSectionCode": "443",
+    "ranges": [
+      {
+        "id": 192464,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 153
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 602
+        }
+      }
+    ]
+  },
+  {
+    "id": 204607,
+    "station": "PSL",
+    "trackSectionCode": "445/635",
+    "ranges": [
+      {
+        "id": 192467,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 589
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 660
+        }
+      }
+    ]
+  },
+  {
+    "id": 204608,
+    "station": "PSL",
+    "trackSectionCode": "446",
+    "ranges": [
+      {
+        "id": 192468,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 145
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 560
+        }
+      }
+    ]
+  },
+  {
+    "id": 204609,
+    "station": "PSL",
+    "trackSectionCode": "448",
+    "ranges": [
+      {
+        "id": 192470,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 145
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 560
+        }
+      }
+    ]
+  },
+  {
+    "id": 204610,
+    "station": "PSL",
+    "trackSectionCode": "449",
+    "ranges": [
+      {
+        "id": 192471,
+        "startLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 145
+        },
+        "endLocation": {
+          "track": "001",
+          "kilometres": 3,
+          "metres": 560
+        }
+      }
+    ]
+  },
+  {
+    "id": 204611,
+    "station": "PSL",
+    "trackSectionCode": "460",
+    "ranges": [
+      {
+        "id": 192472,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 3,
+          "metres": 602
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 4,
+          "metres": 299
         }
       }
     ]
@@ -2612,6 +7472,46 @@
     ]
   },
   {
+    "id": 204802,
+    "station": "TKL",
+    "trackSectionCode": "244a",
+    "ranges": [
+      {
+        "id": 194198,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 16,
+          "metres": 630
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 16,
+          "metres": 831
+        }
+      }
+    ]
+  },
+  {
+    "id": 204847,
+    "station": "TNA",
+    "trackSectionCode": "062/082",
+    "ranges": [
+      {
+        "id": 194530,
+        "startLocation": {
+          "track": "003",
+          "kilometres": 12,
+          "metres": 693
+        },
+        "endLocation": {
+          "track": "003",
+          "kilometres": 13,
+          "metres": 160
+        }
+      }
+    ]
+  },
+  {
     "id": 204947,
     "station": "VEH",
     "trackSectionCode": "556",
@@ -2627,26 +7527,6 @@
           "track": "123",
           "kilometres": 16,
           "metres": 420
-        }
-      }
-    ]
-  },
-  {
-    "id": 204976,
-    "station": "VMS",
-    "trackSectionCode": "V614",
-    "ranges": [
-      {
-        "id": 195493,
-        "startLocation": {
-          "track": "123",
-          "kilometres": 26,
-          "metres": 17
-        },
-        "endLocation": {
-          "track": "123",
-          "kilometres": 26,
-          "metres": 17
         }
       }
     ]
