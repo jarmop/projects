@@ -4,6 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "geolib": "^2.0.24"
+    "axios": "^0.18.0",
+    "geolib": "^2.0.24",
+    "jsonfile": "^4.0.0"
   }
 }
