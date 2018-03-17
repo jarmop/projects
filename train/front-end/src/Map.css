@@ -1,0 +1,13 @@
+.map {
+    margin: 20px 0;
+    /*border: 1px solid black;*/
+    display: flex;
+}
+
+.section {
+    margin: 0 10px 5px 0;
+    border: 1px solid black;
+    /*width: 60px;*/
+    padding: 2px;
+    font-size: 12px;
+}

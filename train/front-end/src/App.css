@@ -1,19 +1,22 @@
-.track {
-    margin: 80px 20px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    border: 2px solid black;
-    width: 400px;
+.container {
+    margin: 10px;
 }
+/*.track {*/
+    /*margin: 80px 20px;*/
+    /*display: flex;*/
+    /*align-items: center;*/
+    /*position: relative;*/
+    /*border: 2px solid black;*/
+    /*width: 400px;*/
+/*}*/
 
-.train {
-    --diameter: 20px;
-    border: 1px solid black;
-    border-radius: 50%;
-    width: var(--diameter);
-    height: var(--diameter);
-    background-color: white;
-    position: absolute;
-    left: 40px;
-}
+/*.train {*/
+    /*--diameter: 20px;*/
+    /*border: 1px solid black;*/
+    /*border-radius: 50%;*/
+    /*width: var(--diameter);*/
+    /*height: var(--diameter);*/
+    /*background-color: white;*/
+    /*position: absolute;*/
+    /*left: 40px;*/
+/*}*/
