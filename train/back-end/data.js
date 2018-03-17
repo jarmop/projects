@@ -98,38 +98,13 @@ const filterKeharataSections = (sections) => {
   });
 };
 
-const filterSections = (sections) => {
-  console.log('filterSections');
+const cleanup = (sections) => {
+  console.log('cleanup');
   console.log('total sections: ' + sections.length);
   filteredSections = filterKeharataSections(sections);
-
-  // .filter(section => getSectionLength(section) > 0);
-
   filteredSections = removeDuplicates(filteredSections);
 
-  // let multiRangeSections = 0;
-  // for (section of filteredSections) {
-  //   if (section.ranges.length > 1) {
-  //     console.log(section.station + '-' + section.trackSectionCode);
-  //     multiRangeSections++;
-  //   }
-  // }
-  // let hashTable = {};
-  // for (section of filteredSections) {
-  //   hashTable[section.station] = 1;
-  // }
-
-  // 1 - 206 / 207
-  // 3 - 328 / 328
-  // 123 - 129 / 132
-  // console.log(multiRangeSections);
-  console.log(filteredSections.length);
-  // console.log(Object.keys(hashTable).length);
-  // console.log(Object.keys(hashTable));
-  // console.log(filteredSections);
-
   return filteredSections;
-
 };
 
 const fetchTrackSections = () => {
@@ -140,9 +115,18 @@ const fetchTrackSections = () => {
       });
 };
 
+const transformIntoMap = (sections) => {
+  let map = {};
+  for (section of sections) {
+    map[section.station + '-' + section.trackSectionCode] = section;
+  }
+  return map;
+};
+
 exports.initializeKeharata = () => {
   fetchTrackSections()
-      .then(sections => filterSections(sections))
+      .then(sections => cleanup(sections))
+      .then(sections => transformIntoMap(sections))
       .then(sections => jsonfile.writeFile('data/sections.json', sections,
           (error) => {
             if (error) {
