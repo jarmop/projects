@@ -4,7 +4,7 @@
 
 .control {
     position: fixed;
-    right: 0;
+    right: 20px;
     display: flex;
     flex-direction: column;
 }

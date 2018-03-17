@@ -26,7 +26,7 @@ class App extends Component {
       sections: [],
       occupied: [],
       log: [],
-      timeSpeedMs: 60000,
+      timeSpeedMs: 10000,
     };
   }
 
@@ -38,7 +38,7 @@ class App extends Component {
             &&
             getSectionStartLocation(getSection(sectionId)) > 0
             &&
-            getSectionEndLocation(getSection(sectionId)) < 1000
+            getSectionEndLocation(getSection(sectionId)) < 10000
         )
         .map(sectionId => {
           let section = getSection(sectionId);
@@ -70,20 +70,22 @@ class App extends Component {
     });
   }
 
-  goBack() {
+  goBack(speed) {
     let previousDate = this.state.date;
-    let newDate = new Date(previousDate.getTime() - this.state.timeSpeedMs);
-    let occupied = updateOccupiedReverse(this.state.log, this.state.occupied, previousDate, newDate);
+    let newDate = new Date(previousDate.getTime() - this.state.timeSpeedMs * speed);
+    let occupied = updateOccupiedReverse(
+        this.state.log, this.state.occupied, previousDate, newDate);
     this.setState({
       date: newDate,
       occupied: occupied,
     });
   }
 
-  goForward() {
+  goForward(speed) {
     let previousDate = this.state.date;
-    let newDate = new Date(previousDate.getTime() + this.state.timeSpeedMs);
-    let occupied = updateOccupied(this.state.log, this.state.occupied, previousDate, newDate);
+    let newDate = new Date(previousDate.getTime() + this.state.timeSpeedMs * speed);
+    let occupied = updateOccupied(
+        this.state.log, this.state.occupied, previousDate, newDate);
     this.setState({
       date: newDate,
       occupied: occupied,
@@ -91,7 +93,7 @@ class App extends Component {
   }
 
   render() {
-    let {sections, occupied} = this.state;
+    let {sections, occupied, date} = this.state;
     // let track = (
     //     <div className="track">
     //       <div className="train"></div>
@@ -101,8 +103,9 @@ class App extends Component {
     return (
         <div className="container">
           <Control
-            onUp={() => this.goBack()}
-            onDown={() => this.goForward()}
+              date={date}
+              onUp={(speed) => this.goBack(speed)}
+              onDown={(speed) => this.goForward(speed)}
           />
           <Map sections={sections} occupied={occupied}/>
           <Table sections={sections}/>
@@ -136,13 +139,20 @@ let Table = ({sections}) => (
     </table>
 );
 
-let Control = ({onUp, onDown}) => (
+let Control = ({onUp, onDown, date}) => (
     <div className="control">
-      <button className="control__button" onClick={onUp}>
-        <i className="fa fa-caret-up"></i>
+      <div>{formatDate(date)}</div>
+      <button className="control__button" onClick={() => onUp(10)}>
+        <i className="fa fa-angle-double-up"></i>
       </button>
-      <button className="control__button" onClick={onDown}>
-        <i className="fa fa-caret-down"></i>
+      <button className="control__button" onClick={() => onUp(1)}>
+        <i className="fa fa-angle-up"></i>
+      </button>
+      <button className="control__button" onClick={() => onDown(1)}>
+        <i className="fa fa-angle-down"></i>
+      </button>
+      <button className="control__button" onClick={() => onDown(10)}>
+        <i className="fa fa-angle-double-down"></i>
       </button>
     </div>
 );
