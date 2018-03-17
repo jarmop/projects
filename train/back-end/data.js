@@ -42,17 +42,6 @@ const keharataStationsTrack123 = [
   'LNÄ',
 ];
 
-// const getSectionLocationMetres = (section) => {
-//   return section.ranges[0].startLocation.kilometres * 1000 +
-//       section.ranges[0].startLocation.metres;
-// };
-//
-// const getSectionLength = (section) => {
-//   let {startLocation, endLocation} = section.ranges[0];
-//   return (endLocation.kilometres * 1000 + endLocation.metres) -
-//       (startLocation.kilometres * 1000 + startLocation.metres);
-// };
-
 const removeDuplicates = (sections) => {
   let hashTable = {};
   for (section of sections) {

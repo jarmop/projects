@@ -1,6 +1,9 @@
 const data = require('./data');
+const trainTracking = require('./train-tracking');
 
-data.initializeKeharata();
+// data.initializeKeharata();
+
+trainTracking.explore();
 
 
 // const geolib = require('geolib');
