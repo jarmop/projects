@@ -1,21 +1,8 @@
 import React, {Component} from 'react';
 import './Map.css';
 
-let Map = ({sections}) => {
-  // let min = null;
-  // let max = null;
-  // for (let section of sections) {
-  //   if (!min || section.startLocation < min) {
-  //     min = section.startLocation;
-  //   }
-  //   if (!max || section.endLocation > max) {
-  //     max = section.endLocation;
-  //   }
-  // }
-  // let totalLength = max - min;
-  // let ratio = 1/5;
-  // let relativeLength = totalLength * ratio;
-
+let Map = ({sections, occupied = ['HKI-118', 'HKI-117']}) => {
+  console.log(occupied);
   let columns = {};
   for (let section of sections) {
     if (!columns.hasOwnProperty(section.startLocation)) {
@@ -24,17 +11,24 @@ let Map = ({sections}) => {
     columns[section.startLocation].push(section);
   }
 
-  console.log(columns);
+  let columnIds = Object.keys(columns);
+  // let columnIds = Object.keys(columns).sort((a,b) => b - a);
 
   return (
       <div
           className="map"
           // style={{width: relativeLength}}
       >
-        {Object.keys(columns).map(columnId =>
-            <div key={columnId}>
+        {columnIds.map(columnId =>
+            <div key={columnId} className="column">
+              <div className="location">{columnId}</div>
               {columns[columnId].map(section =>
-                  <div key={section.id} className="section">{section.id}</div>,
+                  <div
+                      key={section.id}
+                      className={'section' + (occupied.includes(section.id) ? ' section--occupied' : '')}
+                  >
+                    {section.id}
+                    </div>,
               )}
             </div>
         )}

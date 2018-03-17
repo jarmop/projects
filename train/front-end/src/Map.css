@@ -2,12 +2,25 @@
     margin: 20px 0;
     /*border: 1px solid black;*/
     display: flex;
+    flex-direction: column;
 }
-
+.column {
+    display: flex;
+    flex-direction: row;
+}
 .section {
     margin: 0 10px 5px 0;
     border: 1px solid black;
-    /*width: 60px;*/
+    width: 80px;
+    padding: 2px;
+    font-size: 12px;
+}
+.section--occupied {
+    background-color: lawngreen;
+}
+.location {
+    margin: 0 10px 5px 0;
+    width: 40px;
     padding: 2px;
     font-size: 12px;
 }
