@@ -78,18 +78,18 @@ export const getLogStartTime = (log) => {
   return new Date((new Date(log[0].timestamp)).getTime() - 1000);
 };
 
-const prkl = (date) => {
-  return date.getHours()
-      + '-'
-      + addLeadingZero(date.getMinutes() + 1)
-      + '-'
-      + addLeadingZero(date.getSeconds());
-};
+// const formatReadableTime = (date) => {
+//   return date.getHours()
+//       + '-'
+//       + addLeadingZero(date.getMinutes() + 1)
+//       + '-'
+//       + addLeadingZero(date.getSeconds());
+// };
 
 export const updateOccupied = (log, occupied, previousDate, newDate) => {
   let date = new Date();
-  console.log(prkl(previousDate));
-  console.log(prkl(newDate));
+  // console.log(formatReadableTime(previousDate));
+  // console.log(formatReadableTime(newDate));
 
   let logPart = log
       .filter(entry => {
@@ -101,17 +101,48 @@ export const updateOccupied = (log, occupied, previousDate, newDate) => {
   let newOccupied = [...occupied];
   for (let entry of logPart) {
     if (entry.type == "OCCUPY") {
-      console.log('occupy', formatSectionId(entry.station, entry.trackSection));
+      // console.log('occupy', formatSectionId(entry.station, entry.trackSection));
       newOccupied.push(formatSectionId(entry.station, entry.trackSection))
     } else if (entry.type == "RELEASE") {
-      console.log('release', formatSectionId(entry.station, entry.trackSection));
+      // console.log('release', formatSectionId(entry.station, entry.trackSection));
       newOccupied = newOccupied.filter(id => {
         return id !== formatSectionId(entry.station, entry.trackSection);
       });
     }
   }
 
-  console.log(newOccupied);
+  // console.log(newOccupied);
+
+  return newOccupied;
+};
+
+export const updateOccupiedReverse = (log, occupied, previousDate, newDate) => {
+  let date = new Date();
+  // console.log(formatReadableTime(previousDate));
+  // console.log(formatReadableTime(newDate));
+
+  let logPart = log
+      .filter(entry => {
+        let entryTime = (new Date(entry.timestamp)).getTime();
+        return entryTime >= newDate.getTime() && entryTime <=
+            previousDate.getTime();
+      })
+      .sort((a,b) => b.id - a.id);
+
+  let newOccupied = [...occupied];
+  for (let entry of logPart) {
+    if (entry.type == "RELEASE") {
+      // console.log('occupy', formatSectionId(entry.station, entry.trackSection));
+      newOccupied.push(formatSectionId(entry.station, entry.trackSection))
+    } else if (entry.type == "OCCUPY") {
+      // console.log('release', formatSectionId(entry.station, entry.trackSection));
+      newOccupied = newOccupied.filter(id => {
+        return id !== formatSectionId(entry.station, entry.trackSection);
+      });
+    }
+  }
+
+  // console.log(newOccupied);
 
   return newOccupied;
 };

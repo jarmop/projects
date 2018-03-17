@@ -5,7 +5,7 @@ import {
   addLeadingZero, getSection, getSectionIds, getSectionLength,
   getSectionStartLocation,
   getSectionEndLocation, getSectionTrack, getTrainTrackingData, formatSectionId,
-  getLogStartTime, updateOccupied, getInitialOccupied,
+  getLogStartTime, updateOccupied, getInitialOccupied, updateOccupiedReverse,
 } from './service';
 import Map from './Map';
 
@@ -73,7 +73,7 @@ class App extends Component {
   goBack() {
     let previousDate = this.state.date;
     let newDate = new Date(previousDate.getTime() - this.state.timeSpeedMs);
-    let occupied = updateOccupied(this.state.log, this.state.occupied, previousDate, newDate);
+    let occupied = updateOccupiedReverse(this.state.log, this.state.occupied, previousDate, newDate);
     this.setState({
       date: newDate,
       occupied: occupied,
