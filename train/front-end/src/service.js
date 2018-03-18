@@ -154,6 +154,7 @@ export const getInitialOccupied = (log) => {
 
 export const getOccupied = (trainNumber) => {
   let date = new Date();
+  date.setHours(-2);
   // let trainNumber = 9174;
   // console.log(formatUrlDate(date));
 
