@@ -1,12 +1,23 @@
 import sections from './data/sections';
-// import log from './data/9172';
-import log from './data/8767';
+import stoppingSections from './data/stopping-sections';
+import log from './data/9172';
+// import log from './data/8767';
 
 // const TRAIN_URL = 'https://junatkartalla-cal-prod.herokuapp.com/trains/1520974201460';
 // const TRAIN_URL = 'https://rata.digitraffic.fi/api/v1/trains/latest/[TRAIN_NUMBER]';
 const URL_TRAIN_TRACKING = 'https://rata.digitraffic.fi/api/v1/train-tracking/[DATE]/[TRAIN_NUMBER]?version=1000';
 
+const LOG_ENTRY_TYPE_OCCUPY = 'OCCUPY';
+const LOG_ENTRY_TYPE_RELEASE = 'RELEASE';
+
 let sectionIds = Object.keys(sections);
+
+let mapSectionIdToStation = {};
+for (let station of Object.keys(stoppingSections)) {
+  for (let sectionId of stoppingSections[station]) {
+    mapSectionIdToStation[sectionId] = station;
+  }
+}
 
 /**
  * @param value
@@ -44,18 +55,6 @@ export const getSectionLength = (section) => {
   let {startLocation, endLocation} = section.ranges[0];
   return (endLocation.kilometres * 1000 + endLocation.metres) -
       (startLocation.kilometres * 1000 + startLocation.metres);
-};
-
-export const getTrain = () => {
-  let date = new Date();
-  let trainNumber = 9174;
-  console.log(formatUrlDate(date));
-
-  let url = URL_TRAIN_TRACKING
-      .replace(/\[DATE\]/, formatUrlDate(date))
-      .replace(/\[TRAIN_NUMBER\]/, trainNumber);
-
-  console.log(url);
 };
 
 export const getTrainTrackingData = () => {
@@ -151,4 +150,39 @@ export const getInitialOccupied = (log) => {
   // console.log(log.slice(0, 10));
   // return [formatSectionId(log[0].station, log[0].trackSection)];
   return [];
+};
+
+export const getOccupied = (trainNumber) => {
+  let date = new Date();
+  // let trainNumber = 9174;
+  // console.log(formatUrlDate(date));
+
+  let url = URL_TRAIN_TRACKING
+      .replace(/\[DATE\]/, formatUrlDate(date))
+      .replace(/\[TRAIN_NUMBER\]/, trainNumber);
+
+  let occupied = {
+    current: null,
+    next: null,
+    previous: null,
+  };
+  return fetch(url).then(response => response.json())
+      .then(log => {
+        let latestOccupyIndex = 0;
+        for (let i = 0; i < log.length; i++) {
+          let entry = log[i];
+          if (entry.type === LOG_ENTRY_TYPE_OCCUPY) {
+            let sectionId = formatSectionId(entry.station, entry.trackSection);
+            // console.log(sectionId);
+            occupied.next = entry.nextStation;
+            occupied.previous = entry.previousStation;
+            occupied.current = mapSectionIdToStation.hasOwnProperty(sectionId) ? mapSectionIdToStation[sectionId] : sectionId;
+
+            break;
+          }
+        }
+
+        return occupied;
+
+      });
 };

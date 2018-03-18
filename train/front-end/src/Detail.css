@@ -1,0 +1,15 @@
+.track {
+    display: flex;
+}
+
+.station {
+    margin: 5px;
+}
+
+.station--current {
+    color: green;
+}
+
+.track__direction {
+    margin: 5px;
+}

@@ -6,8 +6,10 @@ import {
   getSectionStartLocation,
   getSectionEndLocation, getSectionTrack, getTrainTrackingData, formatSectionId,
   getLogStartTime, updateOccupied, getInitialOccupied, updateOccupiedReverse,
+  getOccupied,
 } from './service';
 import Map from './Map';
+import Detail from './Detail';
 
 const formatDate = (timestamp) => {
   let date = new Date(timestamp);
@@ -35,42 +37,45 @@ class App extends Component {
       occupied: [],
       log: [],
       timeSpeedMs: 10000,
+      trainNumber: 9154,
     };
   }
 
   componentDidMount() {
-    console.log('wrthwrth');
-    let sections = getSectionIds()
-        .filter(sectionId =>
-            ['001', '123'].includes(getSectionTrack(getSection(sectionId)))
+    // let sections = getSectionIds()
+        // .filter(sectionId =>
+        //     ['001', '123'].includes(getSectionTrack(getSection(sectionId)))
             // ['003'].includes(getSectionTrack(getSection(sectionId)))
             // &&
             // getSectionStartLocation(getSection(sectionId)) > 0
             // &&
             // getSectionEndLocation(getSection(sectionId)) < 20000
-        )
-        .map(sectionId => ({
-            id: sectionId,
-            ...parseUsefulSectionData(getSection(sectionId)
-        )}));
+        // )
+        // .map(sectionId => ({
+        //     id: sectionId,
+        //     ...parseUsefulSectionData(getSection(sectionId)
+        // )}));
         // .sort((sectionA, sectionB) =>
         //     sectionB.startLocation - sectionA.startLocation
         // );
 
+    // let sections = [];
+
     // console.log(sections);
 
-    let log = getTrainTrackingData().sort((a, b) => a.id - b.id);
+    // let log = getTrainTrackingData().sort((a, b) => a.id - b.id);
 
     // console.log(log[0]);
 
-    this.setState({
-      sections: sections,
-      log: log,
-      // logPointer: 0,
-      date: getLogStartTime(log),
-      // date: new Date(0),
-      occupied: getInitialOccupied(log),
-    });
+    // this.setState({
+    //   sections: sections,
+    //   log: log,
+    //   // logPointer: 0,
+    //   date: getLogStartTime(log),
+    //   // date: new Date(0),
+    //   // occupied: getInitialOccupied(log),
+    //   occupied: getOccupied(this.state.trainNumber),
+    // });
   }
 
   goBack(speed) {
@@ -105,12 +110,13 @@ class App extends Component {
 
     return (
         <div className="container">
-          <Control
-              date={date}
-              onUp={(speed) => this.goBack(speed)}
-              onDown={(speed) => this.goForward(speed)}
-          />
-          <Map sections={sections} occupied={occupied}/>
+          {/*<Control*/}
+              {/*date={date}*/}
+              {/*onUp={(speed) => this.goBack(speed)}*/}
+              {/*onDown={(speed) => this.goForward(speed)}*/}
+          {/*/>*/}
+          <Detail/>
+          {/*<Map sections={sections} occupied={occupied}/>*/}
           {/*<Table sections={sections}/>*/}
         </div>
     );
