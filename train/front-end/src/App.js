@@ -18,6 +18,14 @@ const formatDate = (timestamp) => {
       + addLeadingZero(date.getSeconds());
 };
 
+const parseUsefulSectionData = (section) => {
+  return {
+    startLocation: getSectionStartLocation(section),
+    endLocation: getSectionEndLocation(section),
+    length: getSectionLength(section),
+  }
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -35,24 +43,19 @@ class App extends Component {
     let sections = getSectionIds()
         .filter(sectionId =>
             ['001', '123'].includes(getSectionTrack(getSection(sectionId)))
-            &&
-            getSectionStartLocation(getSection(sectionId)) > 0
-            &&
-            getSectionEndLocation(getSection(sectionId)) < 10000
+            // ['003'].includes(getSectionTrack(getSection(sectionId)))
+            // &&
+            // getSectionStartLocation(getSection(sectionId)) > 0
+            // &&
+            // getSectionEndLocation(getSection(sectionId)) < 20000
         )
-        .map(sectionId => {
-          let section = getSection(sectionId);
-          // console.log(section);
-          return {
+        .map(sectionId => ({
             id: sectionId,
-            startLocation: getSectionStartLocation(section),
-            endLocation: getSectionEndLocation(section),
-            length: getSectionLength(section),
-          };
-        })
-        .sort((sectionA, sectionB) =>
-            sectionB.startLocation - sectionA.startLocation
-        );
+            ...parseUsefulSectionData(getSection(sectionId)
+        )}));
+        // .sort((sectionA, sectionB) =>
+        //     sectionB.startLocation - sectionA.startLocation
+        // );
 
     // console.log(sections);
 
@@ -108,7 +111,7 @@ class App extends Component {
               onDown={(speed) => this.goForward(speed)}
           />
           <Map sections={sections} occupied={occupied}/>
-          <Table sections={sections}/>
+          {/*<Table sections={sections}/>*/}
         </div>
     );
   }
@@ -116,28 +119,28 @@ class App extends Component {
 
 export default App;
 
-let Table = ({sections}) => (
-    <table border="1" style={{borderCollapse: 'collapse'}}>
-      <thead>
-      <tr>
-        <th>id</th>
-        <th>start</th>
-        <th>end</th>
-        <th>length</th>
-      </tr>
-      </thead>
-      <tbody>
-      {sections.map(section =>
-          <tr key={section.id}>
-            <td>{section.id}</td>
-            <td>{section.startLocation}</td>
-            <td>{section.endLocation}</td>
-            <td>{section.length}</td>
-          </tr>
-      )}
-      </tbody>
-    </table>
-);
+// let Table = ({sections}) => (
+//     <table border="1" style={{borderCollapse: 'collapse'}}>
+//       <thead>
+//       <tr>
+//         <th>id</th>
+//         <th>start</th>
+//         <th>end</th>
+//         <th>length</th>
+//       </tr>
+//       </thead>
+//       <tbody>
+//       {sections.map(section =>
+//           <tr key={section.id}>
+//             <td>{section.id}</td>
+//             <td>{section.startLocation}</td>
+//             <td>{section.endLocation}</td>
+//             <td>{section.length}</td>
+//           </tr>
+//       )}
+//       </tbody>
+//     </table>
+// );
 
 let Control = ({onUp, onDown, date}) => (
     <div className="control">
