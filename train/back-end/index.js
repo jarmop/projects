@@ -2,8 +2,9 @@ const data = require('./data');
 const trainTracking = require('./train-tracking');
 
 // data.initializeKeharata();
-
-trainTracking.explore();
+data.initializeKeharataStoppingSections();
+//
+// trainTracking.explore();
 
 
 // const geolib = require('geolib');

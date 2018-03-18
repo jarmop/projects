@@ -172,13 +172,78 @@ exports.initializeKeharata = () => {
       ));
 };
 
-exports.getKeharataTrackSections = () => {
-  return new Promise((resolve, reject) => {
-    jsonfile.readFile(SECTIONS_FILENAME, (error, data) => {
-      if (error) {
-        reject(error);
+exports.initializeKeharataStoppingSections = () => {
+  let trains = [8767, 8768, 8769, 9172, 9173, 9174];
+  // let trains = [8767];
+  // let trains = [9172];
+  let topDurations = {};
+  for (let train of trains) {
+    let log = jsonfile.readFileSync('data/' + train + '.json');
+    let wtf = [];
+    let occupyDurations = {};
+    for (entry of log) {
+      let sectionId = formatSectionId(entry.station, entry.trackSection);
+      let occupyDuration = {
+        station: entry.station,
+      };
+      if (occupyDurations.hasOwnProperty(sectionId)) {
+        occupyDuration = occupyDurations[sectionId];
       }
-      resolve(data);
-    });
-  });
+
+      if (entry.type === 'OCCUPY') {
+        if (occupyDuration.hasOwnProperty('occupyTime')) {
+          wtf.push(entry);
+        }
+        // occupyTimes[sectionId] = new Date(entry.timestamp).getTime()
+        occupyDuration.occupyTime = Math.floor(new Date(entry.timestamp).getTime() / 1000);
+      } else if (entry.type === 'RELEASE') {
+        if (occupyDuration.hasOwnProperty('releaseTime')) {
+          wtf.push(entry);
+        }
+        occupyDuration.releaseTime = Math.floor(new Date(entry.timestamp).getTime() / 1000);
+      }
+
+      occupyDurations[sectionId] = occupyDuration;
+
+    }
+
+    console.log(wtf);
+    // console.log(occupyDurations);
+
+    let durations = {};
+    for (sectionId of Object.keys(occupyDurations)) {
+      let data = occupyDurations[sectionId];
+      if (!durations.hasOwnProperty(data.station)) {
+        durations[data.station] = [];
+      }
+      let duration = data.releaseTime - data.occupyTime;
+      durations[data.station].push({
+        sectionId: sectionId,
+        duration: duration,
+      });
+    }
+
+    for (station of Object.keys(durations)) {
+      durations[station] = durations[station].sort((a,b) => b.duration - a.duration);
+    }
+    // console.log(durations);
+
+    for (station of Object.keys(durations)) {
+      let topDuration = durations[station][0].sectionId;
+      if (!topDurations.hasOwnProperty(station)) {
+        topDurations[station] = [];
+      }
+
+      if (!topDurations[station].includes(topDuration)) {
+        topDurations[station].push(topDuration);
+      }
+    }
+
+    // console.log(topDurations);
+  }
+
+  console.log(topDurations);
+
+  jsonfile.writeFileSync('data/stopping-sections.json', topDurations);
+
 };
