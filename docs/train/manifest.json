@@ -1,6 +1,6 @@
 {
-  "short_name": "NHL stats",
-  "name": "NHL player stats from the latest game",
+  "short_name": "Train",
+  "name": "A train location visualizer",
   "icons": [
     {
       "src": "favicon.ico",
