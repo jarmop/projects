@@ -12,7 +12,7 @@ class Detail extends Component {
         next: null,
         previous: null,
       },
-      trainNumber: 9176,
+      trainNumber: (new URL(window.location.href)).pathname.split('/').slice(-1).pop(),
     };
   }
 
@@ -21,7 +21,7 @@ class Detail extends Component {
       this.updateLocation();
 
       this.poll();
-    }, 10000);
+    }, 5000);
   }
 
   componentDidMount() {
@@ -36,14 +36,17 @@ class Detail extends Component {
           this.setState({
             occupied: occupied,
           });
+        })
+        .catch(message => {
+          // console.log(message)
         });
   }
 
-  updateTrain() {
-    this.setState({
-      trainNumber: this.domObject.value
-    }, () => this.updateLocation());
-  }
+  // updateTrain() {
+  //   this.setState({
+  //     trainNumber: this.domObject.value
+  //   }, () => this.updateLocation());
+  // }
 
   render() {
     let {occupied, trainNumber} = this.state;
@@ -51,16 +54,16 @@ class Detail extends Component {
 
     return (
         <div className="detail">
-          <div className="detail__train-input">
-            <input
-                type="text"
-                ref={domObject => this.domObject = domObject}
-            />
-            <button onClick={event => this.updateTrain()}>
-              Hae
-            </button>
-            {trainNumber}
-          </div>
+          {/*<div className="detail__train-input">*/}
+            {/*<input*/}
+                {/*type="text"*/}
+                {/*ref={domObject => this.domObject = domObject}*/}
+            {/*/>*/}
+            {/*<button onClick={event => this.updateTrain()}>*/}
+              {/*Hae*/}
+            {/*</button>*/}
+            {/*{trainNumber}*/}
+          {/*</div>*/}
 
           <div className="track">
             <div className="station">

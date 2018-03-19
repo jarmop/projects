@@ -5,7 +5,7 @@ import log from './data/9172';
 
 // const TRAIN_URL = 'https://junatkartalla-cal-prod.herokuapp.com/trains/1520974201460';
 // const TRAIN_URL = 'https://rata.digitraffic.fi/api/v1/trains/latest/[TRAIN_NUMBER]';
-const URL_TRAIN_TRACKING = 'https://rata.digitraffic.fi/api/v1/train-tracking/[DATE]/[TRAIN_NUMBER]?version=1000';
+const URL_TRAIN_TRACKING = 'https://rata.digitraffic.fi/api/v1/train-tracking/[DATE]/[TRAIN_NUMBER]?version=[VERSION]';
 
 const LOG_ENTRY_TYPE_OCCUPY = 'OCCUPY';
 const LOG_ENTRY_TYPE_RELEASE = 'RELEASE';
@@ -18,6 +18,8 @@ for (let station of Object.keys(stoppingSections)) {
     mapSectionIdToStation[sectionId] = station;
   }
 }
+
+let trainTrackingVersions = {};
 
 /**
  * @param value
@@ -99,10 +101,10 @@ export const updateOccupied = (log, occupied, previousDate, newDate) => {
 
   let newOccupied = [...occupied];
   for (let entry of logPart) {
-    if (entry.type == "OCCUPY") {
+    if (entry.type == 'OCCUPY') {
       // console.log('occupy', formatSectionId(entry.station, entry.trackSection));
-      newOccupied.push(formatSectionId(entry.station, entry.trackSection))
-    } else if (entry.type == "RELEASE") {
+      newOccupied.push(formatSectionId(entry.station, entry.trackSection));
+    } else if (entry.type == 'RELEASE') {
       // console.log('release', formatSectionId(entry.station, entry.trackSection));
       newOccupied = newOccupied.filter(id => {
         return id !== formatSectionId(entry.station, entry.trackSection);
@@ -126,14 +128,14 @@ export const updateOccupiedReverse = (log, occupied, previousDate, newDate) => {
         return entryTime >= newDate.getTime() && entryTime <=
             previousDate.getTime();
       })
-      .sort((a,b) => b.id - a.id);
+      .sort((a, b) => b.id - a.id);
 
   let newOccupied = [...occupied];
   for (let entry of logPart) {
-    if (entry.type == "RELEASE") {
+    if (entry.type == 'RELEASE') {
       // console.log('occupy', formatSectionId(entry.station, entry.trackSection));
-      newOccupied.push(formatSectionId(entry.station, entry.trackSection))
-    } else if (entry.type == "OCCUPY") {
+      newOccupied.push(formatSectionId(entry.station, entry.trackSection));
+    } else if (entry.type == 'OCCUPY') {
       // console.log('release', formatSectionId(entry.station, entry.trackSection));
       newOccupied = newOccupied.filter(id => {
         return id !== formatSectionId(entry.station, entry.trackSection);
@@ -160,30 +162,51 @@ export const getOccupied = (trainNumber) => {
 
   let url = URL_TRAIN_TRACKING
       .replace(/\[DATE\]/, formatUrlDate(date))
-      .replace(/\[TRAIN_NUMBER\]/, trainNumber);
+      .replace(/\[TRAIN_NUMBER\]/, trainNumber)
+      .replace(
+          /\[VERSION\]/,
+          trainTrackingVersions.hasOwnProperty(trainNumber)
+              ? trainTrackingVersions[trainNumber]
+              : 1000
+      );
+
+  // console.log(trainTrackingVersions);
 
   let occupied = {
     current: null,
     next: null,
     previous: null,
   };
-  return fetch(url).then(response => response.json())
-      .then(log => {
-        let latestOccupyIndex = 0;
-        for (let i = 0; i < log.length; i++) {
-          let entry = log[i];
-          if (entry.type === LOG_ENTRY_TYPE_OCCUPY) {
-            let sectionId = formatSectionId(entry.station, entry.trackSection);
-            // console.log(sectionId);
-            occupied.next = entry.nextStation;
-            occupied.previous = entry.previousStation;
-            occupied.current = mapSectionIdToStation.hasOwnProperty(sectionId) ? mapSectionIdToStation[sectionId] : sectionId;
+  return new Promise((resolve, reject) => {
+    fetch(url).then(response => response.json())
+        .then(log => {
+          let occupiedUpdated = false;
+          for (let i = 0; i < log.length; i++) {
+            let entry = log[i];
+            if (entry.type === LOG_ENTRY_TYPE_OCCUPY) {
+              let sectionId = formatSectionId(
+                  entry.station, entry.trackSection
+              );
+              // console.log(sectionId);
+              occupied.next = entry.nextStation;
+              occupied.previous = entry.previousStation;
+              occupied.current = mapSectionIdToStation.hasOwnProperty(sectionId)
+                  ? mapSectionIdToStation[sectionId]
+                  : sectionId;
 
-            break;
+              trainTrackingVersions[trainNumber] = entry.version;
+              occupiedUpdated = true;
+
+              break;
+            }
           }
-        }
 
-        return occupied;
+          if (occupiedUpdated) {
+            resolve(occupied);
+          } else {
+            reject('No new occupy entries.');
+          }
 
-      });
+        });
+  });
 };
