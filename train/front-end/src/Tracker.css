@@ -5,6 +5,7 @@
 .tracker-map {
     border: 1px solid black;
     position: relative;
+    overflow: hidden;
 }
 
 .tracker-map__train {
@@ -12,7 +13,7 @@
     height: 10px;
     border-radius: 50%;
     border: 1px solid black;
-    background-color: white;
+    background-color: green;
     position: absolute;
 }
 
@@ -20,6 +21,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: black;
+    border: 1px solid black;
+    background-color: red;
     position: absolute;
 }

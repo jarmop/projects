@@ -2,25 +2,26 @@ import React, {Component} from 'react';
 import * as service from './TrackerService';
 import './Tracker.css';
 
-let minLon = 24.80;
-let maxLon = 25.10;
-let minLat = 60.15;
-let maxLat = 60.35;
+let minLon = 24.84;
+let maxLon = 25.09;
+let minLat = 60.16;
+let maxLat = 60.33;
 
-let ratio = 3000;
+let latRatio = 4000;
+let lonRatio = 2300;
 
-let width = (maxLon - minLon) * ratio;
-let height = (maxLat - minLat) * ratio;
+let width = (maxLon - minLon) * lonRatio;
+let height = (maxLat - minLat) * latRatio;
 
 // console.log(width);
 // console.log(height);
 
-let mapLatToMap = (lat) => {
-  return Math.floor((lat - minLat) * ratio);
+let mapLonToMap = (lon) => {
+  return Math.floor((lon - minLon) * lonRatio);
 };
 
-let mapLonToMap = (lon) => {
-  return Math.floor((lon - minLon) * ratio);
+let mapLatToMap = (lat) => {
+  return Math.floor((lat - minLat) * latRatio);
 };
 
 class Tracker extends Component {
