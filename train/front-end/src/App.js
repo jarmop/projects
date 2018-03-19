@@ -10,6 +10,7 @@ import {
 } from './service';
 import Map from './Map';
 import Detail from './Detail';
+import Tracker from './Tracker';
 
 const formatDate = (timestamp) => {
   let date = new Date(timestamp);
@@ -116,6 +117,7 @@ class App extends Component {
               {/*onDown={(speed) => this.goForward(speed)}*/}
           {/*/>*/}
           <Detail/>
+          <Tracker/>
           {/*<Map sections={sections} occupied={occupied}/>*/}
           {/*<Table sections={sections}/>*/}
         </div>

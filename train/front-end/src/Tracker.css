@@ -1,0 +1,25 @@
+.tracker {
+    margin: 10px;
+}
+
+.tracker-map {
+    border: 1px solid black;
+    position: relative;
+}
+
+.tracker-map__train {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid black;
+    background-color: white;
+    position: absolute;
+}
+
+.tracker-map__station {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: black;
+    position: absolute;
+}
