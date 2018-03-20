@@ -13,8 +13,15 @@
     height: 10px;
     border-radius: 50%;
     border: 1px solid black;
-    background-color: green;
     position: absolute;
+}
+
+.tracker-map__train--1 {
+    background-color: green;
+}
+
+.tracker-map__train--2 {
+    background-color: blue;
 }
 
 .tracker-map__station {
