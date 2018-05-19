@@ -1,0 +1,12 @@
+{
+  "name": "n-puzzle",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "browser-sync --server --files '*'"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.24.4"
+  }
+}
