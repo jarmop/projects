@@ -6,9 +6,15 @@
 }
 
 .block {
-    background-color: green;
+    background-color: grey;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 30px;
+    cursor: pointer;
+    color: white;
+}
+
+.block:active {
+    background-color: silver;
 }
