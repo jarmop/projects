@@ -5,6 +5,9 @@
     <meta charset='utf-8'/>
 </head>
 <body>
+
+<div id="root"></div>
+
 <p>Google Sheets API Quickstart</p>
 
 <!--Add buttons to initiate auth sequence and sign out-->
@@ -16,6 +19,7 @@
 <script type="text/javascript">
   // Client ID and API key from the Developer Console
   // https://console.cloud.google.com/apis/credentials?project=feisty-wall-200409
+  // TODO ask for the CLIENT_ID in the UI and store value in localStorage
   var CLIENT_ID = '';
   // var API_KEY = '';
 
@@ -125,9 +129,9 @@
 
 </script>
 <script
-        async defer src="https://apis.google.com/js/api.js"
+        src="https://apis.google.com/js/api.js"
         onload="this.onload=function(){};handleClientLoad()"
         onreadystatechange="if (this.readyState === 'complete') this.onload()"
-/>
+></script>
 </body>
 </html>
