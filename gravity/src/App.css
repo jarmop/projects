@@ -1,0 +1,8 @@
+.app {
+  display: grid;
+  grid-template-columns: min-content auto;
+}
+
+.canvas {
+  border: 1px solid black;
+}
