@@ -1,23 +1,36 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './App.css';
 
-// Pixels
-const CANVAS_WIDTH = 200;
-const CANVAS_HEIGHT = 300;
+const CANVAS_WIDTH_PX = 400;
 
 // Meters
+const CANVAS_WIDTH = 20;
+const CANVAS_HEIGHT = 30;
 const OBJECT_RADIUS = 1;
 const OBJECT_ORIGINAL_HEIGHT = 20;
 
-const PIXELS_PER_METER = 10;
+const PIXELS_PER_METER = CANVAS_WIDTH_PX / CANVAS_WIDTH;
 const FPS = 100;
 const G = 9.81;
 
+const metersToPixels = (meters) => meters * PIXELS_PER_METER;
+
+const drawScreen = (canvas, objectHeight, objectRadius) => {
+  objectHeight = metersToPixels(objectHeight);
+  objectRadius = metersToPixels(objectRadius);
+  const c = canvas.getContext('2d');
+  c.clearRect(0, 0, canvas.width, canvas.height);
+  c.beginPath();
+  c.arc(canvas.width / 2, canvas.height - objectHeight - objectRadius, objectRadius, 0, Math.PI * 2);
+  c.fill();
+};
+
 function App() {
-  const [state, setState] = useState({
+  const initialState = {
     height: OBJECT_ORIGINAL_HEIGHT,
     time: 0,
-  });
+  };
+  const [state, setState] = useState(initialState);
   const [timeIsRunning, setTimeIsRunning] = useState(false);
   const tick = useCallback(() => {
     const timeIncrement = 1000 / FPS;
@@ -33,13 +46,8 @@ function App() {
   }, [state.time]);
 
   useEffect(() => {
-    const canvas = document.getElementById('canvas');
-    const c = canvas.getContext('2d');
+    drawScreen(document.getElementById('canvas'), state.height, OBJECT_RADIUS);
 
-    c.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    c.beginPath();
-    c.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT - (state.height + OBJECT_RADIUS) * PIXELS_PER_METER, OBJECT_RADIUS * PIXELS_PER_METER, 0, Math.PI * 2);
-    c.fill();
     if (timeIsRunning) {
       if (state.height === 0) {
         setTimeIsRunning(false);
@@ -49,14 +57,22 @@ function App() {
     }
   }, [state.height, timeIsRunning, tick]);
 
+  const reset = () => {
+    setState(initialState)
+  };
 
   return (
       <div className="app">
-        <canvas id="canvas" className="canvas" width={CANVAS_WIDTH} height={CANVAS_HEIGHT}/>
+        <canvas id="canvas" className="canvas" width={metersToPixels(CANVAS_WIDTH)} height={metersToPixels(CANVAS_HEIGHT)}/>
         <div>
-          <button onClick={() => setTimeIsRunning(!timeIsRunning)}>{timeIsRunning ? 'Stop' : 'Drop'}</button>
+          {state.height === 0
+              ?
+              <button onClick={reset}>Reset</button>
+              :
+              <button onClick={() => setTimeIsRunning(!timeIsRunning)}>{timeIsRunning ? 'Stop' : 'Drop'}</button>
+          }
           <div>
-            Height: {state.height} m
+            Height: {state.height.toFixed(2)} m
           </div>
         </div>
       </div>
