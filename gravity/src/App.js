@@ -7,6 +7,7 @@ const OBJECT_RADIUS = 10;
 
 function App() {
   const [y, setY] = useState(100);
+  const [timeIsRunning, setTimeIsRunning] = useState(false);
   useEffect(() => {
     const canvas = document.getElementById('canvas');
     const c = canvas.getContext('2d');
@@ -15,13 +16,23 @@ function App() {
     c.beginPath();
     c.arc(CANVAS_WIDTH / 2, y, OBJECT_RADIUS, 0, Math.PI*2);
     c.fill();
+    if (timeIsRunning) {
+      tick();
+    }
   });
+
+  const tick = () => {
+    console.log('tick');
+    setTimeout(() => {
+      setY(Math.min(y + 10, CANVAS_HEIGHT - OBJECT_RADIUS));
+    }, 1000);
+  };
 
   return (
       <div className="app">
         <canvas id="canvas" className="canvas" width={CANVAS_WIDTH} height={CANVAS_HEIGHT}/>
         <div>
-          <button onClick={() => setY(Math.min(y + 10, CANVAS_HEIGHT - OBJECT_RADIUS))}>Move</button>
+          <button onClick={() => setTimeIsRunning(!timeIsRunning)}>{timeIsRunning ? 'Stop' : 'Drop'}</button>
           <div>
             y: {y}
           </div>
