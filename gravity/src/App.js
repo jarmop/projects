@@ -4,18 +4,21 @@ import './App.css';
 const CANVAS_WIDTH_PX = 400;
 
 // Meters
-const CANVAS_WIDTH = 20;
-const CANVAS_HEIGHT = 30;
-const OBJECT_ORIGINAL_HEIGHT = 20;
-const OBJECT_RADIUS = 1;
+const CANVAS_WIDTH = 2;
+const CANVAS_HEIGHT = 3;
+const OBJECT_ORIGINAL_HEIGHT = 1.5;
+const OBJECT_RADIUS = 0.1;
 
-const OBJECT_MASS = 10;
+const OBJECT_MASS = 1;
 // const OBJECT_ORIGINAL_HEIGHT = 0;
-// const BUMP_FORCE = 1000;
+// const BUMP_FORCE = 10000;
 
 const PIXELS_PER_METER = CANVAS_WIDTH_PX / CANVAS_WIDTH;
 const FPS = 100;
 const G = 9.81;
+
+// 1/6 OF KINETIC ENERGY IS CONVERTED INTO HEAT
+const EFFICIENCY = 5/6;
 
 const metersToPixels = (meters) => meters * PIXELS_PER_METER;
 
@@ -38,7 +41,7 @@ function App() {
     height: OBJECT_ORIGINAL_HEIGHT,
     time: 0,
     startSpeed: 0,
-    // startHeight: OBJECT_ORIGINAL_HEIGHT,
+    startHeight: OBJECT_ORIGINAL_HEIGHT,
   };
   const [state, setState] = useState(initialState);
   const [timeIsRunning, setTimeIsRunning] = useState(false);
@@ -46,20 +49,25 @@ function App() {
     const timeIncrement = 1000 / FPS;
     setTimeout(() => {
       const newTime = state.time + timeIncrement / 1000;
-      console.log(state.startSpeed);
       const heightChange = state.startSpeed * newTime + distance(-G, newTime);
-      const currentSpeed = speed(G, newTime);
+      const currentSpeed = state.startSpeed + speed(-G, newTime);
+      console.log(state.startSpeed);
       console.log('time: ' + newTime);
       console.log('heightChange: ' + heightChange);
       console.log('currentSpeed: ' + currentSpeed);
       console.log('kineticEnergy: ' + kineticEnergy(OBJECT_MASS, currentSpeed));
-      const newHeight = Math.max(OBJECT_ORIGINAL_HEIGHT + heightChange, 0);
-      setState({
+      const newHeight = Math.max(state.startHeight + heightChange, 0);
+
+      const newState = {
+        ...state,
         height: newHeight,
         time: newHeight === 0 ? 0 : newTime,
-        startSpeed: newHeight === 0 ? currentSpeed : 0,
-        // startHeight: newHeight === 0 ? 0 : state.startHeight,
-      });
+        startSpeed: newHeight === 0 ? EFFICIENCY*-currentSpeed : state.startSpeed,
+        startHeight: newHeight === 0 ? 0 : state.startHeight,
+      };
+      console.log(newState);
+      console.log('********');
+      setState(newState);
     }, timeIncrement);
   }, [state]);
 
@@ -67,11 +75,11 @@ function App() {
     drawScreen(document.getElementById('canvas'), state.height, OBJECT_RADIUS);
 
     if (timeIsRunning) {
-      if (state.height === 0) {
-        setTimeIsRunning(false);
-      } else {
+      // if (state.height === 0) {
+      //   setTimeIsRunning(false);
+      // } else {
         tick();
-      }
+      // }
     }
   }, [state.height, timeIsRunning, tick]);
 
@@ -83,12 +91,14 @@ function App() {
       <div className="app">
         <canvas id="canvas" className="canvas" width={metersToPixels(CANVAS_WIDTH)} height={metersToPixels(CANVAS_HEIGHT)}/>
         <div>
-          {state.height === 0
-              ?
-              <button onClick={reset}>Reset</button>
-              :
-              <button onClick={() => setTimeIsRunning(!timeIsRunning)}>{timeIsRunning ? 'Stop' : 'Drop'}</button>
-          }
+          {/*{state.height === 0*/}
+          {/*    ?*/}
+          {/*    <button onClick={reset}>Reset</button>*/}
+          {/*    :*/}
+          {/*    <button onClick={() => setTimeIsRunning(!timeIsRunning)}>{timeIsRunning ? 'Stop' : 'Play'}</button>*/}
+          {/*}*/}
+          <button onClick={() => setTimeIsRunning(!timeIsRunning)}>{timeIsRunning ? 'Stop' : 'Play'}</button>
+
           <div>
             Height: {state.height.toFixed(2)} m
           </div>
