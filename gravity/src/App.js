@@ -6,8 +6,12 @@ const CANVAS_WIDTH_PX = 400;
 // Meters
 const CANVAS_WIDTH = 20;
 const CANVAS_HEIGHT = 30;
-const OBJECT_RADIUS = 1;
 const OBJECT_ORIGINAL_HEIGHT = 20;
+const OBJECT_RADIUS = 1;
+
+const OBJECT_MASS = 10;
+// const OBJECT_ORIGINAL_HEIGHT = 0;
+// const BUMP_FORCE = 1000;
 
 const PIXELS_PER_METER = CANVAS_WIDTH_PX / CANVAS_WIDTH;
 const FPS = 100;
@@ -25,10 +29,16 @@ const drawScreen = (canvas, objectHeight, objectRadius) => {
   c.fill();
 };
 
+const kineticEnergy = (m, v) => m * Math.pow(v, 2) / 2;
+const speed = (a, t) => a * t;
+const distance = (a, t) => a * Math.pow(t, 2) / 2;
+
 function App() {
   const initialState = {
     height: OBJECT_ORIGINAL_HEIGHT,
     time: 0,
+    startSpeed: 0,
+    // startHeight: OBJECT_ORIGINAL_HEIGHT,
   };
   const [state, setState] = useState(initialState);
   const [timeIsRunning, setTimeIsRunning] = useState(false);
@@ -36,14 +46,22 @@ function App() {
     const timeIncrement = 1000 / FPS;
     setTimeout(() => {
       const newTime = state.time + timeIncrement / 1000;
-      const d = G * Math.pow(newTime, 2) / 2;
-      console.log('t: ' + newTime + ', d: ' + d);
+      console.log(state.startSpeed);
+      const heightChange = state.startSpeed * newTime + distance(-G, newTime);
+      const currentSpeed = speed(G, newTime);
+      console.log('time: ' + newTime);
+      console.log('heightChange: ' + heightChange);
+      console.log('currentSpeed: ' + currentSpeed);
+      console.log('kineticEnergy: ' + kineticEnergy(OBJECT_MASS, currentSpeed));
+      const newHeight = Math.max(OBJECT_ORIGINAL_HEIGHT + heightChange, 0);
       setState({
-        height: Math.max(OBJECT_ORIGINAL_HEIGHT - d, 0),
-        time: newTime,
+        height: newHeight,
+        time: newHeight === 0 ? 0 : newTime,
+        startSpeed: newHeight === 0 ? currentSpeed : 0,
+        // startHeight: newHeight === 0 ? 0 : state.startHeight,
       });
     }, timeIncrement);
-  }, [state.time]);
+  }, [state]);
 
   useEffect(() => {
     drawScreen(document.getElementById('canvas'), state.height, OBJECT_RADIUS);
