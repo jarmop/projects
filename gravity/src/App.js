@@ -1,19 +1,14 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import './App.css';
-
-const CANVAS_WIDTH_PX = 400;
+import Screen from './Screen';
 
 // Meters
-const CANVAS_WIDTH = 2;
-const CANVAS_HEIGHT = 3;
 const OBJECT_ORIGINAL_HEIGHT = 1.5;
-const OBJECT_RADIUS = 0.1;
 
 // const OBJECT_MASS = 1;
 // const OBJECT_ORIGINAL_HEIGHT = 0;
 // const BUMP_FORCE = 10000;
 
-const PIXELS_PER_METER = CANVAS_WIDTH_PX / CANVAS_WIDTH;
 const FPS = 1000;
 const G = 9.81;
 
@@ -21,18 +16,6 @@ const G = 9.81;
 const EFFICIENCY = 5/6;
 
 const ANIMATION_SPEED = 4;
-
-const metersToPixels = (meters) => meters * PIXELS_PER_METER;
-
-const drawScreen = (canvas, objectHeight, objectRadius) => {
-  objectHeight = metersToPixels(objectHeight);
-  objectRadius = metersToPixels(objectRadius);
-  const c = canvas.getContext('2d');
-  c.clearRect(0, 0, canvas.width, canvas.height);
-  c.beginPath();
-  c.arc(canvas.width / 2, canvas.height - objectHeight - objectRadius, objectRadius, 0, Math.PI * 2);
-  c.fill();
-};
 
 // const kineticEnergy = (m, v) => m * Math.pow(v, 2) / 2;
 const speed = (a, t) => a * t;
@@ -89,7 +72,6 @@ function App() {
         tick();
       }
     }
-    drawScreen(document.getElementById('canvas'), state.height, OBJECT_RADIUS);
   }, [state, timeIsRunning, tick, isDead]);
 
   const reset = () => {
@@ -98,7 +80,7 @@ function App() {
 
   return (
       <div className="app">
-        <canvas id="canvas" className="canvas" width={metersToPixels(CANVAS_WIDTH)} height={metersToPixels(CANVAS_HEIGHT)}/>
+        <Screen objectHeight={state.height}/>
         <div>
           {!isDead() &&
             <button onClick={() => setTimeIsRunning(!timeIsRunning)}>{timeIsRunning ? 'Stop' : 'Play'}</button>
