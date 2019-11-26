@@ -14,7 +14,7 @@ const OBJECT_MASS = 1;
 // const BUMP_FORCE = 10000;
 
 const PIXELS_PER_METER = CANVAS_WIDTH_PX / CANVAS_WIDTH;
-const FPS = 100;
+const FPS = 1000;
 const G = 9.81;
 
 // 1/6 OF KINETIC ENERGY IS CONVERTED INTO HEAT
@@ -62,7 +62,7 @@ function App() {
         ...state,
         height: newHeight,
         time: newHeight === 0 ? 0 : newTime,
-        startSpeed: newHeight === 0 ? EFFICIENCY*-currentSpeed : state.startSpeed,
+        startSpeed: newHeight === 0 ? Math.abs(currentSpeed) < 0.3 ? 0 : (EFFICIENCY*-currentSpeed) : state.startSpeed,
         startHeight: newHeight === 0 ? 0 : state.startHeight,
       };
       console.log(newState);
@@ -75,30 +75,35 @@ function App() {
     drawScreen(document.getElementById('canvas'), state.height, OBJECT_RADIUS);
 
     if (timeIsRunning) {
-      // if (state.height === 0) {
-      //   setTimeIsRunning(false);
-      // } else {
+      if (isDead()) {
+        setTimeIsRunning(false);
+      } else {
         tick();
-      // }
+      }
     }
-  }, [state.height, timeIsRunning, tick]);
+  }, [state, timeIsRunning, tick]);
 
   const reset = () => {
     setState(initialState)
+  };
+
+  /**
+   * @returns {boolean}
+   */
+  const isDead = () => {
+    return state.height === 0 && state.startSpeed === 0
   };
 
   return (
       <div className="app">
         <canvas id="canvas" className="canvas" width={metersToPixels(CANVAS_WIDTH)} height={metersToPixels(CANVAS_HEIGHT)}/>
         <div>
-          {/*{state.height === 0*/}
-          {/*    ?*/}
-          {/*    <button onClick={reset}>Reset</button>*/}
-          {/*    :*/}
-          {/*    <button onClick={() => setTimeIsRunning(!timeIsRunning)}>{timeIsRunning ? 'Stop' : 'Play'}</button>*/}
-          {/*}*/}
-          <button onClick={() => setTimeIsRunning(!timeIsRunning)}>{timeIsRunning ? 'Stop' : 'Play'}</button>
-
+          {!isDead() &&
+            <button onClick={() => setTimeIsRunning(!timeIsRunning)}>{timeIsRunning ? 'Stop' : 'Play'}</button>
+          }
+          {(state.time > 0 || isDead()) &&
+            <button onClick={reset}>Reset</button>
+          }
           <div>
             Height: {state.height.toFixed(2)} m
           </div>
