@@ -9,13 +9,12 @@ const OBJECT_ORIGINAL_HEIGHT = 1.5;
 // const OBJECT_ORIGINAL_HEIGHT = 0;
 // const BUMP_FORCE = 10000;
 
-const FPS = 1000;
 const G = 9.81;
 
 // 1/6 OF KINETIC ENERGY IS CONVERTED INTO HEAT
 const EFFICIENCY = 5/6;
 
-const ANIMATION_SPEED = 4;
+const ANIMATION_SPEED = 1;
 
 // const kineticEnergy = (m, v) => m * Math.pow(v, 2) / 2;
 const speed = (a, t) => a * t;
@@ -31,10 +30,12 @@ function App() {
   const [state, setState] = useState(initialState);
   const [timeIsRunning, setTimeIsRunning] = useState(false);
   const tick = useCallback(() => {
-    const timeIncrement = 1000 / FPS;
-    const virtualTimeIncrement = ANIMATION_SPEED * timeIncrement;
-    setTimeout(() => {
-      const newTime = state.time + virtualTimeIncrement / 1000;
+    const timeAtPreviousPaint = (new Date()).getTime();
+    window.requestAnimationFrame(() => {
+      const timeNow = (new Date()).getTime();
+      const secondsPassed = (timeNow - timeAtPreviousPaint) / 1000;
+      const newTime = state.time + ANIMATION_SPEED * secondsPassed;
+      // console.log(secondsPassed);
       const heightChange = state.startSpeed * newTime + distance(-G, newTime);
       const currentSpeed = state.startSpeed + speed(-G, newTime);
       // console.log(state.startSpeed);
@@ -54,7 +55,7 @@ function App() {
       // console.log(newState);
       // console.log('********');
       setState(newState);
-    }, timeIncrement);
+    });
   }, [state]);
 
   /**
