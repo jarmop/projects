@@ -1,0 +1,40 @@
+<style>
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  align-items: center;
+}
+
+#wave-graph {
+  width: 500px;
+  height: 300px;
+  border: 4px solid var(--pink);
+}
+</style>
+<div class="controls">
+  <label for="type-select">
+    Oscillator type
+    <select id="type-select">
+      <option>sine</option>
+      <option>square</option>
+      <option>triangle</option>
+      <option>sawtooth</option>
+    </select>
+  </label>
+
+  <label for="freq-range">
+    Frequency
+    <input
+      type="range"
+      min="0"
+      max="100"
+      step="1"
+      value="100"
+      id="freq-range" />
+  </label>
+  <button data-playing="init" id="play-button">Play</button>
+</div>
+
+<canvas id="wave-graph"></canvas>
+<script src="foo.js"></script>
