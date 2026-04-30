@@ -7,67 +7,67 @@ const maxAmplitude = 100;
 const dpr = window.devicePixelRatio;
 const w = 500 * dpr;
 const h = 100 * dpr;
+const defaultAmplitude = 20;
 
-const audioCtx = new AudioContext();
-let osc = audioCtx.createOscillator();
-osc.type = "sine";
-osc.frequency.value = 94;
+type Track = {
+  audioCtx: AudioContext;
+  osc: OscillatorNode;
+  analyser: AnalyserNode;
+  gain: GainNode;
+  canvasCtx?: CanvasRenderingContext2D;
+  bufferLength: number;
+  dataArray: Uint8Array<ArrayBuffer>;
+};
 
-const analyser = audioCtx.createAnalyser();
-analyser.fftSize = 1024;
-analyser.smoothingTimeConstant = 0.8;
+function createTrack(): Track {
+  const audioCtx = new AudioContext();
+  let osc = audioCtx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.value = 94;
 
-const bufferLength = analyser.frequencyBinCount;
-const dataArray = new Uint8Array(bufferLength);
+  const analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 1024;
+  analyser.smoothingTimeConstant = 0.8;
 
-const gain = audioCtx.createGain();
-gain.gain.value = 0.5;
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
 
-let canvasCtx: CanvasRenderingContext2D;
+  const gain = audioCtx.createGain();
+  gain.gain.value = defaultAmplitude / 100;
 
-// draw an oscilloscope of the current oscillator
-function draw() {
-  // console.log("draw");
-  analyser.getByteTimeDomainData(dataArray);
-  // console.log(dataArray[0]);
-
-  canvasCtx.fillStyle = "white";
-  canvasCtx.fillRect(0, 0, w, h);
-
-  canvasCtx.lineWidth = 4.0;
-  canvasCtx.strokeStyle = "black";
-  canvasCtx.beginPath();
-
-  const sliceWidth = (w * 1.0) / bufferLength;
-  let x = 0;
-
-  for (let i = 0; i < bufferLength; i++) {
-    const v = dataArray[i] / 128.0;
-    const y = (v * h) / 2;
-    if (i === 0) {
-      canvasCtx.moveTo(x, y);
-    } else {
-      canvasCtx.lineTo(x, y);
-    }
-    x += sliceWidth;
-  }
-
-  canvasCtx.lineTo(w, h / 2);
-  canvasCtx.stroke();
-
-  requestAnimationFrame(draw);
+  return {
+    audioCtx,
+    osc,
+    analyser,
+    gain,
+    bufferLength,
+    dataArray,
+  };
 }
 
 function App() {
-  const [type, setType] = useState<OscillatorType>(osc.type);
-  const [frequency, setFrequency] = useState(osc.frequency.value);
-  const [amplitude, setAmplitude] = useState(gain.gain.value * 100);
+  return (
+    <div>
+      <TrackView track={createTrack()} />
+      <TrackView track={createTrack()} />
+    </div>
+  );
+}
+
+interface TrackViewProps {
+  track: Track;
+}
+
+function TrackView({ track }: TrackViewProps) {
+  const [type, setType] = useState<OscillatorType>(track.osc.type);
+  const [frequency, setFrequency] = useState(track.osc.frequency.value);
+  const [amplitude, setAmplitude] = useState(defaultAmplitude);
   const [playing, setPlaying] = useState(false);
   const canvasElRef = useRef<HTMLCanvasElement>(null);
 
   function handleTypeChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const newType = e.currentTarget.value as OscillatorType;
-    osc.type = newType;
+    track.osc.type = newType;
     setType(newType);
   }
 
@@ -83,7 +83,7 @@ function App() {
     if (isNaN(newFrequency)) {
       return;
     }
-    osc.frequency.value = newFrequency;
+    track.osc.frequency.value = newFrequency;
   }
 
   function handleAmplitudeChange(
@@ -98,20 +98,56 @@ function App() {
     if (isNaN(newAmplitude)) {
       return;
     }
-    gain.gain.value = newAmplitude / 100;
+    track.gain.gain.value = newAmplitude / 100;
   }
 
   function play() {
     if (playing) {
-      osc.stop();
+      track.osc.stop();
     } else {
-      osc = audioCtx.createOscillator();
-      osc.type = type;
-      osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-      osc.connect(gain).connect(analyser).connect(audioCtx.destination);
-      osc.start();
+      track.osc = track.audioCtx.createOscillator();
+      track.osc.type = type;
+      track.osc.frequency.setValueAtTime(frequency, track.audioCtx.currentTime);
+      track.osc.connect(track.gain).connect(track.analyser).connect(
+        track.audioCtx.destination,
+      );
+      track.osc.start();
     }
     setPlaying(!playing);
+  }
+
+  function draw() {
+    const canvasCtx = track.canvasCtx;
+    if (!canvasCtx) {
+      return;
+    }
+    track.analyser.getByteTimeDomainData(track.dataArray);
+
+    canvasCtx.fillStyle = "white";
+    canvasCtx.fillRect(0, 0, w, h);
+
+    canvasCtx.lineWidth = 4.0;
+    canvasCtx.strokeStyle = "black";
+    canvasCtx.beginPath();
+
+    const sliceWidth = (w * 1.0) / track.bufferLength;
+    let x = 0;
+
+    for (let i = 0; i < track.bufferLength; i++) {
+      const v = track.dataArray[i] / 128.0;
+      const y = (v * h) / 2;
+      if (i === 0) {
+        canvasCtx.moveTo(x, y);
+      } else {
+        canvasCtx.lineTo(x, y);
+      }
+      x += sliceWidth;
+    }
+
+    canvasCtx.lineTo(w, h / 2);
+    canvasCtx.stroke();
+
+    requestAnimationFrame(draw);
   }
 
   useEffect(() => {
@@ -121,7 +157,7 @@ function App() {
       canvasEl.height = h;
       const canvasCtxOrNull = canvasEl.getContext("2d");
       if (canvasCtxOrNull !== null) {
-        canvasCtx = canvasCtxOrNull;
+        track.canvasCtx = canvasCtxOrNull;
         draw();
       }
     }
