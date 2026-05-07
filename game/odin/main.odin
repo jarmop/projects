@@ -6,8 +6,8 @@ import vk "vendor:vulkan"
 main :: proc() {
 	glfw.Init()
 	glfw.WindowHint(glfw.CLIENT_API, glfw.NO_API)
-
 	window = glfw.CreateWindow(800, 600, "Game", nil, nil)
+	glfw.SetKeyCallback(window, key_callback)
 
 	init()
 
