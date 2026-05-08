@@ -46,6 +46,9 @@ init :: proc() {
 		pNext                = &enabled_vk_13_features,
 		shaderDrawParameters = true,
 	}
+	enabled_vk_10_features := vk.PhysicalDeviceFeatures {
+		fillModeNonSolid = true,
+	}
 	device_create_info := vk.DeviceCreateInfo {
 		sType                   = .DEVICE_CREATE_INFO,
 		pNext                   = &enabled_vk_11_features,
@@ -62,6 +65,7 @@ init :: proc() {
 		),
 		enabledExtensionCount   = 1,
 		ppEnabledExtensionNames = raw_data([]cstring{vk.KHR_SWAPCHAIN_EXTENSION_NAME}),
+		pEnabledFeatures        = &enabled_vk_10_features,
 	}
 	vk.CreateDevice(physical_device, &device_create_info, nil, &device)
 
@@ -224,9 +228,10 @@ create_pipeline :: proc() {
 			scissorCount = 1,
 		},
 		pRasterizationState = &vk.PipelineRasterizationStateCreateInfo {
-			sType = .PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
-			polygonMode = .FILL,
-			lineWidth = 1.0,
+			sType       = .PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+			// polygonMode = .FILL,
+			polygonMode = .LINE,
+			lineWidth   = 1.0,
 		},
 		pMultisampleState   = &vk.PipelineMultisampleStateCreateInfo {
 			sType = .PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,

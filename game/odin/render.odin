@@ -68,7 +68,7 @@ record_commands :: proc(image_index: u32) {
 		pColorAttachments = &color_attachment_info,
 	}
 	vk.CmdBeginRendering(command_buffer, &rendering_info)
-	vk.CmdDraw(command_buffer, 3, 1, 0, 0)
+	vk.CmdDraw(command_buffer, 6, 1, 0, 0)
 	vk.CmdEndRendering(command_buffer)
 
 	image_memory_barrier.oldLayout = .ATTACHMENT_OPTIMAL_KHR
