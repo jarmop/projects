@@ -103,6 +103,9 @@ init :: proc() {
 	}
 	vk.CreateFence(device, &fence_ci, nil, &fence)
 
+	// CREATE UNIFORM BUFFERS
+	init_uniform_buffers()
+
 	// CREATE PIPELINE
 	create_pipeline()
 }

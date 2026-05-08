@@ -7,11 +7,19 @@ static float2 positions[6] = float2[](
     float2(0.0, 0.0)
 );
 
+struct UniformBuffer {
+    float4x4 model;
+    float4x4 view;
+    float4x4 proj;
+};
+ConstantBuffer<UniformBuffer> ubo;
+
 [shader("vertex")]
 float4 vertMain(uint i : SV_VertexID) : SV_Position {
     // The last value of the vector is used to divide the rest of the vector values when
     // normalizing. Setting it to "1.0" makes it not have any effect.
-    return float4(positions[i], 0.0, 1.0);
+    // return float4(positions[i], 0.0, 1.0);
+    return mul(ubo.proj, mul(ubo.view, mul(ubo.model, float4(positions[i], 0.0, 1.0))));
 }
 
 [shader("fragment")]

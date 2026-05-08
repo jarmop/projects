@@ -17,7 +17,12 @@ swapchain_images: []vk.Image
 swapchain_image_views: []vk.ImageView
 command_buffer: vk.CommandBuffer
 pipeline: vk.Pipeline
+pipeline_layout: vk.PipelineLayout
 queue: vk.Queue
 image_available_semaphore: vk.Semaphore
 render_finished_semaphore: vk.Semaphore
 fence: vk.Fence
+descriptor_sets: [MAX_FRAMES_IN_FLIGHT]vk.DescriptorSet
+descriptor_set_layout: vk.DescriptorSetLayout
+
+current_frame := 0

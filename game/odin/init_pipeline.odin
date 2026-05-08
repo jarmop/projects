@@ -14,12 +14,17 @@ create_pipeline :: proc() {
 
 	shader_module := create_shader_module(SHADER)
 
-	layout: vk.PipelineLayout
 	vk.CreatePipelineLayout(
 		device,
-		&vk.PipelineLayoutCreateInfo{sType = .PIPELINE_LAYOUT_CREATE_INFO},
+		&vk.PipelineLayoutCreateInfo {
+			sType = .PIPELINE_LAYOUT_CREATE_INFO,
+			setLayoutCount = 1,
+			pushConstantRangeCount = 0,
+			pPushConstantRanges = nil,
+			pSetLayouts = &descriptor_set_layout,
+		},
 		nil,
-		&layout,
+		&pipeline_layout,
 	)
 
 	pipeline_create_info := vk.GraphicsPipelineCreateInfo {
@@ -76,9 +81,11 @@ create_pipeline :: proc() {
 			dynamicStateCount = 2,
 			pDynamicStates = raw_data([]vk.DynamicState{.VIEWPORT, .SCISSOR}),
 		},
-		layout              = layout,
+		layout              = pipeline_layout,
 	}
 	vk.CreateGraphicsPipelines(device, 0, 1, &pipeline_create_info, nil, &pipeline)
+
+	vk.DestroyShaderModule(device, shader_module, nil)
 }
 
 create_shader_module :: proc(code: []byte) -> (module: vk.ShaderModule) {

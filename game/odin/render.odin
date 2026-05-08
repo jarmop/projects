@@ -9,26 +9,27 @@ record_commands :: proc(image_index: u32) {
 	vk.BeginCommandBuffer(command_buffer, &command_buffer_begin_info)
 
 	vk.CmdBindPipeline(command_buffer, .GRAPHICS, pipeline)
-	vk.CmdSetViewport(
+	viewport := vk.Viewport {
+		y        = f32(swapchain_extent.height),
+		width    = f32(swapchain_extent.width),
+		height   = -f32(swapchain_extent.height),
+		maxDepth = 1.0,
+	}
+	vk.CmdSetViewport(command_buffer, 0, 1, raw_data([]vk.Viewport{viewport}))
+	scissor := vk.Rect2D {
+		offset = {0, 0},
+		extent = swapchain_extent,
+	}
+	vk.CmdSetScissor(command_buffer, 0, 1, raw_data([]vk.Rect2D{scissor}))
+	vk.CmdBindDescriptorSets(
 		command_buffer,
+		.GRAPHICS,
+		pipeline_layout,
 		0,
 		1,
-		raw_data(
-			[]vk.Viewport {
-				{
-					y = f32(swapchain_extent.height),
-					width = f32(swapchain_extent.width),
-					height = -f32(swapchain_extent.height),
-					maxDepth = 1.0,
-				},
-			},
-		),
-	)
-	vk.CmdSetScissor(
-		command_buffer,
+		&descriptor_sets[current_frame],
 		0,
-		1,
-		raw_data([]vk.Rect2D{{offset = {0, 0}, extent = swapchain_extent}}),
+		nil,
 	)
 
 	image_memory_barrier := vk.ImageMemoryBarrier2 {

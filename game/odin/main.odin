@@ -14,6 +14,8 @@ main :: proc() {
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
 
+		update_uniform_buffer()
+
 		vk.WaitForFences(device, 1, &fence, true, max(u64))
 		vk.ResetFences(device, 1, &fence)
 
