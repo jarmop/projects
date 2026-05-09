@@ -49,6 +49,23 @@ create_pipeline :: proc() {
 		),
 		pVertexInputState   = &vk.PipelineVertexInputStateCreateInfo {
 			sType = .PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+			vertexBindingDescriptionCount = 1,
+			pVertexBindingDescriptions = raw_data(
+				[]vk.VertexInputBindingDescription {
+					{binding = 0, stride = size_of(Vertex), inputRate = .VERTEX},
+				},
+			),
+			vertexAttributeDescriptionCount = vertex_attribute_count,
+			pVertexAttributeDescriptions = raw_data(
+				[]vk.VertexInputAttributeDescription {
+					{
+						location = 0,
+						binding = 0,
+						format = vertex_attribute_format,
+						offset = u32(offset_of(Vertex, pos)),
+					},
+				},
+			),
 		},
 		pInputAssemblyState = &vk.PipelineInputAssemblyStateCreateInfo {
 			sType = .PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,

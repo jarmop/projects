@@ -30,7 +30,6 @@ init :: proc() {
 	vk.EnumeratePhysicalDevices(instance, &physical_device_count, nil)
 	physical_devices := make([]vk.PhysicalDevice, physical_device_count)
 	vk.EnumeratePhysicalDevices(instance, &physical_device_count, raw_data(physical_devices))
-	queue_family_index: u32 = 0
 	physical_device = physical_devices[queue_family_index]
 
 	// CREATE LOGICAL DEVICE
@@ -76,7 +75,6 @@ init :: proc() {
 		flags            = {.RESET_COMMAND_BUFFER},
 		queueFamilyIndex = queue_family_index,
 	}
-	command_pool: vk.CommandPool
 	vk.CreateCommandPool(device, &command_pool_create_info, nil, &command_pool)
 	command_buffer_allocate_info := vk.CommandBufferAllocateInfo {
 		sType              = .COMMAND_BUFFER_ALLOCATE_INFO,
@@ -85,8 +83,12 @@ init :: proc() {
 		commandBufferCount = MAX_FRAMES_IN_FLIGHT,
 	}
 	command_buffers: [MAX_FRAMES_IN_FLIGHT]vk.CommandBuffer
-	vk.AllocateCommandBuffers(device, &command_buffer_allocate_info, &command_buffers[0])
-	command_buffer = command_buffers[0]
+	vk.AllocateCommandBuffers(
+		device,
+		&command_buffer_allocate_info,
+		&command_buffers[current_frame],
+	)
+	command_buffer = command_buffers[current_frame]
 
 	// GET DEVICE QUEUE
 	vk.GetDeviceQueue(device, queue_family_index, 0, &queue)
@@ -108,4 +110,7 @@ init :: proc() {
 
 	// CREATE PIPELINE
 	create_pipeline()
+
+	// CREATE VERTEX BUFFER
+	create_vertex_buffer()
 }

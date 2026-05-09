@@ -3,10 +3,10 @@ package game
 import vk "vendor:vulkan"
 
 record_commands :: proc(image_index: u32) {
-	command_buffer_begin_info := vk.CommandBufferBeginInfo {
-		sType = .COMMAND_BUFFER_BEGIN_INFO,
-	}
-	vk.BeginCommandBuffer(command_buffer, &command_buffer_begin_info)
+	vk.BeginCommandBuffer(
+		command_buffer,
+		&vk.CommandBufferBeginInfo{sType = .COMMAND_BUFFER_BEGIN_INFO},
+	)
 
 	vk.CmdBindPipeline(command_buffer, .GRAPHICS, pipeline)
 	viewport := vk.Viewport {
@@ -31,6 +31,8 @@ record_commands :: proc(image_index: u32) {
 		0,
 		nil,
 	)
+	vertex_offset: vk.DeviceSize = 0
+	vk.CmdBindVertexBuffers(command_buffer, 0, 1, &vertex_buffer, &vertex_offset)
 
 	image_memory_barrier := vk.ImageMemoryBarrier2 {
 		sType = .IMAGE_MEMORY_BARRIER_2,
