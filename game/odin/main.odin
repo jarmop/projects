@@ -7,13 +7,14 @@ main :: proc() {
 	glfw.Init()
 	glfw.WindowHint(glfw.CLIENT_API, glfw.NO_API)
 	window = glfw.CreateWindow(800, 600, "Game", nil, nil)
-	glfw.SetKeyCallback(window, key_callback)
+
+	init_io()
 
 	init()
 
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
-
+		handle_camera_movement_keys()
 		update_uniform_buffer()
 
 		vk.WaitForFences(device, 1, &fence, true, max(u64))

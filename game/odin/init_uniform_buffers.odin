@@ -129,7 +129,7 @@ update_uniform_buffer :: proc() {
 	ubo: UniformBufferObject
 	ubo.model = linalg.MATRIX4F32_IDENTITY
 	camera_pos_front: [3]f32
-	ubo.view = linalg.matrix4_look_at_f32(camera.pos, camera.pos + camera.front, worldUp)
+	ubo.view = linalg.matrix4_look_at_f32(camera.pos, camera.pos + camera.front, world_up)
 	ubo.proj = linalg.matrix4_perspective_f32(
 		linalg.to_radians(camera.fov),
 		f32(swapchain_extent.width) / f32(swapchain_extent.height),
