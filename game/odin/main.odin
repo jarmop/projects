@@ -55,5 +55,19 @@ main :: proc() {
 			pImageIndices      = &image_index,
 		}
 		vk.QueuePresentKHR(queue, &present_info)
+
+		if frame_buffer_resized {
+			frame_buffer_resized = false
+			// If window was minimized, Wait until it's expanded again
+			width, height := glfw.GetFramebufferSize(window)
+			for width == 0 || height == 0 {
+				glfw.WaitEvents()
+				width, height = glfw.GetFramebufferSize(window)
+			}
+
+			vk.DeviceWaitIdle(device)
+			vk.DestroySwapchainKHR(device, swapchain, nil)
+			create_swapchain()
+		}
 	}
 }

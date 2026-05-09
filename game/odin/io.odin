@@ -32,10 +32,13 @@ prev_cursor_x, prev_cursor_y: f64
 mouse_sensitivity :: 0.1
 time_prev_frame: f32 = 0.0
 
+frame_buffer_resized := false
+
 init_io :: proc() {
 	glfw.SetKeyCallback(window, key_callback)
 	glfw.SetMouseButtonCallback(window, mouse_button_callback)
 	glfw.SetCursorPosCallback(window, cursor_pos_callback)
+	glfw.SetFramebufferSizeCallback(window, frame_buffer_size_callback)
 
 	update_camera()
 }
@@ -84,6 +87,10 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
 	}
 
 	update_camera()
+}
+
+frame_buffer_size_callback :: proc "c" (window: glfw.WindowHandle, width, height: i32) {
+	frame_buffer_resized = true
 }
 
 update_camera :: proc() {

@@ -23,7 +23,6 @@ descriptor_set_layout_ci := vk.DescriptorSetLayoutCreateInfo {
 	},
 }
 
-
 init_uniform_buffers :: proc() {
 	uniform_buffers: [MAX_FRAMES_IN_FLIGHT]vk.Buffer
 	create_uniform_buffers(&uniform_buffers)
@@ -114,8 +113,8 @@ write_descriptor_set := vk.WriteDescriptorSet {
 
 create_descriptor_sets :: proc(uniform_buffers: ^[MAX_FRAMES_IN_FLIGHT]vk.Buffer) {
 	vk.CreateDescriptorPool(device, &pool_ci, nil, &descriptor_set_ai.descriptorPool)
-	descriptor_set_layouts := []vk.DescriptorSetLayout{descriptor_set_layout}
-	descriptor_set_ai.pSetLayouts = raw_data(descriptor_set_layouts)
+	descriptor_set_layouts := [MAX_FRAMES_IN_FLIGHT]vk.DescriptorSetLayout{descriptor_set_layout}
+	descriptor_set_ai.pSetLayouts = raw_data(&descriptor_set_layouts)
 	vk.AllocateDescriptorSets(device, &descriptor_set_ai, raw_data(&descriptor_sets))
 	for i := 0; i < MAX_FRAMES_IN_FLIGHT; i += 1 {
 		desc_buf_info.buffer = uniform_buffers[i]
