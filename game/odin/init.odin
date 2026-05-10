@@ -1,14 +1,41 @@
 package game
 
-import "core:slice"
 import "vendor:glfw"
 import vk "vendor:vulkan"
+
+queue_family_index :: 0
 
 init :: proc() {
 	// Load the initial Vulkan functions needed for creating the instance
 	vk.load_proc_addresses_global(rawptr(glfw.GetInstanceProcAddress))
 
-	// CREATE INSTANCE
+	instance: vk.Instance
+	create_instance(&instance)
+
+	// Load the rest of the Vulkan functions based on the instance
+	vk.load_proc_addresses_instance(instance)
+
+	glfw.CreateWindowSurface(instance, window, nil, &surface)
+
+	pick_physical_device(instance)
+
+	create_logical_device()
+
+	swapchain_image_format := create_swapchain()
+
+	create_command_buffers()
+
+	create_sync_objects()
+
+	descriptor_set_layout: vk.DescriptorSetLayout
+	init_uniform_buffers(&descriptor_set_layout)
+
+	create_vertex_buffer()
+
+	create_pipeline(&swapchain_image_format, &descriptor_set_layout)
+}
+
+create_instance :: proc(instance: ^vk.Instance) {
 	extensions := glfw.GetRequiredInstanceExtensions()
 	create_info := vk.InstanceCreateInfo {
 		sType                   = .INSTANCE_CREATE_INFO,
@@ -16,23 +43,18 @@ init :: proc() {
 		enabledExtensionCount   = u32(len(extensions)),
 		ppEnabledExtensionNames = raw_data(extensions),
 	}
-	instance: vk.Instance
-	vk.CreateInstance(&create_info, nil, &instance)
+	vk.CreateInstance(&create_info, nil, instance)
+}
 
-	// Load the rest of the Vulkan functions based on the instance
-	vk.load_proc_addresses_instance(instance)
-
-	// CREATE SURFACE
-	glfw.CreateWindowSurface(instance, window, nil, &surface)
-
-	// PICK PHYSICAL DEVICE
+pick_physical_device :: proc(instance: vk.Instance) {
 	physical_device_count: u32
 	vk.EnumeratePhysicalDevices(instance, &physical_device_count, nil)
 	physical_devices := make([]vk.PhysicalDevice, physical_device_count)
 	vk.EnumeratePhysicalDevices(instance, &physical_device_count, raw_data(physical_devices))
 	physical_device = physical_devices[queue_family_index]
+}
 
-	// CREATE LOGICAL DEVICE
+create_logical_device :: proc() {
 	enabled_vk_13_features := vk.PhysicalDeviceVulkan13Features {
 		sType            = .PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
 		synchronization2 = true,
@@ -65,11 +87,10 @@ init :: proc() {
 		pEnabledFeatures        = &enabled_vk_10_features,
 	}
 	vk.CreateDevice(physical_device, &device_create_info, nil, &device)
+	vk.GetDeviceQueue(device, queue_family_index, 0, &queue)
+}
 
-	// CREATE SWAPCHAIN
-	create_swapchain()
-
-	// CREATE COMMAND BUFFERS
+create_command_buffers :: proc() {
 	command_pool_create_info := vk.CommandPoolCreateInfo {
 		sType            = .COMMAND_POOL_CREATE_INFO,
 		flags            = {.RESET_COMMAND_BUFFER},
@@ -89,11 +110,9 @@ init :: proc() {
 		&command_buffers[current_frame],
 	)
 	command_buffer = command_buffers[current_frame]
+}
 
-	// GET DEVICE QUEUE
-	vk.GetDeviceQueue(device, queue_family_index, 0, &queue)
-
-	// CREATE SYNC OBJECTS
+create_sync_objects :: proc() {
 	semaphore_ci := vk.SemaphoreCreateInfo {
 		sType = .SEMAPHORE_CREATE_INFO,
 	}
@@ -104,13 +123,4 @@ init :: proc() {
 		flags = {.SIGNALED},
 	}
 	vk.CreateFence(device, &fence_ci, nil, &fence)
-
-	// CREATE UNIFORM BUFFERS
-	init_uniform_buffers()
-
-	// CREATE PIPELINE
-	create_pipeline()
-
-	// CREATE VERTEX BUFFER
-	create_vertex_buffer()
 }

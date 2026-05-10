@@ -3,7 +3,7 @@ package game
 import "vendor:glfw"
 import vk "vendor:vulkan"
 
-create_swapchain :: proc() {
+create_swapchain :: proc() -> vk.Format {
 	surface_caps: vk.SurfaceCapabilitiesKHR
 	vk.GetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, surface, &surface_caps)
 	swapchain_extent = choose_surface_extent(surface_caps)
@@ -18,7 +18,7 @@ create_swapchain :: proc() {
 		raw_data(formats),
 	)
 	format := formats[0]
-	swapchain_image_format = format.format
+	swapchain_image_format := format.format
 
 	swapchain_create_info := vk.SwapchainCreateInfoKHR {
 		sType            = .SWAPCHAIN_CREATE_INFO_KHR,
@@ -54,6 +54,7 @@ create_swapchain :: proc() {
 		vk.CreateImageView(device, &image_view_create_info, nil, &swapchain_image_views[i])
 	}
 
+	return swapchain_image_format
 }
 
 choose_surface_extent :: proc(caps: vk.SurfaceCapabilitiesKHR) -> vk.Extent2D {

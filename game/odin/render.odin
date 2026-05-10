@@ -25,14 +25,20 @@ record_commands :: proc(image_index: u32) {
 		command_buffer,
 		.GRAPHICS,
 		pipeline_layout,
-		0,
-		1,
+		0, // first set
+		1, // descriptor set count
 		&descriptor_sets[current_frame],
-		0,
-		nil,
+		0, // dynamic offset count
+		nil, // dynamic offsets
 	)
 	vertex_offset: vk.DeviceSize = 0
-	vk.CmdBindVertexBuffers(command_buffer, 0, 1, &vertex_buffer, &vertex_offset)
+	vk.CmdBindVertexBuffers(
+		command_buffer,
+		first_instance,
+		instance_count,
+		&vertex_buffer,
+		&vertex_offset,
+	)
 
 	image_memory_barrier := vk.ImageMemoryBarrier2 {
 		sType = .IMAGE_MEMORY_BARRIER_2,
@@ -53,25 +59,21 @@ record_commands :: proc(image_index: u32) {
 	}
 	vk.CmdPipelineBarrier2(command_buffer, &dependency_info)
 
-	clear_value := vk.ClearValue {
-		color = {float32 = {0.0, 0.0, 0.0, 1.0}},
-	}
-	color_attachment_info := vk.RenderingAttachmentInfo {
-		sType       = .RENDERING_ATTACHMENT_INFO,
-		imageView   = swapchain_image_views[image_index],
-		imageLayout = .ATTACHMENT_OPTIMAL_KHR,
-		loadOp      = .CLEAR,
-		clearValue  = clear_value,
-	}
 	rendering_info := vk.RenderingInfo {
 		sType = .RENDERING_INFO,
 		renderArea = {extent = swapchain_extent},
 		layerCount = 1,
 		colorAttachmentCount = 1,
-		pColorAttachments = &color_attachment_info,
+		pColorAttachments = &vk.RenderingAttachmentInfo {
+			sType = .RENDERING_ATTACHMENT_INFO,
+			imageView = swapchain_image_views[image_index],
+			imageLayout = .ATTACHMENT_OPTIMAL_KHR,
+			loadOp = .CLEAR,
+			clearValue = vk.ClearValue{color = {float32 = {0.0, 0.0, 0.0, 1.0}}},
+		},
 	}
 	vk.CmdBeginRendering(command_buffer, &rendering_info)
-	vk.CmdDraw(command_buffer, 6, 1, 0, 0)
+	vk.CmdDraw(command_buffer, vertex_count, instance_count, first_vertex, first_instance)
 	vk.CmdEndRendering(command_buffer)
 
 	image_memory_barrier.oldLayout = .ATTACHMENT_OPTIMAL_KHR

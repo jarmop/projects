@@ -1,63 +1,59 @@
 package game
 
 import "base:intrinsics"
-// import "core:fmt"
 import vk "vendor:vulkan"
 
+Vertex :: struct {
+	pos: [3]f32,
+}
+vertices := []Vertex {
+	{pos = {0.0, 0.0, 0.0}},
+	{pos = {0.5, 0.0, 0.0}},
+	{pos = {0.5, 0.0, 0.5}},
+	{pos = {0.5, 0.0, 0.5}},
+	{pos = {0.0, 0.0, 0.5}},
+	{pos = {0.0, 0.0, 0.0}},
+}
+// For pipeline init
+vertex_attribute_format: vk.Format = .R32G32B32_SFLOAT
+// For rendering (vk.CmdBindVertexBuffers and vk.CmdDraw)
+vertex_count := u32(len(vertices))
+instance_count :: 1
+first_vertex :: 0
+first_instance :: 0
+
+buffer_size := vk.DeviceSize(vertex_count * size_of(Vertex))
+
 create_vertex_buffer :: proc() {
-	// vertices := [6]Vertex {
-	vertices := []Vertex {
-		{pos = {0.0, 0.0, 0.0}},
-		{pos = {0.5, 0.0, 0.0}},
-		{pos = {0.5, 0.0, 0.5}},
-		{pos = {0.5, 0.0, 0.5}},
-		{pos = {0.0, 0.0, 0.5}},
-		{pos = {0.0, 0.0, 0.0}},
-	}
-	// fmt.println("foo", len(vertices) * size_of(Vertex))
-	// fmt.println("bar", size_of(vertices))
+	create_cpu_buffer({.VERTEX_BUFFER}, &vertex_buffer)
+	// create_gpu_buffer({.VERTEX_BUFFER}, &vertex_buffer)
+}
 
-	// CREATE STAGED BUFFER
-	// create_staged_buffer(vertices, {.VERTEX_BUFFER}, &vertex_buffer)
-
-	// CREATE REGULAR BUFFER
-	buffer_size := vk.DeviceSize(len(vertices) * size_of(Vertex))
+create_cpu_buffer :: proc(usage_flags: vk.BufferUsageFlags, buffer: ^vk.Buffer) {
+	// CREATE BUFFER WITH MEMORY
 	buffer_memory: vk.DeviceMemory
-	create_buffer(buffer_size, {.VERTEX_BUFFER}, &vertex_buffer, &buffer_memory)
-	temp_data: rawptr
-	vk.MapMemory(device, buffer_memory, 0, buffer_size, {}, &temp_data)
-	intrinsics.mem_copy(temp_data, raw_data(vertices), buffer_size)
+	create_buffer(buffer_size, usage_flags, buffer, &buffer_memory)
+
+	// COPY VERTICES INTO THE BUFFER MEMORY
+	memory_handle: rawptr
+	vk.MapMemory(device, buffer_memory, 0, buffer_size, {}, &memory_handle)
+	intrinsics.mem_copy(memory_handle, raw_data(vertices), buffer_size)
 	vk.UnmapMemory(device, buffer_memory)
 }
 
-create_staged_buffer :: proc(
-	vertices: []Vertex,
-	usage_flags: vk.BufferUsageFlags,
-	buffer: ^vk.Buffer,
-) {
-	// STAGING BUFFER (in CPU accessible memory)
+/* For gpu buffer creation
+
+create_gpu_buffer :: proc(usage_flags: vk.BufferUsageFlags, buffer: ^vk.Buffer) {
 	buffer_staging: vk.Buffer
-
-	buffer_size := vk.DeviceSize(len(vertices) * size_of(Vertex))
-	buffer_memory_staging: vk.DeviceMemory
-	create_buffer(buffer_size, {.TRANSFER_SRC}, &buffer_staging, &buffer_memory_staging)
-	temp_data: rawptr
-	vk.MapMemory(device, buffer_memory_staging, 0, buffer_size, {}, &temp_data)
-	intrinsics.mem_copy(temp_data, raw_data(vertices), buffer_size)
-	vk.UnmapMemory(device, buffer_memory_staging)
-
-	// FINAL BUFFER (in GPU accessible memory)
+	create_cpu_buffer({.TRANSFER_SRC}, &buffer_staging)
 	buffer_memory: vk.DeviceMemory
 	create_buffer(buffer_size, usage_flags + {.TRANSFER_DST}, buffer, &buffer_memory)
-
-	copy_buffer(buffer_size, buffer_staging, vertex_buffer)
+	copy_buffer(buffer_size, buffer_staging, buffer^)
 }
 
 copy_buffer :: proc(buffer_size: vk.DeviceSize, src_buffer: vk.Buffer, dst_buffer: vk.Buffer) {
 	// cb: vk.CommandBuffer
 	// create_command_buffer(&cb)
-	// vk.BeginCommandBuffer(cb, &vk.CommandBufferBeginInfo{sType = .COMMAND_BUFFER_BEGIN_INFO})
-	// vk.EndCommandBuffer(cb)
 	vk.BeginCommandBuffer(
 		command_buffer,
 		&vk.CommandBufferBeginInfo{sType = .COMMAND_BUFFER_BEGIN_INFO},
@@ -94,3 +90,5 @@ copy_buffer :: proc(buffer_size: vk.DeviceSize, src_buffer: vk.Buffer, dst_buffe
 // 	}
 // 	vk.AllocateCommandBuffers(device, &command_buffer_allocate_info, cb)
 // }
+
+*/
