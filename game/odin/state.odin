@@ -1,4 +1,3 @@
-
 package game
 
 import "vendor:glfw"
@@ -22,7 +21,6 @@ pipeline_layout: vk.PipelineLayout
 image_available_semaphore: vk.Semaphore
 render_finished_semaphore: vk.Semaphore
 fence: vk.Fence
-descriptor_sets: [MAX_FRAMES_IN_FLIGHT]vk.DescriptorSet
 vertex_buffer: vk.Buffer
 
 current_frame := 0

@@ -7,12 +7,20 @@ Vertex :: struct {
 	pos: [3]f32,
 }
 vertices := []Vertex {
+	// Rectangle 1
 	{pos = {0.0, 0.0, 0.0}},
 	{pos = {0.5, 0.0, 0.0}},
 	{pos = {0.5, 0.0, 0.5}},
 	{pos = {0.5, 0.0, 0.5}},
 	{pos = {0.0, 0.0, 0.5}},
 	{pos = {0.0, 0.0, 0.0}},
+	// Rectangle 2
+	// {pos = {0.0, 0.5, 0.0}},
+	// {pos = {0.5, 0.5, 0.0}},
+	// {pos = {0.5, 0.5, 0.5}},
+	// {pos = {0.5, 0.5, 0.5}},
+	// {pos = {0.0, 0.5, 0.5}},
+	// {pos = {0.0, 0.5, 0.0}},
 }
 // For pipeline init
 vertex_attribute_format: vk.Format = .R32G32B32_SFLOAT

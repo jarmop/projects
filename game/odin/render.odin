@@ -21,16 +21,7 @@ record_commands :: proc(image_index: u32) {
 		extent = swapchain_extent,
 	}
 	vk.CmdSetScissor(command_buffer, 0, 1, raw_data([]vk.Rect2D{scissor}))
-	vk.CmdBindDescriptorSets(
-		command_buffer,
-		.GRAPHICS,
-		pipeline_layout,
-		0, // first set
-		1, // descriptor set count
-		&descriptor_sets[current_frame],
-		0, // dynamic offset count
-		nil, // dynamic offsets
-	)
+
 	vertex_offset: vk.DeviceSize = 0
 	vk.CmdBindVertexBuffers(
 		command_buffer,
@@ -73,7 +64,21 @@ record_commands :: proc(image_index: u32) {
 		},
 	}
 	vk.CmdBeginRendering(command_buffer, &rendering_info)
-	vk.CmdDraw(command_buffer, vertex_count, instance_count, first_vertex, first_instance)
+
+	for &o in objects {
+		vk.CmdBindDescriptorSets(
+			command_buffer,
+			.GRAPHICS,
+			pipeline_layout,
+			0, // first set
+			1, // descriptor set count
+			&o.descriptor_sets[current_frame],
+			0, // dynamic offset count
+			nil, // dynamic offsets
+		)
+		vk.CmdDraw(command_buffer, vertex_count, instance_count, first_vertex, first_instance)
+	}
+
 	vk.CmdEndRendering(command_buffer)
 
 	image_memory_barrier.oldLayout = .ATTACHMENT_OPTIMAL_KHR
