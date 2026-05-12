@@ -1,8 +1,15 @@
 package game
 
 import "base:runtime"
+import "core:fmt"
 import m "core:math/linalg"
 import "vendor:glfw"
+
+// Used to adjust camera movement to match the y axis direction
+//  1 = OpenGL
+// -1 = Vulkan / D3D / Meta
+y_up :: 1
+// y_up :: -1
 
 Camera :: struct {
 	pos:   [3]f32,
@@ -15,16 +22,17 @@ Camera :: struct {
 }
 
 camera := Camera {
-	pos   = {-0.5, 0.5, 1.0},
+	pos   = {0.7, 0.2 * y_up, 1.2},
 	front = {0.0, 0.0, -1.0},
 	right = {1.0, 0.0, 0.0},
-	yaw   = -52.0,
-	pitch = -12.0,
+	yaw   = -90.0,
+	pitch = 0.0 * y_up,
 	speed = 2.5,
 	fov   = 45.0,
 }
 
 world_up := [3]f32{0.0, 1.0, 0.0}
+// world_up := [3]f32{0.0, -1.0, 0.0}
 
 mouse_right_pressed := false
 first_cursor_pos := true
@@ -44,9 +52,30 @@ init_io :: proc() {
 }
 
 key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
-	if (key == glfw.KEY_ESCAPE && action == glfw.PRESS) {
+	if key == glfw.KEY_ESCAPE && action == glfw.PRESS {
 		glfw.SetWindowShouldClose(window, true)
+	} else if key == glfw.KEY_1 && action == glfw.PRESS {
+		selected_object = 0
+	} else if key == glfw.KEY_2 && action == glfw.PRESS {
+		selected_object = 1
+	} else if key == glfw.KEY_3 && action == glfw.PRESS {
+		selected_object = -1
 	}
+}
+
+get_proj :: proc() -> matrix[4, 4]f32 {
+	proj := m.matrix4_perspective_f32(
+		m.to_radians(camera.fov),
+		f32(swapchain_extent.width) / f32(swapchain_extent.height),
+		0.1,
+		100.0,
+	)
+	proj[1][1] *= -y_up
+	return proj
+}
+
+get_view :: proc() -> matrix[4, 4]f32 {
+	return m.matrix4_look_at_f32(camera.pos, camera.pos + camera.front, world_up)
 }
 
 mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
@@ -58,6 +87,48 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			mouse_right_pressed = false
 			first_cursor_pos = true
 			glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
+		}
+	} else if button == glfw.MOUSE_BUTTON_LEFT && action == glfw.PRESS {
+		context = runtime.default_context()
+		cursor_x, cursor_y := glfw.GetCursorPos(window)
+		// normalized device coordinates:
+		// Change range from [0,1] to [-1,1], and flip y
+		x := f32(cursor_x / f64(swapchain_extent.width) * 2 - 1)
+		// y := f32((cursor_y / f64(swapchain_extent.height) * 2 - 1) * -y_up)
+		// no need to flip y here because it's flipped in get_proj
+		y := f32((cursor_y / f64(swapchain_extent.height) * 2 - 1))
+
+		ray_clip := [4]f32{x, y, -1.0, 1.0}
+		invp := m.inverse(get_proj()) * ray_clip
+		ray_eye := [4]f32{invp[0], invp[1], -1, 0}
+		ray_world := m.normalize((m.inverse(get_view()) * ray_eye).xyz)
+
+		selected_object = -1
+		for o, i in objects {
+			bb := get_bb(o)
+
+			tx1 := (bb.min.x - camera.pos.x) / ray_world.x
+			tx2 := (bb.max.x - camera.pos.x) / ray_world.x
+			txmin := min(tx1, tx2)
+			txmax := max(tx1, tx2)
+
+			ty1 := (bb.min.y - camera.pos.y) / ray_world.y
+			ty2 := (bb.max.y - camera.pos.y) / ray_world.y
+			tymin := min(ty1, ty2)
+			tymax := max(ty1, ty2)
+
+			tz1 := (bb.min.z - camera.pos.z) / ray_world.z
+			tz2 := (bb.max.z - camera.pos.z) / ray_world.z
+			tzmin := min(tz1, tz2)
+			tzmax := max(tz1, tz2)
+
+			tmin := max(txmin, tymin, tzmin)
+			tmax := min(txmax, tymax, tzmax)
+
+			if (tmax >= tmin) {
+				selected_object = i
+				break
+			}
 		}
 	}
 }
@@ -76,7 +147,8 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
 	}
 
 	camera.yaw += f32((x - prev_cursor_x) * mouse_sensitivity)
-	camera.pitch -= f32((y - prev_cursor_y) * mouse_sensitivity)
+	camera.pitch -= y_up * f32((y - prev_cursor_y) * mouse_sensitivity)
+	// camera.pitch += f32((y - prev_cursor_y) * mouse_sensitivity)
 	prev_cursor_x = x
 	prev_cursor_y = y
 
@@ -122,10 +194,10 @@ handle_camera_movement_keys :: proc() {
 	}
 
 	// Elevation
-	if (glfw.GetKey(window, glfw.KEY_E) == glfw.PRESS) {
-		camera.pos += world_up * camera_movement
+	if glfw.GetKey(window, glfw.KEY_E) == glfw.PRESS {
+		camera.pos += y_up * world_up * camera_movement
 	}
-	if (glfw.GetKey(window, glfw.KEY_C) == glfw.PRESS) {
-		camera.pos -= world_up * camera_movement
+	if glfw.GetKey(window, glfw.KEY_C) == glfw.PRESS {
+		camera.pos -= y_up * world_up * camera_movement
 	}
 }

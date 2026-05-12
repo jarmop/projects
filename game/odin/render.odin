@@ -9,10 +9,16 @@ record_commands :: proc(image_index: u32) {
 	)
 
 	vk.CmdBindPipeline(command_buffer, .GRAPHICS, pipeline)
+	// If you don't want to flip the projection,
+	// Y can be inverted also by flipping the viewport like this:
+	// 		Viewport y: 0 --> swapchain.extent.height
+	// 		viewport height: swapchain.extent.height --> -swapchain.extent.height
 	viewport := vk.Viewport {
-		y        = f32(swapchain_extent.height),
+		// y        = f32(swapchain_extent.height),
+		y        = 0,
 		width    = f32(swapchain_extent.width),
-		height   = -f32(swapchain_extent.height),
+		// height   = -f32(swapchain_extent.height),
+		height   = f32(swapchain_extent.height),
 		maxDepth = 1.0,
 	}
 	vk.CmdSetViewport(command_buffer, 0, 1, raw_data([]vk.Viewport{viewport}))
@@ -65,7 +71,7 @@ record_commands :: proc(image_index: u32) {
 	}
 	vk.CmdBeginRendering(command_buffer, &rendering_info)
 
-	for &o in objects {
+	for &o, i in objects {
 		vk.CmdBindDescriptorSets(
 			command_buffer,
 			.GRAPHICS,

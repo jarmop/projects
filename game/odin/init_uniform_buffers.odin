@@ -8,6 +8,7 @@ UniformBufferObject :: struct {
 	model: matrix[4, 4]f32,
 	view:  matrix[4, 4]f32,
 	proj:  matrix[4, 4]f32,
+	color: [3]f32,
 }
 
 descriptor_set_layout_ci := vk.DescriptorSetLayoutCreateInfo {
@@ -45,19 +46,25 @@ create_uniform_buffers :: proc(
 	}
 }
 
-update_uniform_buffer :: proc() {
-	view := linalg.matrix4_look_at_f32(camera.pos, camera.pos + camera.front, world_up)
-	proj := linalg.matrix4_perspective_f32(
-		linalg.to_radians(camera.fov),
-		f32(swapchain_extent.width) / f32(swapchain_extent.height),
-		0.1,
-		100.0,
-	)
+selected_object := -1
 
-	for o in objects {
+is_selected :: proc(i: int) -> bool {
+	return i == selected_object
+}
+
+selected_color :: [3]f32{0.0, 0.0, 1.0}
+
+update_uniform_buffer :: proc() {
+	view := get_view()
+	proj := get_proj()
+
+	for o, i in objects {
 		ubo := UniformBufferObject {
-			view = view,
-			proj = proj,
+			view  = view,
+			proj  = proj,
+			color = selected_color if is_selected(i) else [3]f32{1.0, 0.6, 0.2},
+			// color = selected_color if is_selected(i) else selected_color,
+			// color = selected_color,
 		}
 		ubo.model = linalg.matrix4_translate(o.pos)
 		intrinsics.mem_copy_non_overlapping(

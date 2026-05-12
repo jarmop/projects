@@ -52,8 +52,8 @@ create_pipeline :: proc(
 		// e.g. fill each polygon with a color, or only draw the outline
 		pRasterizationState = &vk.PipelineRasterizationStateCreateInfo {
 			sType       = .PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
-			// polygonMode = .FILL,
-			polygonMode = .LINE,
+			polygonMode = .FILL,
+			// polygonMode = .LINE,
 			lineWidth   = 1.0,
 		},
 		// Something related to antialiasing

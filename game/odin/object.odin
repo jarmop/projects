@@ -17,3 +17,28 @@ object2 := Object {
 }
 
 objects := []Object{object1, object2}
+
+BoundingBox :: struct {
+	min: [3]f32,
+	max: [3]f32,
+}
+
+get_bb :: proc(o: Object) -> BoundingBox {
+	v2 := o.pos + vertices[0].pos
+
+	bb := BoundingBox {
+		min = v2,
+		max = v2,
+	}
+
+	for v in vertices[1:] {
+		v2 = o.pos + v.pos
+		for val, i in v2 {
+			bb.min[i] = min(val, bb.min[i])
+			bb.max[i] = max(val, bb.max[i])
+		}
+
+	}
+
+	return bb
+}
