@@ -104,6 +104,7 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 		ray_world := m.normalize((m.inverse(get_view()) * ray_eye).xyz)
 
 		selected_object = -1
+		prev_tmin: f32 = 9999999
 		for o, i in objects {
 			bb := get_bb(o)
 
@@ -125,9 +126,9 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			tmin := max(txmin, tymin, tzmin)
 			tmax := min(txmax, tymax, tzmax)
 
-			if (tmax >= tmin) {
+			if (tmax >= tmin && tmin < prev_tmin) {
 				selected_object = i
-				break
+				prev_tmin = tmin
 			}
 		}
 
