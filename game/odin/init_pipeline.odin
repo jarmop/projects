@@ -25,7 +25,7 @@ create_pipeline :: proc(
 				},
 			),
 			// Describe the attributes we send for for each vertex
-			vertexAttributeDescriptionCount = 1,
+			vertexAttributeDescriptionCount = 2,
 			pVertexAttributeDescriptions    = raw_data(
 				[]vk.VertexInputAttributeDescription {
 					{
@@ -33,6 +33,12 @@ create_pipeline :: proc(
 						binding = 0,
 						format = vertex_attribute_format,
 						offset = u32(offset_of(Vertex, pos)),
+					},
+					{
+						location = 1,
+						binding = 0,
+						format = vertex_attribute_format,
+						offset = u32(offset_of(Vertex, normal)),
 					},
 				},
 			),
@@ -74,6 +80,13 @@ create_pipeline :: proc(
 			dynamicStateCount = 2,
 			pDynamicStates = raw_data([]vk.DynamicState{.VIEWPORT, .SCISSOR}),
 		},
+		// Depth testing
+		pDepthStencilState  = &vk.PipelineDepthStencilStateCreateInfo {
+			sType = .PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+			depthTestEnable = true,
+			depthWriteEnable = true,
+			depthCompareOp = .LESS_OR_EQUAL,
+		},
 	}
 
 	// INFO BASED ON SWAPCHAIN
@@ -81,6 +94,7 @@ create_pipeline :: proc(
 		sType = .PIPELINE_RENDERING_CREATE_INFO,
 		colorAttachmentCount = 1,
 		pColorAttachmentFormats = swapchain_image_format,
+		depthAttachmentFormat = depth_format,
 	}
 
 	// INFO BASED ON SHADERS

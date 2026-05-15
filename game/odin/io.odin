@@ -22,11 +22,11 @@ Camera :: struct {
 }
 
 camera := Camera {
-	pos   = {0.7, 0.2 * y_up, 1.2},
+	pos   = {2.0, 1.2 * y_up, 2.2},
 	front = {0.0, 0.0, -1.0},
 	right = {1.0, 0.0, 0.0},
-	yaw   = -90.0,
-	pitch = 0.0 * y_up,
+	yaw   = -122.0,
+	pitch = -22.0 * y_up,
 	speed = 2.5,
 	fov   = 45.0,
 }
@@ -130,6 +130,25 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 				break
 			}
 		}
+
+		a := [3]f32{1.0, 0.0, 0.0}
+		b := [3]f32{0.0, 1.0, 0.0}
+
+		// f1 := [3]f32{0.0, 0.0, 0.0}
+		// f2 := [3]f32{0.5, 0.0, 0.0}
+		// f3 := [3]f32{0.5, 0.0, 0.5}
+		// a := f2 - f1
+		// b := f3 - f1
+
+		// Calculate the cross product
+		c := m.cross(a, b)
+		c2 := m.normalize(m.cross(b, a))
+
+		// fmt.printf("Vector A: %v\n", a)
+		// fmt.printf("Vector B: %v\n", b)
+		// fmt.printf("Cross Product (A x B): %v\n", c)
+		// fmt.printf("Cross Product (B x A): %v\n", c2)
+
 	}
 }
 

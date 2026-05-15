@@ -32,6 +32,8 @@ init :: proc() {
 
 	create_vertex_buffer()
 
+	create_depth_resources()
+
 	create_pipeline(&swapchain_image_format, &descriptor_set_layout)
 }
 
@@ -123,4 +125,73 @@ create_sync_objects :: proc() {
 		flags = {.SIGNALED},
 	}
 	vk.CreateFence(device, &fence_ci, nil, &fence)
+}
+
+create_depth_resources :: proc() {
+	depth_format = find_depth_format()
+
+	// CREATE IMAGE
+	image_create_info := vk.ImageCreateInfo {
+		sType = .IMAGE_CREATE_INFO,
+		imageType = .D2,
+		format = depth_format,
+		extent = vk.Extent3D {
+			width = swapchain_extent.width,
+			height = swapchain_extent.height,
+			depth = 1,
+		},
+		mipLevels = 1,
+		arrayLayers = 1,
+		samples = {._1},
+		tiling = .OPTIMAL,
+		usage = {.DEPTH_STENCIL_ATTACHMENT},
+		sharingMode = .EXCLUSIVE,
+		initialLayout = .UNDEFINED,
+	}
+	vk.CreateImage(device, &image_create_info, nil, &depth_image)
+	image_memory_requirements: vk.MemoryRequirements
+	vk.GetImageMemoryRequirements(device, depth_image, &image_memory_requirements)
+	memory_allocate_info := vk.MemoryAllocateInfo {
+		sType           = .MEMORY_ALLOCATE_INFO,
+		allocationSize  = image_memory_requirements.size,
+		memoryTypeIndex = find_physical_device_memory_type_index(
+			image_memory_requirements.memoryTypeBits,
+			{.DEVICE_LOCAL},
+		),
+	}
+	depth_image_memory: vk.DeviceMemory
+	vk.AllocateMemory(device, &memory_allocate_info, nil, &depth_image_memory)
+	vk.BindImageMemory(device, depth_image, depth_image_memory, 0)
+
+	// CREATE IMAGE VIEW
+	image_view_create_info := vk.ImageViewCreateInfo {
+		sType = .IMAGE_VIEW_CREATE_INFO,
+		image = depth_image,
+		viewType = .D2,
+		format = depth_format,
+		subresourceRange = {
+			aspectMask = {.DEPTH},
+			baseMipLevel = 0,
+			levelCount = 1,
+			baseArrayLayer = 0,
+			layerCount = 1,
+		},
+	}
+	vk.CreateImageView(device, &image_view_create_info, nil, &depth_image_view)
+}
+
+find_depth_format :: proc() -> vk.Format {
+	candidates := []vk.Format{.D32_SFLOAT, .D32_SFLOAT_S8_UINT, .D24_UNORM_S8_UINT}
+	requiredFeatures: vk.FormatFeatureFlags = {.DEPTH_STENCIL_ATTACHMENT}
+	format := candidates[0]
+	for f in candidates {
+		props: vk.FormatProperties
+		vk.GetPhysicalDeviceFormatProperties(physical_device, f, &props)
+		if ((props.optimalTilingFeatures & requiredFeatures) == requiredFeatures) {
+			format = f
+			break
+		}
+	}
+
+	return format
 }

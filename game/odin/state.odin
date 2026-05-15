@@ -22,5 +22,8 @@ image_available_semaphore: vk.Semaphore
 render_finished_semaphore: vk.Semaphore
 fence: vk.Fence
 vertex_buffer: vk.Buffer
+depth_format: vk.Format
+depth_image: vk.Image
+depth_image_view: vk.ImageView
 
 current_frame := 0

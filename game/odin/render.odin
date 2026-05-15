@@ -64,9 +64,18 @@ record_commands :: proc(image_index: u32) {
 		pColorAttachments = &vk.RenderingAttachmentInfo {
 			sType = .RENDERING_ATTACHMENT_INFO,
 			imageView = swapchain_image_views[image_index],
-			imageLayout = .ATTACHMENT_OPTIMAL_KHR,
+			// imageLayout = .ATTACHMENT_OPTIMAL_KHR,
+			imageLayout = .COLOR_ATTACHMENT_OPTIMAL,
 			loadOp = .CLEAR,
 			clearValue = vk.ClearValue{color = {float32 = {0.0, 0.0, 0.0, 1.0}}},
+		},
+		pDepthAttachment = &vk.RenderingAttachmentInfo {
+			sType = .RENDERING_ATTACHMENT_INFO,
+			imageView = depth_image_view,
+			imageLayout = .DEPTH_ATTACHMENT_OPTIMAL,
+			loadOp = .CLEAR,
+			storeOp = .DONT_CARE,
+			clearValue = vk.ClearValue{depthStencil = {depth = 1.0, stencil = 0}},
 		},
 	}
 	vk.CmdBeginRendering(command_buffer, &rendering_info)
