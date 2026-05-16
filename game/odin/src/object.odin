@@ -1,5 +1,6 @@
 package game
 
+import "core:math/linalg"
 import vk "vendor:vulkan"
 
 objects := []Object{{pos = map_center - {5.0, 0.0, 0.0}}, {pos = map_center + {5.0, 0.0, 0.0}}}
@@ -34,7 +35,14 @@ get_bb :: proc(o: Object) -> BoundingBox {
 }
 
 update_creatures :: proc() {
+	target := map_center
 	speed: f32 = 1.0
 	movement := speed * (time_now - time_prev_frame)
-	objects[0].pos.x += movement
+	for &o in objects {
+		if (o.pos != target) {
+			d := target - o.pos
+			v := linalg.normalize(d) * movement
+			o.pos += v
+		}
+	}
 }
