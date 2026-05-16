@@ -3,6 +3,9 @@ package game
 import "vendor:glfw"
 import vk "vendor:vulkan"
 
+time_prev_frame: f32 = 0.0
+time_now: f32 = 0.0
+
 main :: proc() {
 	glfw.Init()
 	glfw.WindowHint(glfw.CLIENT_API, glfw.NO_API)
@@ -14,7 +17,10 @@ main :: proc() {
 
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
+		time_now = f32(glfw.GetTime())
 		handle_camera_movement_keys()
+		update_creatures()
+		time_prev_frame = time_now
 		update_uniform_buffer()
 
 		vk.WaitForFences(device, 1, &fence, true, max(u64))

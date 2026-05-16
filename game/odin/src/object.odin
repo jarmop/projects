@@ -32,3 +32,9 @@ get_bb :: proc(o: Object) -> BoundingBox {
 
 	return bb
 }
+
+update_creatures :: proc() {
+	speed: f32 = 1.0
+	movement := speed * (time_now - time_prev_frame)
+	objects[0].pos.x += movement
+}

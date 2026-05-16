@@ -42,7 +42,6 @@ mouse_right_pressed := false
 first_cursor_pos := true
 prev_cursor_x, prev_cursor_y: f64
 mouse_sensitivity :: 0.1
-time_prev_frame: f32 = 0.0
 
 frame_buffer_resized := false
 
@@ -199,9 +198,7 @@ update_camera :: proc() {
 }
 
 handle_camera_movement_keys :: proc() {
-	time_now := f32(glfw.GetTime())
 	camera_movement := camera.speed * (time_now - time_prev_frame)
-	time_prev_frame = time_now
 
 	// WASD
 	if glfw.GetKey(window, glfw.KEY_W) == glfw.PRESS {
