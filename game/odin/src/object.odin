@@ -1,48 +1,81 @@
 package game
 
-import "core:math/linalg"
+import "base:intrinsics"
+import m "core:math/linalg"
 import vk "vendor:vulkan"
 
-objects := []Object{{pos = map_center - {5.0, 0.0, 0.0}}, {pos = map_center + {5.0, 0.0, 0.0}}}
+objects := []Object{{pos = map_center + {-5.0, 0.0, 0.0}}, {pos = map_center + {5.0, 0.0, 0.0}}}
 
 ground_object := Object {
 	pos = {0.0, -0.5, 0.0},
 }
 
+creature_size := [3]f32{0.5, 0.5, 0.5}
+ground_size := [3]f32{map_size, 0.5, map_size}
+
 init_objects :: proc() {
-	create_creature(&vertex_buffer)
-	create_ground()
+	for &o in objects {
+		o.target = o.pos
+	}
+	create_rectangle(creature_size, &vertices)
+	create_cpu_buffer({.VERTEX_BUFFER}, &vertex_buffer, raw_data(&vertices))
+
+	ground_object.target = ground_object.pos
+	create_rectangle(ground_size, &ground_vertices)
+	create_cpu_buffer({.VERTEX_BUFFER}, &ground_vertex_buffer, raw_data(&ground_vertices))
 }
 
-get_bb :: proc(o: Object) -> BoundingBox {
-	v2 := o.pos + vertices[0].pos
+selected_object := -1
 
-	bb := BoundingBox {
-		min = v2,
-		max = v2,
-	}
+is_selected :: proc(i: int) -> bool {
+	return i == selected_object
+}
 
-	for v in vertices[1:] {
-		v2 = o.pos + v.pos
-		for val, i in v2 {
-			bb.min[i] = min(val, bb.min[i])
-			bb.max[i] = max(val, bb.max[i])
+selected_color :: [3]f32{0.0, 0.0, 1.0}
+
+update_uniform_buffer :: proc() {
+	view := get_view()
+	proj := get_proj()
+
+	for o, i in objects {
+		ubo := UniformBufferObject {
+			view  = view,
+			proj  = proj,
+			color = selected_color if is_selected(i) else [3]f32{1.0, 0.6, 0.2},
 		}
-
+		ubo.model = m.matrix4_translate(o.pos)
+		intrinsics.mem_copy_non_overlapping(
+			o.uniform_buffers_mapped[current_frame],
+			&ubo,
+			size_of(UniformBufferObject),
+		)
 	}
 
-	return bb
+	ubo := UniformBufferObject {
+		view  = view,
+		proj  = proj,
+		color = [3]f32{0.0, 0.5, 0.0},
+	}
+	ubo.model = m.matrix4_translate(ground_object.pos)
+	intrinsics.mem_copy_non_overlapping(
+		ground_object.uniform_buffers_mapped[current_frame],
+		&ubo,
+		size_of(UniformBufferObject),
+	)
 }
 
 update_creatures :: proc() {
-	target := map_center
 	speed: f32 = 1.0
 	movement := speed * (time_now - time_prev_frame)
-	for &o in objects {
-		if (o.pos != target) {
-			d := target - o.pos
-			v := linalg.normalize(d) * movement
-			o.pos += v
+	for &o, i in objects {
+		if (o.pos != o.target) {
+			d := o.target - o.pos
+			if (m.length(d) <= movement) {
+				o.pos = o.target
+			} else {
+				o.pos += m.normalize(d) * movement
+			}
+
 		}
 	}
 }

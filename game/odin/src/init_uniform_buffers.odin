@@ -1,7 +1,5 @@
 package game
 
-import "base:intrinsics"
-import "core:math/linalg"
 import vk "vendor:vulkan"
 
 UniformBufferObject :: struct {
@@ -55,45 +53,6 @@ create_uniform_buffers :: proc(
 		vk.MapMemory(device, buffer_memory, 0, buffer_size, {}, &uniform_buffers_mapped[i])
 		uniform_buffers[i] = buffer
 	}
-}
-
-selected_object := -1
-
-is_selected :: proc(i: int) -> bool {
-	return i == selected_object
-}
-
-selected_color :: [3]f32{0.0, 0.0, 1.0}
-
-update_uniform_buffer :: proc() {
-	view := get_view()
-	proj := get_proj()
-
-	for o, i in objects {
-		ubo := UniformBufferObject {
-			view  = view,
-			proj  = proj,
-			color = selected_color if is_selected(i) else [3]f32{1.0, 0.6, 0.2},
-		}
-		ubo.model = linalg.matrix4_translate(o.pos)
-		intrinsics.mem_copy_non_overlapping(
-			o.uniform_buffers_mapped[current_frame],
-			&ubo,
-			size_of(UniformBufferObject),
-		)
-	}
-
-	ubo := UniformBufferObject {
-		view  = view,
-		proj  = proj,
-		color = [3]f32{0.0, 0.5, 0.0},
-	}
-	ubo.model = linalg.matrix4_translate(ground_object.pos)
-	intrinsics.mem_copy_non_overlapping(
-		ground_object.uniform_buffers_mapped[current_frame],
-		&ubo,
-		size_of(UniformBufferObject),
-	)
 }
 
 descriptor_pool_ci := vk.DescriptorPoolCreateInfo {

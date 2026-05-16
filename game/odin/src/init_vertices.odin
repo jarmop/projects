@@ -4,18 +4,6 @@ import "base:intrinsics"
 import vk "vendor:vulkan"
 
 
-create_creature :: proc(buffer: ^vk.Buffer) {
-	create_rectangle({0.5, 0.5, 0.5}, &vertices)
-	create_cpu_buffer({.VERTEX_BUFFER}, buffer, raw_data(&vertices))
-}
-
-
-create_ground :: proc() {
-	create_rectangle({map_size, 0.5, map_size}, &ground_vertices)
-	create_cpu_buffer({.VERTEX_BUFFER}, &ground_vertex_buffer, raw_data(&ground_vertices))
-
-}
-
 create_rectangle :: proc(d: [3]f32, vertices: ^[36]Vertex) {
 	faces := []Face {
 		// top and bottom (XZ)

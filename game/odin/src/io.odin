@@ -94,66 +94,60 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 	} else if button == glfw.MOUSE_BUTTON_LEFT && action == glfw.PRESS {
 		context = runtime.default_context()
 		cursor_x, cursor_y := glfw.GetCursorPos(window)
-		// normalized device coordinates:
-		// Change range from [0,1] to [-1,1], and flip y
+
+		// Turn cursor coordinates into normalized device coordinates
+		// by changing their range from [0,1] to [-1,1]):
 		x := f32(cursor_x / f64(swapchain_extent.width) * 2 - 1)
-		// y := f32((cursor_y / f64(swapchain_extent.height) * 2 - 1) * -y_up)
-		// no need to flip y here because it's flipped in get_proj
-		y := f32((cursor_y / f64(swapchain_extent.height) * 2 - 1))
+		y := f32(cursor_y / f64(swapchain_extent.height) * 2 - 1)
 
 		ray_clip := [4]f32{x, y, -1.0, 1.0}
 		invp := m.inverse(get_proj()) * ray_clip
 		ray_eye := [4]f32{invp[0], invp[1], -1, 0}
 		ray_world := m.normalize((m.inverse(get_view()) * ray_eye).xyz)
 
+		prev_selected := selected_object
 		selected_object = -1
 		prev_tmin: f32 = 9999999
 		for o, i in objects {
-			bb := get_bb(o)
-
-			tx1 := (bb.min.x - camera.pos.x) / ray_world.x
-			tx2 := (bb.max.x - camera.pos.x) / ray_world.x
-			txmin := min(tx1, tx2)
-			txmax := max(tx1, tx2)
-
-			ty1 := (bb.min.y - camera.pos.y) / ray_world.y
-			ty2 := (bb.max.y - camera.pos.y) / ray_world.y
-			tymin := min(ty1, ty2)
-			tymax := max(ty1, ty2)
-
-			tz1 := (bb.min.z - camera.pos.z) / ray_world.z
-			tz2 := (bb.max.z - camera.pos.z) / ray_world.z
-			tzmin := min(tz1, tz2)
-			tzmax := max(tz1, tz2)
-
-			tmin := max(txmin, tymin, tzmin)
-			tmax := min(txmax, tymax, tzmax)
-
-			if (tmax >= tmin && tmin < prev_tmin) {
+			bb := BoundingBox {
+				min = o.pos,
+				max = o.pos + creature_size,
+			}
+			d := hit_distance(bb, ray_world)
+			if (d > 0 && d < prev_tmin) {
 				selected_object = i
-				prev_tmin = tmin
+				prev_tmin = d
 			}
 		}
 
-		a := [3]f32{1.0, 0.0, 0.0}
-		b := [3]f32{0.0, 1.0, 0.0}
-
-		// f1 := [3]f32{0.0, 0.0, 0.0}
-		// f2 := [3]f32{0.5, 0.0, 0.0}
-		// f3 := [3]f32{0.5, 0.0, 0.5}
-		// a := f2 - f1
-		// b := f3 - f1
-
-		// Calculate the cross product
-		c := m.cross(a, b)
-		c2 := m.normalize(m.cross(b, a))
-
-		// fmt.printf("Vector A: %v\n", a)
-		// fmt.printf("Vector B: %v\n", b)
-		// fmt.printf("Cross Product (A x B): %v\n", c)
-		// fmt.printf("Cross Product (B x A): %v\n", c2)
-
+		if (prev_selected != -1 && selected_object == -1) {
+			bb := BoundingBox {
+				min = ground_object.pos,
+				max = ground_object.pos + ground_size,
+			}
+			d := hit_distance(bb, ray_world)
+			if (d > 0) {
+				selected_object = prev_selected
+				entry_point := camera.pos + ray_world * d
+				objects[prev_selected].target = entry_point
+			}
+		}
 	}
+}
+
+hit_distance :: proc(bb: BoundingBox, ray_world: [3]f32) -> f32 {
+	vmin := (bb.min - camera.pos) / ray_world
+	vmax := (bb.max - camera.pos) / ray_world
+
+	tmin := max(min(vmin.x, vmax.x), min(vmin.y, vmax.y), min(vmin.z, vmax.z))
+	tmax := min(max(vmin.x, vmax.x), max(vmin.y, vmax.y), max(vmin.z, vmax.z))
+
+	d: f32 = 0
+	if (tmin < tmax) {
+		d = tmin
+	}
+
+	return d
 }
 
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {

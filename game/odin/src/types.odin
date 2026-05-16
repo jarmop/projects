@@ -14,6 +14,7 @@ Vertex :: struct {
 
 Object :: struct {
 	pos:                    [3]f32,
+	target:                 [3]f32,
 	uniform_buffers_mapped: [MAX_FRAMES_IN_FLIGHT]rawptr,
 	descriptor_sets:        [MAX_FRAMES_IN_FLIGHT]vk.DescriptorSet,
 }
