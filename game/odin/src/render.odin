@@ -28,15 +28,6 @@ record_commands :: proc(image_index: u32) {
 	}
 	vk.CmdSetScissor(command_buffer, 0, 1, raw_data([]vk.Rect2D{scissor}))
 
-	vertex_offset: vk.DeviceSize = 0
-	vk.CmdBindVertexBuffers(
-		command_buffer,
-		first_instance,
-		instance_count,
-		&vertex_buffer,
-		&vertex_offset,
-	)
-
 	image_memory_barrier := vk.ImageMemoryBarrier2 {
 		sType = .IMAGE_MEMORY_BARRIER_2,
 		srcStageMask = {.COLOR_ATTACHMENT_OUTPUT},
@@ -80,7 +71,35 @@ record_commands :: proc(image_index: u32) {
 	}
 	vk.CmdBeginRendering(command_buffer, &rendering_info)
 
+	vertex_offset: vk.DeviceSize = 0
+
+	vk.CmdBindVertexBuffers(
+		command_buffer,
+		first_instance,
+		instance_count,
+		&ground_vertex_buffer,
+		&vertex_offset,
+	)
+	vk.CmdBindDescriptorSets(
+		command_buffer,
+		.GRAPHICS,
+		pipeline_layout,
+		0, // first set
+		1, // descriptor set count
+		&ground_object.descriptor_sets[current_frame],
+		0, // dynamic offset count
+		nil, // dynamic offsets
+	)
+	vk.CmdDraw(command_buffer, vertex_count, instance_count, first_vertex, first_instance)
+
 	for &o, i in objects {
+		vk.CmdBindVertexBuffers(
+			command_buffer,
+			first_instance,
+			instance_count,
+			&vertex_buffer,
+			&vertex_offset,
+		)
 		vk.CmdBindDescriptorSets(
 			command_buffer,
 			.GRAPHICS,

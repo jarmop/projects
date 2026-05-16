@@ -24,11 +24,22 @@ descriptor_set_layout_ci := vk.DescriptorSetLayoutCreateInfo {
 
 init_uniform_buffers :: proc(descriptor_set_layout: ^vk.DescriptorSetLayout) {
 	vk.CreateDescriptorSetLayout(device, &descriptor_set_layout_ci, nil, descriptor_set_layout)
+
+	// Creatures
 	for &o in objects {
 		uniform_buffers: [MAX_FRAMES_IN_FLIGHT]vk.Buffer
 		create_uniform_buffers(&uniform_buffers, &o.uniform_buffers_mapped)
 		create_descriptor_sets(descriptor_set_layout, &uniform_buffers, &o.descriptor_sets)
 	}
+
+	// Ground
+	ground_uniform_buffers: [MAX_FRAMES_IN_FLIGHT]vk.Buffer
+	create_uniform_buffers(&ground_uniform_buffers, &ground_object.uniform_buffers_mapped)
+	create_descriptor_sets(
+		descriptor_set_layout,
+		&ground_uniform_buffers,
+		&ground_object.descriptor_sets,
+	)
 }
 
 create_uniform_buffers :: proc(
@@ -63,8 +74,6 @@ update_uniform_buffer :: proc() {
 			view  = view,
 			proj  = proj,
 			color = selected_color if is_selected(i) else [3]f32{1.0, 0.6, 0.2},
-			// color = selected_color if is_selected(i) else selected_color,
-			// color = selected_color,
 		}
 		ubo.model = linalg.matrix4_translate(o.pos)
 		intrinsics.mem_copy_non_overlapping(
@@ -73,6 +82,18 @@ update_uniform_buffer :: proc() {
 			size_of(UniformBufferObject),
 		)
 	}
+
+	ubo := UniformBufferObject {
+		view  = view,
+		proj  = proj,
+		color = [3]f32{0.0, 0.5, 0.0},
+	}
+	ubo.model = linalg.matrix4_translate(ground_object.pos)
+	intrinsics.mem_copy_non_overlapping(
+		ground_object.uniform_buffers_mapped[current_frame],
+		&ubo,
+		size_of(UniformBufferObject),
+	)
 }
 
 descriptor_pool_ci := vk.DescriptorPoolCreateInfo {

@@ -2,25 +2,15 @@ package game
 
 import vk "vendor:vulkan"
 
-Object :: struct {
-	pos:                    [3]f32,
-	uniform_buffers_mapped: [MAX_FRAMES_IN_FLIGHT]rawptr,
-	descriptor_sets:        [MAX_FRAMES_IN_FLIGHT]vk.DescriptorSet,
+objects := []Object{{pos = map_center - {5.0, 0.0, 0.0}}, {pos = map_center + {5.0, 0.0, 0.0}}}
+
+ground_object := Object {
+	pos = {0.0, -0.5, 0.0},
 }
 
-object1 := Object {
-	pos = {0.0, 0.0, 0.0},
-}
-
-object2 := Object {
-	pos = {1.0, 0.0, 0.0},
-}
-
-objects := []Object{object1, object2}
-
-BoundingBox :: struct {
-	min: [3]f32,
-	max: [3]f32,
+init_objects :: proc() {
+	create_creature(&vertex_buffer)
+	create_ground()
 }
 
 get_bb :: proc(o: Object) -> BoundingBox {

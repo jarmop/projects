@@ -3,95 +3,58 @@ package game
 import "base:intrinsics"
 import vk "vendor:vulkan"
 
-Face :: struct {
-	normal:   [3]f32,
-	vertices: [6][3]f32,
+
+create_creature :: proc(buffer: ^vk.Buffer) {
+	create_rectangle({0.5, 0.5, 0.5}, &vertices)
+	create_cpu_buffer({.VERTEX_BUFFER}, buffer, raw_data(&vertices))
 }
 
-faces := []Face {
-	// top and bottom (XZ)
-	{
-		normal = {0.0, 1.0, 0.0},
-		vertices = {
-			{0.0, 0.0, 0.0},
-			{0.5, 0.0, 0.0},
-			{0.5, 0.0, 0.5},
-			{0.5, 0.0, 0.5},
-			{0.0, 0.0, 0.5},
-			{0.0, 0.0, 0.0},
-		},
-	},
-	// Front and back (XY)
-	{
-		normal = {0.0, 0.0, 1.0},
-		vertices = {
-			{0.0, 0.0, 0.0},
-			{0.5, 0.0, 0.0},
-			{0.5, 0.5, 0.0},
-			{0.5, 0.5, 0.0},
-			{0.0, 0.5, 0.0},
-			{0.0, 0.0, 0.0},
-		},
-	},
-	// left and right (YZ)
-	{
-		normal = {1.0, 0.0, 0.0},
-		vertices = {
-			{0.0, 0.0, 0.0},
-			{0.0, 0.5, 0.0},
-			{0.0, 0.5, 0.5},
-			{0.0, 0.5, 0.5},
-			{0.0, 0.0, 0.5},
-			{0.0, 0.0, 0.0},
-		},
-	},
+
+create_ground :: proc() {
+	create_rectangle({map_size, 0.5, map_size}, &ground_vertices)
+	create_cpu_buffer({.VERTEX_BUFFER}, &ground_vertex_buffer, raw_data(&ground_vertices))
+
 }
 
-Vertex :: struct {
-	pos:    [3]f32,
-	normal: [3]f32,
-}
-vertices: [36]Vertex
-// vertices := []Vertex {
-// 	// Rectangle 1
-// 	// {pos = {0.0, 0.5, 0.0}},
-// 	// {pos = {0.25, 0.6, -0.5}},
-// 	// {pos = {0.5, 0.0, 0.5}},
-// 	// {pos = {0.5, 0.0, 0.5}},
-// 	// {pos = {-0.3, 0.2, 0.3}},
-// 	// {pos = {0.0, 0.5, 0.0}},
-// 	// Rectangle 2
-// 	{pos = {0.0, 0.0, 0.0}},
-// 	{pos = {0.5, 0.0, 0.0}},
-// 	{pos = {0.5, 0.0, 0.5}},
-// 	{pos = {0.5, 0.0, 0.5}},
-// 	{pos = {0.0, 0.0, 0.5}},
-// 	{pos = {0.0, 0.0, 0.0}},
-// 	// Rectangle 2
-// 	{pos = {0.0, 0.0, 0.0}},
-// 	{pos = {0.5, 0.0, 0.0}},
-// 	{pos = {0.5, 0.5, 0.0}},
-// 	{pos = {0.5, 0.5, 0.0}},
-// 	{pos = {0.0, 0.5, 0.0}},
-// 	{pos = {0.0, 0.0, 0.0}},
-// }
-// For pipeline init
-vertex_attribute_format: vk.Format = .R32G32B32_SFLOAT
-// For rendering (vk.CmdBindVertexBuffers and vk.CmdDraw)
-vertex_count := u32(len(vertices))
-instance_count :: 1
-first_vertex :: 0
-first_instance :: 0
-
-buffer_size := vk.DeviceSize(vertex_count * size_of(Vertex))
-
-create_vertex_buffer :: proc() {
-	// for i in 0 ..= 5 {
-	// 	vertices[i].normal = {0.0, 1.0, 0.0}
-	// }
-	// for i in 6 ..= 11 {
-	// 	vertices[i].normal = {0.0, 0.0, 1.0}
-	// }
+create_rectangle :: proc(d: [3]f32, vertices: ^[36]Vertex) {
+	faces := []Face {
+		// top and bottom (XZ)
+		{
+			normal = {0.0, 1.0, 0.0},
+			vertices = {
+				{0.0, 0.0, 0.0},
+				{d.x, 0.0, 0.0},
+				{d.x, 0.0, d.z},
+				{d.x, 0.0, d.z},
+				{0.0, 0.0, d.z},
+				{0.0, 0.0, 0.0},
+			},
+		},
+		// Front and back (XY)
+		{
+			normal = {0.0, 0.0, 1.0},
+			vertices = {
+				{0.0, 0.0, 0.0},
+				{d.x, 0.0, 0.0},
+				{d.x, d.y, 0.0},
+				{d.x, d.y, 0.0},
+				{0.0, d.y, 0.0},
+				{0.0, 0.0, 0.0},
+			},
+		},
+		// left and right (YZ)
+		{
+			normal = {1.0, 0.0, 0.0},
+			vertices = {
+				{0.0, 0.0, 0.0},
+				{0.0, d.y, 0.0},
+				{0.0, d.y, d.z},
+				{0.0, d.y, d.z},
+				{0.0, 0.0, d.z},
+				{0.0, 0.0, 0.0},
+			},
+		},
+	}
 	i := 0
 	for f, fi in faces {
 		for j in 0 ..= 5 {
@@ -101,15 +64,14 @@ create_vertex_buffer :: proc() {
 		}
 		for j in 0 ..= 5 {
 			vertices[i].normal = f.normal
-			vertices[i].pos = f.vertices[j] + (0.5 * f.normal)
+			vertices[i].pos = f.vertices[j] + (d * f.normal)
 			i += 1
 		}
 	}
-	create_cpu_buffer({.VERTEX_BUFFER}, &vertex_buffer)
-	// create_gpu_buffer({.VERTEX_BUFFER}, &vertex_buffer)
 }
 
-create_cpu_buffer :: proc(usage_flags: vk.BufferUsageFlags, buffer: ^vk.Buffer) {
+
+create_cpu_buffer :: proc(usage_flags: vk.BufferUsageFlags, buffer: ^vk.Buffer, data: rawptr) {
 	// CREATE BUFFER WITH MEMORY
 	buffer_memory: vk.DeviceMemory
 	create_buffer(buffer_size, usage_flags, buffer, &buffer_memory)
@@ -117,7 +79,7 @@ create_cpu_buffer :: proc(usage_flags: vk.BufferUsageFlags, buffer: ^vk.Buffer) 
 	// COPY VERTICES INTO THE BUFFER MEMORY
 	memory_handle: rawptr
 	vk.MapMemory(device, buffer_memory, 0, buffer_size, {}, &memory_handle)
-	intrinsics.mem_copy(memory_handle, raw_data(&vertices), buffer_size)
+	intrinsics.mem_copy(memory_handle, data, buffer_size)
 	vk.UnmapMemory(device, buffer_memory)
 }
 

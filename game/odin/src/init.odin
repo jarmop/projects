@@ -30,7 +30,7 @@ init :: proc() {
 	descriptor_set_layout: vk.DescriptorSetLayout
 	init_uniform_buffers(&descriptor_set_layout)
 
-	create_vertex_buffer()
+	init_objects()
 
 	create_depth_resources()
 

@@ -19,16 +19,20 @@ Camera :: struct {
 	pitch: f32,
 	speed: f32,
 	fov:   f32,
+	near:  f32,
+	far:   f32,
 }
 
 camera := Camera {
-	pos   = {2.0, 1.2 * y_up, 2.2},
+	pos   = map_center + {0.0, 6.0 * y_up, 12.0},
 	front = {0.0, 0.0, -1.0},
 	right = {1.0, 0.0, 0.0},
-	yaw   = -122.0,
-	pitch = -22.0 * y_up,
-	speed = 2.5,
+	yaw   = -90.0,
+	pitch = -25.0 * y_up,
+	speed = 5.0,
 	fov   = 45.0,
+	near  = 0.1,
+	far   = 1000.0,
 }
 
 world_up := [3]f32{0.0, 1.0, 0.0}
@@ -67,8 +71,8 @@ get_proj :: proc() -> matrix[4, 4]f32 {
 	proj := m.matrix4_perspective_f32(
 		m.to_radians(camera.fov),
 		f32(swapchain_extent.width) / f32(swapchain_extent.height),
-		0.1,
-		100.0,
+		camera.near,
+		camera.far,
 	)
 	proj[1][1] *= -y_up
 	return proj
