@@ -3,7 +3,7 @@ package game
 import "core:slice"
 import vk "vendor:vulkan"
 
-SHADER :: #load("shaders/shader.spv")
+SHADER :: #load("../shaders/shader.spv")
 
 create_pipeline :: proc(
 	swapchain_image_format: ^vk.Format,
