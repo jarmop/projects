@@ -68,6 +68,9 @@ main :: proc() {
 			vk.DeviceWaitIdle(device)
 			vk.DestroySwapchainKHR(device, swapchain, nil)
 			create_swapchain()
+			vk.DestroyImageView(device, depth_image_view, nil)
+			vk.FreeMemory(device, depth_image_memory, nil)
+			create_depth_resources()
 		}
 	}
 }

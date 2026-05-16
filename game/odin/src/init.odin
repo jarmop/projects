@@ -159,7 +159,6 @@ create_depth_resources :: proc() {
 			{.DEVICE_LOCAL},
 		),
 	}
-	depth_image_memory: vk.DeviceMemory
 	vk.AllocateMemory(device, &memory_allocate_info, nil, &depth_image_memory)
 	vk.BindImageMemory(device, depth_image, depth_image_memory, 0)
 

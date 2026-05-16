@@ -20,6 +20,7 @@ swapchain_image_views: []vk.ImageView
 
 depth_format: vk.Format
 depth_image: vk.Image
+depth_image_memory: vk.DeviceMemory
 depth_image_view: vk.ImageView
 
 command_pool: vk.CommandPool
