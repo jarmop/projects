@@ -128,7 +128,11 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			if (d > 0) {
 				selected_creature = prev_selected
 				entry_point := camera.pos + ray_world * d
-				creatures[prev_selected].target = entry_point
+				creatures[prev_selected].target = [3]f32 {
+					entry_point.x - (creature_size.x / 2),
+					entry_point.y,
+					entry_point.z - (creature_size.z / 2),
+				}
 			}
 		}
 	}

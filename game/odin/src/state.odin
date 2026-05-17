@@ -3,7 +3,7 @@ package game
 import "vendor:glfw"
 import vk "vendor:vulkan"
 
-// ENGINE STATE
+// ----------- ENGINE STATE --------------
 
 MAX_FRAMES_IN_FLIGHT :: 1
 
@@ -34,7 +34,8 @@ render_finished_semaphore: vk.Semaphore
 fence: vk.Fence
 current_frame := 0
 
-// GAME STATE
+
+// ------------ GAME STATE ---------------
 
 map_size :: 20.0
 map_center := [3]f32{map_size / 2, 0.0, map_size / 2}
@@ -49,8 +50,15 @@ first_instance :: 0
 
 buffer_size := vk.DeviceSize(rectangle_vertex_count * size_of(Vertex))
 
+creatures := []Object{{pos = map_center + {-5.0, 0.0, 0.0}}, {pos = map_center + {5.0, 0.0, 0.0}}}
+creature_size := [3]f32{0.5, 0.5, 0.5}
 creature_vertices: [rectangle_vertex_count]Vertex
 creature_vertex_buffer: vk.Buffer // contents depend on the game state
+selected_creature := -1
 
+ground := Object {
+	pos = {0.0, -0.5, 0.0},
+}
+ground_size := [3]f32{map_size, 0.5, map_size}
 ground_vertices: [rectangle_vertex_count]Vertex
 ground_vertex_buffer: vk.Buffer

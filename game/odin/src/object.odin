@@ -4,15 +4,6 @@ import "base:intrinsics"
 import m "core:math/linalg"
 import vk "vendor:vulkan"
 
-creatures := []Object{{pos = map_center + {-5.0, 0.0, 0.0}}, {pos = map_center + {5.0, 0.0, 0.0}}}
-
-ground := Object {
-	pos = {0.0, -0.5, 0.0},
-}
-
-creature_size := [3]f32{0.5, 0.5, 0.5}
-ground_size := [3]f32{map_size, 0.5, map_size}
-
 init_objects :: proc() {
 	for &o in creatures {
 		o.target = o.pos
@@ -24,8 +15,6 @@ init_objects :: proc() {
 	create_rectangle(ground_size, &ground_vertices)
 	create_cpu_buffer({.VERTEX_BUFFER}, &ground_vertex_buffer, raw_data(&ground_vertices))
 }
-
-selected_creature := -1
 
 is_selected :: proc(i: int) -> bool {
 	return i == selected_creature
