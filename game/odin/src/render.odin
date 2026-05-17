@@ -86,18 +86,24 @@ record_commands :: proc(image_index: u32) {
 		pipeline_layout,
 		0, // first set
 		1, // descriptor set count
-		&ground_object.descriptor_sets[current_frame],
+		&ground.descriptor_sets[current_frame],
 		0, // dynamic offset count
 		nil, // dynamic offsets
 	)
-	vk.CmdDraw(command_buffer, vertex_count, instance_count, first_vertex, first_instance)
+	vk.CmdDraw(
+		command_buffer,
+		rectangle_vertex_count,
+		instance_count,
+		first_vertex,
+		first_instance,
+	)
 
-	for &o, i in objects {
+	for &o, i in creatures {
 		vk.CmdBindVertexBuffers(
 			command_buffer,
 			first_instance,
 			instance_count,
-			&vertex_buffer,
+			&creature_vertex_buffer,
 			&vertex_offset,
 		)
 		vk.CmdBindDescriptorSets(
@@ -110,7 +116,13 @@ record_commands :: proc(image_index: u32) {
 			0, // dynamic offset count
 			nil, // dynamic offsets
 		)
-		vk.CmdDraw(command_buffer, vertex_count, instance_count, first_vertex, first_instance)
+		vk.CmdDraw(
+			command_buffer,
+			rectangle_vertex_count,
+			instance_count,
+			first_vertex,
+			first_instance,
+		)
 	}
 
 	vk.CmdEndRendering(command_buffer)

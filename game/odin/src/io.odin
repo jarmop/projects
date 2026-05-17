@@ -1,7 +1,6 @@
 package game
 
 import "base:runtime"
-import "core:fmt"
 import m "core:math/linalg"
 import "vendor:glfw"
 
@@ -58,11 +57,11 @@ key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode
 	if key == glfw.KEY_ESCAPE && action == glfw.PRESS {
 		glfw.SetWindowShouldClose(window, true)
 	} else if key == glfw.KEY_1 && action == glfw.PRESS {
-		selected_object = 0
+		selected_creature = 0
 	} else if key == glfw.KEY_2 && action == glfw.PRESS {
-		selected_object = 1
+		selected_creature = 1
 	} else if key == glfw.KEY_3 && action == glfw.PRESS {
-		selected_object = -1
+		selected_creature = -1
 	}
 }
 
@@ -105,31 +104,31 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 		ray_eye := [4]f32{invp[0], invp[1], -1, 0}
 		ray_world := m.normalize((m.inverse(get_view()) * ray_eye).xyz)
 
-		prev_selected := selected_object
-		selected_object = -1
+		prev_selected := selected_creature
+		selected_creature = -1
 		prev_tmin: f32 = 9999999
-		for o, i in objects {
+		for o, i in creatures {
 			bb := BoundingBox {
 				min = o.pos,
 				max = o.pos + creature_size,
 			}
 			d := hit_distance(bb, ray_world)
 			if (d > 0 && d < prev_tmin) {
-				selected_object = i
+				selected_creature = i
 				prev_tmin = d
 			}
 		}
 
-		if (prev_selected != -1 && selected_object == -1) {
+		if (prev_selected != -1 && selected_creature == -1) {
 			bb := BoundingBox {
-				min = ground_object.pos,
-				max = ground_object.pos + ground_size,
+				min = ground.pos,
+				max = ground.pos + ground_size,
 			}
 			d := hit_distance(bb, ray_world)
 			if (d > 0) {
-				selected_object = prev_selected
+				selected_creature = prev_selected
 				entry_point := camera.pos + ray_world * d
-				objects[prev_selected].target = entry_point
+				creatures[prev_selected].target = entry_point
 			}
 		}
 	}

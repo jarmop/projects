@@ -19,9 +19,8 @@ main :: proc() {
 		glfw.PollEvents()
 		time_now = f32(glfw.GetTime())
 		handle_camera_movement_keys()
-		update_creatures()
+		update_objects()
 		time_prev_frame = time_now
-		update_uniform_buffer()
 
 		vk.WaitForFences(device, 1, &fence, true, max(u64))
 		vk.ResetFences(device, 1, &fence)

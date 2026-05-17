@@ -42,15 +42,15 @@ map_center := [3]f32{map_size / 2, 0.0, map_size / 2}
 // For pipeline init
 vertex_attribute_format: vk.Format = .R32G32B32_SFLOAT
 // For rendering (vk.CmdBindVertexBuffers and vk.CmdDraw)
-vertex_count := u32(len(vertices))
+rectangle_vertex_count :: 36
 instance_count :: 1
 first_vertex :: 0
 first_instance :: 0
 
-buffer_size := vk.DeviceSize(vertex_count * size_of(Vertex))
+buffer_size := vk.DeviceSize(rectangle_vertex_count * size_of(Vertex))
 
-vertices: [36]Vertex
-vertex_buffer: vk.Buffer // contents depend on the game state
+creature_vertices: [rectangle_vertex_count]Vertex
+creature_vertex_buffer: vk.Buffer // contents depend on the game state
 
-ground_vertices: [36]Vertex
+ground_vertices: [rectangle_vertex_count]Vertex
 ground_vertex_buffer: vk.Buffer

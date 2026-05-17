@@ -24,7 +24,7 @@ init_uniform_buffers :: proc(descriptor_set_layout: ^vk.DescriptorSetLayout) {
 	vk.CreateDescriptorSetLayout(device, &descriptor_set_layout_ci, nil, descriptor_set_layout)
 
 	// Creatures
-	for &o in objects {
+	for &o in creatures {
 		uniform_buffers: [MAX_FRAMES_IN_FLIGHT]vk.Buffer
 		create_uniform_buffers(&uniform_buffers, &o.uniform_buffers_mapped)
 		create_descriptor_sets(descriptor_set_layout, &uniform_buffers, &o.descriptor_sets)
@@ -32,12 +32,8 @@ init_uniform_buffers :: proc(descriptor_set_layout: ^vk.DescriptorSetLayout) {
 
 	// Ground
 	ground_uniform_buffers: [MAX_FRAMES_IN_FLIGHT]vk.Buffer
-	create_uniform_buffers(&ground_uniform_buffers, &ground_object.uniform_buffers_mapped)
-	create_descriptor_sets(
-		descriptor_set_layout,
-		&ground_uniform_buffers,
-		&ground_object.descriptor_sets,
-	)
+	create_uniform_buffers(&ground_uniform_buffers, &ground.uniform_buffers_mapped)
+	create_descriptor_sets(descriptor_set_layout, &ground_uniform_buffers, &ground.descriptor_sets)
 }
 
 create_uniform_buffers :: proc(
