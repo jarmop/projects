@@ -10,38 +10,44 @@ create_pipeline :: proc(
 	descriptor_set_layout: ^vk.DescriptorSetLayout,
 ) {
 	// STATIC INFO
+	vertex_binding_descriptions :: []vk.VertexInputBindingDescription {
+		// The list is divided into Vertex sized chunks,
+		// and hence the input rate is one vertex
+		{binding = 0, stride = size_of(Vertex), inputRate = .VERTEX},
+	}
+
+	attribute_descriptions := []vk.VertexInputAttributeDescription {
+		{
+			location = 0,
+			binding = 0,
+			format = vertex_attribute_format,
+			offset = u32(offset_of(Vertex, pos)),
+		},
+		{
+			location = 1,
+			binding = 0,
+			format = vertex_attribute_format,
+			offset = u32(offset_of(Vertex, normal)),
+		},
+	}
+
+	color_blend_attachments :: []vk.PipelineColorBlendAttachmentState {
+		{colorWriteMask = {.R, .G, .B, .A}},
+	}
+
+	dynamic_states :: []vk.DynamicState{.VIEWPORT, .SCISSOR}
+
 	pipeline_create_info := vk.GraphicsPipelineCreateInfo {
 		sType               = .GRAPHICS_PIPELINE_CREATE_INFO,
 		// Describe the information we are sending to shaders about vertices
 		pVertexInputState   = &vk.PipelineVertexInputStateCreateInfo {
 			sType                           = .PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
 			// Describe the layout of the list of vertices
-			vertexBindingDescriptionCount   = 1,
-			pVertexBindingDescriptions      = raw_data(
-				[]vk.VertexInputBindingDescription {
-					// The list is divided into Vertex sized chunks,
-					// and hence the input rate is one vertex
-					{binding = 0, stride = size_of(Vertex), inputRate = .VERTEX},
-				},
-			),
+			vertexBindingDescriptionCount   = u32(len(vertex_binding_descriptions)),
+			pVertexBindingDescriptions      = raw_data(vertex_binding_descriptions),
 			// Describe the attributes we send for for each vertex
-			vertexAttributeDescriptionCount = 2,
-			pVertexAttributeDescriptions    = raw_data(
-				[]vk.VertexInputAttributeDescription {
-					{
-						location = 0,
-						binding = 0,
-						format = vertex_attribute_format,
-						offset = u32(offset_of(Vertex, pos)),
-					},
-					{
-						location = 1,
-						binding = 0,
-						format = vertex_attribute_format,
-						offset = u32(offset_of(Vertex, normal)),
-					},
-				},
-			),
+			vertexAttributeDescriptionCount = u32(len(attribute_descriptions)),
+			pVertexAttributeDescriptions    = raw_data(attribute_descriptions),
 		},
 		// We are drawing triangles
 		pInputAssemblyState = &vk.PipelineInputAssemblyStateCreateInfo {
@@ -69,16 +75,14 @@ create_pipeline :: proc(
 		},
 		pColorBlendState    = &vk.PipelineColorBlendStateCreateInfo {
 			sType = .PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-			attachmentCount = 1,
-			pAttachments = &vk.PipelineColorBlendAttachmentState {
-				colorWriteMask = {.R, .G, .B, .A},
-			},
+			attachmentCount = u32(len(color_blend_attachments)),
+			pAttachments = raw_data(color_blend_attachments),
 		},
 		// Tell that we are setting viewport and scissor dynamically on every frame
 		pDynamicState       = &vk.PipelineDynamicStateCreateInfo {
 			sType = .PIPELINE_DYNAMIC_STATE_CREATE_INFO,
-			dynamicStateCount = 2,
-			pDynamicStates = raw_data([]vk.DynamicState{.VIEWPORT, .SCISSOR}),
+			dynamicStateCount = u32(len(dynamic_states)),
+			pDynamicStates = raw_data(dynamic_states),
 		},
 		// Depth testing
 		pDepthStencilState  = &vk.PipelineDepthStencilStateCreateInfo {
@@ -100,23 +104,22 @@ create_pipeline :: proc(
 	// INFO BASED ON SHADERS
 	shader_module := create_shader_module(SHADER)
 	defer vk.DestroyShaderModule(device, shader_module, nil)
-	pipeline_create_info.stageCount = 2
-	pipeline_create_info.pStages = raw_data(
-		[]vk.PipelineShaderStageCreateInfo {
-			{
-				sType = .PIPELINE_SHADER_STAGE_CREATE_INFO,
-				stage = {.VERTEX},
-				module = shader_module,
-				pName = "vertMain",
-			},
-			{
-				sType = .PIPELINE_SHADER_STAGE_CREATE_INFO,
-				stage = {.FRAGMENT},
-				module = shader_module,
-				pName = "fragMain",
-			},
+	shader_stages := []vk.PipelineShaderStageCreateInfo {
+		{
+			sType = .PIPELINE_SHADER_STAGE_CREATE_INFO,
+			stage = {.VERTEX},
+			module = shader_module,
+			pName = "vertMain",
 		},
-	)
+		{
+			sType = .PIPELINE_SHADER_STAGE_CREATE_INFO,
+			stage = {.FRAGMENT},
+			module = shader_module,
+			pName = "fragMain",
+		},
+	}
+	pipeline_create_info.stageCount = u32(len(shader_stages))
+	pipeline_create_info.pStages = raw_data(shader_stages)
 
 	// INFO BASED ON DESCRIPTORS
 	vk.CreatePipelineLayout(
