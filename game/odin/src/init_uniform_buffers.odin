@@ -30,6 +30,11 @@ init_uniform_buffers :: proc(descriptor_set_layout: ^vk.DescriptorSetLayout) {
 		create_descriptor_sets(descriptor_set_layout, &uniform_buffers, &o.descriptor_sets)
 	}
 
+	// Path
+	path_uniform_buffers: [MAX_FRAMES_IN_FLIGHT]vk.Buffer
+	create_uniform_buffers(&path_uniform_buffers, &path_uniform_buffers_mapped)
+	create_descriptor_sets(descriptor_set_layout, &path_uniform_buffers, &path_descriptor_sets)
+
 	// Ground
 	ground_uniform_buffers: [MAX_FRAMES_IN_FLIGHT]vk.Buffer
 	create_uniform_buffers(&ground_uniform_buffers, &ground.uniform_buffers_mapped)

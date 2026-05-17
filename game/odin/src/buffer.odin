@@ -16,6 +16,13 @@ create_cpu_buffer :: proc(usage_flags: vk.BufferUsageFlags, buffer: ^vk.Buffer, 
 	vk.UnmapMemory(device, buffer_memory)
 }
 
+copy_to_memory :: proc(buffer_memory: ^vk.DeviceMemory, data: rawptr) {
+	memory_handle: rawptr
+	vk.MapMemory(device, buffer_memory^, 0, buffer_size, {}, &memory_handle)
+	intrinsics.mem_copy(memory_handle, data, buffer_size)
+	vk.UnmapMemory(device, buffer_memory^)
+}
+
 /* For gpu buffer creation
 
 create_gpu_buffer :: proc(usage_flags: vk.BufferUsageFlags, buffer: ^vk.Buffer) {

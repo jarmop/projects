@@ -35,7 +35,13 @@ create_pipeline :: proc(
 		{colorWriteMask = {.R, .G, .B, .A}},
 	}
 
-	dynamic_states :: []vk.DynamicState{.VIEWPORT, .SCISSOR}
+	dynamic_states :: []vk.DynamicState {
+		.VIEWPORT,
+		.SCISSOR,
+		.POLYGON_MODE_EXT,
+		.PRIMITIVE_TOPOLOGY,
+		.LINE_WIDTH,
+	}
 
 	pipeline_create_info := vk.GraphicsPipelineCreateInfo {
 		sType               = .GRAPHICS_PIPELINE_CREATE_INFO,
@@ -52,7 +58,7 @@ create_pipeline :: proc(
 		// We are drawing triangles
 		pInputAssemblyState = &vk.PipelineInputAssemblyStateCreateInfo {
 			sType = .PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
-			topology = .TRIANGLE_LIST,
+			topology = .LINE_STRIP,
 		},
 		// One viewport and one scissor
 		pViewportState      = &vk.PipelineViewportStateCreateInfo {
@@ -66,7 +72,7 @@ create_pipeline :: proc(
 			sType       = .PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
 			polygonMode = .FILL,
 			// polygonMode = .LINE,
-			lineWidth   = 1.0,
+			lineWidth   = 3,
 		},
 		// Something related to antialiasing
 		pMultisampleState   = &vk.PipelineMultisampleStateCreateInfo {

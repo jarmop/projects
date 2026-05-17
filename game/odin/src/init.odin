@@ -67,12 +67,18 @@ create_logical_device :: proc() {
 		pNext                = &enabled_vk_13_features,
 		shaderDrawParameters = true,
 	}
-	enabled_vk_10_features := vk.PhysicalDeviceFeatures {
+	dynamic_state_3_features := vk.PhysicalDeviceExtendedDynamicState3FeaturesEXT {
+		sType                            = .PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT,
+		pNext                            = &enabled_vk_11_features,
+		extendedDynamicState3PolygonMode = true,
+	}
+	physical_device_features := vk.PhysicalDeviceFeatures {
 		fillModeNonSolid = true,
+		wideLines        = true,
 	}
 	device_create_info := vk.DeviceCreateInfo {
 		sType                   = .DEVICE_CREATE_INFO,
-		pNext                   = &enabled_vk_11_features,
+		pNext                   = &dynamic_state_3_features,
 		queueCreateInfoCount    = 1,
 		pQueueCreateInfos       = raw_data(
 			[]vk.DeviceQueueCreateInfo {
@@ -84,9 +90,14 @@ create_logical_device :: proc() {
 				},
 			},
 		),
-		enabledExtensionCount   = 1,
-		ppEnabledExtensionNames = raw_data([]cstring{vk.KHR_SWAPCHAIN_EXTENSION_NAME}),
-		pEnabledFeatures        = &enabled_vk_10_features,
+		enabledExtensionCount   = 2,
+		ppEnabledExtensionNames = raw_data(
+			[]cstring {
+				vk.KHR_SWAPCHAIN_EXTENSION_NAME,
+				vk.EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME,
+			},
+		),
+		pEnabledFeatures        = &physical_device_features,
 	}
 	vk.CreateDevice(physical_device, &device_create_info, nil, &device)
 	vk.GetDeviceQueue(device, queue_family_index, 0, &queue)
