@@ -44,10 +44,13 @@ update_objects :: proc() {
 	for &c, i in creatures {
 		if (c.pos != c.target) {
 			d := c.target - c.pos - creature_center
-			if (m.length(d) <= movement) {
-				c.pos = c.target - creature_center
-			} else {
-				c.pos += m.normalize(d) * movement
+			if (playing) {
+				// Move creature toward the target
+				if (m.length(d) <= movement) {
+					c.pos = c.target - creature_center
+				} else {
+					c.pos += m.normalize(d) * movement
+				}
 			}
 			// UPDATE PATH
 			path_vertices[0] = {

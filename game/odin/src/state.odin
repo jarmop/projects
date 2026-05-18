@@ -37,6 +37,8 @@ current_frame := 0
 
 // ------------ GAME STATE ---------------
 
+playing := false
+
 map_size :: 20.0
 map_center := [3]f32{map_size / 2, 0.0, map_size / 2}
 

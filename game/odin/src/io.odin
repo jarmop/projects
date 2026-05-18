@@ -56,12 +56,8 @@ init_io :: proc() {
 key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
 	if key == glfw.KEY_ESCAPE && action == glfw.PRESS {
 		glfw.SetWindowShouldClose(window, true)
-	} else if key == glfw.KEY_1 && action == glfw.PRESS {
-		selected_creature = 0
-	} else if key == glfw.KEY_2 && action == glfw.PRESS {
-		selected_creature = 1
-	} else if key == glfw.KEY_3 && action == glfw.PRESS {
-		selected_creature = -1
+	} else if key == glfw.KEY_SPACE && action == glfw.PRESS {
+		playing = !playing
 	}
 }
 
