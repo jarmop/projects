@@ -77,6 +77,7 @@ record_commands :: proc(image_index: u32) {
 	vk.CmdSetPrimitiveTopology(command_buffer, .TRIANGLE_LIST)
 	vk.CmdSetLineWidth(command_buffer, 1.0)
 
+	// GROUND
 	vk.CmdBindVertexBuffers(
 		command_buffer,
 		first_instance,
@@ -102,14 +103,15 @@ record_commands :: proc(image_index: u32) {
 		first_instance,
 	)
 
+	// CREATURES
+	vk.CmdBindVertexBuffers(
+		command_buffer,
+		first_instance,
+		instance_count,
+		&creature_vertex_buffer,
+		&vertex_offset,
+	)
 	for &c in creatures {
-		vk.CmdBindVertexBuffers(
-			command_buffer,
-			first_instance,
-			instance_count,
-			&creature_vertex_buffer,
-			&vertex_offset,
-		)
 		vk.CmdBindDescriptorSets(
 			command_buffer,
 			.GRAPHICS,
@@ -129,7 +131,7 @@ record_commands :: proc(image_index: u32) {
 		)
 	}
 
-	// PATH
+	// PATHS
 	vk.CmdSetPolygonModeEXT(command_buffer, .LINE)
 	vk.CmdSetPrimitiveTopology(command_buffer, .LINE_STRIP)
 	vk.CmdSetLineWidth(command_buffer, 4.0)

@@ -55,10 +55,8 @@ create_pipeline :: proc(
 			vertexAttributeDescriptionCount = u32(len(attribute_descriptions)),
 			pVertexAttributeDescriptions    = raw_data(attribute_descriptions),
 		},
-		// We are drawing triangles
 		pInputAssemblyState = &vk.PipelineInputAssemblyStateCreateInfo {
 			sType = .PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
-			topology = .LINE_STRIP,
 		},
 		// One viewport and one scissor
 		pViewportState      = &vk.PipelineViewportStateCreateInfo {
@@ -69,10 +67,7 @@ create_pipeline :: proc(
 		// Describe how the polygons are rasterized,
 		// e.g. fill each polygon with a color, or only draw the outline
 		pRasterizationState = &vk.PipelineRasterizationStateCreateInfo {
-			sType       = .PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
-			polygonMode = .FILL,
-			// polygonMode = .LINE,
-			lineWidth   = 3,
+			sType = .PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
 		},
 		// Something related to antialiasing
 		pMultisampleState   = &vk.PipelineMultisampleStateCreateInfo {
@@ -84,7 +79,6 @@ create_pipeline :: proc(
 			attachmentCount = u32(len(color_blend_attachments)),
 			pAttachments = raw_data(color_blend_attachments),
 		},
-		// Tell that we are setting viewport and scissor dynamically on every frame
 		pDynamicState       = &vk.PipelineDynamicStateCreateInfo {
 			sType = .PIPELINE_DYNAMIC_STATE_CREATE_INFO,
 			dynamicStateCount = u32(len(dynamic_states)),
