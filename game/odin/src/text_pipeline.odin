@@ -3,33 +3,53 @@ package game
 import "core:slice"
 import vk "vendor:vulkan"
 
-SHADER :: #load("../shaders/shader.spv")
+// Text needs different shaders and color blend settings compared to the main pipeline
 
-create_pipeline :: proc(descriptor_set_layout: ^vk.DescriptorSetLayout) {
+TEXT_SHADER :: #load("../shaders/text_shader.spv")
+
+text_pipeline: vk.Pipeline
+text_pipeline_layout: vk.PipelineLayout
+
+create_text_pipeline :: proc(descriptor_set_layout: ^vk.DescriptorSetLayout) {
 	// STATIC INFO
 	vertex_binding_descriptions :: []vk.VertexInputBindingDescription {
-		// The list is divided into Vertex sized chunks,
+		// The list is divided into TextVertex sized chunks,
 		// and hence the input rate is one vertex
-		{binding = 0, stride = size_of(Vertex), inputRate = .VERTEX},
+		{binding = 0, stride = size_of(TextVertex), inputRate = .VERTEX},
 	}
 
 	attribute_descriptions := []vk.VertexInputAttributeDescription {
 		{
 			location = 0,
 			binding = 0,
-			format = .R32G32B32_SFLOAT,
-			offset = u32(offset_of(Vertex, pos)),
+			format = .R32G32_SFLOAT,
+			offset = u32(offset_of(TextVertex, pos)),
 		},
 		{
 			location = 1,
 			binding = 0,
-			format = .R32G32B32_SFLOAT,
-			offset = u32(offset_of(Vertex, normal)),
+			format = .R32G32_SFLOAT,
+			offset = u32(offset_of(TextVertex, uv)),
+		},
+		{
+			location = 2,
+			binding = 0,
+			format = .R32G32B32A32_SFLOAT,
+			offset = u32(offset_of(TextVertex, color)),
 		},
 	}
 
 	color_blend_attachments :: []vk.PipelineColorBlendAttachmentState {
-		{colorWriteMask = {.R, .G, .B, .A}},
+		{
+			blendEnable = true,
+			srcColorBlendFactor = .SRC_ALPHA,
+			dstColorBlendFactor = .ONE_MINUS_SRC_ALPHA,
+			colorBlendOp = .ADD,
+			srcAlphaBlendFactor = .ONE,
+			dstAlphaBlendFactor = .ZERO,
+			alphaBlendOp = .ADD,
+			colorWriteMask = {.R, .G, .B, .A},
+		},
 	}
 
 	dynamic_states :: []vk.DynamicState {
@@ -83,10 +103,10 @@ create_pipeline :: proc(descriptor_set_layout: ^vk.DescriptorSetLayout) {
 		},
 		// Depth testing
 		pDepthStencilState  = &vk.PipelineDepthStencilStateCreateInfo {
-			sType = .PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
-			depthTestEnable = true,
-			depthWriteEnable = true,
-			depthCompareOp = .LESS_OR_EQUAL,
+			sType            = .PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+			depthTestEnable  = false,
+			depthWriteEnable = false,
+			// depthCompareOp = .LESS_OR_EQUAL,
 		},
 	}
 
@@ -99,7 +119,7 @@ create_pipeline :: proc(descriptor_set_layout: ^vk.DescriptorSetLayout) {
 	}
 
 	// INFO BASED ON SHADERS
-	shader_module := create_shader_module(SHADER)
+	shader_module := create_shader_module(TEXT_SHADER)
 	defer vk.DestroyShaderModule(device, shader_module, nil)
 	shader_stages := []vk.PipelineShaderStageCreateInfo {
 		{
@@ -129,21 +149,9 @@ create_pipeline :: proc(descriptor_set_layout: ^vk.DescriptorSetLayout) {
 			pSetLayouts = descriptor_set_layout,
 		},
 		nil,
-		&pipeline_layout,
+		&text_pipeline_layout,
 	)
-	pipeline_create_info.layout = pipeline_layout
+	pipeline_create_info.layout = text_pipeline_layout
 
-	vk.CreateGraphicsPipelines(device, 0, 1, &pipeline_create_info, nil, &pipeline)
-}
-
-create_shader_module :: proc(code: []byte) -> (module: vk.ShaderModule) {
-	as_u32 := slice.reinterpret([]u32, code)
-
-	create_info := vk.ShaderModuleCreateInfo {
-		sType    = .SHADER_MODULE_CREATE_INFO,
-		codeSize = len(code),
-		pCode    = raw_data(as_u32),
-	}
-	vk.CreateShaderModule(device, &create_info, nil, &module)
-	return
+	vk.CreateGraphicsPipelines(device, 0, 1, &pipeline_create_info, nil, &text_pipeline)
 }

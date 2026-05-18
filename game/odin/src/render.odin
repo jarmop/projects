@@ -8,33 +8,14 @@ record_commands :: proc(image_index: u32) {
 		&vk.CommandBufferBeginInfo{sType = .COMMAND_BUFFER_BEGIN_INFO},
 	)
 
-	vk.CmdBindPipeline(command_buffer, .GRAPHICS, pipeline)
-	// If you don't want to flip the projection,
-	// Y can be inverted also by flipping the viewport like this:
-	// 		Viewport y: 0 --> swapchain.extent.height
-	// 		viewport height: swapchain.extent.height --> -swapchain.extent.height
-	viewport := vk.Viewport {
-		// y        = f32(swapchain_extent.height),
-		y        = 0,
-		width    = f32(swapchain_extent.width),
-		// height   = -f32(swapchain_extent.height),
-		height   = f32(swapchain_extent.height),
-		maxDepth = 1.0,
-	}
-	vk.CmdSetViewport(command_buffer, 0, 1, raw_data([]vk.Viewport{viewport}))
-	scissor := vk.Rect2D {
-		offset = {0, 0},
-		extent = swapchain_extent,
-	}
-	vk.CmdSetScissor(command_buffer, 0, 1, raw_data([]vk.Rect2D{scissor}))
-
 	image_memory_barrier := vk.ImageMemoryBarrier2 {
 		sType = .IMAGE_MEMORY_BARRIER_2,
 		srcStageMask = {.COLOR_ATTACHMENT_OUTPUT},
 		dstStageMask = {.COLOR_ATTACHMENT_OUTPUT},
 		dstAccessMask = {.COLOR_ATTACHMENT_WRITE},
 		oldLayout = .UNDEFINED,
-		newLayout = .ATTACHMENT_OPTIMAL_KHR,
+		// newLayout = .ATTACHMENT_OPTIMAL_KHR,
+		newLayout = .COLOR_ATTACHMENT_OPTIMAL,
 		srcQueueFamilyIndex = vk.QUEUE_FAMILY_IGNORED,
 		dstQueueFamilyIndex = vk.QUEUE_FAMILY_IGNORED,
 		image = swapchain_images[image_index],
@@ -58,6 +39,7 @@ record_commands :: proc(image_index: u32) {
 			// imageLayout = .ATTACHMENT_OPTIMAL_KHR,
 			imageLayout = .COLOR_ATTACHMENT_OPTIMAL,
 			loadOp = .CLEAR,
+			storeOp = .STORE,
 			clearValue = vk.ClearValue{color = {float32 = {0.0, 0.0, 0.0, 1.0}}},
 		},
 		pDepthAttachment = &vk.RenderingAttachmentInfo {
@@ -65,62 +47,61 @@ record_commands :: proc(image_index: u32) {
 			imageView = depth_image_view,
 			imageLayout = .DEPTH_ATTACHMENT_OPTIMAL,
 			loadOp = .CLEAR,
-			storeOp = .DONT_CARE,
+			// storeOp = .DONT_CARE,
+			storeOp = .STORE,
 			clearValue = vk.ClearValue{depthStencil = {depth = 1.0, stencil = 0}},
 		},
 	}
 	vk.CmdBeginRendering(command_buffer, &rendering_info)
 
+	// If you don't want to flip the projection,
+	// Y can be inverted also by flipping the viewport like this:
+	// 		Viewport y: 0 --> swapchain.extent.height
+	// 		viewport height: swapchain.extent.height --> -swapchain.extent.height
+	viewport := vk.Viewport {
+		// y        = f32(swapchain_extent.height),
+		y        = 0,
+		width    = f32(swapchain_extent.width),
+		// height   = -f32(swapchain_extent.height),
+		height   = f32(swapchain_extent.height),
+		maxDepth = 1.0,
+	}
+	vk.CmdSetViewport(command_buffer, 0, 1, raw_data([]vk.Viewport{viewport}))
+	scissor := vk.Rect2D {
+		offset = {0, 0},
+		extent = swapchain_extent,
+	}
+	vk.CmdSetScissor(command_buffer, 0, 1, raw_data([]vk.Rect2D{scissor}))
+
 	vertex_offset: vk.DeviceSize = 0
 
-	vk.CmdSetPolygonModeEXT(command_buffer, .FILL)
-	vk.CmdSetPrimitiveTopology(command_buffer, .TRIANGLE_LIST)
-	vk.CmdSetLineWidth(command_buffer, 1.0)
+	// ---------------------------------------
+	// ----------- 3D PIPELINE ---------------
+	// ---------------------------------------
+	{
+		vk.CmdBindPipeline(command_buffer, .GRAPHICS, pipeline)
 
-	// GROUND
-	vk.CmdBindVertexBuffers(
-		command_buffer,
-		first_instance,
-		instance_count,
-		&ground_vertex_buffer,
-		&vertex_offset,
-	)
-	vk.CmdBindDescriptorSets(
-		command_buffer,
-		.GRAPHICS,
-		pipeline_layout,
-		0, // first set
-		1, // descriptor set count
-		&ground.descriptor_sets[current_frame],
-		0, // dynamic offset count
-		nil, // dynamic offsets
-	)
-	vk.CmdDraw(
-		command_buffer,
-		rectangle_vertex_count,
-		instance_count,
-		first_vertex,
-		first_instance,
-	)
+		vk.CmdSetPolygonModeEXT(command_buffer, .FILL)
+		vk.CmdSetPrimitiveTopology(command_buffer, .TRIANGLE_LIST)
+		vk.CmdSetLineWidth(command_buffer, 1.0)
 
-	// CREATURES
-	vk.CmdBindVertexBuffers(
-		command_buffer,
-		first_instance,
-		instance_count,
-		&creature_vertex_buffer,
-		&vertex_offset,
-	)
-	for &c in creatures {
+		// GROUND
 		vk.CmdBindDescriptorSets(
 			command_buffer,
 			.GRAPHICS,
 			pipeline_layout,
 			0, // first set
 			1, // descriptor set count
-			&c.descriptor_sets[current_frame],
+			&ground.descriptor_sets[current_frame],
 			0, // dynamic offset count
 			nil, // dynamic offsets
+		)
+		vk.CmdBindVertexBuffers(
+			command_buffer,
+			first_instance,
+			instance_count,
+			&ground_vertex_buffer,
+			&vertex_offset,
 		)
 		vk.CmdDraw(
 			command_buffer,
@@ -129,38 +110,108 @@ record_commands :: proc(image_index: u32) {
 			first_vertex,
 			first_instance,
 		)
-	}
 
-	// PATHS
-	vk.CmdSetPolygonModeEXT(command_buffer, .LINE)
-	vk.CmdSetPrimitiveTopology(command_buffer, .LINE_STRIP)
-	vk.CmdSetLineWidth(command_buffer, 4.0)
-	for &c in creatures {
+		// CREATURES
 		vk.CmdBindVertexBuffers(
 			command_buffer,
 			first_instance,
 			instance_count,
-			&c.path_vertex_buffer,
+			&creature_vertex_buffer,
 			&vertex_offset,
 		)
+		for &c in creatures {
+			vk.CmdBindDescriptorSets(
+				command_buffer,
+				.GRAPHICS,
+				pipeline_layout,
+				0, // first set
+				1, // descriptor set count
+				&c.descriptor_sets[current_frame],
+				0, // dynamic offset count
+				nil, // dynamic offsets
+			)
+			vk.CmdDraw(
+				command_buffer,
+				rectangle_vertex_count,
+				instance_count,
+				first_vertex,
+				first_instance,
+			)
+		}
+
+		// PATHS
+		vk.CmdSetPolygonModeEXT(command_buffer, .LINE)
+		vk.CmdSetPrimitiveTopology(command_buffer, .LINE_STRIP)
+		vk.CmdSetLineWidth(command_buffer, 4.0)
+		for &c in creatures {
+			vk.CmdBindVertexBuffers(
+				command_buffer,
+				first_instance,
+				instance_count,
+				&c.path_vertex_buffer,
+				&vertex_offset,
+			)
+			vk.CmdBindDescriptorSets(
+				command_buffer,
+				.GRAPHICS,
+				pipeline_layout,
+				0, // first set
+				1, // descriptor set count
+				&c.path_descriptor_sets[current_frame],
+				0, // dynamic offset count
+				nil, // dynamic offsets
+			)
+			vk.CmdDraw(
+				command_buffer,
+				path_vertex_count,
+				instance_count,
+				first_vertex,
+				first_instance,
+			)
+		}
+	}
+
+	// ---------------------------------------
+	// ----------- UI PIPELINE ---------------
+	// ---------------------------------------
+	{
+		vk.CmdBindPipeline(command_buffer, .GRAPHICS, text_pipeline)
+
 		vk.CmdBindDescriptorSets(
 			command_buffer,
 			.GRAPHICS,
-			pipeline_layout,
+			text_pipeline_layout,
 			0, // first set
 			1, // descriptor set count
-			&c.path_descriptor_sets[current_frame],
+			// &ground.descriptor_sets[current_frame],
+			&font.descriptor_set,
 			0, // dynamic offset count
 			nil, // dynamic offsets
 		)
-		vk.CmdDraw(command_buffer, path_vertex_count, instance_count, first_vertex, first_instance)
+		vk.CmdBindVertexBuffers(
+			command_buffer,
+			first_instance,
+			instance_count,
+			&text_buffer,
+			&vertex_offset,
+		)
+		vk.CmdDraw(
+			command_buffer,
+			u32(len(dynamic_vertices)),
+			instance_count,
+			first_vertex,
+			first_instance,
+		)
 	}
-
 
 	vk.CmdEndRendering(command_buffer)
 
-	image_memory_barrier.oldLayout = .ATTACHMENT_OPTIMAL_KHR
+	// image_memory_barrier.oldLayout = .ATTACHMENT_OPTIMAL_KHR
+	image_memory_barrier.oldLayout = .COLOR_ATTACHMENT_OPTIMAL
+	// image_memory_barrier.oldLayout = .SHADER_READ_ONLY_OPTIMAL
 	image_memory_barrier.newLayout = .PRESENT_SRC_KHR
+	image_memory_barrier.srcAccessMask = {.COLOR_ATTACHMENT_WRITE}
+	image_memory_barrier.dstAccessMask = {}
 	vk.CmdPipelineBarrier2(command_buffer, &dependency_info)
 
 	vk.EndCommandBuffer(command_buffer)

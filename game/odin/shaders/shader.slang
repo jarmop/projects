@@ -29,8 +29,7 @@ VertexOutput vertMain(VertexInput in) {
 }
 
 [shader("fragment")]
-float4 fragMain(VertexOutput in) : SV_Target
-{
+float4 fragMain(VertexOutput in) : SV_Target {
     // float3 lightDirection = normalize(-float3(-0.2, -1.0, -0.3));
     float3 lightDirection = normalize(float3(0.4, 1.0, 0.7));
     float3 lightDirection2 = normalize(float3(-0.8, 1.0, -0.6));

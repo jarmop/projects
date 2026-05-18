@@ -2,13 +2,6 @@ package game
 
 import vk "vendor:vulkan"
 
-UniformBufferObject :: struct {
-	model: matrix[4, 4]f32,
-	view:  matrix[4, 4]f32,
-	proj:  matrix[4, 4]f32,
-	color: [3]f32,
-}
-
 descriptor_set_layout_ci := vk.DescriptorSetLayoutCreateInfo {
 	sType        = .DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
 	bindingCount = 1,

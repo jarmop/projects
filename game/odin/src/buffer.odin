@@ -16,38 +16,38 @@ create_cpu_buffer :: proc(usage_flags: vk.BufferUsageFlags, buffer: ^vk.Buffer, 
 	vk.UnmapMemory(device, buffer_memory)
 }
 
-/* For gpu buffer creation
+// For gpu buffer creation
 
-create_gpu_buffer :: proc(usage_flags: vk.BufferUsageFlags, buffer: ^vk.Buffer) {
-	buffer_staging: vk.Buffer
-	create_cpu_buffer({.TRANSFER_SRC}, &buffer_staging)
-	buffer_memory: vk.DeviceMemory
-	create_buffer(buffer_size, usage_flags + {.TRANSFER_DST}, buffer, &buffer_memory)
-	copy_buffer(buffer_size, buffer_staging, buffer^)
-}
+// create_gpu_buffer :: proc(usage_flags: vk.BufferUsageFlags, buffer: ^vk.Buffer) {
+// 	buffer_staging: vk.Buffer
+// 	create_cpu_buffer({.TRANSFER_SRC}, &buffer_staging)
+// 	buffer_memory: vk.DeviceMemory
+// 	create_buffer(buffer_size, usage_flags + {.TRANSFER_DST}, buffer, &buffer_memory)
+// 	copy_buffer(buffer_size, buffer_staging, buffer^)
+// }
 
-copy_buffer :: proc(buffer_size: vk.DeviceSize, src_buffer: vk.Buffer, dst_buffer: vk.Buffer) {
-	// cb: vk.CommandBuffer
-	// create_command_buffer(&cb)
-	vk.BeginCommandBuffer(
-		command_buffer,
-		&vk.CommandBufferBeginInfo{sType = .COMMAND_BUFFER_BEGIN_INFO},
-	)
-	region := vk.BufferCopy {
-		srcOffset = 0,
-		dstOffset = 0,
-		size      = buffer_size,
-	}
-	vk.CmdCopyBuffer(command_buffer, src_buffer, dst_buffer, 1, &region)
-	vk.EndCommandBuffer(command_buffer)
-	submit_info := vk.SubmitInfo {
-		sType              = .SUBMIT_INFO,
-		commandBufferCount = 1,
-		pCommandBuffers    = &command_buffer,
-	}
-	vk.QueueSubmit(queue, 1, &submit_info, {})
-	vk.QueueWaitIdle(queue)
-}
+// copy_buffer :: proc(buffer_size: vk.DeviceSize, src_buffer: vk.Buffer, dst_buffer: vk.Buffer) {
+// 	// cb: vk.CommandBuffer
+// 	// create_command_buffer(&cb)
+// 	vk.BeginCommandBuffer(
+// 		command_buffer,
+// 		&vk.CommandBufferBeginInfo{sType = .COMMAND_BUFFER_BEGIN_INFO},
+// 	)
+// 	region := vk.BufferCopy {
+// 		srcOffset = 0,
+// 		dstOffset = 0,
+// 		size      = buffer_size,
+// 	}
+// 	vk.CmdCopyBuffer(command_buffer, src_buffer, dst_buffer, 1, &region)
+// 	vk.EndCommandBuffer(command_buffer)
+// 	submit_info := vk.SubmitInfo {
+// 		sType              = .SUBMIT_INFO,
+// 		commandBufferCount = 1,
+// 		pCommandBuffers    = &command_buffer,
+// 	}
+// 	vk.QueueSubmit(queue, 1, &submit_info, {})
+// 	vk.QueueWaitIdle(queue)
+// }
 
 // create_command_buffer :: proc(cb: ^vk.CommandBuffer) {
 // 	command_pool_create_info := vk.CommandPoolCreateInfo {
@@ -65,8 +65,6 @@ copy_buffer :: proc(buffer_size: vk.DeviceSize, src_buffer: vk.Buffer, dst_buffe
 // 	}
 // 	vk.AllocateCommandBuffers(device, &command_buffer_allocate_info, cb)
 // }
-
-*/
 
 create_buffer :: proc(
 	buffer_size: vk.DeviceSize,

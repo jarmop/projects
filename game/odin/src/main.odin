@@ -15,12 +15,15 @@ main :: proc() {
 
 	init()
 
+	update_text()
+
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
 		time_now = f32(glfw.GetTime())
 		handle_camera_movement_keys()
 		update_objects()
 		time_prev_frame = time_now
+		// update_text()
 
 		vk.WaitForFences(device, 1, &fence, true, max(u64))
 		vk.ResetFences(device, 1, &fence)

@@ -17,6 +17,7 @@ swapchain: vk.SwapchainKHR
 swapchain_extent: vk.Extent2D
 swapchain_images: []vk.Image
 swapchain_image_views: []vk.ImageView
+swapchain_image_format: vk.Format
 
 depth_format: vk.Format
 depth_image: vk.Image
@@ -42,8 +43,6 @@ playing := false
 map_size :: 20.0
 map_center := [3]f32{map_size / 2, 0.0, map_size / 2}
 
-// For pipeline init
-vertex_attribute_format: vk.Format = .R32G32B32_SFLOAT
 // For rendering (vk.CmdBindVertexBuffers and vk.CmdDraw)
 rectangle_vertex_count :: 36
 instance_count :: 1

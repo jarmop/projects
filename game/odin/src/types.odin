@@ -1,5 +1,6 @@
 package game
 
+import tt "vendor:stb/truetype"
 import vk "vendor:vulkan"
 
 Face :: struct {
@@ -32,4 +33,11 @@ Creature :: struct {
 BoundingBox :: struct {
 	min: [3]f32,
 	max: [3]f32,
+}
+
+UniformBufferObject :: struct {
+	model: matrix[4, 4]f32,
+	view:  matrix[4, 4]f32,
+	proj:  matrix[4, 4]f32,
+	color: [3]f32,
 }

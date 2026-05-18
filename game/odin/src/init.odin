@@ -21,7 +21,7 @@ init :: proc() {
 
 	create_logical_device()
 
-	swapchain_image_format := create_swapchain()
+	create_swapchain()
 
 	create_command_buffers()
 
@@ -34,7 +34,9 @@ init :: proc() {
 
 	create_depth_resources()
 
-	create_pipeline(&swapchain_image_format, &descriptor_set_layout)
+	create_pipeline(&descriptor_set_layout)
+
+	init_text()
 }
 
 create_instance :: proc(instance: ^vk.Instance) {
