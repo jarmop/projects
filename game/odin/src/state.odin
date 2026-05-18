@@ -52,7 +52,10 @@ first_instance :: 0
 
 buffer_size := vk.DeviceSize(rectangle_vertex_count * size_of(Vertex))
 
-creatures := []Object{{pos = map_center + {-5.0, 0.0, 0.0}}, {pos = map_center + {5.0, 0.0, 0.0}}}
+creatures := []Creature {
+	{pos = map_center + {-5.0, 0.0, 0.0}},
+	{pos = map_center + {5.0, 0.0, 0.0}},
+}
 creature_size :: [3]f32{0.5, 0.5, 0.5}
 creature_center :: [3]f32{(creature_size.x / 2), 0, (creature_size.z / 2)}
 creature_vertices: [rectangle_vertex_count]Vertex
@@ -60,10 +63,7 @@ creature_vertex_buffer: vk.Buffer
 selected_creature := -1
 
 path_vertex_count :: 2
-path_vertices: [path_vertex_count]Vertex
-path_vertex_buffer: vk.Buffer
-path_uniform_buffers_mapped: [MAX_FRAMES_IN_FLIGHT]rawptr
-path_descriptor_sets: [MAX_FRAMES_IN_FLIGHT]vk.DescriptorSet
+path_vertex_buffer_size :: vk.DeviceSize(path_vertex_count * size_of(Vertex))
 
 ground := Object {
 	pos = {0.0, -0.5, 0.0},

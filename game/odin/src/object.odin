@@ -4,27 +4,28 @@ import "base:intrinsics"
 import m "core:math/linalg"
 import vk "vendor:vulkan"
 
-path_vertex_buffer_memory: vk.DeviceMemory
-
 init_objects :: proc() {
-	for &o in creatures {
-		o.target = o.pos
+	for &c in creatures {
+		c.target = c.pos
+		path_vertex_buffer_memory: vk.DeviceMemory
+		create_buffer(
+			path_vertex_buffer_size,
+			{.VERTEX_BUFFER},
+			&c.path_vertex_buffer,
+			&path_vertex_buffer_memory,
+		)
+		vk.MapMemory(
+			device,
+			path_vertex_buffer_memory,
+			0,
+			path_vertex_buffer_size,
+			{},
+			&c.path_memory_handle,
+		)
 	}
 	create_rectangle(creature_size, &creature_vertices)
 	create_cpu_buffer({.VERTEX_BUFFER}, &creature_vertex_buffer, raw_data(&creature_vertices))
 
-	// path_vertices[0] = {
-	// 	pos    = [3]f32{0, 0, 0},
-	// 	normal = -world_up,
-	// }
-	// path_vertices[1] = {
-	// 	pos    = [3]f32{0, 5.0, 0},
-	// 	normal = -world_up,
-	// }
-	create_buffer(buffer_size, {.VERTEX_BUFFER}, &path_vertex_buffer, &path_vertex_buffer_memory)
-	// copy_to_memory(&path_vertex_buffer_memory, raw_data(&path_vertices))
-
-	ground.target = ground.pos
 	create_rectangle(ground_size, &ground_vertices)
 	create_cpu_buffer({.VERTEX_BUFFER}, &ground_vertex_buffer, raw_data(&ground_vertices))
 }
@@ -53,16 +54,17 @@ update_objects :: proc() {
 				}
 			}
 			// UPDATE PATH
-			path_vertices[0] = {
-				pos    = creature_get_center(c),
-				normal = world_up,
-			}
-			path_vertices[1] = {
-				pos    = c.target,
-				normal = world_up,
-			}
-			copy_to_memory(&path_vertex_buffer_memory, raw_data(&path_vertices))
-			update_ubo(path_color, [3]f32{0, 0, 0}, path_uniform_buffers_mapped)
+			intrinsics.mem_copy(
+				c.path_memory_handle,
+				raw_data(
+					[]Vertex {
+						{pos = creature_get_center(c), normal = world_up},
+						{pos = c.target, normal = world_up},
+					},
+				),
+				path_vertex_buffer_size,
+			)
+			update_ubo(path_color, [3]f32{0, 0, 0}, c.path_uniform_buffers_mapped)
 		}
 		update_ubo(
 			creature_color_selected if is_selected(i) else creature_color,
@@ -93,6 +95,6 @@ update_ubo :: proc(
 	)
 }
 
-creature_get_center :: proc(c: Object) -> [3]f32 {
+creature_get_center :: proc(c: Creature) -> [3]f32 {
 	return c.pos + creature_center
 }

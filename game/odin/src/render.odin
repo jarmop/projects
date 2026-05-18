@@ -102,7 +102,7 @@ record_commands :: proc(image_index: u32) {
 		first_instance,
 	)
 
-	for &o, i in creatures {
+	for &c in creatures {
 		vk.CmdBindVertexBuffers(
 			command_buffer,
 			first_instance,
@@ -116,7 +116,7 @@ record_commands :: proc(image_index: u32) {
 			pipeline_layout,
 			0, // first set
 			1, // descriptor set count
-			&o.descriptor_sets[current_frame],
+			&c.descriptor_sets[current_frame],
 			0, // dynamic offset count
 			nil, // dynamic offsets
 		)
@@ -130,27 +130,30 @@ record_commands :: proc(image_index: u32) {
 	}
 
 	// PATH
-	vk.CmdBindVertexBuffers(
-		command_buffer,
-		first_instance,
-		instance_count,
-		&path_vertex_buffer,
-		&vertex_offset,
-	)
-	vk.CmdBindDescriptorSets(
-		command_buffer,
-		.GRAPHICS,
-		pipeline_layout,
-		0, // first set
-		1, // descriptor set count
-		&path_descriptor_sets[current_frame],
-		0, // dynamic offset count
-		nil, // dynamic offsets
-	)
 	vk.CmdSetPolygonModeEXT(command_buffer, .LINE)
 	vk.CmdSetPrimitiveTopology(command_buffer, .LINE_STRIP)
 	vk.CmdSetLineWidth(command_buffer, 4.0)
-	vk.CmdDraw(command_buffer, path_vertex_count, instance_count, first_vertex, first_instance)
+	for &c in creatures {
+		vk.CmdBindVertexBuffers(
+			command_buffer,
+			first_instance,
+			instance_count,
+			&c.path_vertex_buffer,
+			&vertex_offset,
+		)
+		vk.CmdBindDescriptorSets(
+			command_buffer,
+			.GRAPHICS,
+			pipeline_layout,
+			0, // first set
+			1, // descriptor set count
+			&c.path_descriptor_sets[current_frame],
+			0, // dynamic offset count
+			nil, // dynamic offsets
+		)
+		vk.CmdDraw(command_buffer, path_vertex_count, instance_count, first_vertex, first_instance)
+	}
+
 
 	vk.CmdEndRendering(command_buffer)
 

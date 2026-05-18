@@ -14,9 +14,19 @@ Vertex :: struct {
 
 Object :: struct {
 	pos:                    [3]f32,
-	target:                 [3]f32,
 	uniform_buffers_mapped: [MAX_FRAMES_IN_FLIGHT]rawptr,
 	descriptor_sets:        [MAX_FRAMES_IN_FLIGHT]vk.DescriptorSet,
+}
+
+Creature :: struct {
+	pos:                         [3]f32,
+	target:                      [3]f32,
+	uniform_buffers_mapped:      [MAX_FRAMES_IN_FLIGHT]rawptr,
+	descriptor_sets:             [MAX_FRAMES_IN_FLIGHT]vk.DescriptorSet,
+	path_uniform_buffers_mapped: [MAX_FRAMES_IN_FLIGHT]rawptr,
+	path_descriptor_sets:        [MAX_FRAMES_IN_FLIGHT]vk.DescriptorSet,
+	path_vertex_buffer:          vk.Buffer,
+	path_memory_handle:          rawptr,
 }
 
 BoundingBox :: struct {
