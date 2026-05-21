@@ -1,6 +1,5 @@
 package game
 
-import "core:os"
 import gl "vendor:OpenGL"
 import glfw "vendor:glfw"
 
@@ -21,7 +20,8 @@ main :: proc() {
 	glfw.SetKeyCallback(window, key_callback)
 	glfw.SetFramebufferSizeCallback(window, framebuffer_size_callback)
 
-	init_text()
+	init_scene()
+	init_ui()
 
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
@@ -29,7 +29,8 @@ main :: proc() {
 		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
-		draw_text("Hello from stb_truetype", 50, 100)
+		draw_scene()
+		draw_ui("Hello from stb_truetype", 50, 100)
 
 		glfw.SwapBuffers(window)
 	}
