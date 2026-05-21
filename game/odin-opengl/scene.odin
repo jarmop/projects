@@ -1,8 +1,10 @@
 package game
 
 import "core:fmt"
+import "core:math/linalg/glsl"
 import "core:os"
 import gl "vendor:OpenGL"
+import "vendor:glfw"
 
 scene_shader_program: u32
 
@@ -10,6 +12,8 @@ scene_vbo, scene_vao: u32
 
 init_scene :: proc() {
 	vertices := [?]f32{0.5, -0.5, 0.0, -0.5, -0.5, 0.0, 0.0, 0.5, 0.0}
+
+	// gl.Enable(gl.DEPTH_TEST)
 
 	shader_ok: bool
 	scene_shader_program, shader_ok = gl.load_shaders_file(
@@ -36,5 +40,23 @@ init_scene :: proc() {
 draw_scene :: proc() {
 	gl.UseProgram(scene_shader_program)
 	gl.BindVertexArray(scene_vao)
+
+	model: glsl.mat4 = 1
+	shader_set_mat4(scene_shader_program, "model", model)
+
+	view: glsl.mat4 = 1
+	view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
+	shader_set_mat4(scene_shader_program, "view", view)
+
+	window_width, window_height := glfw.GetWindowSize(window)
+	projection: glsl.mat4 = 1
+	projection *= glsl.mat4Perspective(
+		glsl.radians_f32(camera.fov),
+		f32(window_width) / f32(window_height),
+		camera.near,
+		camera.far,
+	)
+	shader_set_mat4(scene_shader_program, "projection", projection)
+
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 }

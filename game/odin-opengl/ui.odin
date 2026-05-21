@@ -3,6 +3,7 @@ package game
 import "core:fmt"
 import "core:os"
 import gl "vendor:OpenGL"
+import "vendor:glfw"
 import stbtt "vendor:stb/truetype"
 
 FONT_BITMAP_W :: 512
@@ -90,7 +91,9 @@ init_ui :: proc() {
 draw_ui :: proc(text: string, start_x, start_y: f32) {
 	gl.UseProgram(ui_shader_program)
 
-	gl.Uniform2f(ui_uloc_screen_size, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
+	window_width, window_height := glfw.GetWindowSize(window)
+
+	gl.Uniform2f(ui_uloc_screen_size, f32(window_width), f32(window_height))
 
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, texture)
