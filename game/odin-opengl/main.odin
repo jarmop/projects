@@ -9,6 +9,9 @@ INITIAL_WINDOW_HEIGHT :: 600
 
 window: glfw.WindowHandle
 
+time_prev_frame: f32 = 0.0
+time_now: f32 = 0.0
+
 main :: proc() {
 	glfw.Init()
 	glfw.WindowHint(glfw.CONTEXT_VERSION_MAJOR, 3)
@@ -20,14 +23,15 @@ main :: proc() {
 	gl.load_up_to(3, 3, glfw.gl_set_proc_address)
 	gl.Viewport(0, 0, INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT)
 
-	glfw.SetKeyCallback(window, key_callback)
-	glfw.SetFramebufferSizeCallback(window, framebuffer_size_callback)
-
+	init_io()
 	init_scene()
 	init_ui()
 
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
+		time_now = f32(glfw.GetTime())
+		handle_camera_movement_keys()
+		time_prev_frame = time_now
 
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
