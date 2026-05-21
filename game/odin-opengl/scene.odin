@@ -17,7 +17,7 @@ ground_vao: u32
 creature_vao: u32
 
 init_scene :: proc() {
-	// gl.Enable(gl.DEPTH_TEST)
+	gl.Enable(gl.DEPTH_TEST)
 
 	shader_ok: bool
 	scene_shader_program, shader_ok = gl.load_shaders_file(

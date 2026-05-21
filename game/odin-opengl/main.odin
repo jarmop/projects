@@ -33,7 +33,7 @@ main :: proc() {
 		handle_camera_movement_keys()
 		time_prev_frame = time_now
 
-		gl.Clear(gl.COLOR_BUFFER_BIT)
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		draw_scene()
 		draw_ui("Hello from stb_truetype", 50, 100)
