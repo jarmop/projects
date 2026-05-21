@@ -49,8 +49,10 @@ init_vertices :: proc(vbo: ^u32, vao: ^u32, vertices: ^[CUBOID_VERTEX_COUNT]Vert
 
 	create_cuboid(size, vertices)
 	gl.BufferData(gl.ARRAY_BUFFER, size_of(vertices^), raw_data(vertices), gl.STATIC_DRAW)
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 6 * size_of(f32), 0)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, size_of(Vertex), 0)
 	gl.EnableVertexAttribArray(0)
+	gl.VertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, size_of(Vertex), offset_of(Vertex, normal))
+	gl.EnableVertexAttribArray(1)
 }
 
 creature_positions := []glsl.vec3{MAP_CENTER - {5.0, 0.0, 0.0}, MAP_CENTER + {5.0, 0.0, 0.0}}
