@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import "core:os"
 import gl "vendor:OpenGL"
 import stbtt "vendor:stb/truetype"
@@ -15,28 +16,29 @@ baked_chars: [GLYPH_COUNT]stbtt.bakedchar
 
 font_bitmap: [FONT_BITMAP_W * FONT_BITMAP_H]u8
 
-screen_size_loc: i32
+text_uloc_screen_size: i32
 
-shader_program: u32
+text_shader_program: u32
 
-vao: u32
-vbo: u32
+text_vao: u32
+text_vbo: u32
 
 init_text :: proc() {
 	shader_ok: bool
-	shader_program, shader_ok = gl.load_shaders_file("./shaders/text.vs", "./shaders/text.fs")
+	text_shader_program, shader_ok = gl.load_shaders_file("./shaders/text.vs", "./shaders/text.fs")
 	if !shader_ok {
+		fmt.println("Shader not ok")
 		os.exit(-1)
 	}
 
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
-	gl.GenVertexArrays(1, &vao)
-	gl.GenBuffers(1, &vbo)
+	gl.GenVertexArrays(1, &text_vao)
+	gl.GenBuffers(1, &text_vbo)
 
-	gl.BindVertexArray(vao)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.BindVertexArray(text_vao)
+	gl.BindBuffer(gl.ARRAY_BUFFER, text_vbo)
 
 	// in_pos
 	gl.EnableVertexAttribArray(0)
@@ -46,7 +48,7 @@ init_text :: proc() {
 	gl.EnableVertexAttribArray(1)
 	gl.VertexAttribPointer(1, 2, gl.FLOAT, false, 4 * size_of(f32), uintptr(2 * size_of(f32)))
 
-	screen_size_loc = gl.GetUniformLocation(shader_program, "screen_size")
+	text_uloc_screen_size = gl.GetUniformLocation(text_shader_program, "screen_size")
 
 	font_data, err := os.read_entire_file_from_path(
 		"/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
@@ -86,9 +88,9 @@ init_text :: proc() {
 }
 
 draw_text :: proc(text: string, start_x, start_y: f32) {
-	gl.UseProgram(shader_program)
+	gl.UseProgram(text_shader_program)
 
-	gl.Uniform2f(screen_size_loc, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
+	gl.Uniform2f(text_uloc_screen_size, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
 
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, texture)
@@ -146,8 +148,8 @@ draw_text :: proc(text: string, start_x, start_y: f32) {
 		)
 	}
 
-	gl.BindVertexArray(vao)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.BindVertexArray(text_vao)
+	gl.BindBuffer(gl.ARRAY_BUFFER, text_vbo)
 
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
