@@ -19,16 +19,16 @@ Camera :: struct {
 }
 
 camera := Camera {
-	pos   = {0.0, 0.0, 3.0},
+	pos   = MAP_CENTER + {0.0, 6.0, 12.0},
 	front = {0.0, 0.0, -1.0},
 	right = {1.0, 0.0, 0.0},
 	up    = {0.0, 1.0, 0.0},
 	yaw   = -90.0,
-	pitch = 0.0,
+	pitch = -25.0,
 	speed = 5.0,
 	fov   = 45.0,
 	near  = 0.1,
-	far   = 100.0,
+	far   = 1000.0,
 }
 
 mouse_right_pressed := false
