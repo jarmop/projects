@@ -16,6 +16,7 @@ MAP_CENTER :: [3]f32{MAP_SIZE / 2, 0.0, MAP_SIZE / 2}
 GROUND_SIZE :: [3]f32{MAP_SIZE, 0.5, MAP_SIZE}
 GROUND_POSITION :: [3]f32{0.0, -GROUND_SIZE.y, 0.0}
 CREATURE_SIZE :: [3]f32{0.5, 0.5, 0.5}
+CREATURE_CENTER_XZ :: [3]f32{(CREATURE_SIZE.x / 2), 0, (CREATURE_SIZE.z / 2)}
 CREATURE_COLOR :: [3]f32{1.0, 0.6, 0.2}
 CREATURE_COLOR_SELECTED :: [3]f32{0.0, 0.0, 1.0}
 
@@ -120,6 +121,7 @@ draw_scene :: proc() {
 	for c, i in creatures {
 		draw_object(
 			c.pos,
+			// c.pos - CREATURE_CENTER_XZ,
 			CREATURE_COLOR_SELECTED if selected_creature == i else CREATURE_COLOR,
 			&creature_vao,
 		)
@@ -133,8 +135,8 @@ draw_scene :: proc() {
 			gl.BindVertexArray(path_vao)
 			gl.BindBuffer(gl.ARRAY_BUFFER, path_vbo)
 			path_vertices := []Vertex {
-				{pos = c.pos, normal = camera.up},
-				{pos = c.target, normal = camera.up},
+				{pos = c.pos + CREATURE_CENTER_XZ, normal = camera.up},
+				{pos = c.target + CREATURE_CENTER_XZ, normal = camera.up},
 			}
 			gl.BufferData(
 				gl.ARRAY_BUFFER,

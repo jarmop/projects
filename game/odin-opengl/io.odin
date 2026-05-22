@@ -100,6 +100,9 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 		selected_creature = -1
 		prev_tmin: f32 = 9999999
 		for c, i in creatures {
+			// bb: BoundingBox
+			// bb.min = c.pos - CREATURE_CENTER_XZ
+			// bb.max = bb.min + CREATURE_SIZE
 			bb := BoundingBox {
 				min = c.pos,
 				max = c.pos + CREATURE_SIZE,
@@ -121,7 +124,7 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			if (d > 0) {
 				selected_creature = prev_selected
 				entry_point := camera.pos + ray_world * d
-				creatures[prev_selected].target = entry_point
+				creatures[prev_selected].target = entry_point - CREATURE_CENTER_XZ
 			}
 		}
 	}
