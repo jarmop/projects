@@ -6,15 +6,26 @@ import "core:os"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
 
+Creature :: struct {
+	pos:    [3]f32,
+	target: [3]f32,
+}
+
 MAP_SIZE :: 20.0
 MAP_CENTER :: [3]f32{MAP_SIZE / 2, 0.0, MAP_SIZE / 2}
 GROUND_SIZE :: [3]f32{MAP_SIZE, 0.5, MAP_SIZE}
+GROUND_POSITION :: [3]f32{0.0, -GROUND_SIZE.y, 0.0}
+CREATURE_SIZE :: [3]f32{0.5, 0.5, 0.5}
+CREATURE_COLOR :: [3]f32{1.0, 0.6, 0.2}
+CREATURE_COLOR_SELECTED :: [3]f32{0.0, 0.0, 1.0}
 
 scene_shader_program: u32
 
 ground_vao: u32
 
 creature_vao: u32
+
+creatures := []Creature{{pos = MAP_CENTER - {5.0, 0.0, 0.0}}, {pos = MAP_CENTER + {5.0, 0.0, 0.0}}}
 
 init_scene :: proc() {
 	gl.Enable(gl.DEPTH_TEST)
@@ -37,7 +48,6 @@ init_scene :: proc() {
 	// CREATURES
 	creature_vbo: u32
 	creature_vertices: [CUBOID_VERTEX_COUNT]Vertex
-	CREATURE_SIZE :: [3]f32{0.5, 0.5, 0.5}
 	init_vertices(&creature_vbo, &creature_vao, &creature_vertices, CREATURE_SIZE)
 }
 
@@ -54,8 +64,6 @@ init_vertices :: proc(vbo: ^u32, vao: ^u32, vertices: ^[CUBOID_VERTEX_COUNT]Vert
 	gl.VertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, size_of(Vertex), offset_of(Vertex, normal))
 	gl.EnableVertexAttribArray(1)
 }
-
-creature_positions := []glsl.vec3{MAP_CENTER - {5.0, 0.0, 0.0}, MAP_CENTER + {5.0, 0.0, 0.0}}
 
 draw_scene :: proc() {
 	gl.UseProgram(scene_shader_program)
@@ -75,11 +83,15 @@ draw_scene :: proc() {
 	shader_set_mat4(scene_shader_program, "projection", projection)
 
 	// GROUND
-	draw_object({0.0, -GROUND_SIZE.y, 0.0}, {0.0, 0.5, 0.0}, &ground_vao)
+	draw_object(GROUND_POSITION, {0.0, 0.5, 0.0}, &ground_vao)
 
 	// CREATURES
-	for pos in creature_positions {
-		draw_object(pos, {1.0, 0.6, 0.2}, &creature_vao)
+	for c, i in creatures {
+		draw_object(
+			c.pos,
+			CREATURE_COLOR_SELECTED if selected_creature == i else CREATURE_COLOR,
+			&creature_vao,
+		)
 	}
 }
 

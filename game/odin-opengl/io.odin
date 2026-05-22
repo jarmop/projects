@@ -2,6 +2,8 @@ package game
 
 import "base:runtime"
 import m "core:math/linalg"
+// import glsl "core:math/linalg/glsl"
+// import m "core:math"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
 
@@ -55,6 +57,12 @@ framebuffer_size_callback :: proc "c" (window: glfw.WindowHandle, width: i32, he
 	gl.Viewport(0, 0, width, height)
 }
 
+BoundingBox :: struct {
+	min: [3]f32,
+	max: [3]f32,
+}
+selected_creature := -1
+
 mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
 	if button == glfw.MOUSE_BUTTON_RIGHT {
 		if action == glfw.PRESS {
@@ -65,7 +73,73 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			first_cursor_pos = true
 			glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 		}
+	} else if button == glfw.MOUSE_BUTTON_LEFT && action == glfw.PRESS {
+		context = runtime.default_context()
+		cursor_x, cursor_y := glfw.GetCursorPos(window)
+		window_width, window_height := glfw.GetWindowSize(window)
+
+		// Turn cursor coordinates into OpenGL normalized device coordinates
+		// by changing their range from [0,1] to [-1,1]), and flipping y:
+		x := f32(cursor_x / f64(window_width) * 2 - 1)
+		y := -f32(cursor_y / f64(window_height) * 2 - 1)
+
+		ray_clip := [4]f32{x, y, -1.0, 1.0}
+		proj := m.matrix4_perspective_f32(
+			m.to_radians(camera.fov),
+			f32(window_width) / f32(window_height),
+			camera.near,
+			camera.far,
+		)
+		invp := m.inverse(proj) * ray_clip
+		ray_eye := [4]f32{invp[0], invp[1], -1, 0}
+		view := m.matrix4_look_at_f32(camera.pos, camera.pos + camera.front, camera.up)
+		ray_world := m.normalize((m.inverse(view) * ray_eye).xyz)
+
+		// SELECT CREATURE
+		prev_selected := selected_creature
+		selected_creature = -1
+		prev_tmin: f32 = 9999999
+		for c, i in creatures {
+			bb := BoundingBox {
+				min = c.pos,
+				max = c.pos + CREATURE_SIZE,
+			}
+			d := hit_distance(bb, ray_world)
+			if (d > 0 && d < prev_tmin) {
+				selected_creature = i
+				prev_tmin = d
+			}
+		}
+
+		// SELECT TARGET
+		if (prev_selected != -1 && selected_creature == -1) {
+			bb := BoundingBox {
+				min = GROUND_POSITION,
+				max = GROUND_POSITION + GROUND_SIZE,
+			}
+			d := hit_distance(bb, ray_world)
+			if (d > 0) {
+				selected_creature = prev_selected
+				entry_point := camera.pos + ray_world * d
+				creatures[prev_selected].target = entry_point
+			}
+		}
 	}
+}
+
+hit_distance :: proc(bb: BoundingBox, ray_world: [3]f32) -> f32 {
+	vmin := (bb.min - camera.pos) / ray_world
+	vmax := (bb.max - camera.pos) / ray_world
+
+	tmin := max(min(vmin.x, vmax.x), min(vmin.y, vmax.y), min(vmin.z, vmax.z))
+	tmax := min(max(vmin.x, vmax.x), max(vmin.y, vmax.y), max(vmin.z, vmax.z))
+
+	d: f32 = 0
+	if (tmin < tmax) {
+		d = tmin
+	}
+
+	return d
 }
 
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
