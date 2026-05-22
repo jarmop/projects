@@ -176,6 +176,9 @@ record_commands :: proc(image_index: u32) {
 	// ---------------------------------------
 	{
 		vk.CmdBindPipeline(command_buffer, .GRAPHICS, text_pipeline)
+		vk.CmdSetPolygonModeEXT(command_buffer, .FILL)
+		vk.CmdSetPrimitiveTopology(command_buffer, .TRIANGLE_LIST)
+		vk.CmdSetLineWidth(command_buffer, 1.0)
 
 		vk.CmdBindDescriptorSets(
 			command_buffer,

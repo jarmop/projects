@@ -357,9 +357,9 @@ append_text :: proc(
 		x1 := (q.x1 / screen_w) * 2.0 - 1.0
 		y1 := (q.y1 / screen_h) * 2.0 - 1.0
 
-		// Flip Y for Vulkan
-		y0 = -y0
-		y1 = -y1
+		// Apparently no need to flip Y for Vulkan after all
+		// y0 = -y0
+		// y1 = -y1
 
 		color := [4]f32{1, 1, 1, 1}
 
