@@ -21,6 +21,10 @@ main :: proc() {
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
 		time_now = f32(glfw.GetTime())
+		game_time_delta = game_time_speed * (time_now - time_prev_frame)
+		if playing {
+			game_time += game_time_delta
+		}
 		handle_camera_movement_keys()
 		update_scene()
 		time_prev_frame = time_now
@@ -28,7 +32,7 @@ main :: proc() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		draw_scene()
-		draw_ui("Hello from stb_truetype", 50, 100)
+		draw_ui()
 
 		glfw.SwapBuffers(window)
 	}

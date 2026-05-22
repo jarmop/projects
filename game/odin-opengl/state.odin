@@ -12,6 +12,11 @@ window: glfw.WindowHandle
 time_prev_frame: f32 = 0.0
 time_now: f32 = 0.0
 
+playing := false
+game_time: f32 = 0
+game_time_delta: f32 = 0.0
+game_time_speed: f32 = 1
+
 // -------------- SCENE --------------
 
 scene_shader_program: u32
@@ -38,8 +43,6 @@ PATH_WIDTH :: 3.0
 PATH_VERTEX_COUNT :: 2
 path_vao: u32
 path_vbo: u32
-
-playing := false
 
 // -------------- IO --------------
 

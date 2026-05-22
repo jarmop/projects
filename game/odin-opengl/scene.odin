@@ -127,8 +127,8 @@ draw_object :: proc(pos: glsl.vec3, color: glsl.vec3, vao: ^u32) {
 }
 
 update_scene :: proc() {
-	speed :: 1.0
-	movement := speed * (time_now - time_prev_frame)
+	creature_speed :: 1.0
+	movement := creature_speed * game_time_delta
 	for &c, i in creatures {
 		if playing && c.pos != c.target {
 			d := c.target - c.pos

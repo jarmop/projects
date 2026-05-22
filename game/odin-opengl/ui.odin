@@ -9,7 +9,9 @@ import stbtt "vendor:stb/truetype"
 FONT_BITMAP_W :: 512
 FONT_BITMAP_H :: 512
 GLYPH_COUNT :: 96
-FONT_SIZE :: 16
+FONT_SIZE_PX :: 16
+FIRST_PRINTABLE_ASCII :: 32
+LAST_PRINTABLE_ASCII :: 127
 
 texture: u32
 
@@ -60,11 +62,11 @@ init_ui :: proc() {
 	stbtt.BakeFontBitmap(
 		raw_data(font_data),
 		0,
-		FONT_SIZE,
+		FONT_SIZE_PX,
 		raw_data(&font_bitmap),
 		FONT_BITMAP_W,
 		FONT_BITMAP_H,
-		32,
+		FIRST_PRINTABLE_ASCII,
 		GLYPH_COUNT,
 		raw_data(&baked_chars),
 	)
@@ -88,24 +90,31 @@ init_ui :: proc() {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 }
 
-draw_ui :: proc(text: string, start_x, start_y: f32) {
+draw_ui :: proc() {
+	PADDING :: 10
+	// Apparently need to multiply FONT_SIZE with a magic number 0.7 to get the correct glyph height
+	GLYPH_HEIGHT_PX :: 0.7 * FONT_SIZE_PX
+
+	draw_text(fmt.tprintf("%.2f", game_time), PADDING, PADDING + GLYPH_HEIGHT_PX)
+}
+
+draw_text :: proc(text: string, x_param: f32, y_param: f32) {
+	text_x := x_param
+	text_y := y_param
+
 	gl.UseProgram(ui_shader_program)
 
 	window_width, window_height := glfw.GetWindowSize(window)
-
 	gl.Uniform2f(ui_uloc_screen_size, f32(window_width), f32(window_height))
 
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, texture)
 
-	x := start_x
-	y := start_y
-
 	vertices := make([dynamic]f32)
 	defer delete(vertices)
 
 	for c in text {
-		if c < 32 || c >= 128 {
+		if c < FIRST_PRINTABLE_ASCII || c > LAST_PRINTABLE_ASCII {
 			continue
 		}
 
@@ -115,9 +124,9 @@ draw_ui :: proc(text: string, start_x, start_y: f32) {
 			&baked_chars[0],
 			FONT_BITMAP_W,
 			FONT_BITMAP_H,
-			i32(c - 32),
-			&x,
-			&y,
+			i32(c - FIRST_PRINTABLE_ASCII),
+			&text_x,
+			&text_y,
 			&q,
 			true,
 		)
