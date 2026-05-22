@@ -3,15 +3,6 @@ package game
 import gl "vendor:OpenGL"
 import glfw "vendor:glfw"
 
-
-INITIAL_WINDOW_WIDTH :: 800
-INITIAL_WINDOW_HEIGHT :: 600
-
-window: glfw.WindowHandle
-
-time_prev_frame: f32 = 0.0
-time_now: f32 = 0.0
-
 main :: proc() {
 	glfw.Init()
 	glfw.WindowHint(glfw.CONTEXT_VERSION_MAJOR, 3)

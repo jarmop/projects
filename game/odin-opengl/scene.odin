@@ -6,35 +6,6 @@ import "core:os"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
 
-Creature :: struct {
-	pos:    [3]f32,
-	target: [3]f32,
-}
-
-MAP_SIZE :: 20.0
-MAP_CENTER :: [3]f32{MAP_SIZE / 2, 0.0, MAP_SIZE / 2}
-GROUND_SIZE :: [3]f32{MAP_SIZE, 0.5, MAP_SIZE}
-GROUND_POSITION :: [3]f32{0.0, -GROUND_SIZE.y, 0.0}
-CREATURE_SIZE :: [3]f32{0.5, 0.5, 0.5}
-CREATURE_CENTER_XZ :: [3]f32{(CREATURE_SIZE.x / 2), 0, (CREATURE_SIZE.z / 2)}
-CREATURE_COLOR :: [3]f32{1.0, 0.6, 0.2}
-CREATURE_COLOR_SELECTED :: [3]f32{0.0, 0.0, 1.0}
-
-scene_shader_program: u32
-
-ground_vao: u32
-
-creature_vao: u32
-creatures := []Creature{{pos = MAP_CENTER - {5.0, 0.0, 0.0}}, {pos = MAP_CENTER + {5.0, 0.0, 0.0}}}
-
-path_vao: u32
-path_vbo: u32
-PATH_COLOR :: [3]f32{1.0, 1.0, 1.0}
-PATH_WIDTH :: 3.0
-PATH_VERTEX_COUNT :: 2
-
-playing := false
-
 init_scene :: proc() {
 	gl.Enable(gl.DEPTH_TEST)
 
@@ -51,7 +22,8 @@ init_scene :: proc() {
 	// GROUND
 	ground_vbo: u32
 	ground_vertices: [CUBOID_VERTEX_COUNT]Vertex
-	init_vertices(&ground_vbo, &ground_vao, &ground_vertices, GROUND_SIZE)
+	create_cuboid(GROUND_DIMENSIONS, &ground_vertices)
+	init_vertices(&ground_vbo, &ground_vao, raw_data(&ground_vertices), size_of(ground_vertices))
 
 	// CREATURES
 	for &c in creatures {
@@ -59,38 +31,30 @@ init_scene :: proc() {
 	}
 	creature_vbo: u32
 	creature_vertices: [CUBOID_VERTEX_COUNT]Vertex
-	init_vertices(&creature_vbo, &creature_vao, &creature_vertices, CREATURE_SIZE)
+	create_cuboid(CREATURE_DIMENSIONS, &creature_vertices)
+	init_vertices(
+		&creature_vbo,
+		&creature_vao,
+		raw_data(&creature_vertices),
+		size_of(creature_vertices),
+	)
 
 	// PATH
-	gl.GenVertexArrays(1, &path_vao)
-	gl.GenBuffers(1, &path_vbo)
-	gl.BindVertexArray(path_vao)
-	gl.BindBuffer(gl.ARRAY_BUFFER, path_vbo)
-
 	path_vertices := []Vertex {
 		{pos = {0.0, 0.0, 0.0}, normal = camera.up},
 		{pos = {5.0, 5.0, 5.0}, normal = camera.up},
 	}
-	gl.BufferData(
-		gl.ARRAY_BUFFER,
-		len(path_vertices) * size_of(Vertex),
-		raw_data(path_vertices),
-		gl.STATIC_DRAW,
-	)
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, size_of(Vertex), 0)
-	gl.EnableVertexAttribArray(0)
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, size_of(Vertex), offset_of(Vertex, normal))
-	gl.EnableVertexAttribArray(1)
+	init_vertices(&path_vbo, &path_vao, raw_data(path_vertices), size_of(path_vertices))
 }
 
-init_vertices :: proc(vbo: ^u32, vao: ^u32, vertices: ^[CUBOID_VERTEX_COUNT]Vertex, size: [3]f32) {
+init_vertices :: proc(vbo: ^u32, vao: ^u32, vertices: rawptr, size: int) {
 	gl.GenVertexArrays(1, vao)
-	gl.GenBuffers(1, vbo)
 	gl.BindVertexArray(vao^)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo^)
 
-	create_cuboid(size, vertices)
-	gl.BufferData(gl.ARRAY_BUFFER, size_of(vertices^), raw_data(vertices), gl.STATIC_DRAW)
+	gl.GenBuffers(1, vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo^)
+	gl.BufferData(gl.ARRAY_BUFFER, size, vertices, gl.STATIC_DRAW)
+
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, size_of(Vertex), 0)
 	gl.EnableVertexAttribArray(0)
 	gl.VertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, size_of(Vertex), offset_of(Vertex, normal))

@@ -1,17 +1,5 @@
 package game
 
-CUBOID_VERTEX_COUNT :: 36
-
-Vertex :: struct {
-	pos:    [3]f32,
-	normal: [3]f32,
-}
-
-Face :: struct {
-	normal:   [3]f32,
-	vertices: [6][3]f32,
-}
-
 create_cuboid :: proc(d: [3]f32, vertices: ^[CUBOID_VERTEX_COUNT]Vertex) {
 	faces := []Face {
 		// top and bottom (XZ)
