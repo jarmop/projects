@@ -33,6 +33,8 @@ PATH_COLOR :: [3]f32{1.0, 1.0, 1.0}
 PATH_WIDTH :: 3.0
 PATH_VERTEX_COUNT :: 2
 
+playing := false
+
 init_scene :: proc() {
 	gl.Enable(gl.DEPTH_TEST)
 
@@ -164,7 +166,7 @@ update_scene :: proc() {
 	speed :: 1.0
 	movement := speed * (time_now - time_prev_frame)
 	for &c, i in creatures {
-		if c.pos != c.target {
+		if playing && c.pos != c.target {
 			d := c.target - c.pos
 			if (glsl.length(d) <= movement) {
 				c.pos = c.target
