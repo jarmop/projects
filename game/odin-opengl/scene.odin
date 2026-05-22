@@ -159,3 +159,18 @@ draw_object :: proc(pos: glsl.vec3, color: glsl.vec3, vao: ^u32) {
 	gl.BindVertexArray(vao^)
 	gl.DrawArrays(gl.TRIANGLES, 0, CUBOID_VERTEX_COUNT)
 }
+
+update_scene :: proc() {
+	speed :: 1.0
+	movement := speed * (time_now - time_prev_frame)
+	for &c, i in creatures {
+		if c.pos != c.target {
+			d := c.target - c.pos
+			if (glsl.length(d) <= movement) {
+				c.pos = c.target
+			} else {
+				c.pos += movement * glsl.normalize(d)
+			}
+		}
+	}
+}

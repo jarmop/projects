@@ -31,6 +31,7 @@ main :: proc() {
 		glfw.PollEvents()
 		time_now = f32(glfw.GetTime())
 		handle_camera_movement_keys()
+		update_scene()
 		time_prev_frame = time_now
 
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
