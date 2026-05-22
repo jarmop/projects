@@ -24,8 +24,13 @@ scene_shader_program: u32
 ground_vao: u32
 
 creature_vao: u32
-
 creatures := []Creature{{pos = MAP_CENTER - {5.0, 0.0, 0.0}}, {pos = MAP_CENTER + {5.0, 0.0, 0.0}}}
+
+path_vao: u32
+path_vbo: u32
+PATH_COLOR :: [3]f32{1.0, 1.0, 1.0}
+PATH_WIDTH :: 3.0
+PATH_VERTEX_COUNT :: 2
 
 init_scene :: proc() {
 	gl.Enable(gl.DEPTH_TEST)
@@ -46,9 +51,33 @@ init_scene :: proc() {
 	init_vertices(&ground_vbo, &ground_vao, &ground_vertices, GROUND_SIZE)
 
 	// CREATURES
+	for &c in creatures {
+		c.target = c.pos
+	}
 	creature_vbo: u32
 	creature_vertices: [CUBOID_VERTEX_COUNT]Vertex
 	init_vertices(&creature_vbo, &creature_vao, &creature_vertices, CREATURE_SIZE)
+
+	// PATH
+	gl.GenVertexArrays(1, &path_vao)
+	gl.GenBuffers(1, &path_vbo)
+	gl.BindVertexArray(path_vao)
+	gl.BindBuffer(gl.ARRAY_BUFFER, path_vbo)
+
+	path_vertices := []Vertex {
+		{pos = {0.0, 0.0, 0.0}, normal = camera.up},
+		{pos = {5.0, 5.0, 5.0}, normal = camera.up},
+	}
+	gl.BufferData(
+		gl.ARRAY_BUFFER,
+		len(path_vertices) * size_of(Vertex),
+		raw_data(path_vertices),
+		gl.STATIC_DRAW,
+	)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, size_of(Vertex), 0)
+	gl.EnableVertexAttribArray(0)
+	gl.VertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, size_of(Vertex), offset_of(Vertex, normal))
+	gl.EnableVertexAttribArray(1)
 }
 
 init_vertices :: proc(vbo: ^u32, vao: ^u32, vertices: ^[CUBOID_VERTEX_COUNT]Vertex, size: [3]f32) {
@@ -82,6 +111,8 @@ draw_scene :: proc() {
 	)
 	shader_set_mat4(scene_shader_program, "projection", projection)
 
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+
 	// GROUND
 	draw_object(GROUND_POSITION, {0.0, 0.5, 0.0}, &ground_vao)
 
@@ -92,6 +123,29 @@ draw_scene :: proc() {
 			CREATURE_COLOR_SELECTED if selected_creature == i else CREATURE_COLOR,
 			&creature_vao,
 		)
+	}
+
+	// PATHS
+	for c, i in creatures {
+		if c.pos != c.target {
+			shader_set_mat4(scene_shader_program, "model", 1)
+			shader_set_vec3(scene_shader_program, "color", PATH_COLOR)
+			gl.BindVertexArray(path_vao)
+			gl.BindBuffer(gl.ARRAY_BUFFER, path_vbo)
+			path_vertices := []Vertex {
+				{pos = c.pos, normal = camera.up},
+				{pos = c.target, normal = camera.up},
+			}
+			gl.BufferData(
+				gl.ARRAY_BUFFER,
+				len(path_vertices) * size_of(Vertex),
+				raw_data(path_vertices),
+				gl.STATIC_DRAW,
+			)
+			gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+			gl.LineWidth(PATH_WIDTH)
+			gl.DrawArrays(gl.LINE_STRIP, 0, PATH_VERTEX_COUNT)
+		}
 	}
 }
 

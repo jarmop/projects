@@ -161,5 +161,7 @@ draw_ui :: proc(text: string, start_x, start_y: f32) {
 		gl.DYNAMIC_DRAW,
 	)
 
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+
 	gl.DrawArrays(gl.TRIANGLES, 0, i32(len(vertices) / 4))
 }
