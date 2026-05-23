@@ -13,7 +13,7 @@ FONT_SIZE_PX :: 16
 FIRST_PRINTABLE_ASCII :: 32
 LAST_PRINTABLE_ASCII :: 127
 
-texture: u32
+ui_texture: u32
 
 baked_chars: [GLYPH_COUNT]stbtt.bakedchar
 
@@ -71,9 +71,10 @@ init_ui :: proc() {
 		raw_data(&baked_chars),
 	)
 
-	gl.GenTextures(1, &texture)
-	gl.BindTexture(gl.TEXTURE_2D, texture)
+	gl.GenTextures(1, &ui_texture)
+	gl.BindTexture(gl.TEXTURE_2D, ui_texture)
 
+	gl.PixelStorei(gl.UNPACK_ALIGNMENT, 1)
 	gl.TexImage2D(
 		gl.TEXTURE_2D,
 		0,
@@ -108,7 +109,7 @@ draw_text :: proc(text: string, x_param: f32, y_param: f32) {
 	gl.Uniform2f(ui_uloc_screen_size, f32(window_width), f32(window_height))
 
 	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, texture)
+	gl.BindTexture(gl.TEXTURE_2D, ui_texture)
 
 	vertices := make([dynamic]f32)
 	defer delete(vertices)

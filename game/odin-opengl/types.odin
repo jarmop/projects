@@ -24,11 +24,13 @@ Camera :: struct {
 }
 
 Vertex :: struct {
-	pos:    [3]f32,
-	normal: [3]f32,
+	pos:     [3]f32,
+	normal:  [3]f32,
+	texture: [2]f32,
 }
 
 Face :: struct {
-	normal:   [3]f32,
-	vertices: [6][3]f32,
+	normal:    [3]f32,
+	textures:  [6][2]f32,
+	positions: [6][3]f32,
 }
