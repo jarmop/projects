@@ -231,7 +231,7 @@ update_scene :: proc() {
 	if !playing {
 		return
 	}
-	game_time_delta = game_time_speed * (time_now - time_prev_frame)
+	game_time_delta = game_time_speed * time_delta
 	if playing {
 		game_time += game_time_delta
 	}

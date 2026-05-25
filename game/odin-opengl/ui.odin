@@ -96,7 +96,8 @@ draw_ui :: proc() {
 	// Apparently need to multiply FONT_SIZE with a magic number 0.7 to get the correct glyph height
 	GLYPH_HEIGHT_PX :: 0.7 * FONT_SIZE_PX
 
-	draw_text(fmt.tprintf("%.2f", game_time), PADDING, PADDING + GLYPH_HEIGHT_PX)
+	draw_text(fmt.tprintf("Game time: %.2f", game_time), PADDING, PADDING + GLYPH_HEIGHT_PX)
+	draw_text(fmt.tprintf("Frame rate: %d", frame_rate), PADDING, PADDING + GLYPH_HEIGHT_PX + 20)
 }
 
 draw_text :: proc(text: string, x_param: f32, y_param: f32) {

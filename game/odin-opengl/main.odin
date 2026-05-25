@@ -1,5 +1,6 @@
 package game
 
+import "core:fmt"
 import gl "vendor:OpenGL"
 import glfw "vendor:glfw"
 
@@ -21,6 +22,7 @@ main :: proc() {
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
 		time_now = f32(glfw.GetTime())
+		time_delta = time_now - time_prev_frame
 		handle_camera_movement_keys()
 		update_scene()
 		time_prev_frame = time_now
@@ -31,5 +33,20 @@ main :: proc() {
 		draw_ui()
 
 		glfw.SwapBuffers(window)
+
+		update_framerate()
+	}
+}
+
+frame_rate_timer: f32 = 0
+frame_counter := 0
+frame_rate := 60
+update_framerate :: proc() {
+	frame_counter += 1
+	frame_rate_timer += time_delta
+	if (frame_rate_timer > 1) {
+		frame_rate = frame_counter
+		frame_counter = 0
+		frame_rate_timer = 0
 	}
 }

@@ -9,8 +9,9 @@ INITIAL_WINDOW_HEIGHT :: 600
 
 window: glfw.WindowHandle
 
-time_prev_frame: f32 = 0.0
 time_now: f32 = 0.0
+time_prev_frame: f32 = 0.0
+time_delta: f32
 
 // -------------- SCENE --------------
 
