@@ -60,6 +60,12 @@ init_scene :: proc() {
 		size_of(creature_vertices),
 	)
 
+	// Bullets
+	bullet_vbo: u32
+	bullet_vertices: [CUBOID_VERTEX_COUNT]Vertex
+	create_cuboid(BULLET_DIMENSIONS, &bullet_vertices, 0, {false, false, false})
+	init_vertices(&bullet_vbo, &bullet_vao, raw_data(&bullet_vertices), size_of(bullet_vertices))
+
 	// PATH
 	path_vertices: []Vertex
 	init_vertices(&path_vbo, &path_vao, raw_data(path_vertices), size_of(path_vertices))
@@ -164,11 +170,15 @@ draw_scene :: proc() {
 	for c, i in creatures {
 		draw_object(
 			c.pos,
-			CREATURE_COLOR_SELECTED if selected_creature == i else CREATURE_COLOR,
+			get_creature_color(i),
 			// {1.0, 1.0, 1.0},
 			&creature_vao,
 			color_shader_program,
 		)
+	}
+
+	for b in bullets {
+		draw_object(b.pos, {1, 1, 1}, &bullet_vao, color_shader_program)
 	}
 
 	// PATHS
@@ -198,6 +208,14 @@ draw_scene :: proc() {
 	}
 }
 
+get_creature_color :: proc(i: int) -> glsl.vec3 {
+	if creature_selected == i {
+		return CREATURE_COLOR_SHOOTING if creature_shooting == i else CREATURE_COLOR_SELECTED
+	} else {
+		return CREATURE_COLOR_TARGET if creature_target == i else CREATURE_COLOR
+	}
+}
+
 draw_object :: proc(pos: glsl.vec3, color: glsl.vec3, vao: ^u32, shader_program: u32) {
 	model: glsl.mat4 = 1
 	model *= glsl.mat4Translate(pos)
@@ -207,17 +225,56 @@ draw_object :: proc(pos: glsl.vec3, color: glsl.vec3, vao: ^u32, shader_program:
 	gl.DrawArrays(gl.TRIANGLES, 0, CUBOID_VERTEX_COUNT)
 }
 
+time_prev_shot: f32 = 0
+
 update_scene :: proc() {
+	if !playing {
+		return
+	}
+	game_time_delta = game_time_speed * (time_now - time_prev_frame)
+	if playing {
+		game_time += game_time_delta
+	}
+
 	creature_speed :: 1.0
-	movement := creature_speed * game_time_delta
+	creature_movement := creature_speed * game_time_delta
+
+	bullet_speed :: 10.0
+	// Minimum time between shots
+	min_time_between_shots :: 1.0
+	bullet_movement := bullet_speed * game_time_delta
+
 	for &c, i in creatures {
-		if playing && c.pos != c.target {
+		if c.pos != c.target {
 			d := c.target - c.pos
-			if (glsl.length(d) <= movement) {
+			if (glsl.length(d) <= creature_movement) {
 				c.pos = c.target
 			} else {
-				c.pos += movement * glsl.normalize(d)
+				c.pos += creature_movement * glsl.normalize(d)
 			}
 		}
+		if i == creature_shooting {
+			// - Raycast periodically from previous bullet position to the next.
+			//   Or is it better to just check if the bullet overlaps with some
+			//   creature?
+			// - Maybe bullets don't need to be rendered at all. Just update
+			//   bullet positions and do the collision detection
+			if (time_now - time_prev_shot > min_time_between_shots) {
+				time_prev_shot = time_now
+				shot_pos := creatures[creature_shooting].pos + {0, 1, 0}
+				shot_target := creatures[creature_target].pos + {0, 1, 0}
+				append(
+					&bullets,
+					Bullet {
+						pos       = shot_pos,
+						// direction = {1, 0, 0},
+						direction = glsl.normalize(shot_target - shot_pos),
+					},
+				)
+			}
+		}
+	}
+	for &b in bullets {
+		b.pos += bullet_movement * b.direction
 	}
 }

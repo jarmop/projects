@@ -21,10 +21,6 @@ main :: proc() {
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
 		time_now = f32(glfw.GetTime())
-		game_time_delta = game_time_speed * (time_now - time_prev_frame)
-		if playing {
-			game_time += game_time_delta
-		}
 		handle_camera_movement_keys()
 		update_scene()
 		time_prev_frame = time_now

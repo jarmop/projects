@@ -5,6 +5,11 @@ Creature :: struct {
 	target: [3]f32,
 }
 
+Bullet :: struct {
+	pos:       [3]f32,
+	direction: [3]f32,
+}
+
 BoundingBox :: struct {
 	min: [3]f32,
 	max: [3]f32,

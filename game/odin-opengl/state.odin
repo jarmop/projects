@@ -12,12 +12,12 @@ window: glfw.WindowHandle
 time_prev_frame: f32 = 0.0
 time_now: f32 = 0.0
 
-playing := false
+// -------------- SCENE --------------
+
+playing := true
 game_time: f32 = 0
 game_time_delta: f32 = 0.0
 game_time_speed: f32 = 1
-
-// -------------- SCENE --------------
 
 GROUND_SIZE :: 20.0
 GROUND_CENTER :: [3]f32{GROUND_SIZE / 2, 0.0, GROUND_SIZE / 2}
@@ -30,12 +30,20 @@ CREATURE_DIMENSIONS :: [3]f32{0.5, 1.74, 0.23}
 CREATURE_CENTER_XZ :: [3]f32{(CREATURE_DIMENSIONS.x / 2), 0, (CREATURE_DIMENSIONS.z / 2)}
 CREATURE_COLOR :: [3]f32{1.0, 0.6, 0.2}
 CREATURE_COLOR_SELECTED :: [3]f32{0.0, 0.0, 1.0}
+CREATURE_COLOR_SHOOTING :: [3]f32{1.0, 0.0, 0.0}
+CREATURE_COLOR_TARGET :: [3]f32{0.0, 1.0, 0.0}
 creature_vao: u32
 creatures := []Creature {
 	{pos = GROUND_CENTER - {5.0, 0.0, 0.0}},
 	{pos = GROUND_CENTER + {5.0, 0.0, 0.0}},
 }
-selected_creature := -1
+creature_selected := 0
+creature_shooting := 0
+creature_target := 1
+
+BULLET_DIMENSIONS :: [3]f32{0.1, 0.1, 0.1}
+bullet_vao: u32
+bullets: [dynamic]Bullet
 
 PATH_COLOR :: [3]f32{1.0, 1.0, 1.0}
 PATH_WIDTH :: 3.0
@@ -45,7 +53,6 @@ path_vbo: u32
 
 // -------------- IO --------------
 
-mouse_sensitivity :: 0.1
 camera := Camera {
 	pos   = GROUND_CENTER + {0.0, 6.0, 12.0},
 	front = {0.0, 0.0, -1.0},
@@ -58,9 +65,6 @@ camera := Camera {
 	near  = 0.1,
 	far   = 1000.0,
 }
-mouse_right_pressed := false
-first_cursor_pos := true
-prev_cursor_x, prev_cursor_y: f64
 
 // -------------- MODEL --------------
 

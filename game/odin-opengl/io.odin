@@ -1,11 +1,18 @@
 package game
 
 import "base:runtime"
+import "core:fmt"
 import m "core:math/linalg"
 // import glsl "core:math/linalg/glsl"
 // import m "core:math"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
+
+mouse_sensitivity :: 0.1
+mouse_right_pressed := false
+ctrl_pressed := false
+first_cursor_pos := true
+prev_cursor_x, prev_cursor_y: f64
 
 init_io :: proc() {
 	glfw.SetKeyCallback(window, key_callback)
@@ -17,6 +24,25 @@ init_io :: proc() {
 }
 
 key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
+	context = runtime.default_context()
+
+	if mode == glfw.MOD_CONTROL {
+		ctrl_pressed = true
+		if (creature_selected > -1 && key == glfw.KEY_S && action == glfw.PRESS) {
+			// Toggle shooting
+			creature_shooting = creature_selected if creature_selected != creature_shooting else -1
+			// If shooting, target the other guy, otherwise remove target
+			if creature_shooting > -1 {
+				creature_target = 1 if creature_selected == 0 else 0
+			} else {
+				creature_target = -1
+			}
+			time_prev_shot = time_now
+		}
+		return
+	}
+
+	ctrl_pressed = false
 	if key == glfw.KEY_ESCAPE && action == glfw.PRESS {
 		glfw.SetWindowShouldClose(window, true)
 	} else if key == glfw.KEY_SPACE && action == glfw.PRESS {
@@ -61,8 +87,8 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 		ray_world := m.normalize((m.inverse(view) * ray_eye).xyz)
 
 		// SELECT CREATURE
-		prev_selected := selected_creature
-		selected_creature = -1
+		prev_selected := creature_selected
+		creature_selected = -1
 		prev_tmin: f32 = 9999999
 		for c, i in creatures {
 			// bb: BoundingBox
@@ -74,20 +100,20 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			}
 			d := hit_distance(bb, ray_world)
 			if (d > 0 && d < prev_tmin) {
-				selected_creature = i
+				creature_selected = i
 				prev_tmin = d
 			}
 		}
 
 		// SELECT TARGET
-		if (prev_selected != -1 && selected_creature == -1) {
+		if (prev_selected != -1 && creature_selected == -1) {
 			bb := BoundingBox {
 				min = GROUND_POSITION,
 				max = GROUND_POSITION + GROUND_DIMENSIONS,
 			}
 			d := hit_distance(bb, ray_world)
 			if (d > 0) {
-				selected_creature = prev_selected
+				creature_selected = prev_selected
 				entry_point := camera.pos + ray_world * d
 				creatures[prev_selected].target = entry_point - CREATURE_CENTER_XZ
 			}
@@ -147,6 +173,9 @@ update_camera :: proc() {
 }
 
 handle_camera_movement_keys :: proc() {
+	if ctrl_pressed {
+		return
+	}
 	camera_movement := camera.speed * (time_now - time_prev_frame)
 
 	// WASD
