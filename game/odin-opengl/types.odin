@@ -6,8 +6,11 @@ Creature :: struct {
 }
 
 Bullet :: struct {
-	pos:       [3]f32,
-	direction: [3]f32,
+	pos:            [3]f32,
+	pos_prev_check: [3]f32,
+	direction:      [3]f32,
+	travel_d:       f32,
+	time_shot:      f32,
 }
 
 BoundingBox :: struct {

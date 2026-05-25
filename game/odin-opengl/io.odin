@@ -89,7 +89,7 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 		// SELECT CREATURE
 		prev_selected := creature_selected
 		creature_selected = -1
-		prev_tmin: f32 = 9999999
+		prev_d: f32 = 9999999
 		for c, i in creatures {
 			// bb: BoundingBox
 			// bb.min = c.pos - CREATURE_CENTER_XZ
@@ -98,20 +98,20 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 				min = c.pos,
 				max = c.pos + CREATURE_DIMENSIONS,
 			}
-			d := hit_distance(bb, ray_world)
-			if (d > 0 && d < prev_tmin) {
+			d := hit_distance(bb, camera.pos, ray_world)
+			if (d > 0 && d < prev_d) {
 				creature_selected = i
-				prev_tmin = d
+				prev_d = d
 			}
 		}
 
-		// SELECT TARGET
+		// Check hit on ground if no hits on creatures
 		if (prev_selected != -1 && creature_selected == -1) {
 			bb := BoundingBox {
 				min = GROUND_POSITION,
 				max = GROUND_POSITION + GROUND_DIMENSIONS,
 			}
-			d := hit_distance(bb, ray_world)
+			d := hit_distance(bb, camera.pos, ray_world)
 			if (d > 0) {
 				creature_selected = prev_selected
 				entry_point := camera.pos + ray_world * d
@@ -121,19 +121,16 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 	}
 }
 
-hit_distance :: proc(bb: BoundingBox, ray_world: [3]f32) -> f32 {
-	vmin := (bb.min - camera.pos) / ray_world
-	vmax := (bb.max - camera.pos) / ray_world
+hit_distance :: proc(bb: BoundingBox, ray_start: [3]f32, ray_direction: [3]f32) -> f32 {
+	// Get the distances where the ray enters and exits the bounding box on each axis
+	dmin := (bb.min - ray_start) / ray_direction
+	dmax := (bb.max - ray_start) / ray_direction
 
-	tmin := max(min(vmin.x, vmax.x), min(vmin.y, vmax.y), min(vmin.z, vmax.z))
-	tmax := min(max(vmin.x, vmax.x), max(vmin.y, vmax.y), max(vmin.z, vmax.z))
+	// Get the distances where the ray enters and exits the bounding box
+	d_to_entry := max(min(dmin.x, dmax.x), min(dmin.y, dmax.y), min(dmin.z, dmax.z))
+	d_to_exit := min(max(dmin.x, dmax.x), max(dmin.y, dmax.y), max(dmin.z, dmax.z))
 
-	d: f32 = 0
-	if (tmin < tmax) {
-		d = tmin
-	}
-
-	return d
+	return d_to_entry if d_to_entry < d_to_exit else 0
 }
 
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
