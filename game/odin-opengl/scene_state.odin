@@ -38,7 +38,7 @@ creature_target := 1
 BULLET_DIMENSIONS :: [3]f32{0.1, 0.1, 0.1}
 BULLET_SPEED :: 300.0
 MIN_TIME_BETWEEN_SHOTS :: 1.0
-BULLET_RANGE :: 1000
+BULLET_RANGE :: 500
 HIT_CHECK_INTERVAL: f32 = 0.0
 BULLET_CENTER := BULLET_DIMENSIONS / 2
 bullet_vao: u32
@@ -52,6 +52,16 @@ bul_fill := &bullet_buffers[bullet_buffer_index]
 bul_fill_next := &bullet_nexts[bullet_buffer_index]
 bul_check := &bullet_buffers[(bullet_buffer_index + 1) % BULLET_BUFFERS_MAX]
 bul_check_next := &bullet_nexts[(bullet_buffer_index + 1) % BULLET_BUFFERS_MAX]
+
+// ---------- BULLET PATH -----------
+
+BULLET_PATH_COLOR :: [3]f32{1.0, 0.8, 0.4}
+BULLET_PATH_WIDTH :: 1.0
+bullet_path_vertex_next := 0
+// Two vertices per bullet
+bullet_path_vertices: [2 * BULLETS_MAX]BulletVertex
+bullet_path_vao: u32
+bullet_path_vbo: u32
 
 // -------------- PATH --------------
 

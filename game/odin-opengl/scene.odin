@@ -10,6 +10,7 @@ import stbi "vendor:stb/image"
 texture_shader_program: u32
 color_shader_program: u32
 path_shader_program: u32
+bullet_shader_program: u32
 
 scene_texture: u32
 creature_texture: u32
@@ -39,6 +40,14 @@ init_scene :: proc() {
 		fmt.println("Path shader not ok")
 		os.exit(-1)
 	}
+	bullet_shader_program, shader_ok = gl.load_shaders_file(
+		"./shaders/bullet.vs",
+		"./shaders/bullet.fs",
+	)
+	if !shader_ok {
+		fmt.println("Bullet shader not ok")
+		os.exit(-1)
+	}
 
 	// GROUND
 	ground_vbo: u32
@@ -46,7 +55,7 @@ init_scene :: proc() {
 	create_cuboid(GROUND_DIMENSIONS, &ground_vertices, 10, {true, false, false})
 	init_vertices(&ground_vbo, &ground_vao, raw_data(&ground_vertices), size_of(ground_vertices))
 
-	// CREATURES
+	// CREATURE
 	for &c in creatures {
 		c.target = c.pos
 	}
@@ -60,11 +69,18 @@ init_scene :: proc() {
 		size_of(creature_vertices),
 	)
 
-	// Bullets
-	bullet_vbo: u32
-	bullet_vertices: [CUBOID_VERTEX_COUNT]Vertex
-	create_cuboid(BULLET_DIMENSIONS, &bullet_vertices, 0, {false, false, false})
-	init_vertices(&bullet_vbo, &bullet_vao, raw_data(&bullet_vertices), size_of(bullet_vertices))
+	// BULLET
+	// bullet_vbo: u32
+	// bullet_vertices: [CUBOID_VERTEX_COUNT]Vertex
+	// create_cuboid(BULLET_DIMENSIONS, &bullet_vertices, 0, {false, false, false})
+	// init_vertices(&bullet_vbo, &bullet_vao, raw_data(&bullet_vertices), size_of(bullet_vertices))
+
+	gl.GenVertexArrays(1, &bullet_path_vao)
+	gl.BindVertexArray(bullet_path_vao)
+	gl.GenBuffers(1, &bullet_path_vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, bullet_path_vbo)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, size_of(BulletVertex), 0)
+	gl.EnableVertexAttribArray(0)
 
 	// PATH
 	path_vertices: []Vertex
@@ -161,7 +177,7 @@ draw_scene :: proc() {
 	gl.BindTexture(gl.TEXTURE_2D, scene_texture)
 	draw_object(GROUND_POSITION, {1.0, 1.0, 1.0}, &ground_vao, texture_shader_program)
 
-	// CREATURES
+	// CREATURE
 	// use_texture_shader(view, projection, creature_texture)
 	use_color_shader(view, projection)
 	for c, i in creatures {
@@ -174,12 +190,28 @@ draw_scene :: proc() {
 		)
 	}
 
-	// BULLETS
-	// for b in bullets {
-	// 	draw_object(b.pos, {1, 1, 1}, &bullet_vao, color_shader_program)
+	// BULLET
+	// for i := 0; i < bul_check_next^; i += 1 {
+	// 	draw_object(bul_check[i].pos, {1, 1, 1}, &bullet_vao, color_shader_program)
 	// }
+	gl.UseProgram(bullet_shader_program)
+	shader_set_mat4(bullet_shader_program, "view", view)
+	shader_set_mat4(bullet_shader_program, "projection", projection)
+	shader_set_mat4(bullet_shader_program, "model", 1)
+	shader_set_vec3(bullet_shader_program, "color", BULLET_PATH_COLOR)
+	gl.BindVertexArray(bullet_path_vao)
+	gl.BindBuffer(gl.ARRAY_BUFFER, bullet_path_vbo)
+	gl.BufferData(
+		gl.ARRAY_BUFFER,
+		bullet_path_vertex_next * size_of(BulletVertex),
+		raw_data(&bullet_path_vertices),
+		gl.STATIC_DRAW,
+	)
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+	gl.LineWidth(BULLET_PATH_WIDTH)
+	gl.DrawArrays(gl.LINES, 0, i32(bullet_path_vertex_next))
 
-	// PATHS
+	// PATH
 	for c, i in creatures {
 		if c.pos != c.target {
 			gl.UseProgram(path_shader_program)
@@ -190,8 +222,8 @@ draw_scene :: proc() {
 			gl.BindVertexArray(path_vao)
 			gl.BindBuffer(gl.ARRAY_BUFFER, path_vbo)
 			path_vertices := []Vertex {
-				{pos = c.pos + CREATURE_CENTER_XZ, normal = camera.up},
-				{pos = c.target + CREATURE_CENTER_XZ, normal = camera.up},
+				{pos = c.pos + CREATURE_CENTER_XZ},
+				{pos = c.target + CREATURE_CENTER_XZ},
 			}
 			gl.BufferData(
 				gl.ARRAY_BUFFER,
@@ -275,6 +307,7 @@ update_scene :: proc() {
 		bullet_movement := BULLET_SPEED * hit_check_timer
 		hit_check_timer = 0
 
+		bullet_path_vertex_next = 0
 		for i := 0; i < bul_check_next^; i += 1 {
 			// Should get reference?
 			bullet := bul_check[i]
@@ -286,7 +319,7 @@ update_scene :: proc() {
 			bullet.pos += distance_travelled * bullet.direction
 
 			// Check if bullet hits
-			b := bullet.pos + BULLET_CENTER
+			// b := bullet.pos + BULLET_CENTER
 			target := creatures[creature_target]
 			t := BoundingBox {
 				min = target.pos,
@@ -294,13 +327,29 @@ update_scene :: proc() {
 			}
 			d := hit_distance(t, bullet.pos_prev_check, bullet.direction)
 			if d > 0 && d < distance_travelled {
-				fmt.println(
-					"Bullet shot at",
-					bullet.time_shot,
-					"hits after travelling",
-					bullet.travel_d + d,
-				)
+				bullet_path_vertices[bullet_path_vertex_next] = {
+					pos = bullet.pos_prev_check,
+				}
+				bullet_path_vertices[bullet_path_vertex_next + 1] = {
+					pos = bullet.pos_prev_check + d * bullet.direction,
+				}
+				bullet_path_vertex_next += 2
+
+				// fmt.println(
+				// 	"Bullet shot at",
+				// 	bullet.time_shot,
+				// 	"hits after travelling",
+				// 	bullet.travel_d + d,
+				// )
 			} else {
+				bullet_path_vertices[bullet_path_vertex_next] = {
+					pos = bullet.pos_prev_check,
+				}
+				bullet_path_vertices[bullet_path_vertex_next + 1] = {
+					pos = bullet.pos,
+				}
+				bullet_path_vertex_next += 2
+
 				bullet.pos_prev_check = bullet.pos
 				bullet.travel_d += distance_travelled
 				if (bullet.travel_d > BULLET_RANGE) {

@@ -37,6 +37,10 @@ Vertex :: struct {
 	texture: [2]f32,
 }
 
+BulletVertex :: struct {
+	pos: [3]f32,
+}
+
 Face :: struct {
 	normal:    [3]f32,
 	textures:  [6][2]f32,
