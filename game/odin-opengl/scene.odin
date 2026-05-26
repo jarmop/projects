@@ -55,6 +55,12 @@ init_scene :: proc() {
 	create_cuboid(GROUND_DIMENSIONS, &ground_vertices, 10, {true, false, false})
 	init_vertices(&ground_vbo, &ground_vao, raw_data(&ground_vertices), size_of(ground_vertices))
 
+	// WALL
+	wall_vbo: u32
+	wall_vertices: [CUBOID_VERTEX_COUNT]Vertex
+	create_cuboid(WALL_DIMENSIONS, &wall_vertices, 1, {false, true, false})
+	init_vertices(&wall_vbo, &wall_vao, raw_data(&wall_vertices), size_of(wall_vertices))
+
 	// CREATURE
 	for &c in creatures {
 		c.target = c.pos
@@ -176,6 +182,16 @@ draw_scene :: proc() {
 	use_texture_shader(view, projection)
 	gl.BindTexture(gl.TEXTURE_2D, scene_texture)
 	draw_object(GROUND_POSITION, {1.0, 1.0, 1.0}, &ground_vao, texture_shader_program)
+
+	// WALL
+	use_color_shader(view, projection)
+	model: glsl.mat4 = 1
+	model *= glsl.mat4Translate(WALL_POSITION)
+	// model *= glsl.mat4Rotate({0.0, 1.0, 0.0}, glsl.radians_f32(WALL_ANGLE))
+	shader_set_mat4(color_shader_program, "model", model)
+	shader_set_vec3(color_shader_program, "color", {1.0, 1.0, 1.0})
+	gl.BindVertexArray(wall_vao)
+	gl.DrawArrays(gl.TRIANGLES, 0, CUBOID_VERTEX_COUNT)
 
 	// CREATURE
 	// use_texture_shader(view, projection, creature_texture)
@@ -319,13 +335,19 @@ update_scene :: proc() {
 			bullet.pos += distance_travelled * bullet.direction
 
 			// Check if bullet hits
-			// b := bullet.pos + BULLET_CENTER
 			target := creatures[creature_target]
-			t := BoundingBox {
+			target_bb := BoundingBox {
 				min = target.pos,
 				max = target.pos + CREATURE_DIMENSIONS,
 			}
-			d := hit_distance(t, bullet.pos_prev_check, bullet.direction)
+			target_d := hit_distance(target_bb, bullet.pos_prev_check, bullet.direction)
+			wall_bb := BoundingBox {
+				min = WALL_POSITION,
+				max = WALL_POSITION + WALL_DIMENSIONS,
+			}
+			wall_d := hit_distance(wall_bb, bullet.pos_prev_check, bullet.direction)
+			d := wall_d
+
 			if d > 0 && d < distance_travelled {
 				bullet_path_vertices[bullet_path_vertex_next] = {
 					pos = bullet.pos_prev_check,

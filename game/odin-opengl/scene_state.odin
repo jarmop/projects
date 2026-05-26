@@ -13,6 +13,13 @@ GROUND_DIMENSIONS :: [3]f32{GROUND_SIZE, 0.5, GROUND_SIZE}
 GROUND_POSITION :: [3]f32{0.0, -GROUND_DIMENSIONS.y, 0.0}
 ground_vao: u32
 
+// -------------- WALL --------------
+
+WALL_DIMENSIONS :: [3]f32{0.2, 2.0, 6.0}
+WALL_POSITION := GROUND_CENTER + [3]f32{-WALL_DIMENSIONS.x / 2, 0.0, -WALL_DIMENSIONS.z / 2}
+// WALL_ANGLE :: -90
+wall_vao: u32
+
 // -------------- CREATURE --------------
 
 CREATURE_DIMENSIONS :: [3]f32{0.5, 1.74, 0.23}
