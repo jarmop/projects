@@ -142,9 +142,6 @@ init_vertices :: proc(vbo: ^u32, vao: ^u32, vertices: rawptr, size: int) {
 }
 
 draw_scene :: proc() {
-	// gl.ActiveTexture(gl.TEXTURE0)
-
-
 	view: glsl.mat4 = 1
 	view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
 
@@ -253,7 +250,6 @@ update_scene :: proc() {
 		if i == creature_shooting {
 			// - Maybe bullets don't need to be rendered at all. Just update
 			//   bullet positions and do the collision detection
-			// if (time_now - time_prev_shot > min_time_between_shots) {
 			if (time_now - time_prev_shot > MIN_TIME_BETWEEN_SHOTS) {
 				time_prev_shot = time_now
 				target := creatures[creature_target]
@@ -265,14 +261,13 @@ update_scene :: proc() {
 					direction      = glsl.normalize(shot_target - shot_pos),
 					time_shot      = game_time,
 				}
-				append(&bullets, bullet)
-
+				bul_fill[bul_fill_next^] = bullet
+				bul_fill_next^ += 1
 			}
 		}
 	}
 
 	// UPDATE BULLETS
-	// Save some CPU by not checking hits on every frame
 	hit_check_timer += game_time_delta
 	should_check_hits := false
 	bullets_to_discard: [dynamic]int
@@ -280,17 +275,14 @@ update_scene :: proc() {
 		bullet_movement := BULLET_SPEED * hit_check_timer
 		hit_check_timer = 0
 
-		for &bullet, i in bullets {
+		for i := 0; i < bul_check_next^; i += 1 {
+			// Should get reference?
+			bullet := bul_check[i]
 			// Update bullet position
 			bullet_age := game_time - bullet.time_shot
 
 			distance_travelled :=
 				bullet_movement if bullet_age > HIT_CHECK_INTERVAL else BULLET_SPEED * bullet_age
-			// if distance_travelled == 0 {
-			// 	// We get here if the hit_check_timer is exceeded on the same frame that a bullet was created in
-			// 	fmt.println("dist trav = 0!!! -->", bullet_age, game_time, bullet.time_shot)
-			// }
-			// bullet.pos += bullet_movement * bullet.direction
 			bullet.pos += distance_travelled * bullet.direction
 
 			// Check if bullet hits
@@ -300,58 +292,33 @@ update_scene :: proc() {
 				min = target.pos,
 				max = target.pos + CREATURE_DIMENSIONS,
 			}
-			// distance_travelled :=
-			// 	bullet_movement if bullet_age > HIT_CHECK_INTERVAL else BULLET_SPEED * bullet_age
-			// check_ray(t, bullet.pos_prev_check, bullet.direction, distance_travelled)
-			// fmt.println("ray start:", bullet.pos_prev_check)
 			d := hit_distance(t, bullet.pos_prev_check, bullet.direction)
 			if d > 0 && d < distance_travelled {
-				// fmt.println(
-				// 	"Bullet shot at",
-				// 	bullet.time_shot,
-				// 	"hits after travelling",
-				// 	bullet.travel_d + distance_travelled,
-				// 	", BTW d =",
-				// 	d,
-				// )
-				append(&bullets_to_discard, i)
+				fmt.println(
+					"Bullet shot at",
+					bullet.time_shot,
+					"hits after travelling",
+					bullet.travel_d + d,
+				)
 			} else {
 				bullet.pos_prev_check = bullet.pos
 				bullet.travel_d += distance_travelled
-
-				// fmt.println("Bullet shot at", bullet.time_shot, "misses at", d, "meters")
-				// fmt.println(
-				// 	"Bullet shot at",
-				// 	bullet.time_shot,
-				// 	"misses after travelling",
-				// 	bullet.travel_d,
-				// 	", BTW d =",
-				// 	d,
-				// )
-
 				if (bullet.travel_d > BULLET_RANGE) {
-					fmt.println("bullet shot at", bullets[i].time_shot, "exceeds range")
-					append(&bullets_to_discard, i)
+					fmt.println("bullet shot at", bullet.time_shot, "exceeds range")
+				} else {
+					// bullet is checked on the next round
+					bul_fill[bul_fill_next^] = bullet
+					bul_fill_next^ += 1
 				}
+
 			}
 		}
-		for bullet_index in bullets_to_discard {
-			// This fails if there is more than one bullet in the discard pile
-			// fmt.println("discard bullet shot at", bullets[bullet_index].time_shot)
-			unordered_remove(&bullets, bullet_index)
-		}
+
+		bullet_buffer_index = (bullet_buffer_index + 1) % BULLET_BUFFERS_MAX
+		bul_fill = &bullet_buffers[bullet_buffer_index]
+		bul_fill_next = &bullet_nexts[bullet_buffer_index]
+		bul_check = &bullet_buffers[(bullet_buffer_index + 1) % BULLET_BUFFERS_MAX]
+		bul_check_next = &bullet_nexts[(bullet_buffer_index + 1) % BULLET_BUFFERS_MAX]
+		bul_fill_next^ = 0
 	}
 }
-
-// - Overlapping bounding boxes could be easily checked by comparing b.min to t.min, etc,
-//   just like comparing any ranges, but this time the ranges are 3D
-// check_collision :: proc(b: [3]f32, t: BoundingBox) {
-// 	if b.x > t.min.x &&
-// 	   b.x < t.max.x &&
-// 	   b.z > t.min.z &&
-// 	   b.z < t.max.z &&
-// 	   b.y > t.min.y &&
-// 	   b.y < t.max.y {
-// 		fmt.println("Collision detected")
-// 	}
-// }

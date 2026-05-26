@@ -49,10 +49,19 @@ BULLET_DIMENSIONS :: [3]f32{0.1, 0.1, 0.1}
 BULLET_SPEED :: 300.0
 MIN_TIME_BETWEEN_SHOTS :: 1.0
 BULLET_RANGE :: 1000
-HIT_CHECK_INTERVAL: f32 = 0.1
+HIT_CHECK_INTERVAL: f32 = 0.0
 BULLET_CENTER := BULLET_DIMENSIONS / 2
 bullet_vao: u32
-bullets: [dynamic]Bullet
+
+BULLETS_MAX :: 1000
+BULLET_BUFFERS_MAX :: 2
+bullet_buffer_index := 0
+bullet_buffers: [BULLET_BUFFERS_MAX][BULLETS_MAX]Bullet
+bullet_nexts: [BULLET_BUFFERS_MAX]int
+bul_fill := &bullet_buffers[bullet_buffer_index]
+bul_fill_next := &bullet_nexts[bullet_buffer_index]
+bul_check := &bullet_buffers[(bullet_buffer_index + 1) % BULLET_BUFFERS_MAX]
+bul_check_next := &bullet_nexts[(bullet_buffer_index + 1) % BULLET_BUFFERS_MAX]
 
 PATH_COLOR :: [3]f32{1.0, 1.0, 1.0}
 PATH_WIDTH :: 3.0

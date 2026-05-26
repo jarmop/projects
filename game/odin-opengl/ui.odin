@@ -98,6 +98,11 @@ draw_ui :: proc() {
 
 	draw_text(fmt.tprintf("Game time: %.2f", game_time), PADDING, PADDING + GLYPH_HEIGHT_PX)
 	draw_text(fmt.tprintf("Frame rate: %d", frame_rate), PADDING, PADDING + GLYPH_HEIGHT_PX + 20)
+	draw_text(
+		fmt.tprintf("Bullet buffer size: %d", bul_check_next^),
+		PADDING,
+		PADDING + GLYPH_HEIGHT_PX + 40,
+	)
 }
 
 draw_text :: proc(text: string, x_param: f32, y_param: f32) {
