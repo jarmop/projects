@@ -15,9 +15,16 @@ main :: proc() {
 	gl.load_up_to(3, 3, glfw.gl_set_proc_address)
 	gl.Viewport(0, 0, INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT)
 
+	fmt.println("Initialized window")
+
 	init_io()
+	fmt.println("Initialized IO")
+
 	init_scene()
+	fmt.println("Initialized scene")
+
 	init_ui()
+	fmt.println("Initialized UI\n")
 
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()

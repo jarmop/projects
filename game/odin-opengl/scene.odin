@@ -62,7 +62,7 @@ init_scene :: proc() {
 	init_vertices(&wall_vbo, &wall_vao, raw_data(&wall_vertices), size_of(wall_vertices))
 
 	// CREATURE
-	for &c in creatures {
+	for c in creatures {
 		c.target = c.pos
 	}
 	creature_vbo: u32
@@ -256,9 +256,9 @@ draw_scene :: proc() {
 
 get_creature_color :: proc(i: int) -> glsl.vec3 {
 	if creature_selected == i {
-		return CREATURE_COLOR_SHOOTING if creature_shooting == i else CREATURE_COLOR_SELECTED
+		return CREATURE_COLOR_SELECTED
 	} else {
-		return CREATURE_COLOR_TARGET if creature_target == i else CREATURE_COLOR
+		return CREATURE_COLOR
 	}
 }
 
@@ -286,7 +286,7 @@ update_scene :: proc() {
 	creature_movement := CREATURE_SPEED * game_time_delta
 
 	// UPDATE CREATURES
-	for &c, i in creatures {
+	for c, i in creatures {
 		if c.pos != c.target {
 			d := c.target - c.pos
 			if (glsl.length(d) <= creature_movement) {
@@ -295,24 +295,38 @@ update_scene :: proc() {
 				c.pos += creature_movement * glsl.normalize(d)
 			}
 		}
-		if i == creature_shooting {
-			// - Maybe bullets don't need to be rendered at all. Just update
-			//   bullet positions and do the collision detection
-			if (time_now - time_prev_shot > MIN_TIME_BETWEEN_SHOTS) {
-				time_prev_shot = time_now
-				target := creatures[creature_target]
-				shot_pos := c.pos + CREATURE_CENTER
-				shot_target := target.pos + CREATURE_CENTER
-				bullet := Bullet {
-					pos            = shot_pos,
-					pos_prev_check = shot_pos,
-					direction      = glsl.normalize(shot_target - shot_pos),
-					time_shot      = game_time,
-				}
-				bul_fill[bul_fill_next^] = bullet
-				bul_fill_next^ += 1
-			}
+	}
+
+	// VISION
+	enemy_bb := BoundingBox {
+		min = enemy.pos,
+		max = enemy.pos + CREATURE_DIMENSIONS,
+	}
+	wall_bb := BoundingBox {
+		min = WALL_POSITION,
+		max = WALL_POSITION + WALL_DIMENSIONS,
+	}
+	enemy_direction := glsl.normalize(enemy.pos - player.pos)
+	enemy_sight_d := hit_distance(enemy_bb, player.pos + CREATURE_CENTER, enemy_direction)
+	wall_sight_d := hit_distance(wall_bb, player.pos + CREATURE_CENTER, enemy_direction)
+	player_sees_enemy = enemy_sight_d > 0 && (wall_sight_d <= 0 || enemy_sight_d < wall_sight_d)
+
+	// SHOOT
+	if (player_sees_enemy &&
+		   player_fire_at_will &&
+		   time_now - time_prev_shot > MIN_TIME_BETWEEN_SHOTS) {
+		time_prev_shot = time_now
+		target := enemy
+		shot_pos := player.pos + CREATURE_CENTER
+		shot_target := target.pos + CREATURE_CENTER
+		bullet := Bullet {
+			pos            = shot_pos,
+			pos_prev_check = shot_pos,
+			direction      = glsl.normalize(shot_target - shot_pos),
+			time_shot      = game_time,
 		}
+		bul_fill[bul_fill_next^] = bullet
+		bul_fill_next^ += 1
 	}
 
 	// UPDATE BULLETS
@@ -325,28 +339,20 @@ update_scene :: proc() {
 
 		bullet_path_vertex_next = 0
 		for i := 0; i < bul_check_next^; i += 1 {
-			// Should get reference?
 			bullet := bul_check[i]
-			// Update bullet position
 			bullet_age := game_time - bullet.time_shot
-
 			distance_travelled :=
 				bullet_movement if bullet_age > HIT_CHECK_INTERVAL else BULLET_SPEED * bullet_age
 			bullet.pos += distance_travelled * bullet.direction
 
-			// Check if bullet hits
-			target := creatures[creature_target]
-			target_bb := BoundingBox {
-				min = target.pos,
-				max = target.pos + CREATURE_DIMENSIONS,
+			d: f32 = 0
+			bbs := []BoundingBox{enemy_bb, wall_bb}
+			for bb in bbs {
+				bb_d := hit_distance(bb, bullet.pos_prev_check, bullet.direction)
+				if bb_d > 0 && (d == 0 || bb_d < d) {
+					d = bb_d
+				}
 			}
-			target_d := hit_distance(target_bb, bullet.pos_prev_check, bullet.direction)
-			wall_bb := BoundingBox {
-				min = WALL_POSITION,
-				max = WALL_POSITION + WALL_DIMENSIONS,
-			}
-			wall_d := hit_distance(wall_bb, bullet.pos_prev_check, bullet.direction)
-			d := wall_d
 
 			if d > 0 && d < distance_travelled {
 				bullet_path_vertices[bullet_path_vertex_next] = {
@@ -356,13 +362,6 @@ update_scene :: proc() {
 					pos = bullet.pos_prev_check + d * bullet.direction,
 				}
 				bullet_path_vertex_next += 2
-
-				// fmt.println(
-				// 	"Bullet shot at",
-				// 	bullet.time_shot,
-				// 	"hits after travelling",
-				// 	bullet.travel_d + d,
-				// )
 			} else {
 				bullet_path_vertices[bullet_path_vertex_next] = {
 					pos = bullet.pos_prev_check,

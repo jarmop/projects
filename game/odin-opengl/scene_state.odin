@@ -16,6 +16,7 @@ ground_vao: u32
 // -------------- WALL --------------
 
 WALL_DIMENSIONS :: [3]f32{0.2, 2.0, 6.0}
+WALL_CENTER := WALL_DIMENSIONS / 2
 WALL_POSITION := GROUND_CENTER + [3]f32{-WALL_DIMENSIONS.x / 2, 0.0, -WALL_DIMENSIONS.z / 2}
 // WALL_ANGLE :: -90
 wall_vao: u32
@@ -32,13 +33,17 @@ CREATURE_COLOR_TARGET :: [3]f32{0.0, 1.0, 0.0}
 CREATURE_SPEED :: 1.0
 
 creature_vao: u32
-creatures := []Creature {
-	{pos = GROUND_CENTER - {5.0, 0.0, 0.0}},
-	{pos = GROUND_CENTER + {5.0, 0.0, 0.0}},
+player: Creature = {
+	pos = GROUND_CENTER - {5.0, 0.0, 0.0},
 }
+enemy: Creature = {
+	pos = GROUND_CENTER + {5.0, 0.0, 0.0},
+}
+creatures := []^Creature{&player, &enemy}
 creature_selected := 0
-creature_shooting := 0
-creature_target := 1
+
+player_sees_enemy := true
+player_fire_at_will := true
 
 // -------------- BULLET --------------
 
