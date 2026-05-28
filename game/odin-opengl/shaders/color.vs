@@ -13,7 +13,9 @@ out vec3 vert_normal;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(in_pos, 1.0);
+    mat4 mvp = projection * view * model;
+    gl_Position = mvp * vec4(in_pos, 1.0);
     vert_color = color;
-    vert_normal = in_normal;
+    // Multiply by mvp to fix rotated vertices
+    vert_normal = normalize(in_normal * mat3(mvp));
 } 

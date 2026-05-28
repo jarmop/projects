@@ -11,6 +11,11 @@ Creature :: struct {
 	bb:     BoundingBox,
 }
 
+Wall :: struct {
+	pos: [3]f32,
+	bb:  BoundingBox,
+}
+
 Bullet :: struct {
 	pos:            [3]f32,
 	pos_prev_check: [3]f32,

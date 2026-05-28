@@ -57,10 +57,26 @@ init_scene :: proc() {
 	init_vertices(&ground_vbo, &ground_vao, raw_data(&ground_vertices), size_of(ground_vertices))
 
 	// WALL
-	wall_vbo: u32
-	wall_vertices: [CUBOID_VERTEX_COUNT]Vertex
-	create_cuboid(WALL_DIMENSIONS, &wall_vertices, 1, {false, true, false})
-	init_vertices(&wall_vbo, &wall_vao, raw_data(&wall_vertices), size_of(wall_vertices))
+	wall_x_vbo: u32
+	wall_x_vertices: [CUBOID_VERTEX_COUNT]Vertex
+	create_cuboid(WALL_X_DIMENSIONS, &wall_x_vertices, 1, {false, true, false})
+	init_vertices(&wall_x_vbo, &wall_x_vao, raw_data(&wall_x_vertices), size_of(wall_x_vertices))
+	for &w in walls_x {
+		w.bb = BoundingBox {
+			min = w.pos,
+			max = w.pos + WALL_X_DIMENSIONS,
+		}
+	}
+	wall_z_vbo: u32
+	wall_z_vertices: [CUBOID_VERTEX_COUNT]Vertex
+	create_cuboid(WALL_Z_DIMENSIONS, &wall_z_vertices, 1, {false, true, false})
+	init_vertices(&wall_z_vbo, &wall_z_vao, raw_data(&wall_z_vertices), size_of(wall_z_vertices))
+	for &w in walls_z {
+		w.bb = BoundingBox {
+			min = w.pos,
+			max = w.pos + WALL_Z_DIMENSIONS,
+		}
+	}
 
 	// CREATURE
 	creature_vbo: u32
@@ -202,13 +218,23 @@ draw_scene :: proc() {
 
 	// WALL
 	use_color_shader(view, projection)
-	model: glsl.mat4 = 1
-	model *= glsl.mat4Translate(WALL_POSITION)
-	// model *= glsl.mat4Rotate({0.0, 1.0, 0.0}, glsl.radians_f32(WALL_ANGLE))
-	shader_set_mat4(color_shader_program, "model", model)
 	shader_set_vec3(color_shader_program, "color", {1.0, 1.0, 1.0})
-	gl.BindVertexArray(wall_vao)
-	gl.DrawArrays(gl.TRIANGLES, 0, CUBOID_VERTEX_COUNT)
+	// Walls along the X axis
+	gl.BindVertexArray(wall_x_vao)
+	for w in walls_x {
+		model: glsl.mat4 = 1
+		model *= glsl.mat4Translate(w.pos)
+		shader_set_mat4(color_shader_program, "model", model)
+		gl.DrawArrays(gl.TRIANGLES, 0, CUBOID_VERTEX_COUNT)
+	}
+	// Walls along the Z axis
+	gl.BindVertexArray(wall_z_vao)
+	for w in walls_z {
+		model: glsl.mat4 = 1
+		model *= glsl.mat4Translate(w.pos)
+		shader_set_mat4(color_shader_program, "model", model)
+		gl.DrawArrays(gl.TRIANGLES, 0, CUBOID_VERTEX_COUNT)
+	}
 
 	// SOLDIER
 	// use_texture_shader(view, projection, creature_texture)
@@ -330,6 +356,9 @@ update_scene :: proc() {
 	}
 
 	// UPDATE ENEMIES
+	if game_time - enemy_spawn_prev_time > ENEMY_SPAWN_RATE && len(enemies) < ENEMY_COUNT_MAX {
+		spawn_enemy()
+	}
 	for &e, i in enemies {
 		// POSITION
 		if e.pos != e.target {
@@ -351,10 +380,29 @@ update_scene :: proc() {
 		for s in soldiers {
 			s_direction := glsl.normalize(s.pos - e.pos)
 			s_d := hit_distance(s.bb, e.pos + CREATURE_CENTER, s_direction)
-			wall_d := hit_distance(WALL_BB, e.pos + CREATURE_CENTER, s_direction)
-			enemy_sees_soldier := s_d > 0 && (wall_d <= 0 || s_d < wall_d)
+			enemy_sees_soldier := true
+			for w in walls_x {
+				wall_d := hit_distance(w.bb, e.pos + CREATURE_CENTER, s_direction)
+				if wall_d > 0 && wall_d < s_d {
+					enemy_sees_soldier = false
+					break
+				}
+			}
+			if !enemy_sees_soldier {
+				continue
+			}
+			for w in walls_z {
+				wall_d := hit_distance(w.bb, e.pos + CREATURE_CENTER, s_direction)
+				if wall_d > 0 && wall_d < s_d {
+					enemy_sees_soldier = false
+					break
+				}
+			}
+			if !enemy_sees_soldier {
+				continue
+			}
 
-			if enemy_sees_soldier && (nearest_soldier_d == 0 || s_d < nearest_soldier_d) {
+			if nearest_soldier_d == 0 || s_d < nearest_soldier_d {
 				nearest_soldier_d = s_d
 				soldier = s
 			}
@@ -369,10 +417,6 @@ update_scene :: proc() {
 			e.target = soldier.pos
 		}
 	}
-	if game_time - enemy_spawn_prev_time > ENEMY_SPAWN_RATE && len(enemies) < ENEMY_COUNT_MAX {
-		spawn_enemy()
-	}
-
 
 	// SHOOT
 	if (soldier_fire_at_will && time_now - time_prev_shot > MIN_TIME_BETWEEN_SHOTS) {
@@ -383,12 +427,29 @@ update_scene :: proc() {
 			for &e in enemies {
 				enemy_direction := glsl.normalize(e.pos - s.pos)
 				enemy_sight_d := hit_distance(e.bb, s.pos + CREATURE_CENTER, enemy_direction)
-				wall_sight_d := hit_distance(WALL_BB, s.pos + CREATURE_CENTER, enemy_direction)
-				soldier_sees_enemy :=
-					enemy_sight_d > 0 && (wall_sight_d <= 0 || enemy_sight_d < wall_sight_d)
+				soldier_sees_enemy := true
+				for w in walls_x {
+					wall_d := hit_distance(w.bb, s.pos + CREATURE_CENTER, enemy_direction)
+					if wall_d > 0 && wall_d < enemy_sight_d {
+						soldier_sees_enemy = false
+						break
+					}
+				}
+				if !soldier_sees_enemy {
+					continue
+				}
+				for w in walls_z {
+					wall_d := hit_distance(w.bb, s.pos + CREATURE_CENTER, enemy_direction)
+					if wall_d > 0 && wall_d < enemy_sight_d {
+						soldier_sees_enemy = false
+						break
+					}
+				}
+				if !soldier_sees_enemy {
+					continue
+				}
 
-				if soldier_sees_enemy &&
-				   (nearest_enemy_d == 0 || enemy_sight_d < nearest_enemy_d) {
+				if nearest_enemy_d == 0 || enemy_sight_d < nearest_enemy_d {
 					nearest_enemy_d = enemy_sight_d
 					enemy = &e
 				}
@@ -422,10 +483,19 @@ update_bullets :: proc() {
 		bullet.pos += distance_travelled * bullet.direction
 
 		d: f32 = 0
-		wall_d := hit_distance(WALL_BB, bullet.pos_prev_check, bullet.direction)
-		if wall_d > 0 && (d == 0 || wall_d < d) {
-			d = wall_d
+		for w in walls_x {
+			wall_d := hit_distance(w.bb, bullet.pos_prev_check, bullet.direction)
+			if wall_d > 0 && (d == 0 || wall_d < d) {
+				d = wall_d
+			}
 		}
+		for w in walls_z {
+			wall_d := hit_distance(w.bb, bullet.pos_prev_check, bullet.direction)
+			if wall_d > 0 && (d == 0 || wall_d < d) {
+				d = wall_d
+			}
+		}
+
 		enemy_hit_index := -1
 		for e, i in enemies {
 			bb_d := hit_distance(e.bb, bullet.pos_prev_check, bullet.direction)

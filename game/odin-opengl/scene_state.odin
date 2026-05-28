@@ -7,24 +7,40 @@ game_time_speed: f32 = 1
 
 // -------------- GROUND --------------
 
-GROUND_SIZE :: 20.0
+GRID_SIZE :: 1.0
+GROUND_SIZE :: 20 * GRID_SIZE
 GROUND_CENTER :: [3]f32{GROUND_SIZE / 2, 0.0, GROUND_SIZE / 2}
 GROUND_DIMENSIONS :: [3]f32{GROUND_SIZE, 0.5, GROUND_SIZE}
 GROUND_POSITION :: [3]f32{0.0, -GROUND_DIMENSIONS.y, 0.0}
 ground_vao: u32
 
 // -------------- WALL --------------
-
-WALL_DIMENSIONS :: [3]f32{0.2, 2.0, 6.0}
-WALL_CENTER := WALL_DIMENSIONS / 2
-WALL_POSITION := GROUND_CENTER + [3]f32{-WALL_DIMENSIONS.x / 2, 0.0, -WALL_DIMENSIONS.z / 2}
-WALL_BB := BoundingBox {
-	min = WALL_POSITION,
-	max = WALL_POSITION + WALL_DIMENSIONS,
+WALL_X_DIMENSIONS :: [3]f32{1.2, 2.0, 0.2}
+WALL_Z_DIMENSIONS :: [3]f32{0.2, 2.0, 1.2}
+WALL_X_CENTER := WALL_X_DIMENSIONS / 2
+WALL_Z_CENTER := WALL_Z_DIMENSIONS / 2
+wall_x_vao: u32
+wall_z_vao: u32
+walls_x := []Wall {
+	{pos = {-0.1 + GRID_SIZE * 10, 0, -0.1 + GRID_SIZE * 10}},
+	{pos = {-0.1 + GRID_SIZE * 11, 0, -0.1 + GRID_SIZE * 10}},
+	{pos = {-0.1 + GRID_SIZE * 12, 0, -0.1 + GRID_SIZE * 10}},
+	{pos = {-0.1 + GRID_SIZE * 13, 0, -0.1 + GRID_SIZE * 10}},
+	{pos = {-0.1 + GRID_SIZE * 10, 0, -0.1 + GRID_SIZE * 14}},
+	{pos = {-0.1 + GRID_SIZE * 11, 0, -0.1 + GRID_SIZE * 14}},
+	{pos = {-0.1 + GRID_SIZE * 12, 0, -0.1 + GRID_SIZE * 14}},
+	{pos = {-0.1 + GRID_SIZE * 13, 0, -0.1 + GRID_SIZE * 14}},
 }
-// WALL_ANGLE :: -90
-wall_vao: u32
-
+walls_z := []Wall {
+	{pos = {-0.1 + GRID_SIZE * 14, 0, -0.1 + GRID_SIZE * 10}},
+	{pos = {-0.1 + GRID_SIZE * 14, 0, -0.1 + GRID_SIZE * 11}},
+	{pos = {-0.1 + GRID_SIZE * 14, 0, -0.1 + GRID_SIZE * 12}},
+	{pos = {-0.1 + GRID_SIZE * 14, 0, -0.1 + GRID_SIZE * 13}},
+	{pos = {-0.1 + GRID_SIZE * 10, 0, -0.1 + GRID_SIZE * 10}},
+	{pos = {-0.1 + GRID_SIZE * 10, 0, -0.1 + GRID_SIZE * 11}},
+	{pos = {-0.1 + GRID_SIZE * 10, 0, -0.1 + GRID_SIZE * 12}},
+	{pos = {-0.1 + GRID_SIZE * 10, 0, -0.1 + GRID_SIZE * 13}},
+}
 
 // -------------- CREATURE --------------
 
