@@ -62,9 +62,6 @@ init_scene :: proc() {
 	init_vertices(&wall_vbo, &wall_vao, raw_data(&wall_vertices), size_of(wall_vertices))
 
 	// CREATURE
-	for c in creatures {
-		c.target = c.pos
-	}
 	creature_vbo: u32
 	creature_vertices: [CUBOID_VERTEX_COUNT]Vertex
 	create_cuboid(CREATURE_DIMENSIONS, &creature_vertices, 1, {false, true, false})
@@ -74,6 +71,10 @@ init_scene :: proc() {
 		raw_data(&creature_vertices),
 		size_of(creature_vertices),
 	)
+	for i := 0; i < MAX_ENEMIES; i += 1 {
+		pos: [3]f32 = GROUND_CENTER + {5.0, 0.0, f32(i * 3 - 3)}
+		append(&enemies, Creature{pos = pos, target = pos})
+	}
 
 	// BULLET
 	// bullet_vbo: u32
@@ -193,17 +194,24 @@ draw_scene :: proc() {
 	gl.BindVertexArray(wall_vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, CUBOID_VERTEX_COUNT)
 
-	// CREATURE
+	// SOLDIER
 	// use_texture_shader(view, projection, creature_texture)
 	use_color_shader(view, projection)
-	for c, i in creatures {
+	for c, i in soldiers {
 		draw_object(
 			c.pos,
-			get_creature_color(i),
+			get_soldier_color(i),
 			// {1.0, 1.0, 1.0},
 			&creature_vao,
 			color_shader_program,
 		)
+	}
+
+	// ENEMY
+	// use_texture_shader(view, projection, creature_texture)
+	use_color_shader(view, projection)
+	for c, i in enemies {
+		draw_object(c.pos, {0.0, 1.0, 0.0}, &creature_vao, color_shader_program)
 	}
 
 	// BULLET
@@ -228,7 +236,7 @@ draw_scene :: proc() {
 	gl.DrawArrays(gl.LINES, 0, i32(bullet_path_vertex_next))
 
 	// PATH
-	for c, i in creatures {
+	for c, i in soldiers {
 		if c.pos != c.target {
 			gl.UseProgram(path_shader_program)
 			shader_set_mat4(path_shader_program, "view", view)
@@ -254,8 +262,8 @@ draw_scene :: proc() {
 	}
 }
 
-get_creature_color :: proc(i: int) -> glsl.vec3 {
-	if creature_selected == i {
+get_soldier_color :: proc(i: int) -> glsl.vec3 {
+	if soldier_selected == i {
 		return CREATURE_COLOR_SELECTED
 	} else {
 		return CREATURE_COLOR
@@ -285,8 +293,8 @@ update_scene :: proc() {
 	// meters per second
 	creature_movement := CREATURE_SPEED * game_time_delta
 
-	// UPDATE CREATURES
-	for c, i in creatures {
+	// UPDATE SOLDIERS
+	for c, i in soldiers {
 		if c.pos != c.target {
 			d := c.target - c.pos
 			if (glsl.length(d) <= creature_movement) {
@@ -297,98 +305,143 @@ update_scene :: proc() {
 		}
 	}
 
-	// VISION
-	enemy_bb := BoundingBox {
-		min = enemy.pos,
-		max = enemy.pos + CREATURE_DIMENSIONS,
-	}
-	wall_bb := BoundingBox {
-		min = WALL_POSITION,
-		max = WALL_POSITION + WALL_DIMENSIONS,
-	}
-	enemy_direction := glsl.normalize(enemy.pos - player.pos)
-	enemy_sight_d := hit_distance(enemy_bb, player.pos + CREATURE_CENTER, enemy_direction)
-	wall_sight_d := hit_distance(wall_bb, player.pos + CREATURE_CENTER, enemy_direction)
-	player_sees_enemy = enemy_sight_d > 0 && (wall_sight_d <= 0 || enemy_sight_d < wall_sight_d)
-
-	// SHOOT
-	if (player_sees_enemy &&
-		   player_fire_at_will &&
-		   time_now - time_prev_shot > MIN_TIME_BETWEEN_SHOTS) {
-		time_prev_shot = time_now
-		target := enemy
-		shot_pos := player.pos + CREATURE_CENTER
-		shot_target := target.pos + CREATURE_CENTER
-		bullet := Bullet {
-			pos            = shot_pos,
-			pos_prev_check = shot_pos,
-			direction      = glsl.normalize(shot_target - shot_pos),
-			time_shot      = game_time,
-		}
-		bul_fill[bul_fill_next^] = bullet
-		bul_fill_next^ += 1
-	}
-
-	// UPDATE BULLETS
-	hit_check_timer += game_time_delta
-	should_check_hits := false
-	bullets_to_discard: [dynamic]int
-	if hit_check_timer > HIT_CHECK_INTERVAL {
-		bullet_movement := BULLET_SPEED * hit_check_timer
-		hit_check_timer = 0
-
-		bullet_path_vertex_next = 0
-		for i := 0; i < bul_check_next^; i += 1 {
-			bullet := bul_check[i]
-			bullet_age := game_time - bullet.time_shot
-			distance_travelled :=
-				bullet_movement if bullet_age > HIT_CHECK_INTERVAL else BULLET_SPEED * bullet_age
-			bullet.pos += distance_travelled * bullet.direction
-
-			d: f32 = 0
-			bbs := []BoundingBox{enemy_bb, wall_bb}
-			for bb in bbs {
-				bb_d := hit_distance(bb, bullet.pos_prev_check, bullet.direction)
-				if bb_d > 0 && (d == 0 || bb_d < d) {
-					d = bb_d
-				}
-			}
-
-			if d > 0 && d < distance_travelled {
-				bullet_path_vertices[bullet_path_vertex_next] = {
-					pos = bullet.pos_prev_check,
-				}
-				bullet_path_vertices[bullet_path_vertex_next + 1] = {
-					pos = bullet.pos_prev_check + d * bullet.direction,
-				}
-				bullet_path_vertex_next += 2
+	// UPDATE ENEMIES
+	for &e, i in enemies {
+		if e.pos != e.target {
+			d := e.target - e.pos
+			if (glsl.length(d) <= creature_movement) {
+				e.pos = e.target
 			} else {
-				bullet_path_vertices[bullet_path_vertex_next] = {
-					pos = bullet.pos_prev_check,
-				}
-				bullet_path_vertices[bullet_path_vertex_next + 1] = {
-					pos = bullet.pos,
-				}
-				bullet_path_vertex_next += 2
+				e.pos += creature_movement * glsl.normalize(d)
+			}
+		}
+		e.bb = {
+			min = e.pos,
+			max = e.pos + CREATURE_DIMENSIONS,
+		}
+	}
 
-				bullet.pos_prev_check = bullet.pos
-				bullet.travel_d += distance_travelled
-				if (bullet.travel_d > BULLET_RANGE) {
-					fmt.println("bullet shot at", bullet.time_shot, "exceeds range")
-				} else {
-					// bullet is checked on the next round
-					bul_fill[bul_fill_next^] = bullet
-					bul_fill_next^ += 1
-				}
-
+	for soldier in soldiers {
+		// VISION
+		nearest_enemy_d: f32 = 0
+		enemy: ^Creature
+		// enemy_bb: BoundingBox
+		soldier_sees_enemy := false
+		for &e in enemies {
+			enemy_direction := glsl.normalize(e.pos - soldier.pos)
+			enemy_sight_d := hit_distance(e.bb, soldier.pos + CREATURE_CENTER, enemy_direction)
+			wall_sight_d := hit_distance(WALL_BB, soldier.pos + CREATURE_CENTER, enemy_direction)
+			soldier_sees_enemy =
+				enemy_sight_d > 0 && (wall_sight_d <= 0 || enemy_sight_d < wall_sight_d)
+			if (soldier_sees_enemy && (nearest_enemy_d == 0 || enemy_sight_d < nearest_enemy_d)) {
+				nearest_enemy_d = enemy_sight_d
+				// enemy_bb = e_bb
+				enemy = &e
 			}
 		}
 
-		bullet_buffer_index = (bullet_buffer_index + 1) % BULLET_BUFFERS_MAX
-		bul_fill = &bullet_buffers[bullet_buffer_index]
-		bul_fill_next = &bullet_nexts[bullet_buffer_index]
-		bul_check = &bullet_buffers[(bullet_buffer_index + 1) % BULLET_BUFFERS_MAX]
-		bul_check_next = &bullet_nexts[(bullet_buffer_index + 1) % BULLET_BUFFERS_MAX]
-		bul_fill_next^ = 0
+		// SHOOT
+		if (soldier_sees_enemy &&
+			   soldier_fire_at_will &&
+			   time_now - time_prev_shot > MIN_TIME_BETWEEN_SHOTS) {
+			time_prev_shot = time_now
+			target := enemy
+			shot_pos := soldier.pos + CREATURE_CENTER
+			shot_target := target.pos + CREATURE_CENTER
+			bullet := Bullet {
+				pos            = shot_pos,
+				pos_prev_check = shot_pos,
+				direction      = glsl.normalize(shot_target - shot_pos),
+				time_shot      = game_time,
+			}
+			bul_fill[bul_fill_next^] = bullet
+			bul_fill_next^ += 1
+		}
 	}
+
+	update_bullets()
+}
+
+update_bullets :: proc() {
+	// bbs: [dynamic]BoundingBox
+	// append(&bbs, BoundingBox{min = WALL_POSITION, max = WALL_POSITION + WALL_DIMENSIONS})
+	// for &e in enemies {
+	// 	append(&bbs, BoundingBox{min = e.pos, max = e.pos + CREATURE_DIMENSIONS})
+	// }
+
+	// hit_check_timer += game_time_delta
+	// should_check_hits := false
+	// bullets_to_discard: [dynamic]int
+	// if hit_check_timer > HIT_CHECK_INTERVAL {
+	// bullet_movement := BULLET_SPEED * hit_check_timer
+	// bullet_movement := BULLET_SPEED * game_time_delta
+	distance_travelled := BULLET_SPEED * game_time_delta
+
+	// hit_check_timer = 0
+
+	bullet_path_vertex_next = 0
+	for i := 0; i < bul_check_next^; i += 1 {
+		bullet := bul_check[i]
+		// bullet_age := game_time - bullet.time_shot
+		// distance_travelled :=
+		// 	bullet_movement if bullet_age > HIT_CHECK_INTERVAL else BULLET_SPEED * bullet_age
+		bullet.pos += distance_travelled * bullet.direction
+
+		d: f32 = 0
+		wall_d := hit_distance(WALL_BB, bullet.pos_prev_check, bullet.direction)
+		if wall_d > 0 && (d == 0 || wall_d < d) {
+			d = wall_d
+		}
+		enemy_hit_index := -1
+		for e, i in enemies {
+			bb_d := hit_distance(e.bb, bullet.pos_prev_check, bullet.direction)
+			if bb_d > 0 && (d == 0 || bb_d < d) {
+				d = bb_d
+				enemy_hit_index = i
+			}
+		}
+
+		if d > 0 && d < distance_travelled {
+			bullet_path_vertices[bullet_path_vertex_next] = {
+				pos = bullet.pos_prev_check,
+			}
+			bullet_path_vertices[bullet_path_vertex_next + 1] = {
+				pos = bullet.pos_prev_check + d * bullet.direction,
+			}
+			bullet_path_vertex_next += 2
+			if (enemy_hit_index > -1) {
+				unordered_remove(&enemies, enemy_hit_index)
+			}
+			// enemy.pos = {0, 0, 0}
+			// enemy.target = enemy.pos
+			// Bullet is discarded by not adding it to the fill buffer
+		} else {
+			bullet_path_vertices[bullet_path_vertex_next] = {
+				pos = bullet.pos_prev_check,
+			}
+			bullet_path_vertices[bullet_path_vertex_next + 1] = {
+				pos = bullet.pos,
+			}
+			bullet_path_vertex_next += 2
+
+			bullet.pos_prev_check = bullet.pos
+			bullet.travel_d += distance_travelled
+			if (bullet.travel_d > BULLET_RANGE) {
+				fmt.println("bullet shot at", bullet.time_shot, "exceeds range")
+			} else {
+				// bullet is checked on the next round
+				bul_fill[bul_fill_next^] = bullet
+				bul_fill_next^ += 1
+			}
+
+		}
+	}
+
+	bullet_buffer_index = (bullet_buffer_index + 1) % BULLET_BUFFERS_MAX
+	bul_fill = &bullet_buffers[bullet_buffer_index]
+	bul_fill_next = &bullet_nexts[bullet_buffer_index]
+	bul_check = &bullet_buffers[(bullet_buffer_index + 1) % BULLET_BUFFERS_MAX]
+	bul_check_next = &bullet_nexts[(bullet_buffer_index + 1) % BULLET_BUFFERS_MAX]
+	bul_fill_next^ = 0
+	// }
 }

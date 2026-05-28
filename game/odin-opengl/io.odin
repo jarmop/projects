@@ -87,10 +87,10 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 		ray_world := m.normalize((m.inverse(view) * ray_eye).xyz)
 
 		// SELECT CREATURE
-		prev_selected := creature_selected
-		creature_selected = -1
+		prev_selected := soldier_selected
+		soldier_selected = -1
 		prev_d: f32 = 9999999
-		for c, i in creatures {
+		for c, i in soldiers {
 			// bb: BoundingBox
 			// bb.min = c.pos - CREATURE_CENTER_XZ
 			// bb.max = bb.min + CREATURE_SIZE
@@ -100,22 +100,22 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			}
 			d := hit_distance(bb, camera.pos, ray_world)
 			if (d > 0 && d < prev_d) {
-				creature_selected = i
+				soldier_selected = i
 				prev_d = d
 			}
 		}
 
 		// Check hit on ground if no hits on creatures
-		if (prev_selected != -1 && creature_selected == -1) {
+		if (prev_selected != -1 && soldier_selected == -1) {
 			bb := BoundingBox {
 				min = GROUND_POSITION,
 				max = GROUND_POSITION + GROUND_DIMENSIONS,
 			}
 			d := hit_distance(bb, camera.pos, ray_world)
 			if (d > 0) {
-				creature_selected = prev_selected
+				soldier_selected = prev_selected
 				entry_point := camera.pos + ray_world * d
-				creatures[prev_selected].target = entry_point - CREATURE_CENTER_XZ
+				soldiers[prev_selected].target = entry_point - CREATURE_CENTER_XZ
 			}
 		}
 	}

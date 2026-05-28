@@ -1,8 +1,14 @@
 package game
 
+BoundingBox :: struct {
+	min: [3]f32,
+	max: [3]f32,
+}
+
 Creature :: struct {
 	pos:    [3]f32,
 	target: [3]f32,
+	bb:     BoundingBox,
 }
 
 Bullet :: struct {
@@ -11,11 +17,6 @@ Bullet :: struct {
 	direction:      [3]f32,
 	travel_d:       f32,
 	time_shot:      f32,
-}
-
-BoundingBox :: struct {
-	min: [3]f32,
-	max: [3]f32,
 }
 
 Camera :: struct {
