@@ -46,9 +46,17 @@ soldiers := []^Creature{&soldier}
 soldier_selected := 0
 
 enemies: [dynamic]Creature
-MAX_ENEMIES :: 3
+INITIAL_ENEMIES :: 3
 
 soldier_fire_at_will := true
+
+// -------------- CORPSE --------------
+CORPSE_DIMENSIONS :: [3]f32{1.0, 0.01, 1.0}
+CORPSE_CENTER := CORPSE_DIMENSIONS / 2
+CORPSE_CENTER_XZ :: [3]f32{(CORPSE_DIMENSIONS.x / 2), 0, (CORPSE_DIMENSIONS.z / 2)}
+
+corpses: [dynamic][3]f32
+corpse_vao: u32
 
 // -------------- BULLET --------------
 
@@ -56,7 +64,7 @@ BULLET_DIMENSIONS :: [3]f32{0.1, 0.1, 0.1}
 BULLET_SPEED :: 300.0
 MIN_TIME_BETWEEN_SHOTS :: 1.0
 BULLET_RANGE :: 500
-HIT_CHECK_INTERVAL: f32 = 0.0
+// HIT_CHECK_INTERVAL: f32 = 0.0
 BULLET_CENTER := BULLET_DIMENSIONS / 2
 bullet_vao: u32
 

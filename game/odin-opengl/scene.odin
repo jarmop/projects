@@ -71,17 +71,18 @@ init_scene :: proc() {
 		raw_data(&creature_vertices),
 		size_of(creature_vertices),
 	)
-	for i := 0; i < MAX_ENEMIES; i += 1 {
+	for i := 0; i < INITIAL_ENEMIES; i += 1 {
 		pos: [3]f32 = GROUND_CENTER + {5.0, 0.0, f32(i * 3 - 3)}
 		append(&enemies, Creature{pos = pos, target = pos})
 	}
 
-	// BULLET
-	// bullet_vbo: u32
-	// bullet_vertices: [CUBOID_VERTEX_COUNT]Vertex
-	// create_cuboid(BULLET_DIMENSIONS, &bullet_vertices, 0, {false, false, false})
-	// init_vertices(&bullet_vbo, &bullet_vao, raw_data(&bullet_vertices), size_of(bullet_vertices))
+	// CORPSE
+	corpse_vbo: u32
+	corpse_vertices: [CUBOID_VERTEX_COUNT]Vertex
+	create_cuboid(CORPSE_DIMENSIONS, &corpse_vertices, 1, {true, false, false})
+	init_vertices(&corpse_vbo, &corpse_vao, raw_data(&corpse_vertices), size_of(corpse_vertices))
 
+	// BULLET
 	gl.GenVertexArrays(1, &bullet_path_vao)
 	gl.BindVertexArray(bullet_path_vao)
 	gl.GenBuffers(1, &bullet_path_vbo)
@@ -214,6 +215,12 @@ draw_scene :: proc() {
 		draw_object(c.pos, {0.0, 1.0, 0.0}, &creature_vao, color_shader_program)
 	}
 
+	// CORPSE
+	use_color_shader(view, projection)
+	for pos, i in corpses {
+		draw_object(pos, {0.5, 0.0, 0.0}, &corpse_vao, color_shader_program)
+	}
+
 	// BULLET
 	// for i := 0; i < bul_check_next^; i += 1 {
 	// 	draw_object(bul_check[i].pos, {1, 1, 1}, &bullet_vao, color_shader_program)
@@ -281,7 +288,7 @@ draw_object :: proc(pos: glsl.vec3, color: glsl.vec3, vao: ^u32, shader_program:
 
 time_prev_shot: f32 = 0
 // time between hit checks in seconds
-hit_check_timer: f32 = 0
+// hit_check_timer: f32 = 0
 
 update_scene :: proc() {
 	if !playing {
@@ -410,6 +417,10 @@ update_bullets :: proc() {
 			}
 			bullet_path_vertex_next += 2
 			if (enemy_hit_index > -1) {
+				append(
+					&corpses,
+					enemies[enemy_hit_index].pos + CREATURE_CENTER_XZ - CORPSE_CENTER_XZ,
+				)
 				unordered_remove(&enemies, enemy_hit_index)
 			}
 			// enemy.pos = {0, 0, 0}
