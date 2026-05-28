@@ -46,6 +46,11 @@ key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode
 	if key == glfw.KEY_ESCAPE && action == glfw.PRESS {
 		glfw.SetWindowShouldClose(window, true)
 	} else if key == glfw.KEY_SPACE && action == glfw.PRESS {
+		if (soldier_dead) {
+			// Restart game
+			clear(&enemies)
+			soldier_dead = false
+		}
 		playing = !playing
 	}
 }

@@ -35,17 +35,17 @@ CREATURE_COLOR :: [3]f32{1.0, 0.6, 0.2}
 CREATURE_COLOR_SELECTED :: [3]f32{0.0, 0.0, 1.0}
 CREATURE_COLOR_SHOOTING :: [3]f32{1.0, 0.0, 0.0}
 CREATURE_COLOR_TARGET :: [3]f32{0.0, 1.0, 0.0}
-CREATURE_SPEED :: 1.0
+CREATURE_SPEED :: 2.0
 creature_vao: u32
 
 // -------------- SOLDIER --------------
 soldier: Creature = {
-	pos    = GROUND_CENTER - {5.0, 0.0, 0.0},
-	target = GROUND_CENTER - {5.0, 0.0, 0.0},
+	pos = GROUND_CENTER - {5.0, 0.0, 0.0},
 }
 soldiers := []^Creature{&soldier}
 soldier_selected := 0
 soldier_fire_at_will := true
+soldier_dead := false
 
 // -------------- ENEMY --------------
 ENEMY_COUNT_INITIAL :: 0

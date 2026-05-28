@@ -72,6 +72,9 @@ init_scene :: proc() {
 		raw_data(&creature_vertices),
 		size_of(creature_vertices),
 	)
+	for s in soldiers {
+		s.target = s.pos
+	}
 	for i := 0; i < ENEMY_COUNT_INITIAL; i += 1 {
 		// pos: [3]f32 = GROUND_CENTER + {5.0, 0.0, f32(i * 3 - 3)}
 		// append(&enemies, Creature{pos = pos, target = pos})
@@ -311,19 +314,24 @@ update_scene :: proc() {
 	creature_movement := CREATURE_SPEED * game_time_delta
 
 	// UPDATE SOLDIERS
-	for c, i in soldiers {
-		if c.pos != c.target {
-			d := c.target - c.pos
+	for s, i in soldiers {
+		if s.pos != s.target {
+			d := s.target - s.pos
 			if (glsl.length(d) <= creature_movement) {
-				c.pos = c.target
+				s.pos = s.target
 			} else {
-				c.pos += creature_movement * glsl.normalize(d)
+				s.pos += creature_movement * glsl.normalize(d)
 			}
+		}
+		s.bb = {
+			min = s.pos,
+			max = s.pos + CREATURE_DIMENSIONS,
 		}
 	}
 
 	// UPDATE ENEMIES
 	for &e, i in enemies {
+		// POSITION
 		if e.pos != e.target {
 			d := e.target - e.pos
 			if (glsl.length(d) <= creature_movement) {
@@ -336,6 +344,30 @@ update_scene :: proc() {
 			min = e.pos,
 			max = e.pos + CREATURE_DIMENSIONS,
 		}
+		// VISION
+		nearest_soldier_d: f32 = 0
+		enemy: ^Creature
+		soldier: ^Creature
+		for s in soldiers {
+			s_direction := glsl.normalize(s.pos - e.pos)
+			s_d := hit_distance(s.bb, e.pos + CREATURE_CENTER, s_direction)
+			wall_d := hit_distance(WALL_BB, e.pos + CREATURE_CENTER, s_direction)
+			enemy_sees_soldier := s_d > 0 && (wall_d <= 0 || s_d < wall_d)
+
+			if enemy_sees_soldier && (nearest_soldier_d == 0 || s_d < nearest_soldier_d) {
+				nearest_soldier_d = s_d
+				soldier = s
+			}
+		}
+		if nearest_soldier_d > 0 {
+			biting_distance: f32 = 0.3
+			if (nearest_soldier_d < biting_distance) {
+				fmt.println("Game over")
+				soldier_dead = true
+				playing = false
+			}
+			e.target = soldier.pos
+		}
 	}
 	if game_time - enemy_spawn_prev_time > ENEMY_SPAWN_RATE && len(enemies) < ENEMY_COUNT_MAX {
 		spawn_enemy()
@@ -344,30 +376,26 @@ update_scene :: proc() {
 
 	// SHOOT
 	if (soldier_fire_at_will && time_now - time_prev_shot > MIN_TIME_BETWEEN_SHOTS) {
-		for soldier in soldiers {
+		for s in soldiers {
 			// VISION
 			nearest_enemy_d: f32 = 0
 			enemy: ^Creature
 			for &e in enemies {
-				enemy_direction := glsl.normalize(e.pos - soldier.pos)
-				enemy_sight_d := hit_distance(e.bb, soldier.pos + CREATURE_CENTER, enemy_direction)
-				wall_sight_d := hit_distance(
-					WALL_BB,
-					soldier.pos + CREATURE_CENTER,
-					enemy_direction,
-				)
+				enemy_direction := glsl.normalize(e.pos - s.pos)
+				enemy_sight_d := hit_distance(e.bb, s.pos + CREATURE_CENTER, enemy_direction)
+				wall_sight_d := hit_distance(WALL_BB, s.pos + CREATURE_CENTER, enemy_direction)
 				soldier_sees_enemy :=
 					enemy_sight_d > 0 && (wall_sight_d <= 0 || enemy_sight_d < wall_sight_d)
 
-				if (soldier_sees_enemy &&
-					   (nearest_enemy_d == 0 || enemy_sight_d < nearest_enemy_d)) {
+				if soldier_sees_enemy &&
+				   (nearest_enemy_d == 0 || enemy_sight_d < nearest_enemy_d) {
 					nearest_enemy_d = enemy_sight_d
 					enemy = &e
 				}
 			}
 
-			if (nearest_enemy_d > 0) {
-				shot_pos := soldier.pos + CREATURE_CENTER
+			if nearest_enemy_d > 0 {
+				shot_pos := s.pos + CREATURE_CENTER
 				shot_target := enemy.pos + CREATURE_CENTER
 				bullet := Bullet {
 					pos            = shot_pos,
