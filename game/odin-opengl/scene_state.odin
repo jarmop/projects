@@ -36,19 +36,23 @@ CREATURE_COLOR_SELECTED :: [3]f32{0.0, 0.0, 1.0}
 CREATURE_COLOR_SHOOTING :: [3]f32{1.0, 0.0, 0.0}
 CREATURE_COLOR_TARGET :: [3]f32{0.0, 1.0, 0.0}
 CREATURE_SPEED :: 1.0
-
 creature_vao: u32
+
+// -------------- SOLDIER --------------
 soldier: Creature = {
 	pos    = GROUND_CENTER - {5.0, 0.0, 0.0},
 	target = GROUND_CENTER - {5.0, 0.0, 0.0},
 }
 soldiers := []^Creature{&soldier}
 soldier_selected := 0
-
-enemies: [dynamic]Creature
-INITIAL_ENEMIES :: 3
-
 soldier_fire_at_will := true
+
+// -------------- ENEMY --------------
+ENEMY_COUNT_INITIAL :: 0
+ENEMY_COUNT_MAX :: 10
+ENEMY_SPAWN_RATE :: 1
+enemies: [dynamic]Creature
+enemy_spawn_prev_time: f32 = 0
 
 // -------------- CORPSE --------------
 CORPSE_DIMENSIONS :: [3]f32{1.0, 0.01, 1.0}

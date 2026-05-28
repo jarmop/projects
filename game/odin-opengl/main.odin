@@ -5,17 +5,24 @@ import gl "vendor:OpenGL"
 import glfw "vendor:glfw"
 
 main :: proc() {
+	fmt.println("Initializing")
+
 	glfw.Init()
+
+	fmt.println("Initialized GLFW")
+
+	window = glfw.CreateWindow(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, "Odin Game", nil, nil)
+
+	fmt.println("Initialized window")
+
 	glfw.WindowHint(glfw.CONTEXT_VERSION_MAJOR, 3)
 	glfw.WindowHint(glfw.CONTEXT_VERSION_MINOR, 3)
 	glfw.WindowHint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
-	window = glfw.CreateWindow(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT, "Odin Game", nil, nil)
 	glfw.MakeContextCurrent(window)
-
 	gl.load_up_to(3, 3, glfw.gl_set_proc_address)
 	gl.Viewport(0, 0, INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT)
 
-	fmt.println("Initialized window")
+	fmt.println("Initialized OpenGL")
 
 	init_io()
 	fmt.println("Initialized IO")

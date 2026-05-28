@@ -2,6 +2,7 @@ package game
 
 import "core:fmt"
 import "core:math/linalg/glsl"
+import "core:math/rand"
 import "core:os"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
@@ -71,9 +72,10 @@ init_scene :: proc() {
 		raw_data(&creature_vertices),
 		size_of(creature_vertices),
 	)
-	for i := 0; i < INITIAL_ENEMIES; i += 1 {
-		pos: [3]f32 = GROUND_CENTER + {5.0, 0.0, f32(i * 3 - 3)}
-		append(&enemies, Creature{pos = pos, target = pos})
+	for i := 0; i < ENEMY_COUNT_INITIAL; i += 1 {
+		// pos: [3]f32 = GROUND_CENTER + {5.0, 0.0, f32(i * 3 - 3)}
+		// append(&enemies, Creature{pos = pos, target = pos})
+		spawn_enemy()
 	}
 
 	// CORPSE
@@ -163,6 +165,16 @@ init_vertices :: proc(vbo: ^u32, vao: ^u32, vertices: rawptr, size: int) {
 	// texture
 	gl.VertexAttribPointer(2, 2, gl.FLOAT, gl.FALSE, size_of(Vertex), offset_of(Vertex, texture))
 	gl.EnableVertexAttribArray(2)
+}
+
+spawn_enemy :: proc() {
+	pos: [3]f32 = {
+		rand.float32() * (GROUND_SIZE - CREATURE_CENTER.x),
+		0,
+		rand.float32() * (GROUND_SIZE - CREATURE_CENTER.z),
+	}
+	append(&enemies, Creature{pos = pos, target = pos})
+	enemy_spawn_prev_time = game_time
 }
 
 draw_scene :: proc() {
@@ -287,8 +299,6 @@ draw_object :: proc(pos: glsl.vec3, color: glsl.vec3, vao: ^u32, shader_program:
 }
 
 time_prev_shot: f32 = 0
-// time between hit checks in seconds
-// hit_check_timer: f32 = 0
 
 update_scene :: proc() {
 	if !playing {
@@ -327,71 +337,60 @@ update_scene :: proc() {
 			max = e.pos + CREATURE_DIMENSIONS,
 		}
 	}
+	if game_time - enemy_spawn_prev_time > ENEMY_SPAWN_RATE && len(enemies) < ENEMY_COUNT_MAX {
+		spawn_enemy()
+	}
 
-	for soldier in soldiers {
-		// VISION
-		nearest_enemy_d: f32 = 0
-		enemy: ^Creature
-		// enemy_bb: BoundingBox
-		soldier_sees_enemy := false
-		for &e in enemies {
-			enemy_direction := glsl.normalize(e.pos - soldier.pos)
-			enemy_sight_d := hit_distance(e.bb, soldier.pos + CREATURE_CENTER, enemy_direction)
-			wall_sight_d := hit_distance(WALL_BB, soldier.pos + CREATURE_CENTER, enemy_direction)
-			soldier_sees_enemy =
-				enemy_sight_d > 0 && (wall_sight_d <= 0 || enemy_sight_d < wall_sight_d)
-			if (soldier_sees_enemy && (nearest_enemy_d == 0 || enemy_sight_d < nearest_enemy_d)) {
-				nearest_enemy_d = enemy_sight_d
-				// enemy_bb = e_bb
-				enemy = &e
+
+	// SHOOT
+	if (soldier_fire_at_will && time_now - time_prev_shot > MIN_TIME_BETWEEN_SHOTS) {
+		for soldier in soldiers {
+			// VISION
+			nearest_enemy_d: f32 = 0
+			enemy: ^Creature
+			for &e in enemies {
+				enemy_direction := glsl.normalize(e.pos - soldier.pos)
+				enemy_sight_d := hit_distance(e.bb, soldier.pos + CREATURE_CENTER, enemy_direction)
+				wall_sight_d := hit_distance(
+					WALL_BB,
+					soldier.pos + CREATURE_CENTER,
+					enemy_direction,
+				)
+				soldier_sees_enemy :=
+					enemy_sight_d > 0 && (wall_sight_d <= 0 || enemy_sight_d < wall_sight_d)
+
+				if (soldier_sees_enemy &&
+					   (nearest_enemy_d == 0 || enemy_sight_d < nearest_enemy_d)) {
+					nearest_enemy_d = enemy_sight_d
+					enemy = &e
+				}
+			}
+
+			if (nearest_enemy_d > 0) {
+				shot_pos := soldier.pos + CREATURE_CENTER
+				shot_target := enemy.pos + CREATURE_CENTER
+				bullet := Bullet {
+					pos            = shot_pos,
+					pos_prev_check = shot_pos,
+					direction      = glsl.normalize(shot_target - shot_pos),
+					time_shot      = game_time,
+				}
+				bul_fill[bul_fill_next^] = bullet
+				bul_fill_next^ += 1
 			}
 		}
-
-		// SHOOT
-		if (soldier_sees_enemy &&
-			   soldier_fire_at_will &&
-			   time_now - time_prev_shot > MIN_TIME_BETWEEN_SHOTS) {
-			time_prev_shot = time_now
-			target := enemy
-			shot_pos := soldier.pos + CREATURE_CENTER
-			shot_target := target.pos + CREATURE_CENTER
-			bullet := Bullet {
-				pos            = shot_pos,
-				pos_prev_check = shot_pos,
-				direction      = glsl.normalize(shot_target - shot_pos),
-				time_shot      = game_time,
-			}
-			bul_fill[bul_fill_next^] = bullet
-			bul_fill_next^ += 1
-		}
+		time_prev_shot = time_now
 	}
 
 	update_bullets()
 }
 
 update_bullets :: proc() {
-	// bbs: [dynamic]BoundingBox
-	// append(&bbs, BoundingBox{min = WALL_POSITION, max = WALL_POSITION + WALL_DIMENSIONS})
-	// for &e in enemies {
-	// 	append(&bbs, BoundingBox{min = e.pos, max = e.pos + CREATURE_DIMENSIONS})
-	// }
-
-	// hit_check_timer += game_time_delta
-	// should_check_hits := false
-	// bullets_to_discard: [dynamic]int
-	// if hit_check_timer > HIT_CHECK_INTERVAL {
-	// bullet_movement := BULLET_SPEED * hit_check_timer
-	// bullet_movement := BULLET_SPEED * game_time_delta
 	distance_travelled := BULLET_SPEED * game_time_delta
-
-	// hit_check_timer = 0
 
 	bullet_path_vertex_next = 0
 	for i := 0; i < bul_check_next^; i += 1 {
 		bullet := bul_check[i]
-		// bullet_age := game_time - bullet.time_shot
-		// distance_travelled :=
-		// 	bullet_movement if bullet_age > HIT_CHECK_INTERVAL else BULLET_SPEED * bullet_age
 		bullet.pos += distance_travelled * bullet.direction
 
 		d: f32 = 0
@@ -423,8 +422,6 @@ update_bullets :: proc() {
 				)
 				unordered_remove(&enemies, enemy_hit_index)
 			}
-			// enemy.pos = {0, 0, 0}
-			// enemy.target = enemy.pos
 			// Bullet is discarded by not adding it to the fill buffer
 		} else {
 			bullet_path_vertices[bullet_path_vertex_next] = {
