@@ -1,10 +1,7 @@
 package game
 
 import "base:runtime"
-import "core:fmt"
 import m "core:math/linalg"
-// import glsl "core:math/linalg/glsl"
-// import m "core:math"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
 
@@ -96,9 +93,6 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 		soldier_selected = -1
 		prev_d: f32 = 9999999
 		for c, i in soldiers {
-			// bb: BoundingBox
-			// bb.min = c.pos - CREATURE_CENTER_XZ
-			// bb.max = bb.min + CREATURE_SIZE
 			bb := BoundingBox {
 				min = c.pos,
 				max = c.pos + CREATURE_DIMENSIONS,
@@ -127,27 +121,11 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 				target_direction := m.normalize(target - soldier.pos)
 				target_d := m.length(target - soldier.pos)
 
-				soldier_sees_target := true
-				for w in walls_x {
-					wall_d := hit_distance(w.bb, soldier.pos + CREATURE_CENTER, target_direction)
-					if wall_d > 0 && wall_d < target_d {
-						soldier_sees_target = false
-						break
-					}
-				}
-				if soldier_sees_target {
-					for w in walls_z {
-						wall_d := hit_distance(
-							w.bb,
-							soldier.pos + CREATURE_CENTER,
-							target_direction,
-						)
-						if wall_d > 0 && wall_d < target_d {
-							soldier_sees_target = false
-							break
-						}
-					}
-				}
+				soldier_sees_target := !wall_blocks_ray(
+					soldier.pos + CREATURE_CENTER,
+					target_direction,
+					target_d,
+				)
 
 				if soldier_sees_target {
 					soldiers[prev_selected].target = target

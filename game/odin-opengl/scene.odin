@@ -92,8 +92,6 @@ init_scene :: proc() {
 		s.target = s.pos
 	}
 	for i := 0; i < ENEMY_COUNT_INITIAL; i += 1 {
-		// pos: [3]f32 = GROUND_CENTER + {5.0, 0.0, f32(i * 3 - 3)}
-		// append(&enemies, Creature{pos = pos, target = pos})
 		spawn_enemy()
 	}
 
@@ -162,9 +160,6 @@ init_scene :: proc() {
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, width2, height2, 0, gl.RGB, gl.UNSIGNED_BYTE, data2)
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 	stbi.image_free(data2)
-
-	// gl.UseProgram(texture_shader_program)
-	// shader_set_int(texture_shader_program, "texture_sampler", 0)
 }
 
 init_vertices :: proc(vbo: ^u32, vao: ^u32, vertices: rawptr, size: int) {
@@ -263,9 +258,6 @@ draw_scene :: proc() {
 	}
 
 	// BULLET
-	// for i := 0; i < bul_check_next^; i += 1 {
-	// 	draw_object(bul_check[i].pos, {1, 1, 1}, &bullet_vao, color_shader_program)
-	// }
 	gl.UseProgram(bullet_shader_program)
 	shader_set_mat4(bullet_shader_program, "view", view)
 	shader_set_mat4(bullet_shader_program, "projection", projection)
@@ -379,26 +371,9 @@ update_scene :: proc() {
 		soldier: ^Creature
 		for &s in soldiers {
 			s_direction := glsl.normalize(s.pos - e.pos)
-			s_d := hit_distance(s.bb, e.pos + CREATURE_CENTER, s_direction)
-			enemy_sees_soldier := true
-			for w in walls_x {
-				wall_d := hit_distance(w.bb, e.pos + CREATURE_CENTER, s_direction)
-				if wall_d > 0 && wall_d < s_d {
-					enemy_sees_soldier = false
-					break
-				}
-			}
-			if !enemy_sees_soldier {
-				continue
-			}
-			for w in walls_z {
-				wall_d := hit_distance(w.bb, e.pos + CREATURE_CENTER, s_direction)
-				if wall_d > 0 && wall_d < s_d {
-					enemy_sees_soldier = false
-					break
-				}
-			}
-			if !enemy_sees_soldier {
+			s_d := glsl.length(s.pos - e.pos)
+
+			if wall_blocks_ray(e.pos + CREATURE_CENTER, s_direction, s_d) {
 				continue
 			}
 
@@ -426,26 +401,9 @@ update_scene :: proc() {
 			enemy: ^Creature
 			for &e in enemies {
 				enemy_direction := glsl.normalize(e.pos - s.pos)
-				enemy_sight_d := hit_distance(e.bb, s.pos + CREATURE_CENTER, enemy_direction)
-				soldier_sees_enemy := true
-				for w in walls_x {
-					wall_d := hit_distance(w.bb, s.pos + CREATURE_CENTER, enemy_direction)
-					if wall_d > 0 && wall_d < enemy_sight_d {
-						soldier_sees_enemy = false
-						break
-					}
-				}
-				if !soldier_sees_enemy {
-					continue
-				}
-				for w in walls_z {
-					wall_d := hit_distance(w.bb, s.pos + CREATURE_CENTER, enemy_direction)
-					if wall_d > 0 && wall_d < enemy_sight_d {
-						soldier_sees_enemy = false
-						break
-					}
-				}
-				if !soldier_sees_enemy {
+				enemy_sight_d := glsl.length(e.pos - s.pos)
+
+				if wall_blocks_ray(s.pos + CREATURE_CENTER, enemy_direction, enemy_sight_d) {
 					continue
 				}
 
