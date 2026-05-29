@@ -118,9 +118,40 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			}
 			d := hit_distance(bb, camera.pos, ray_world)
 			if (d > 0) {
-				soldier_selected = prev_selected
 				entry_point := camera.pos + ray_world * d
-				soldiers[prev_selected].target = entry_point - CREATURE_CENTER_XZ
+				target := entry_point - CREATURE_CENTER_XZ
+
+				soldier_selected = prev_selected
+				soldier := soldiers[soldier_selected]
+
+				target_direction := m.normalize(target - soldier.pos)
+				target_d := m.length(target - soldier.pos)
+
+				soldier_sees_target := true
+				for w in walls_x {
+					wall_d := hit_distance(w.bb, soldier.pos + CREATURE_CENTER, target_direction)
+					if wall_d > 0 && wall_d < target_d {
+						soldier_sees_target = false
+						break
+					}
+				}
+				if soldier_sees_target {
+					for w in walls_z {
+						wall_d := hit_distance(
+							w.bb,
+							soldier.pos + CREATURE_CENTER,
+							target_direction,
+						)
+						if wall_d > 0 && wall_d < target_d {
+							soldier_sees_target = false
+							break
+						}
+					}
+				}
+
+				if soldier_sees_target {
+					soldiers[prev_selected].target = target
+				}
 			}
 		}
 	}

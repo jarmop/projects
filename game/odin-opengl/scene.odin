@@ -88,7 +88,7 @@ init_scene :: proc() {
 		raw_data(&creature_vertices),
 		size_of(creature_vertices),
 	)
-	for s in soldiers {
+	for &s in soldiers {
 		s.target = s.pos
 	}
 	for i := 0; i < ENEMY_COUNT_INITIAL; i += 1 {
@@ -340,7 +340,7 @@ update_scene :: proc() {
 	creature_movement := CREATURE_SPEED * game_time_delta
 
 	// UPDATE SOLDIERS
-	for s, i in soldiers {
+	for &s, i in soldiers {
 		if s.pos != s.target {
 			d := s.target - s.pos
 			if (glsl.length(d) <= creature_movement) {
@@ -377,7 +377,7 @@ update_scene :: proc() {
 		nearest_soldier_d: f32 = 0
 		enemy: ^Creature
 		soldier: ^Creature
-		for s in soldiers {
+		for &s in soldiers {
 			s_direction := glsl.normalize(s.pos - e.pos)
 			s_d := hit_distance(s.bb, e.pos + CREATURE_CENTER, s_direction)
 			enemy_sees_soldier := true
@@ -404,7 +404,7 @@ update_scene :: proc() {
 
 			if nearest_soldier_d == 0 || s_d < nearest_soldier_d {
 				nearest_soldier_d = s_d
-				soldier = s
+				soldier = &s
 			}
 		}
 		if nearest_soldier_d > 0 {

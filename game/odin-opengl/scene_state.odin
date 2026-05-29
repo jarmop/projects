@@ -36,7 +36,7 @@ walls_z := []Wall {
 	{pos = {-0.1 + GRID_SIZE * 14, 0, -0.1 + GRID_SIZE * 11}},
 	{pos = {-0.1 + GRID_SIZE * 14, 0, -0.1 + GRID_SIZE * 12}},
 	{pos = {-0.1 + GRID_SIZE * 14, 0, -0.1 + GRID_SIZE * 13}},
-	{pos = {-0.1 + GRID_SIZE * 10, 0, -0.1 + GRID_SIZE * 10}},
+	// {pos = {-0.1 + GRID_SIZE * 10, 0, -0.1 + GRID_SIZE * 10}},
 	{pos = {-0.1 + GRID_SIZE * 10, 0, -0.1 + GRID_SIZE * 11}},
 	{pos = {-0.1 + GRID_SIZE * 10, 0, -0.1 + GRID_SIZE * 12}},
 	{pos = {-0.1 + GRID_SIZE * 10, 0, -0.1 + GRID_SIZE * 13}},
@@ -55,10 +55,7 @@ CREATURE_SPEED :: 2.0
 creature_vao: u32
 
 // -------------- SOLDIER --------------
-soldier: Creature = {
-	pos = GROUND_CENTER - {5.0, 0.0, 0.0},
-}
-soldiers := []^Creature{&soldier}
+soldiers := []Creature{{pos = GROUND_CENTER - {5.0, 0.0, 0.0}}}
 soldier_selected := 0
 soldier_fire_at_will := true
 soldier_dead := false
