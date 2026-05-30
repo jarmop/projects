@@ -52,8 +52,12 @@ init_scene :: proc() {
 
 	// GROUND
 	ground_vbo: u32
-	ground_vertices: [CUBOID_VERTEX_COUNT]Vertex
-	create_cuboid(GROUND_DIMENSIONS, &ground_vertices, 10, {true, false, false})
+	// ground_vertices: [CUBOID_VERTEX_COUNT]Vertex
+	// create_cuboid(GROUND_DIMENSIONS, &ground_vertices, 10, {true, false, false})
+	// ground_vertices := make([]Vertex, GROUND_SIZE * GROUND_SIZE)
+	// ground_vertices := make([]Vertex, GROUND_SIZE * GROUND_SIZE)
+	ground_vertices: [GRID_COUNT * GRID_COUNT * 12]Vertex
+	create_grid(ground_vertices[:])
 	init_vertices(&ground_vbo, &ground_vao, raw_data(&ground_vertices), size_of(ground_vertices))
 
 	// WALL
@@ -116,7 +120,12 @@ init_scene :: proc() {
 	// TEXTURE
 	stbi.set_flip_vertically_on_load(1)
 	width, height, nrChannels: i32
-	data := stbi.load("./assets/rubber.jpg", &width, &height, &nrChannels, 0)
+	// data := stbi.load("./assets/rubber.jpg", &width, &height, &nrChannels, 0)
+	// data := stbi.load("./assets/grass.jpg", &width, &height, &nrChannels, 0)
+	// data := stbi.load("./assets/grid.jpg", &width, &height, &nrChannels, 0)
+	// data := stbi.load("./assets/grid_thick.jpg", &width, &height, &nrChannels, 0)
+	data := stbi.load("./assets/grid_3_px.jpg", &width, &height, &nrChannels, 0)
+	// data := stbi.load("./assets/tiles.jpg", &width, &height, &nrChannels, 0)
 	if data == nil {
 		fmt.println("Failed to load texture")
 		os.exit(-1)
@@ -204,12 +213,38 @@ draw_scene :: proc() {
 		camera.far,
 	)
 
-	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+	// gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 
 	// GROUND
+	gl.BindVertexArray(ground_vao)
+	model: glsl.mat4 = 1
+	model *= glsl.mat4Translate(GROUND_POSITION)
+
+	// GROUND TEXTURE
 	use_texture_shader(view, projection)
 	gl.BindTexture(gl.TEXTURE_2D, scene_texture)
-	draw_object(GROUND_POSITION, {1.0, 1.0, 1.0}, &ground_vao, texture_shader_program)
+	shader_set_mat4(texture_shader_program, "model", model)
+	shader_set_vec3(texture_shader_program, "color", {1.0, 1.0, 1.0})
+
+	//GROUND WITHOUT TEXTURE
+	// use_color_shader(view, projection)
+	// shader_set_mat4(color_shader_program, "model", model)
+	// shader_set_vec3(color_shader_program, "color", {1.0, 1.0, 1.0})
+
+	// DRAW GROUND TEXTURE
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+	gl.DrawArrays(gl.TRIANGLES, 0, GRID_COUNT * GRID_COUNT * 12)
+
+	// DRAW GROUND WIREFRAME
+	// Lift grid up from the texture to make sure it's fully visible
+	// model *= glsl.mat4Translate({0, 0.01, 0})
+	// use_color_shader(view, projection)
+	// shader_set_mat4(color_shader_program, "model", model)
+	// shader_set_vec3(color_shader_program, "color", {0.0, 0.0, 0.0})
+	// gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+	// gl.LineWidth(3.0)
+	// gl.DrawArrays(gl.TRIANGLES, 0, GRID_COUNT * GRID_COUNT * 12)
+	// gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 
 	// WALL
 	use_color_shader(view, projection)
@@ -389,7 +424,9 @@ update_scene :: proc() {
 				soldier_dead = true
 				playing = false
 			}
-			e.target = soldier.pos
+			if enemy_attack {
+				e.target = soldier.pos
+			}
 		}
 	}
 

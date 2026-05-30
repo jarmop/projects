@@ -23,21 +23,13 @@ init_io :: proc() {
 key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
 	context = runtime.default_context()
 
-	// if mode == glfw.MOD_CONTROL {
-	// 	ctrl_pressed = true
-	// 	if (creature_selected > -1 && key == glfw.KEY_S && action == glfw.PRESS) {
-	// 		// Toggle shooting
-	// 		player_creature = creature_selected if creature_selected != player_creature else -1
-	// 		// If shooting, target the other guy, otherwise remove target
-	// 		if player_creature > -1 {
-	// 			ai_creature = 1 if creature_selected == 0 else 0
-	// 		} else {
-	// 			ai_creature = -1
-	// 		}
-	// 		time_prev_shot = time_now
-	// 	}
-	// 	return
-	// }
+	if mode == glfw.MOD_CONTROL {
+		ctrl_pressed = true
+		if soldier_selected > -1 && key == glfw.KEY_S && action == glfw.PRESS {
+			soldier_fire_at_will = !soldier_fire_at_will
+		}
+		return
+	}
 
 	ctrl_pressed = false
 	if key == glfw.KEY_ESCAPE && action == glfw.PRESS {
