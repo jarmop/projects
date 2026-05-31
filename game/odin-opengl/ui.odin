@@ -103,6 +103,18 @@ draw_ui :: proc() {
 		PADDING,
 		PADDING + GLYPH_HEIGHT_PX + 40,
 	)
+	draw_text(
+		fmt.tprintf("Camera.pos: %.1f, %.1f, %.1f", camera.pos.x, camera.pos.y, camera.pos.z),
+		PADDING,
+		PADDING + GLYPH_HEIGHT_PX + 60,
+	)
+	draw_text(fmt.tprintf("Camera.yaw: %.1f", camera.yaw), PADDING, PADDING + GLYPH_HEIGHT_PX + 80)
+	draw_text(
+		fmt.tprintf("Camera.pitch: %.1f", camera.pitch),
+		PADDING,
+		PADDING + GLYPH_HEIGHT_PX + 100,
+	)
+
 }
 
 draw_text :: proc(text: string, x_param: f32, y_param: f32) {

@@ -1,7 +1,8 @@
 package game
 
 import "base:runtime"
-import m "core:math/linalg"
+import m "core:math"
+import l "core:math/linalg"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
 
@@ -69,16 +70,16 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 		y := -f32(cursor_y / f64(window_height) * 2 - 1)
 
 		ray_clip := [4]f32{x, y, -1.0, 1.0}
-		proj := m.matrix4_perspective_f32(
-			m.to_radians(camera.fov),
+		proj := l.matrix4_perspective_f32(
+			l.to_radians(camera.fov),
 			f32(window_width) / f32(window_height),
 			camera.near,
 			camera.far,
 		)
-		invp := m.inverse(proj) * ray_clip
+		invp := l.inverse(proj) * ray_clip
 		ray_eye := [4]f32{invp[0], invp[1], -1, 0}
-		view := m.matrix4_look_at_f32(camera.pos, camera.pos + camera.front, camera.up)
-		ray_world := m.normalize((m.inverse(view) * ray_eye).xyz)
+		view := l.matrix4_look_at_f32(camera.pos, camera.pos + camera.front, camera.up)
+		ray_world := l.normalize((l.inverse(view) * ray_eye).xyz)
 
 		// SELECT CREATURE
 		prev_selected := soldier_selected
@@ -98,20 +99,39 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 
 		// Check hit on ground if no hits on creatures
 		if (prev_selected != -1 && soldier_selected == -1) {
-			bb := BoundingBox {
-				min = GROUND_POSITION,
-				max = GROUND_POSITION + GROUND_DIMENSIONS,
+			d_bb := hit_distance(GROUND_BB, camera.pos, ray_world)
+			d_triangle: f32 = 0
+			if (d_bb > 0) {
+				// Get triangle hit distance
+				min_t: f32 = m.INF_F32
+				for ti := 0; ti < len(ground_vertices) / 3; ti += 1 {
+					i := ti * 3
+					v0 := ground_vertices[i + 0].pos
+					v1 := ground_vertices[i + 1].pos
+					v2 := ground_vertices[i + 2].pos
+
+					t: f32 = 0
+					if ray_triangle_intersect(camera.pos, ray_world, v0, v1, v2, &t) {
+						min_t = min(min_t, t)
+						d_triangle = min_t
+						// grid := int(l.ceil((f32(ti) + 1) / 4))
+						// fmt.printf("Grid: %d", grid)
+						// fmt.printf(", Triangle: %d", ti + 1)
+						// fmt.printfln(", Distance: %f", d_triangle)
+					}
+				}
 			}
-			d := hit_distance(bb, camera.pos, ray_world)
-			if (d > 0) {
-				entry_point := camera.pos + ray_world * d
+
+			if (d_triangle > 0) {
+				entry_point := camera.pos + ray_world * d_triangle
+				// entry_point := camera.pos + ray_world * t
 				target := entry_point - CREATURE_CENTER_XZ
 
 				soldier_selected = prev_selected
 				soldier := soldiers[soldier_selected]
 
-				target_direction := m.normalize(target - soldier.pos)
-				target_d := m.length(target - soldier.pos)
+				target_direction := l.normalize(target - soldier.pos)
+				target_d := l.length(target - soldier.pos)
 
 				soldier_sees_target := !wall_blocks_ray(
 					soldier.pos + CREATURE_CENTER,
@@ -125,18 +145,6 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			}
 		}
 	}
-}
-
-hit_distance :: proc(bb: BoundingBox, ray_start: [3]f32, ray_direction: [3]f32) -> f32 {
-	// Get the distances where the ray enters and exits the bounding box on each axis
-	dmin := (bb.min - ray_start) / ray_direction
-	dmax := (bb.max - ray_start) / ray_direction
-
-	// Get the distances where the ray enters and exits the bounding box
-	d_to_entry := max(min(dmin.x, dmax.x), min(dmin.y, dmax.y), min(dmin.z, dmax.z))
-	d_to_exit := min(max(dmin.x, dmax.x), max(dmin.y, dmax.y), max(dmin.z, dmax.z))
-
-	return d_to_entry if d_to_entry < d_to_exit else 0
 }
 
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
@@ -167,12 +175,12 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
 }
 
 update_camera :: proc() {
-	camera.front[0] = m.cos(m.to_radians(camera.yaw)) * m.cos(m.to_radians(camera.pitch))
-	camera.front[1] = m.sin(m.to_radians(camera.pitch))
-	camera.front[2] = m.sin(m.to_radians(camera.yaw)) * m.cos(m.to_radians(camera.pitch))
-	camera.front = m.normalize(camera.front)
-	camera.right = m.cross(camera.front, camera.up)
-	camera.right = m.normalize(camera.right)
+	camera.front[0] = l.cos(l.to_radians(camera.yaw)) * l.cos(l.to_radians(camera.pitch))
+	camera.front[1] = l.sin(l.to_radians(camera.pitch))
+	camera.front[2] = l.sin(l.to_radians(camera.yaw)) * l.cos(l.to_radians(camera.pitch))
+	camera.front = l.normalize(camera.front)
+	camera.right = l.cross(camera.front, camera.up)
+	camera.right = l.normalize(camera.right)
 }
 
 handle_camera_movement_keys :: proc() {

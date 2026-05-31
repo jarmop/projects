@@ -51,12 +51,15 @@ init_scene :: proc() {
 	}
 
 	// GROUND
+	for row in height_map {
+		for y in row {
+			if y > GROUND_BB.max.y {
+				GROUND_BB.max.y = y
+			}
+		}
+	}
+
 	ground_vbo: u32
-	// ground_vertices: [CUBOID_VERTEX_COUNT]Vertex
-	// create_cuboid(GROUND_DIMENSIONS, &ground_vertices, 10, {true, false, false})
-	// ground_vertices := make([]Vertex, GROUND_SIZE * GROUND_SIZE)
-	// ground_vertices := make([]Vertex, GROUND_SIZE * GROUND_SIZE)
-	ground_vertices: [GRID_COUNT * GRID_COUNT * 12]Vertex
 	create_grid(ground_vertices[:])
 	init_vertices(&ground_vbo, &ground_vao, raw_data(&ground_vertices), size_of(ground_vertices))
 

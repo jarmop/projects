@@ -16,12 +16,12 @@ time_delta: f32
 // -------------- IO --------------
 
 camera := Camera {
-	pos   = GROUND_CENTER + {0.0, 6.0, 12.0},
+	pos   = {-1.0, 1.0, 3.0},
 	front = {0.0, 0.0, -1.0},
 	right = {1.0, 0.0, 0.0},
 	up    = {0.0, 1.0, 0.0},
-	yaw   = -90.0,
-	pitch = -25.0,
+	yaw   = -40.0,
+	pitch = -15.0,
 	speed = 5.0,
 	fov   = 45.0,
 	near  = 0.1,
