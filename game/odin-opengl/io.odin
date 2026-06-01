@@ -99,9 +99,10 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 
 		// Check hit on ground if no hits on creatures
 		if (prev_selected != -1 && soldier_selected == -1) {
-			d_bb := hit_distance(GROUND_BB, camera.pos, ray_world)
-			d_triangle: f32 = 0
-			if (d_bb > 0) {
+			bb_d := hit_distance(GROUND_BB, camera.pos, ray_world)
+			triangle_d: f32 = 0
+			triangle_i := 0
+			if (bb_d > 0) {
 				// Get triangle hit distance
 				min_t: f32 = m.INF_F32
 				for ti := 0; ti < len(ground_vertices) / 3; ti += 1 {
@@ -113,7 +114,11 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 					t: f32 = 0
 					if ray_triangle_intersect(camera.pos, ray_world, v0, v1, v2, &t) {
 						min_t = min(min_t, t)
-						d_triangle = min_t
+						if min_t != triangle_d {
+							triangle_d = min_t
+							triangle_i = ti
+						}
+
 						// grid := int(l.ceil((f32(ti) + 1) / 4))
 						// fmt.printf("Grid: %d", grid)
 						// fmt.printf(", Triangle: %d", ti + 1)
@@ -122,8 +127,8 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 				}
 			}
 
-			if (d_triangle > 0) {
-				entry_point := camera.pos + ray_world * d_triangle
+			if (triangle_d > 0) {
+				entry_point := camera.pos + ray_world * triangle_d
 				// entry_point := camera.pos + ray_world * t
 				target := entry_point - CREATURE_CENTER_XZ
 
@@ -140,6 +145,8 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 				)
 
 				if soldier_sees_target {
+					// TODO: don't fly or burrow
+					// A separate path for each triangle. Calculate path y based on the triangle orientation
 					soldiers[prev_selected].target = target
 				}
 			}

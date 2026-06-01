@@ -125,7 +125,7 @@ CREATURE_SPEED :: 2.0
 creature_vao: u32
 
 // -------------- SOLDIER --------------
-soldiers := []Creature{{pos = {0.0, 0.0, 0.0}}}
+soldiers := []Creature{{pos = {2.25, 0.0, 0.0}}}
 soldier_selected := 0
 soldier_fire_at_will := false
 soldier_dead := false
