@@ -1,6 +1,7 @@
 package game
 
 import "base:runtime"
+import "core:fmt"
 import m "core:math"
 import l "core:math/linalg"
 import gl "vendor:OpenGL"
@@ -102,6 +103,7 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			bb_d := hit_distance(GROUND_BB, camera.pos, ray_world)
 			triangle_d: f32 = 0
 			triangle_i := 0
+			triangle: [3][3]f32
 			if (bb_d > 0) {
 				// Get triangle hit distance
 				min_t: f32 = m.INF_F32
@@ -117,12 +119,8 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 						if min_t != triangle_d {
 							triangle_d = min_t
 							triangle_i = ti
+							triangle = {v0, v1, v2}
 						}
-
-						// grid := int(l.ceil((f32(ti) + 1) / 4))
-						// fmt.printf("Grid: %d", grid)
-						// fmt.printf(", Triangle: %d", ti + 1)
-						// fmt.printfln(", Distance: %f", d_triangle)
 					}
 				}
 			}
@@ -131,6 +129,8 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 				entry_point := camera.pos + ray_world * triangle_d
 				// entry_point := camera.pos + ray_world * t
 				target := entry_point - CREATURE_CENTER_XZ
+
+				// fmt.println(entry_point)
 
 				soldier_selected = prev_selected
 				soldier := soldiers[soldier_selected]
@@ -145,14 +145,72 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 				)
 
 				if soldier_sees_target {
-					// TODO: don't fly or burrow
-					// A separate path for each triangle. Calculate path y based on the triangle orientation
-					soldiers[prev_selected].target = target
+					start_triangle := get_triangle(soldier.pos)
+					end_triangle := get_triangle(entry_point)
+					// start_triangle := get_triangle(entry_point)
+					// get_triangle(soldier.pos)
+					// fmt.println(start_triangle)
+					// fmt.println(end_triangle)
+
+					funnel(soldier.pos, entry_point, start_triangle, end_triangle)
 				}
 			}
 		}
 	}
 }
+
+// get_triangle :: proc(p: [3]f32) -> [3][3]f32 {
+// 	cell_min_x: f32 = m.floor(p.x)
+// 	cell_min_z: f32 = m.floor(p.z)
+
+// 	// Amount of vertices per cell row (3 vertices per triangle, 4 triangles per cell, 5 cells per row)
+// 	v_per_cell := 3 * 4
+// 	v_per_row := v_per_cell * 5
+// 	row := int(cell_min_z)
+// 	col := int(cell_min_x)
+// 	cell_i := row * v_per_row + col * v_per_cell
+
+
+// 	// Get the cell corners on the xz plane
+// 	cell_min_xz: [2]f32 = {cell_min_x, cell_min_z}
+// 	cell_center := cell_min_xz + {0.5, 0.5}
+// 	cell_xz: [4][2]f32 = {
+// 		cell_min_xz,
+// 		cell_min_xz + {1, 0},
+// 		cell_min_xz + {1, 1},
+// 		cell_min_xz + {0, 1},
+// 	}
+
+// 	// Get the distances of each cell corner from the point
+// 	l: [4]f32 = {
+// 		l.length(p.xz - cell_xz[0]),
+// 		l.length(p.xz - cell_xz[1]),
+// 		l.length(p.xz - cell_xz[2]),
+// 		l.length(p.xz - cell_xz[3]),
+// 	}
+
+// 	// Nearest edge is the one whose combined distance of vertices from the point is the shortest.
+// 	// Start by guessing that the last triangle has the nearest edge.
+// 	nearest_edge_d := l[3] + l[0]
+// 	triangle_i := cell_i + 3 * 3
+// 	for i in 0 ..< 3 {
+// 		edge_d := l[i] + l[i + 1]
+// 		if edge_d < nearest_edge_d {
+// 			nearest_edge_d = edge_d
+// 			triangle_i = cell_i + i * 3
+// 		}
+// 	}
+
+// 	// Get the triangle vertex positions
+// 	triangle: [3][3]f32
+// 	for i in 0 ..< 3 {
+// 		triangle[i] = ground_vertices[triangle_i + i].pos
+// 	}
+
+// 	// fmt.println(triangle)
+
+// 	return triangle
+// }
 
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
 	context = runtime.default_context()

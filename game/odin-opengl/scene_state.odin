@@ -1,16 +1,16 @@
 package game
 
-playing := true
+playing := false
 game_time: f32 = 0
 game_time_delta: f32 = 0.0
 game_time_speed: f32 = 1
 
 // -------------- GROUND --------------
 
-y: f32 = 0.5
+y: f32 = 1.0
 
-GRID_COUNT :: 5
-height_map := [GRID_COUNT + 1][GRID_COUNT + 1]f32 {
+GRID_SIZE :: 5
+height_map := [GRID_SIZE + 1][GRID_SIZE + 1]f32 {
 	{0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0},
 	{0, 0, y, y, 0, 0},
@@ -18,6 +18,15 @@ height_map := [GRID_COUNT + 1][GRID_COUNT + 1]f32 {
 	{0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0},
 }
+
+// height_map := [GRID_COUNT + 1][GRID_COUNT + 1]f32 {
+// 	{0, 0, 0, 0, 0, 0},
+// 	{0, 0, 0, 0, 0, 0},
+// 	{0, 0, 0, 0, 0, 0},
+// 	{0, 0, 0, 0, 0, 0},
+// 	{0, 0, 0, 0, 0, 0},
+// 	{0, 0, 0, 0, 0, 0},
+// }
 
 // GRID_COUNT :: 20
 // height_map := [GRID_COUNT + 1][GRID_COUNT + 1]f32 {
@@ -44,32 +53,8 @@ height_map := [GRID_COUNT + 1][GRID_COUNT + 1]f32 {
 // 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 // }
 
-// height_map := [GRID_COUNT + 1][GRID_COUNT + 1]f32 {
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.2, 0.4, 0.3, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2.2, 3.5, 0.6, 0.2, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0.2, 0.3, 1, 3.1, 4.5, 1, 0.7, 0.3, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 2.4, 5.7, 4.3, 2.5, 0.2, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 3.2, 4.5, 4, 3.9, 1.6, 0.2, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0.7, 1, 2.4, 3.7, 4.6, 2.4, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0.4, 0.5, 1, 2.3, 2.3, 1.2, 1, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 1, 2.1, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-// 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-// }
-
-GRID_SIZE :: 1.0
-GROUND_SIZE :: GRID_COUNT * GRID_SIZE
+CELL_SIZE :: 1.0
+GROUND_SIZE :: GRID_SIZE * CELL_SIZE
 GROUND_CENTER :: [3]f32{GROUND_SIZE / 2, 0.0, GROUND_SIZE / 2}
 GROUND_DIMENSIONS :: [3]f32{GROUND_SIZE, 0.01, GROUND_SIZE}
 GROUND_POSITION :: [3]f32{0.0, -GROUND_DIMENSIONS.y, 0.0}
@@ -79,10 +64,12 @@ GROUND_BB := BoundingBox {
 	max = GROUND_POSITION + GROUND_DIMENSIONS,
 }
 
-GRID_BBS: [GRID_COUNT * GRID_COUNT]BoundingBox
+GRID_BBS: [GRID_SIZE * GRID_SIZE]BoundingBox
+
+GROUND_VERTICES_COUNT :: GRID_SIZE * GRID_SIZE * 12
 
 ground_vao: u32
-ground_vertices: [GRID_COUNT * GRID_COUNT * 12]Vertex
+ground_vertices: [GROUND_VERTICES_COUNT]Vertex
 
 // -------------- WALL --------------
 WALL_X_DIMENSIONS :: [3]f32{1.2, 2.0, 0.2}
@@ -121,11 +108,13 @@ CREATURE_COLOR :: [3]f32{1.0, 0.6, 0.2}
 CREATURE_COLOR_SELECTED :: [3]f32{0.0, 0.0, 1.0}
 CREATURE_COLOR_SHOOTING :: [3]f32{1.0, 0.0, 0.0}
 CREATURE_COLOR_TARGET :: [3]f32{0.0, 1.0, 0.0}
-CREATURE_SPEED :: 2.0
+CREATURE_SPEED :: 1
 creature_vao: u32
 
 // -------------- SOLDIER --------------
-soldiers := []Creature{{pos = {2.25, 0.0, 0.0}}}
+// soldiers := []Creature{{pos = {2.25, 0.0, 0.0}}}
+soldiers := []Creature{{pos = [3]f32{2.5, 1.0, 2.25}}}
+// soldiers := []Creature{{pos = [3]f32{2.3, 1.0, 2.1}}}
 soldier_selected := 0
 soldier_fire_at_will := false
 soldier_dead := false
@@ -181,5 +170,6 @@ bullet_path_vbo: u32
 PATH_COLOR :: [3]f32{1.0, 1.0, 1.0}
 PATH_WIDTH :: 3.0
 PATH_VERTEX_COUNT :: 2
+PATH_LENGTH :: 1000
 path_vao: u32
 path_vbo: u32

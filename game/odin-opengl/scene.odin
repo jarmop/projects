@@ -63,6 +63,8 @@ init_scene :: proc() {
 	create_grid(ground_vertices[:])
 	init_vertices(&ground_vbo, &ground_vao, raw_data(&ground_vertices), size_of(ground_vertices))
 
+	init_path()
+
 	// WALL
 	wall_x_vbo: u32
 	wall_x_vertices: [CUBOID_VERTEX_COUNT]Vertex
@@ -224,30 +226,31 @@ draw_scene :: proc() {
 	model *= glsl.mat4Translate(GROUND_POSITION)
 
 	// GROUND TEXTURE
-	use_texture_shader(view, projection)
-	gl.BindTexture(gl.TEXTURE_2D, scene_texture)
-	shader_set_mat4(texture_shader_program, "model", model)
-	shader_set_vec3(texture_shader_program, "color", {1.0, 1.0, 1.0})
+	// use_texture_shader(view, projection)
+	// gl.BindTexture(gl.TEXTURE_2D, scene_texture)
+	// shader_set_mat4(texture_shader_program, "model", model)
+	// shader_set_vec3(texture_shader_program, "color", {1.0, 1.0, 1.0})
 
 	//GROUND WITHOUT TEXTURE
-	// use_color_shader(view, projection)
-	// shader_set_mat4(color_shader_program, "model", model)
-	// shader_set_vec3(color_shader_program, "color", {1.0, 1.0, 1.0})
+	use_color_shader(view, projection)
+	shader_set_mat4(color_shader_program, "model", model)
+	shader_set_vec3(color_shader_program, "color", {1.0, 1.0, 1.0})
 
 	// DRAW GROUND TEXTURE
-	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
-	gl.DrawArrays(gl.TRIANGLES, 0, GRID_COUNT * GRID_COUNT * 12)
+	// gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+	// gl.DrawArrays(gl.TRIANGLES, 0, GRID_SIZE * GRID_SIZE * 12)
 
 	// DRAW GROUND WIREFRAME
 	// Lift grid up from the texture to make sure it's fully visible
-	// model *= glsl.mat4Translate({0, 0.01, 0})
-	// use_color_shader(view, projection)
-	// shader_set_mat4(color_shader_program, "model", model)
+	model *= glsl.mat4Translate({0, 0.01, 0})
+	use_color_shader(view, projection)
+	shader_set_mat4(color_shader_program, "model", model)
 	// shader_set_vec3(color_shader_program, "color", {0.0, 0.0, 0.0})
-	// gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
-	// gl.LineWidth(3.0)
-	// gl.DrawArrays(gl.TRIANGLES, 0, GRID_COUNT * GRID_COUNT * 12)
-	// gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+	shader_set_vec3(color_shader_program, "color", {0.5, 0.5, 0.5})
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+	gl.LineWidth(3.0)
+	gl.DrawArrays(gl.TRIANGLES, 0, GRID_SIZE * GRID_SIZE * 12)
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 
 	// WALL
 	use_color_shader(view, projection)
@@ -314,8 +317,8 @@ draw_scene :: proc() {
 	gl.DrawArrays(gl.LINES, 0, i32(bullet_path_vertex_next))
 
 	// PATH
-	for c, i in soldiers {
-		if c.pos != c.target {
+	for s, i in soldiers {
+		if s.pos != s.target {
 			gl.UseProgram(path_shader_program)
 			shader_set_mat4(path_shader_program, "view", view)
 			shader_set_mat4(path_shader_program, "projection", projection)
@@ -323,19 +326,27 @@ draw_scene :: proc() {
 			shader_set_vec3(path_shader_program, "color", PATH_COLOR)
 			gl.BindVertexArray(path_vao)
 			gl.BindBuffer(gl.ARRAY_BUFFER, path_vbo)
-			path_vertices := []Vertex {
-				{pos = c.pos + CREATURE_CENTER_XZ},
-				{pos = c.target + CREATURE_CENTER_XZ},
+			path_vertices: [PATH_LENGTH]Vertex
+			path_vertices[0] = {
+				pos = s.pos,
+			}
+			vi := 1
+			for i := s.path_i; i < s.path_len; i += 1 {
+				path_vertices[vi] = {
+					pos = s.path[i],
+				}
+				vi += 1
 			}
 			gl.BufferData(
 				gl.ARRAY_BUFFER,
 				len(path_vertices) * size_of(Vertex),
-				raw_data(path_vertices),
+				// raw_data(path_vertices[0:4]),
+				raw_data(path_vertices[0:s.path_len]),
 				gl.STATIC_DRAW,
 			)
 			gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 			gl.LineWidth(PATH_WIDTH)
-			gl.DrawArrays(gl.LINE_STRIP, 0, PATH_VERTEX_COUNT)
+			gl.DrawArrays(gl.LINE_STRIP, 0, i32(s.path_len + 1 - s.path_i))
 		}
 	}
 }
@@ -375,6 +386,15 @@ update_scene :: proc() {
 			d := s.target - s.pos
 			if (glsl.length(d) <= creature_movement) {
 				s.pos = s.target
+				if s.path_i < s.path_len - 1 {
+					// Target the next waypoint in the path
+					s.path_i += 1
+					s.target = s.path[s.path_i]
+				} else {
+					// Path is finished
+					s.path_len = 0
+					s.path_i = 0
+				}
 			} else {
 				s.pos += creature_movement * glsl.normalize(d)
 			}

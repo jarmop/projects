@@ -33,13 +33,13 @@ create_grid :: proc(vertices: []Vertex) {
 		texture = {uv_high / 2, uv_high / 2},
 	}
 	grid_i := 0
-	for i := 0; i < GRID_COUNT; i += 1 {
+	for i := 0; i < GRID_SIZE; i += 1 {
 		top_left.pos.x = 0
 		top_right.pos.x = 1
 		bottom_left.pos.x = 0
 		bottom_right.pos.x = 1
 		center.pos.x = 0.5
-		for j := 0; j < GRID_COUNT; j += 1 {
+		for j := 0; j < GRID_SIZE; j += 1 {
 			top_left.pos.y = height_map[i][j]
 			top_right.pos.y = height_map[i][j + 1]
 			bottom_left.pos.y = height_map[i + 1][j]
@@ -99,21 +99,24 @@ create_grid :: proc(vertices: []Vertex) {
 			// fmt.println(grid_i)
 			// fmt.println("****************")
 
-			top_left.pos.x += GRID_SIZE
-			top_right.pos.x += GRID_SIZE
-			bottom_left.pos.x += GRID_SIZE
-			bottom_right.pos.x += GRID_SIZE
-			center.pos.x += GRID_SIZE
+			top_left.pos.x += CELL_SIZE
+			top_right.pos.x += CELL_SIZE
+			bottom_left.pos.x += CELL_SIZE
+			bottom_right.pos.x += CELL_SIZE
+			center.pos.x += CELL_SIZE
 		}
 
-		top_left.pos.z += GRID_SIZE
-		top_right.pos.z += GRID_SIZE
-		bottom_left.pos.z += GRID_SIZE
-		bottom_right.pos.z += GRID_SIZE
-		center.pos.z += GRID_SIZE
+		top_left.pos.z += CELL_SIZE
+		top_right.pos.z += CELL_SIZE
+		bottom_left.pos.z += CELL_SIZE
+		bottom_right.pos.z += CELL_SIZE
+		center.pos.z += CELL_SIZE
 
 		// fmt.println(top_left.pos.z)
 	}
+
+	// stride := 3 * 4 * 5
+	// fmt.println(vertices[2])
 }
 
 create_cuboid :: proc(

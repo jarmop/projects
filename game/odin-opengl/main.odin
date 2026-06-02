@@ -33,6 +33,8 @@ main :: proc() {
 	init_ui()
 	fmt.println("Initialized UI\n")
 
+	// funnel()
+
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
 		time_now = f32(glfw.GetTime())
