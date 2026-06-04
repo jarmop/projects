@@ -122,7 +122,8 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 
 	start_waypoint := start
 	entrance_edge: [2][3]f32
-	for i := 0; start_triangle != nil; i += 1 {
+	for i := 0; start_triangle != nil && i < PATH_MAX_LENGTH; i += 1 {
+		// for i := 0; start_triangle != nil && i < 20; i += 1 {
 		fmt.println("------------- loop", i, "-------------")
 
 		nearest_point_i, nearest_point_d, other_indices := get_nearest_point(
@@ -164,15 +165,40 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		edge1_xz_start_to_isect := isect_xz1 - p0_1.xz
 		edge1_xz_isect_to_end := p1.xz - isect_xz1
 
-		foo_d0 := linalg.length(isect_xz0 - start_waypoint.xz) + len_0
-		foo_d1 := linalg.length(isect_xz1 - start_waypoint.xz) + len_1
+		// foo_d0 := linalg.length(isect_xz0 - start_waypoint.xz) + len_0
+		// foo_d1 := linalg.length(isect_xz1 - start_waypoint.xz) + len_1
 
 		// Also, the exit portal can't be the same as the entrance portal
+		// p0_1 != entrance_edge[0] &&
+		exit_portal_not_entrance := !((p0_1 == entrance_edge[0] && p1 == entrance_edge[1]) ||
+			(p0_1 == entrance_edge[1] && p1 == entrance_edge[0]))
+
 		edge1_isect_is_valid :=
 			linalg.length(edge1_xz_start_to_isect) < linalg.length(edge1_xz) &&
 			linalg.length(edge1_xz_isect_to_end) < linalg.length(edge1_xz) &&
-			p0_1 != entrance_edge[0] &&
-			linalg.length(end.xz - isect_xz1) < linalg.length(end.xz - start_waypoint.xz) // isect can't be further away from end than waypoint start// linalg.length(edge1_xz_isect_to_end) < linalg.length(end - start_waypoint.xz)
+			exit_portal_not_entrance &&
+			linalg.length(end.xz - isect_xz1) < linalg.length(end.xz - start_waypoint.xz) &&
+			p0_1.x >= 0 &&
+			p0_1.z >= 0
+
+		fmt.println(
+			linalg.length(edge1_xz_start_to_isect) < linalg.length(edge1_xz),
+			linalg.length(edge1_xz_isect_to_end) < linalg.length(edge1_xz),
+			// This for some reason is false
+			p0_1 != entrance_edge[0],
+			linalg.length(end.xz - isect_xz1) < linalg.length(end.xz - start_waypoint.xz),
+			p0_1.x >= 0,
+			p0_1.z >= 0,
+		)
+		// isect can't be further away from end than waypoint start
+		// linalg.length(edge1_xz_isect_to_end) < linalg.length(end - start_waypoint.xz)
+
+		// Doesn't work because p1 does not always have greater x and z values than p0.
+		// edge1_isect_is_valid :=
+		// 	isect_xz1[0] >= p0_1.x &&
+		// 	isect_xz1[0] <= p1.x &&
+		// 	isect_xz1[1] >= p0_1.z &&
+		// 	isect_xz1[1] <= p1.z
 
 		if (edge1_isect_is_valid) {
 			// fmt.println("p0_1 is closer")
@@ -184,6 +210,7 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 				// fmt.println("a")
 				// fmt.println("triangle.right")
 				next_triangle = start_triangle.right
+				// entrance_edge = {p0, p1}
 			} else if nearest_point_i == 1 {
 				// 1, 2
 				// fmt.println("b")
@@ -224,8 +251,15 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		soldiers[0].target = soldiers[0].path[0]
 
 		start_triangle = next_triangle
+
+		// This can point in the wrong direction
 		entrance_edge = {p0, p1}
 	}
+
+	fmt.println(soldiers[0].path[0:soldiers[0].path_len])
+	fmt.println(start_triangle.corners)
+	fmt.println(soldiers[0].path_len)
+	fmt.println(soldiers[0].path_i)
 }
 
 get_nearest_point :: proc(

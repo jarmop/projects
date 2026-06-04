@@ -10,7 +10,7 @@ Creature :: struct {
 	target:   [3]f32,
 	path_len: int,
 	path_i:   int,
-	path:     [PATH_LENGTH][3]f32,
+	path:     [PATH_MAX_LENGTH][3]f32,
 	bb:       BoundingBox,
 }
 

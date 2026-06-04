@@ -326,7 +326,7 @@ draw_scene :: proc() {
 			shader_set_vec3(path_shader_program, "color", PATH_COLOR)
 			gl.BindVertexArray(path_vao)
 			gl.BindBuffer(gl.ARRAY_BUFFER, path_vbo)
-			path_vertices: [PATH_LENGTH]Vertex
+			path_vertices: [PATH_MAX_LENGTH + 1]Vertex
 			path_vertices[0] = {
 				pos = s.pos,
 			}
@@ -391,6 +391,7 @@ update_scene :: proc() {
 					s.path_i += 1
 					s.target = s.path[s.path_i]
 				} else {
+					fmt.println("path is finished")
 					// Path is finished
 					s.path_len = 0
 					s.path_i = 0

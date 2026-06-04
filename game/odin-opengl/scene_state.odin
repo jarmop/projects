@@ -108,7 +108,7 @@ CREATURE_COLOR :: [3]f32{1.0, 0.6, 0.2}
 CREATURE_COLOR_SELECTED :: [3]f32{0.0, 0.0, 1.0}
 CREATURE_COLOR_SHOOTING :: [3]f32{1.0, 0.0, 0.0}
 CREATURE_COLOR_TARGET :: [3]f32{0.0, 1.0, 0.0}
-CREATURE_SPEED :: 1
+CREATURE_SPEED :: 10
 creature_vao: u32
 
 // -------------- SOLDIER --------------
@@ -170,6 +170,6 @@ bullet_path_vbo: u32
 PATH_COLOR :: [3]f32{1.0, 1.0, 1.0}
 PATH_WIDTH :: 3.0
 PATH_VERTEX_COUNT :: 2
-PATH_LENGTH :: 1000
+PATH_MAX_LENGTH :: 1000
 path_vao: u32
 path_vbo: u32
