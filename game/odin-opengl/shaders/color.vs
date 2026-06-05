@@ -17,5 +17,6 @@ void main()
     gl_Position = mvp * vec4(in_pos, 1.0);
     vert_color = color;
     // Multiply by mvp to fix rotated vertices
-    vert_normal = normalize(in_normal * mat3(mvp));
+    // vert_normal = normalize(in_normal * mat3(mvp));
+    vert_normal = in_normal;
 } 
