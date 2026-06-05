@@ -218,39 +218,39 @@ draw_scene :: proc() {
 		camera.far,
 	)
 
-	// gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
-
 	// GROUND
 	gl.BindVertexArray(ground_vao)
 	model: glsl.mat4 = 1
 	model *= glsl.mat4Translate(GROUND_POSITION)
 
-	// GROUND TEXTURE
-	// use_texture_shader(view, projection)
-	// gl.BindTexture(gl.TEXTURE_2D, scene_texture)
-	// shader_set_mat4(texture_shader_program, "model", model)
-	// shader_set_vec3(texture_shader_program, "color", {1.0, 1.0, 1.0})
+	if (SHOW_GROUND_WIREFRAME) {
+		//GROUND WITHOUT TEXTURE
+		use_color_shader(view, projection)
+		shader_set_mat4(color_shader_program, "model", model)
+		shader_set_vec3(color_shader_program, "color", {1.0, 1.0, 1.0})
 
-	//GROUND WITHOUT TEXTURE
-	use_color_shader(view, projection)
-	shader_set_mat4(color_shader_program, "model", model)
-	shader_set_vec3(color_shader_program, "color", {1.0, 1.0, 1.0})
+		// DRAW GROUND WIREFRAME
+		// Lift grid up from the texture to make sure it's fully visible
+		model *= glsl.mat4Translate({0, 0.01, 0})
+		use_color_shader(view, projection)
+		shader_set_mat4(color_shader_program, "model", model)
+		// shader_set_vec3(color_shader_program, "color", {0.0, 0.0, 0.0})
+		shader_set_vec3(color_shader_program, "color", {0.5, 0.5, 0.5})
+		gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+		gl.LineWidth(3.0)
+		gl.DrawArrays(gl.TRIANGLES, 0, GRID_SIZE * GRID_SIZE * 12)
+		gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+	} else {
+		// GROUND TEXTURE
+		use_texture_shader(view, projection)
+		gl.BindTexture(gl.TEXTURE_2D, scene_texture)
+		shader_set_mat4(texture_shader_program, "model", model)
+		shader_set_vec3(texture_shader_program, "color", {1.0, 1.0, 1.0})
 
-	// DRAW GROUND TEXTURE
-	// gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
-	// gl.DrawArrays(gl.TRIANGLES, 0, GRID_SIZE * GRID_SIZE * 12)
-
-	// DRAW GROUND WIREFRAME
-	// Lift grid up from the texture to make sure it's fully visible
-	model *= glsl.mat4Translate({0, 0.01, 0})
-	use_color_shader(view, projection)
-	shader_set_mat4(color_shader_program, "model", model)
-	// shader_set_vec3(color_shader_program, "color", {0.0, 0.0, 0.0})
-	shader_set_vec3(color_shader_program, "color", {0.5, 0.5, 0.5})
-	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
-	gl.LineWidth(3.0)
-	gl.DrawArrays(gl.TRIANGLES, 0, GRID_SIZE * GRID_SIZE * 12)
-	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+		// DRAW GROUND TEXTURE
+		gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+		gl.DrawArrays(gl.TRIANGLES, 0, GRID_SIZE * GRID_SIZE * 12)
+	}
 
 	// WALL
 	use_color_shader(view, projection)

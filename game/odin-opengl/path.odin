@@ -117,14 +117,22 @@ get_triangle :: proc(p: [3]f32) -> ^Triangle {
 
 funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle) {
 	fmt.println("########################")
-	fmt.println(end_triangle.bottom)
 	start_triangle := triangle
+
+	fmt.println(soldiers[0].path[0:10])
+	fmt.println(start_triangle.corners)
+	fmt.println(soldiers[0].path_len)
+	fmt.println(soldiers[0].path_i)
+
+	// soldiers[0].path[i] = p
+	// soldiers[0].path_len = i + 1
+	// soldiers[0].target = soldiers[0].path[0]
 
 	start_waypoint := start
 	entrance_edge: [2][3]f32
 	for i := 0; start_triangle != nil && i < PATH_MAX_LENGTH; i += 1 {
 		// for i := 0; start_triangle != nil && i < 20; i += 1 {
-		fmt.println("------------- loop", i, "-------------")
+		// fmt.println("------------- loop", i, "-------------")
 
 		nearest_point_i, nearest_point_d, other_indices := get_nearest_point(
 			end,
@@ -181,15 +189,7 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 			p0_1.x >= 0 &&
 			p0_1.z >= 0
 
-		fmt.println(
-			linalg.length(edge1_xz_start_to_isect) < linalg.length(edge1_xz),
-			linalg.length(edge1_xz_isect_to_end) < linalg.length(edge1_xz),
-			// This for some reason is false
-			p0_1 != entrance_edge[0],
-			linalg.length(end.xz - isect_xz1) < linalg.length(end.xz - start_waypoint.xz),
-			p0_1.x >= 0,
-			p0_1.z >= 0,
-		)
+
 		// isect can't be further away from end than waypoint start
 		// linalg.length(edge1_xz_isect_to_end) < linalg.length(end - start_waypoint.xz)
 
@@ -241,25 +241,41 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 			}
 		}
 
-		fmt.println(next_triangle.corners)
-
 		p := get_intersection_y(p0, p1, pi_xz)
 
 		soldiers[0].path[i] = p
-		fmt.println(p)
 		soldiers[0].path_len = i + 1
-		soldiers[0].target = soldiers[0].path[0]
 
 		start_triangle = next_triangle
 
 		// This can point in the wrong direction
 		entrance_edge = {p0, p1}
+
+		if (i < 10) {
+			fmt.println("------------- loop", i, "-------------")
+			fmt.println(
+				"Check is edge1 intersection point valid:",
+				linalg.length(edge1_xz_start_to_isect) < linalg.length(edge1_xz),
+				linalg.length(edge1_xz_isect_to_end) < linalg.length(edge1_xz),
+				// This for some reason is false
+				p0_1 != entrance_edge[0],
+				linalg.length(end.xz - isect_xz1) < linalg.length(end.xz - start_waypoint.xz),
+				p0_1.x >= 0,
+				p0_1.z >= 0,
+			)
+			fmt.println("Next_triangle:", next_triangle.corners)
+			fmt.println("Waypoint:", p)
+		}
 	}
 
-	fmt.println(soldiers[0].path[0:soldiers[0].path_len])
+	// fmt.println(soldiers[0].path[0:soldiers[0].path_len])
+	fmt.println(soldiers[0].path[0:10])
 	fmt.println(start_triangle.corners)
 	fmt.println(soldiers[0].path_len)
 	fmt.println(soldiers[0].path_i)
+
+	soldiers[0].path_i = 0
+	soldiers[0].target = soldiers[0].path[0]
 }
 
 get_nearest_point :: proc(
@@ -323,45 +339,3 @@ get_intersection_y :: proc(p0, p1: [3]f32, pi_xz: [2]f32) -> [3]f32 {
 
 	return p
 }
-
-// funnel :: proc(start, end: [3]f32, end_triangle: [3][3]f32) {
-// end_cell_center := end_triangle[2]
-// fmt.println(end_cell_center)
-// start: [3]f32 = {3.0, 0.0, 0.0}
-// end: [3]f32 = {2.0, 1.0, 2.0}
-
-// get real triangles
-// the start point can be closer than any of the triangle vertices
-// triangles: [dynamic][3][3]f32
-
-// triangles: [][3][3]f32 = {
-// 	// The c vertex is equal to all triangles within a cell
-// 	// CELL 1
-// 	{{3.0, 0.0, 0.0}, {3.0, 0.0, 1.0}, {2.5, 0.0, 0.5}},
-// 	{{3.0, 0.0, 1.0}, {2.0, 0.0, 1.0}, {2.5, 0.0, 0.5}}, // t1.a = t0.b
-// 	// CELL 2
-// 	{{2.0, 0.0, 1.0}, {3.0, 0.0, 1.0}, {2.5, 0.5, 1.5}}, // t2.a = t1.b, t2.b = t1.a
-// 	// {{2.0, y, 2.0}, {2.0, 0.0, 1.0}, {2.5, 0.5, 1.5}}, // t3.b = t2.a
-// }
-
-// The vertices defining the line that the path crosses when it leaves the triangle
-
-//------------ 1. GET EXIT LINE FOR EACH TRIANGLE ------------
-//------------ 2. GET EXIT LINE INTERSECTION POINT FOR EACH TRIANGLE --------
-//------------ 3. STITH THE TRIANGLE PATHS INTO THE FULL PATH --------
-
-// i := 0
-// for ; i < len(triangles); i += 1 {
-// 	triangle := triangles[i]
-// 	p0, p1 := get_nearest_points(triangle, end)
-
-// 	p := get_intersection_y(start, end, p0, p1)
-
-// 	soldiers[0].path[i] = p
-// }
-// soldiers[0].path[i] = end
-// // soldiers[0].target = end
-// soldiers[0].path_len = len(triangles) + 1
-// soldiers[0].path_i = 0
-// soldiers[0].target = soldiers[0].path[soldiers[0].path_i]
-// }
