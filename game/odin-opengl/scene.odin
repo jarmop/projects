@@ -63,6 +63,65 @@ init_scene :: proc() {
 	create_grid(ground_vertices[:])
 	init_vertices(&ground_vbo, &ground_vao, raw_data(&ground_vertices), size_of(ground_vertices))
 
+	// for v& in ground_vertices_cell {
+	// 	fmt.println(v)
+	// }
+
+	ground_vbo_grid: u32
+	// for &v, x in ground_vertices_cell {
+	// 	ground_vertices_cell[x] = ground_vertices[x * VERTICES_PER_TRIANGLE]
+	// 	fmt.println(ground_vertices_cell[x].pos)
+	// }
+	// init_vertices(
+	// 	&ground_vbo_cell,
+	// 	&ground_vao_cell,
+	// 	raw_data(&ground_vertices_cell),
+	// 	size_of(ground_vertices),
+	// )
+
+	// for X := 0; X < GRID_SIZE * 2; X += 2 {
+	// for x := 0; x < GRID_SIZE - 1; x += 1 {
+	// 	ground_vertices_grid[x * 2] = {
+	// 		pos = {f32(x + 1), 0, 0},
+	// 	}
+	// 	ground_vertices_grid[x * 2 + 1] = {
+	// 		pos = {f32(x + 1), 0, CELL_SIZE},
+	// 	}
+	// 	// fmt.println(ground_vertices_grid[x].pos)
+	// }
+
+	v_i := 0
+	for z in 0 ..< GRID_SIZE {
+		for x in 0 ..< GRID_SIZE {
+			// lines along the X axis
+			ground_vertices_grid[v_i] = {
+				pos = {f32(x), height_map[z][x], f32(z)},
+			}
+			v_i += 1
+			ground_vertices_grid[v_i] = {
+				pos = {f32(x + 1), height_map[z][x + 1], f32(z)},
+			}
+			v_i += 1
+
+			// lines along the Z axis
+			ground_vertices_grid[v_i] = {
+				pos = {f32(x), height_map[z][x], f32(z)},
+			}
+			v_i += 1
+			ground_vertices_grid[v_i] = {
+				pos = {f32(x), height_map[z + 1][x], f32(z + 1)},
+			}
+			v_i += 1
+		}
+	}
+
+	init_vertices(
+		&ground_vbo_grid,
+		&ground_vao_grid,
+		raw_data(&ground_vertices_grid),
+		size_of(ground_vertices),
+	)
+
 	init_path()
 
 	// WALL
@@ -100,7 +159,7 @@ init_scene :: proc() {
 	for &s in soldiers {
 		s.target = s.pos
 	}
-	for i := 0; i < ENEMY_COUNT_INITIAL; i += 1 {
+	for X := 0; X < ENEMY_COUNT_INITIAL; X += 1 {
 		spawn_enemy()
 	}
 
@@ -223,31 +282,36 @@ draw_scene :: proc() {
 	model: glsl.mat4 = 1
 	model *= glsl.mat4Translate(GROUND_POSITION)
 
-	if (SHOW_GROUND_WIREFRAME) {
-		//GROUND WITHOUT TEXTURE
-		use_color_shader(view, projection)
-		shader_set_mat4(color_shader_program, "model", model)
-		shader_set_vec3(color_shader_program, "color", {1.0, 1.0, 1.0})
+	w_bg: f32 = 1.0
+	w_line: f32 = 1.0
 
-		// DRAW GROUND WIREFRAME
-		// Lift grid up from the texture to make sure it's fully visible
-		model *= glsl.mat4Translate({0, 0.01, 0})
+	if (SHOW_GROUND_WIREFRAME) {
+		// BACKGROUND FOR THE WIREFRAME
 		use_color_shader(view, projection)
 		shader_set_mat4(color_shader_program, "model", model)
-		// shader_set_vec3(color_shader_program, "color", {0.0, 0.0, 0.0})
-		shader_set_vec3(color_shader_program, "color", {0.5, 0.5, 0.5})
-		gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
-		gl.LineWidth(3.0)
+		shader_set_vec3(color_shader_program, "color", {w_bg, w_bg, w_bg})
+		gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 		gl.DrawArrays(gl.TRIANGLES, 0, GRID_SIZE * GRID_SIZE * 12)
+
+		// tHE WIREFRAME
+		// Lift grid up from the texture to make sure it's fully visible
+		gl.BindVertexArray(ground_vao_grid)
+		model *= glsl.mat4Translate({0, 0.001, 0})
+		shader_set_mat4(color_shader_program, "model", model)
+		shader_set_vec3(color_shader_program, "color", {w_line, w_line, w_line})
+		// shader_set_vec3(color_shader_program, "color", {1.1, 1.4, 1.1})
+		gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+		gl.LineWidth(1.0)
+		// gl.DrawArrays(gl.TRIANGLES, 0, GRID_SIZE * GRID_SIZE * 12)
+		gl.DrawArrays(gl.LINES, 0, GRID_SIZE * GRID_SIZE * 12)
+		// gl.DrawArrays(gl.LINE_STRIP, 0, GRID_SIZE * GRID_SIZE * 12)
+		// gl.DrawArrays(gl.LINE_STRIP_ADJACENCY, 0, GRID_SIZE * GRID_SIZE * 12)
 		gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 	} else {
-		// GROUND TEXTURE
 		use_texture_shader(view, projection)
 		gl.BindTexture(gl.TEXTURE_2D, scene_texture)
 		shader_set_mat4(texture_shader_program, "model", model)
 		shader_set_vec3(texture_shader_program, "color", {1.0, 1.0, 1.0})
-
-		// DRAW GROUND TEXTURE
 		gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 		gl.DrawArrays(gl.TRIANGLES, 0, GRID_SIZE * GRID_SIZE * 12)
 	}
@@ -275,10 +339,10 @@ draw_scene :: proc() {
 	// SOLDIER
 	// use_texture_shader(view, projection, creature_texture)
 	use_color_shader(view, projection)
-	for c, i in soldiers {
+	for c, X in soldiers {
 		draw_object(
 			c.pos,
-			get_soldier_color(i),
+			get_soldier_color(X),
 			// {1.0, 1.0, 1.0},
 			&creature_vao,
 			color_shader_program,
@@ -288,13 +352,13 @@ draw_scene :: proc() {
 	// ENEMY
 	// use_texture_shader(view, projection, creature_texture)
 	use_color_shader(view, projection)
-	for c, i in enemies {
+	for c, X in enemies {
 		draw_object(c.pos, {0.0, 1.0, 0.0}, &creature_vao, color_shader_program)
 	}
 
 	// CORPSE
 	use_color_shader(view, projection)
-	for pos, i in corpses {
+	for pos, X in corpses {
 		draw_object(pos, {0.5, 0.0, 0.0}, &corpse_vao, color_shader_program)
 	}
 
@@ -317,7 +381,7 @@ draw_scene :: proc() {
 	gl.DrawArrays(gl.LINES, 0, i32(bullet_path_vertex_next))
 
 	// PATH
-	for s, i in soldiers {
+	for s, X in soldiers {
 		if s.path_len > 0 {
 			gl.UseProgram(path_shader_program)
 			shader_set_mat4(path_shader_program, "view", view)
@@ -331,9 +395,9 @@ draw_scene :: proc() {
 				pos = s.pos,
 			}
 			vi := 1
-			for i := s.path_i; i < s.path_len; i += 1 {
+			for X := s.path_i; X < s.path_len; X += 1 {
 				path_vertices[vi] = {
-					pos = s.path[i],
+					pos = s.path[X],
 				}
 				vi += 1
 			}
@@ -351,8 +415,8 @@ draw_scene :: proc() {
 	}
 }
 
-get_soldier_color :: proc(i: int) -> glsl.vec3 {
-	if soldier_selected == i {
+get_soldier_color :: proc(X: int) -> glsl.vec3 {
+	if soldier_selected == X {
 		return CREATURE_COLOR_SELECTED
 	} else {
 		return CREATURE_COLOR
@@ -381,7 +445,7 @@ update_scene :: proc() {
 	creature_movement := CREATURE_SPEED * game_time_delta
 
 	// UPDATE SOLDIERS
-	for &s, i in soldiers {
+	for &s, X in soldiers {
 		if s.path_len > 0 {
 			d := s.target - s.pos
 			if (glsl.length(d) <= creature_movement) {
@@ -410,7 +474,7 @@ update_scene :: proc() {
 	if game_time - enemy_spawn_prev_time > ENEMY_SPAWN_RATE && len(enemies) < ENEMY_COUNT_MAX {
 		spawn_enemy()
 	}
-	for &e, i in enemies {
+	for &e, X in enemies {
 		// POSITION
 		if e.pos != e.target {
 			d := e.target - e.pos
@@ -497,8 +561,8 @@ update_bullets :: proc() {
 	distance_travelled := BULLET_SPEED * game_time_delta
 
 	bullet_path_vertex_next = 0
-	for i := 0; i < bul_check_next^; i += 1 {
-		bullet := bul_check[i]
+	for X := 0; X < bul_check_next^; X += 1 {
+		bullet := bul_check[X]
 		bullet.pos += distance_travelled * bullet.direction
 
 		d: f32 = 0
@@ -516,11 +580,11 @@ update_bullets :: proc() {
 		}
 
 		enemy_hit_index := -1
-		for e, i in enemies {
+		for e, X in enemies {
 			bb_d := hit_distance(e.bb, bullet.pos_prev_check, bullet.direction)
 			if bb_d > 0 && (d == 0 || bb_d < d) {
 				d = bb_d
-				enemy_hit_index = i
+				enemy_hit_index = X
 			}
 		}
 
