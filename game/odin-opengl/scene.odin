@@ -51,13 +51,13 @@ init_scene :: proc() {
 	}
 
 	// GROUND
-	for row in height_map {
-		for y in row {
-			if y > GROUND_BB.max.y {
-				GROUND_BB.max.y = y
-			}
-		}
-	}
+	// for row in height_map {
+	// 	for y in row {
+	// 		if y > GROUND_BB.max.y {
+	// 			GROUND_BB.max.y = y
+	// 		}
+	// 	}
+	// }
 
 	ground_vbo: u32
 	create_grid(ground_vertices[:])

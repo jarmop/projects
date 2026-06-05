@@ -100,30 +100,30 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 
 		// Check hit on ground if no hits on creatures
 		if (prev_selected != -1 && soldier_selected == -1) {
-			bb_d := hit_distance(GROUND_BB, camera.pos, ray_world)
+			// bb_d := hit_distance(GROUND_BB, camera.pos, ray_world)
 			triangle_d: f32 = 0
 			triangle_i := 0
 			triangle: [3][3]f32
-			if (bb_d > 0) {
-				// Get triangle hit distance
-				min_t: f32 = m.INF_F32
-				for ti := 0; ti < len(ground_vertices) / 3; ti += 1 {
-					i := ti * 3
-					v0 := ground_vertices[i + 0].pos
-					v1 := ground_vertices[i + 1].pos
-					v2 := ground_vertices[i + 2].pos
+			// if (bb_d > 0) {
+			// Get triangle hit distance
+			min_t: f32 = m.INF_F32
+			for ti := 0; ti < len(ground_vertices) / 3; ti += 1 {
+				i := ti * 3
+				v0 := ground_vertices[i + 0].pos
+				v1 := ground_vertices[i + 1].pos
+				v2 := ground_vertices[i + 2].pos
 
-					t: f32 = 0
-					if ray_triangle_intersect(camera.pos, ray_world, v0, v1, v2, &t) {
-						min_t = min(min_t, t)
-						if min_t != triangle_d {
-							triangle_d = min_t
-							triangle_i = ti
-							triangle = {v0, v1, v2}
-						}
+				t: f32 = 0
+				if ray_triangle_intersect(camera.pos, ray_world, v0, v1, v2, &t) {
+					min_t = min(min_t, t)
+					if min_t != triangle_d {
+						triangle_d = min_t
+						triangle_i = ti
+						triangle = {v0, v1, v2}
 					}
 				}
 			}
+			// }
 
 			if (triangle_d > 0) {
 				entry_point := camera.pos + ray_world * triangle_d
