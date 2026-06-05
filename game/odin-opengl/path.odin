@@ -116,14 +116,14 @@ get_triangle :: proc(p: [3]f32) -> ^Triangle {
 }
 
 funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle) {
-	fmt.println("########################")
+	// fmt.println("########################")
 	start_triangle := triangle
-
-	fmt.println(soldiers[0].path[0:10])
-	fmt.println(start_triangle.corners)
-	fmt.println(soldiers[0].path_len)
-	fmt.println(soldiers[0].path_i)
-	fmt.println(soldiers[0].pos)
+	// fmt.println(soldiers[0].path[0:10])
+	// fmt.println(start_triangle.corners)
+	// fmt.println(end_triangle.corners)
+	// fmt.println(soldiers[0].path_len)
+	// fmt.println(soldiers[0].path_i)
+	// fmt.println(soldiers[0].pos)
 
 	soldiers[0].path_i = 0
 	soldiers[0].path_len = 0
@@ -147,7 +147,7 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		// If the distance from the start of the waypoint to the corner nearest to the end is longer
 		// if linalg.length(p1 - start_waypoint) > linalg.length(end - start_waypoint) {
 		if end_triangle.corners == start_triangle.corners {
-			fmt.println("finish the path")
+			// fmt.println("finish the path")
 
 			soldiers[0].path[i] = end
 			soldiers[0].path_len += 1
@@ -256,28 +256,32 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		// This can point in the wrong direction
 		entrance_edge = {p0, p1}
 
-		if (i < 10) {
-			fmt.println("------------- loop", i, "-------------")
-			fmt.println(
-				"Check is edge1 intersection point valid:",
-				linalg.length(edge1_xz_start_to_isect) < linalg.length(edge1_xz),
-				linalg.length(edge1_xz_isect_to_end) < linalg.length(edge1_xz),
-				// This for some reason is false
-				p0_1 != entrance_edge[0],
-				linalg.length(end.xz - isect_xz1) < linalg.length(end.xz - start_waypoint.xz),
-				p0_1.x >= 0,
-				p0_1.z >= 0,
-			)
-			fmt.println("Next_triangle:", next_triangle.corners)
-			fmt.println("Waypoint:", p)
-		}
+		// if (i < 10) {
+		// if (i == 5) {
+		// 	fmt.println("------------- loop", i, "-------------")
+		// 	fmt.println(p0_1 != entrance_edge[0])
+		// 	fmt.println("nearest_point_i", nearest_point_i)
+		// 	fmt.println("p1", p1)
+		// 	fmt.println(
+		// 		"Check is edge1 intersection point valid:",
+		// 		linalg.length(edge1_xz_start_to_isect) < linalg.length(edge1_xz),
+		// 		linalg.length(edge1_xz_isect_to_end) < linalg.length(edge1_xz),
+		// 		// This for some reason is false
+		// 		exit_portal_not_entrance,
+		// 		linalg.length(end.xz - isect_xz1) < linalg.length(end.xz - start_waypoint.xz),
+		// 		p0_1.x >= 0,
+		// 		p0_1.z >= 0,
+		// 	)
+		// 	fmt.println("Next_triangle:", next_triangle.corners)
+		// 	fmt.println("Waypoint:", p)
+		// }
 	}
 
 	// fmt.println(soldiers[0].path[0:soldiers[0].path_len])
-	fmt.println(soldiers[0].path[0:10])
-	fmt.println(start_triangle.corners)
-	fmt.println(soldiers[0].path_len)
-	fmt.println(soldiers[0].path_i)
+	// fmt.println(soldiers[0].path[0:10])
+	// fmt.println(start_triangle.corners)
+	// fmt.println(soldiers[0].path_len)
+	// fmt.println(soldiers[0].path_i)
 
 	soldiers[0].path_i = 0
 	soldiers[0].target = soldiers[0].path[0]
@@ -285,6 +289,7 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 	// fmt.println("Will the path be drawn", soldiers[0].pos != soldiers[0].target)
 }
 
+// This should check the distance only xz plane
 get_nearest_point :: proc(
 	target_point: [3]f32,
 	triangle: [3][3]f32,
@@ -294,10 +299,10 @@ get_nearest_point :: proc(
 	other_indices: [2]int,
 ) {
 	nearest_point_i = 0
-	nearest_point_d = linalg.length(target_point - triangle[0])
+	nearest_point_d = linalg.length(target_point.xz - triangle[0].xz)
 	other_indices = {1, 2}
-	l1 := linalg.length(target_point - triangle[1])
-	l2 := linalg.length(target_point - triangle[2])
+	l1 := linalg.length(target_point.xz - triangle[1].xz)
+	l2 := linalg.length(target_point.xz - triangle[2].xz)
 	if l1 < nearest_point_d {
 		nearest_point_i = 1
 		nearest_point_d = l1
