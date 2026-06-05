@@ -123,6 +123,10 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 	fmt.println(start_triangle.corners)
 	fmt.println(soldiers[0].path_len)
 	fmt.println(soldiers[0].path_i)
+	fmt.println(soldiers[0].pos)
+
+	soldiers[0].path_i = 0
+	soldiers[0].path_len = 0
 
 	// soldiers[0].path[i] = p
 	// soldiers[0].path_len = i + 1
@@ -143,11 +147,12 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		// If the distance from the start of the waypoint to the corner nearest to the end is longer
 		// if linalg.length(p1 - start_waypoint) > linalg.length(end - start_waypoint) {
 		if end_triangle.corners == start_triangle.corners {
-			// fmt.println("finish the path")
+			fmt.println("finish the path")
 
 			soldiers[0].path[i] = end
-			soldiers[0].path_len = i + 1
-			soldiers[0].target = soldiers[0].path[0]
+			soldiers[0].path_len += 1
+			// soldiers[0].path_len += 1
+			// soldiers[0].target = soldiers[0].path[0]
 			break
 		}
 
@@ -244,7 +249,7 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		p := get_intersection_y(p0, p1, pi_xz)
 
 		soldiers[0].path[i] = p
-		soldiers[0].path_len = i + 1
+		soldiers[0].path_len += 1
 
 		start_triangle = next_triangle
 
@@ -276,6 +281,8 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 
 	soldiers[0].path_i = 0
 	soldiers[0].target = soldiers[0].path[0]
+
+	// fmt.println("Will the path be drawn", soldiers[0].pos != soldiers[0].target)
 }
 
 get_nearest_point :: proc(

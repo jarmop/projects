@@ -318,7 +318,7 @@ draw_scene :: proc() {
 
 	// PATH
 	for s, i in soldiers {
-		if s.pos != s.target {
+		if s.path_len > 0 {
 			gl.UseProgram(path_shader_program)
 			shader_set_mat4(path_shader_program, "view", view)
 			shader_set_mat4(path_shader_program, "projection", projection)
@@ -382,7 +382,7 @@ update_scene :: proc() {
 
 	// UPDATE SOLDIERS
 	for &s, i in soldiers {
-		if s.pos != s.target {
+		if s.path_len > 0 {
 			d := s.target - s.pos
 			if (glsl.length(d) <= creature_movement) {
 				s.pos = s.target
