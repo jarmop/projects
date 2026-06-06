@@ -185,10 +185,10 @@ init_scene :: proc() {
 	stbi.set_flip_vertically_on_load(1)
 	width, height, nrChannels: i32
 	// data := stbi.load("./assets/rubber.jpg", &width, &height, &nrChannels, 0)
-	// data := stbi.load("./assets/grass.jpg", &width, &height, &nrChannels, 0)
+	data := stbi.load("./assets/grass.jpg", &width, &height, &nrChannels, 0)
 	// data := stbi.load("./assets/grid.jpg", &width, &height, &nrChannels, 0)
 	// data := stbi.load("./assets/grid_thick.jpg", &width, &height, &nrChannels, 0)
-	data := stbi.load("./assets/grid_3_px.jpg", &width, &height, &nrChannels, 0)
+	// data := stbi.load("./assets/grid_3_px.jpg", &width, &height, &nrChannels, 0)
 	// data := stbi.load("./assets/tiles.jpg", &width, &height, &nrChannels, 0)
 	if data == nil {
 		fmt.println("Failed to load texture")
@@ -289,24 +289,25 @@ draw_scene :: proc() {
 		// BACKGROUND FOR THE WIREFRAME
 		use_color_shader(view, projection)
 		shader_set_mat4(color_shader_program, "model", model)
-		shader_set_vec3(color_shader_program, "color", {w_bg, w_bg, w_bg})
+		// shader_set_vec3(color_shader_program, "color", {w_bg, w_bg, w_bg})
+		shader_set_vec3(color_shader_program, "color", {0.8, 0.6, 0.4})
 		gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 		gl.DrawArrays(gl.TRIANGLES, 0, GRID_SIZE * GRID_SIZE * 12)
 
 		// tHE WIREFRAME
 		// Lift grid up from the texture to make sure it's fully visible
-		gl.BindVertexArray(ground_vao_grid)
-		model *= glsl.mat4Translate({0, 0.001, 0})
-		shader_set_mat4(color_shader_program, "model", model)
-		shader_set_vec3(color_shader_program, "color", {w_line, w_line, w_line})
-		// shader_set_vec3(color_shader_program, "color", {1.1, 1.4, 1.1})
-		gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
-		gl.LineWidth(1.0)
+		// gl.BindVertexArray(ground_vao_grid)
+		// model *= glsl.mat4Translate({0, 0.01, 0})
+		// shader_set_mat4(color_shader_program, "model", model)
+		// shader_set_vec3(color_shader_program, "color", {w_line, w_line, w_line})
+		// // shader_set_vec3(color_shader_program, "color", {0.0, 0.0, 0.0})
+		// gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+		// gl.LineWidth(1.0)
 		// gl.DrawArrays(gl.TRIANGLES, 0, GRID_SIZE * GRID_SIZE * 12)
-		gl.DrawArrays(gl.LINES, 0, GRID_SIZE * GRID_SIZE * 12)
-		// gl.DrawArrays(gl.LINE_STRIP, 0, GRID_SIZE * GRID_SIZE * 12)
-		// gl.DrawArrays(gl.LINE_STRIP_ADJACENCY, 0, GRID_SIZE * GRID_SIZE * 12)
-		gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+		// // gl.DrawArrays(gl.LINES, 0, GRID_SIZE * GRID_SIZE * 12)
+		// // gl.DrawArrays(gl.LINE_STRIP, 0, GRID_SIZE * GRID_SIZE * 12)
+		// // gl.DrawArrays(gl.LINE_STRIP_ADJACENCY, 0, GRID_SIZE * GRID_SIZE * 12)
+		// gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 	} else {
 		use_texture_shader(view, projection)
 		gl.BindTexture(gl.TEXTURE_2D, scene_texture)
@@ -455,7 +456,6 @@ update_scene :: proc() {
 					s.path_i += 1
 					s.target = s.path[s.path_i]
 				} else {
-					fmt.println("path is finished")
 					// Path is finished
 					s.path_len = 0
 					s.path_i = 0

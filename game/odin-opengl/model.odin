@@ -44,18 +44,12 @@ create_grid :: proc(vertices: []Vertex) {
 			top_right.pos.y = height_map[i][j + 1]
 			bottom_left.pos.y = height_map[i + 1][j]
 			bottom_right.pos.y = height_map[i + 1][j + 1]
-			center.pos.y = 0
-			// y: f32 = 1
-			foo: f32 = 2 * y
-			if top_left.pos.y + bottom_right.pos.y == foo ||
-			   bottom_left.pos.y + top_right.pos.y == foo {
-				center.pos.y = y
-			} else if (top_left.pos.y + top_right.pos.y == foo ||
-				   bottom_left.pos.y + bottom_right.pos.y == foo ||
-				   top_left.pos.y + bottom_left.pos.y == foo ||
-				   top_right.pos.y + bottom_right.pos.y == foo) {
-				center.pos.y = y / 2
-			}
+			center.pos.y = get_center_y(
+				top_left.pos.y,
+				top_right.pos.y,
+				bottom_left.pos.y,
+				bottom_right.pos.y,
+			)
 
 			// TOP
 			vertices[grid_i + 0] = top_left
@@ -117,6 +111,52 @@ create_grid :: proc(vertices: []Vertex) {
 
 	// stride := 3 * 4 * 5
 	// fmt.println(vertices[2])
+}
+
+get_center_y :: proc(top_left, top_right, bottom_left, bottom_right: f32) -> f32 {
+	// y: f32 = 1
+	// foo: f32 = 2 * y
+	// if top_left.pos.y + bottom_right.pos.y == foo ||
+	//    bottom_left.pos.y + top_right.pos.y == foo {
+	// 	center.pos.y = y
+	// } else if (top_left.pos.y + top_right.pos.y == foo ||
+	// 	   bottom_left.pos.y + bottom_right.pos.y == foo ||
+	// 	   top_left.pos.y + bottom_left.pos.y == foo ||
+	// 	   top_right.pos.y + bottom_right.pos.y == foo) {
+	// 	center.pos.y = y / 2
+	// }
+
+	total_h := top_left + top_right + bottom_left + bottom_right
+	// // max_h := max(top_left.pos.y, top_right.pos.y, bottom_left.pos.y, bottom_right.pos.y)
+	// // if (max_h != total_h) {
+	// // 	// More than one above 0
+	return total_h / 4
+
+	// }
+	// maxv := max(top_left.pos.y, top_right.pos.y, bottom_left.pos.y, bottom_right.pos.y)
+	// maxc := 0
+	// heights: []f32 = {
+	// 	top_left.pos.y,
+	// 	top_right.pos.y,
+	// 	bottom_left.pos.y,
+	// 	bottom_right.pos.y,
+	// }
+	// for h in heights {
+	// 	if h - maxv == 0 {
+	// 		maxc += 1
+	// 	}
+	// }
+	// if maxc > 2 {
+	// 	center.pos.y = maxv
+	// } else if maxc == 2 {
+	// 	center.pos.y = maxv - 0.25
+	// } else {
+	// 	center.pos.y = maxv - 0.5
+	// }
+
+	// Y is the average of the highest two opposing corners
+	// center.pos.y =
+	// 	max(top_left.pos.y + bottom_right.pos.y, bottom_left.pos.y + top_right.pos.y) / 2
 }
 
 create_cuboid :: proc(
