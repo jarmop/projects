@@ -140,8 +140,8 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 
 	start_waypoint := start
 	entrance_edge: [2][3]f32
-	// for i := 0; start_triangle != nil && i < PATH_MAX_LENGTH; i += 1 {
-	for i := 0; start_triangle != nil && i < 10; i += 1 {
+	for i := 0; start_triangle != nil && i < PATH_MAX_LENGTH; i += 1 {
+		// for i := 0; start_triangle != nil && i < 10; i += 1 {
 		fmt.println("------------- loop", i, "-------------")
 
 		// If the distance from the start of the waypoint to the corner nearest to the end is longer
@@ -269,8 +269,8 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		edge_isect_to_end_shorter_than_edge :=
 			linalg.length(edge1_xz_isect_to_end) <= linalg.length(edge1_xz)
 
-		edge1_isect_is_valid :=
-			edge_start_to_isect_shorter_than_edge && edge_isect_to_end_shorter_than_edge
+		edge1_isect_is_valid := edge_start_to_isect_shorter_than_edge
+		//  && edge_isect_to_end_shorter_than_edge
 		// 	isect_to_target_shorter_than_waypoint_start_to_target &&
 		// 	exit_portal_not_entrance &&
 		// 	p0_1.x >= 0 &&
@@ -284,15 +284,9 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		if edge1_isect_is_valid {
 			p0 = p0_1
 			p0_i = sorted[1]
-			if (i == 0) {
-				fmt.println("wtf?", p0_i)
-			}
 			pi_xz = isect_xz1
 		} else {
 			pi_xz = intersect_xz(start.xz, end.xz, p0_2.xz, p1.xz)
-		}
-		if (i == 0) {
-			fmt.println("wtf?", p0_i)
 		}
 		if p1_i == 0 && p0_i == 2 {
 			next_triangle = start_triangle.right
@@ -331,15 +325,15 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 			fmt.println("p1_i:", p1_i)
 			fmt.println("p0_i:", p0_i)
 			fmt.println("edge1_isect_is_valid:", edge1_isect_is_valid)
-			// fmt.println(
-			// 	"Check is edge1 intersection point valid:",
-			// 	edge_start_to_isect_shorter_than_edge,
-			// 	edge_isect_to_end_shorter_than_edge,
-			// 	isect_to_target_shorter_than_waypoint_start_to_target,
-			// 	exit_portal_not_entrance,
-			// 	p0_1.x >= 0,
-			// 	p0_1.z >= 0,
-			// )
+			fmt.println(
+				"Check is edge1 intersection point valid:",
+				edge_start_to_isect_shorter_than_edge,
+				edge_isect_to_end_shorter_than_edge,
+				// isect_to_target_shorter_than_waypoint_start_to_target,
+				// exit_portal_not_entrance,
+				// p0_1.x >= 0,
+				// p0_1.z >= 0,
+			)
 			fmt.println("Next_triangle:", next_triangle.corners)
 			fmt.println("Waypoint:", p)
 		}
@@ -385,18 +379,80 @@ get_nearest_point :: proc(
 	return nearest_point_i, nearest_point_d, other_indices
 }
 
+/*
+	1: closest to target (end point of the two closest edges)
+	2: start point of the closest (not necessarily the second closest corner)
+	3: start point of the second closest edge
+*/
 get_sorted_triangle_corners :: proc(target_point: [3]f32, triangle: [3][3]f32) -> [3]int {
-	l: []f32 = {
+	// d of corners to target
+	lc: []f32 = {
 		linalg.length(target_point.xz - triangle[0].xz),
 		linalg.length(target_point.xz - triangle[1].xz),
 		linalg.length(target_point.xz - triangle[2].xz),
 	}
+	nearest_point_i := 0
+	other_indices: [dynamic]int
+	for i := 1; i < 3; i += 1 {
+		if lc[i] < lc[nearest_point_i] {
+			append(&other_indices, nearest_point_i)
+			nearest_point_i = i
+		} else {
+			append(&other_indices, i)
+		}
+	}
+
+	// edges: [2][2][3]f32 = {
+	// edges: [2][3]f32 = {
+	// 	triangle[nearest_point_i] - triangle[other_indices[0]],
+	// 	triangle[nearest_point_i] - triangle[other_indices[1]],
+	// }
+
+	// wtf0 :=
+	// 	triangle[nearest_point_i] -
+	// 	linalg.normalize(triangle[nearest_point_i] - triangle[other_indices[0]])
+
+	// wtf1 :=
+	// 	triangle[nearest_point_i] -
+	// 	linalg.normalize(triangle[nearest_point_i] - triangle[other_indices[1]])
+
+	normalized_edge_start_points: [2][3]f32 = {
+		triangle[nearest_point_i] -
+		linalg.normalize(triangle[nearest_point_i] - triangle[other_indices[0]]),
+		triangle[nearest_point_i] -
+		linalg.normalize(triangle[nearest_point_i] - triangle[other_indices[1]]),
+	}
+
+	// lprkl: [2]f32 = {
+	// 	linalg.length(triangle[nearest_point_i].xz - triangle[0].xz),
+	// 	linalg.length(triangle[nearest_point_i].xz - triangle[0].xz),
+	// }
+
+	// d of equal point on edge to target
+
+	// l: []f32 = {
+	// 	lc[nearest_point_i],
+	// 	// linalg.length(target_point.xz - triangle[1].xz),
+	// 	linalg.length(target_point.xz - normalized_edge_start_points[0].xz),
+	// 	linalg.length(target_point.xz - normalized_edge_start_points[1].xz),
+	// }
+	l: [3]f32
+	l[nearest_point_i] = lc[nearest_point_i]
+	l[other_indices[0]] = linalg.length(target_point.xz - normalized_edge_start_points[0].xz)
+	l[other_indices[1]] = linalg.length(target_point.xz - normalized_edge_start_points[1].xz)
+
 	// nearest:= 0
 	// second_nearest:= 1
 	// if (second_nearest <)
 	// l0 := linalg.length(target_point.xz - triangle[0].xz)
 	// l1 := linalg.length(target_point.xz - triangle[1].xz)
 	// l2 := linalg.length(target_point.xz - triangle[2].xz)
+
+	/*
+	Handle situation where nearest edge is the bottom edge but another edge is 
+	mistakenly considered nearer because it	is shorter. So can't rely on 
+	checking the edge start point. Check some equal distance from the end instead
+	*/
 
 	sorted: [3]int = {0, 1, 2}
 	if (l[1] < l[0]) {
