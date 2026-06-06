@@ -116,11 +116,11 @@ get_triangle :: proc(p: [3]f32) -> ^Triangle {
 }
 
 funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle) {
-	// fmt.println("########################")
+	fmt.println("########################")
 	start_triangle := triangle
 	// fmt.println(soldiers[0].path[0:10])
-	// fmt.println(start_triangle.corners)
-	// fmt.println(end_triangle.corners)
+	fmt.println("start_triangle", start_triangle.corners)
+	fmt.println("end_triangle:", end_triangle.corners)
 	// fmt.println(soldiers[0].path_len)
 	// fmt.println(soldiers[0].path_i)
 	// fmt.println(soldiers[0].pos)
@@ -178,19 +178,25 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		edge1_xz_start_to_isect := isect_xz1 - p0_1.xz
 		edge1_xz_isect_to_end := p1.xz - isect_xz1
 
-		// foo_d0 := linalg.length(isect_xz0 - start_waypoint.xz) + len_0
-		// foo_d1 := linalg.length(isect_xz1 - start_waypoint.xz) + len_1
+		edge_start_to_isect_shorter_than_edge :=
+			linalg.length(edge1_xz_start_to_isect) <= linalg.length(edge1_xz)
+
+		edge_isect_to_end_shorter_than_edge :=
+			linalg.length(edge1_xz_isect_to_end) <= linalg.length(edge1_xz)
 
 		// Also, the exit portal can't be the same as the entrance portal
 		// p0_1 != entrance_edge[0] &&
 		exit_portal_not_entrance := !((p0_1 == entrance_edge[0] && p1 == entrance_edge[1]) ||
 			(p0_1 == entrance_edge[1] && p1 == entrance_edge[0]))
 
+		isect_to_target_shorter_than_waypoint_start_to_target :=
+			linalg.length(end.xz - isect_xz1) <= linalg.length(end.xz - start_waypoint.xz)
+
 		edge1_isect_is_valid :=
-			linalg.length(edge1_xz_start_to_isect) < linalg.length(edge1_xz) &&
-			linalg.length(edge1_xz_isect_to_end) < linalg.length(edge1_xz) &&
+			edge_start_to_isect_shorter_than_edge &&
+			edge_isect_to_end_shorter_than_edge &&
+			isect_to_target_shorter_than_waypoint_start_to_target &&
 			exit_portal_not_entrance &&
-			linalg.length(end.xz - isect_xz1) < linalg.length(end.xz - start_waypoint.xz) &&
 			p0_1.x >= 0 &&
 			p0_1.z >= 0
 
@@ -257,31 +263,29 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		entrance_edge = {p0, p1}
 
 		// if (i < 10) {
-		// if (i == 5) {
-		// 	fmt.println("------------- loop", i, "-------------")
-		// 	fmt.println(p0_1 != entrance_edge[0])
-		// 	fmt.println("nearest_point_i", nearest_point_i)
-		// 	fmt.println("p1", p1)
-		// 	fmt.println(
-		// 		"Check is edge1 intersection point valid:",
-		// 		linalg.length(edge1_xz_start_to_isect) < linalg.length(edge1_xz),
-		// 		linalg.length(edge1_xz_isect_to_end) < linalg.length(edge1_xz),
-		// 		// This for some reason is false
-		// 		exit_portal_not_entrance,
-		// 		linalg.length(end.xz - isect_xz1) < linalg.length(end.xz - start_waypoint.xz),
-		// 		p0_1.x >= 0,
-		// 		p0_1.z >= 0,
-		// 	)
-		// 	fmt.println("Next_triangle:", next_triangle.corners)
-		// 	fmt.println("Waypoint:", p)
-		// }
+		if (i == 0) {
+			fmt.println("------------- loop", i, "-------------")
+			fmt.println("nearest_point_i:", nearest_point_i)
+			fmt.println("p1:", p1)
+			fmt.println(
+				"Check is edge1 intersection point valid:",
+				edge_start_to_isect_shorter_than_edge,
+				edge_isect_to_end_shorter_than_edge,
+				isect_to_target_shorter_than_waypoint_start_to_target,
+				exit_portal_not_entrance,
+				p0_1.x >= 0,
+				p0_1.z >= 0,
+			)
+			fmt.println("Next_triangle:", next_triangle.corners)
+			fmt.println("Waypoint:", p)
+		}
 	}
-
-	// fmt.println(soldiers[0].path[0:soldiers[0].path_len])
-	// fmt.println(soldiers[0].path[0:10])
-	// fmt.println(start_triangle.corners)
-	// fmt.println(soldiers[0].path_len)
-	// fmt.println(soldiers[0].path_i)
+	fmt.println("----- Path created -----")
+	fmt.println("Path (max 10):", soldiers[0].path[0:min(soldiers[0].path_len, 10)])
+	// fmt.println("First 10 in path", soldiers[0].path[0:10])
+	fmt.println("start_triangle.corners:", start_triangle.corners)
+	fmt.println("Path length:", soldiers[0].path_len)
+	fmt.println("path_i:", soldiers[0].path_i)
 
 	soldiers[0].path_i = 0
 	soldiers[0].target = soldiers[0].path[0]
