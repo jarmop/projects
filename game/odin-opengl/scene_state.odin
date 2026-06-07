@@ -149,9 +149,10 @@ creature_vao: u32
 
 // -------------- SOLDIER --------------
 // soldiers := []Creature{{pos = {2.25, 0.0, 0.0}}}
-soldiers := []Creature{{pos = [3]f32{7.0, 0.0, 7.0}}}
+// soldiers := []Creature{{pos = [3]f32{7.0, 0.0, 7.0}}}
 // soldiers := []Creature{{pos = [3]f32{7.5, 0.0, 7.2}}}
 // soldiers := []Creature{{pos = [3]f32{2.3, 1.0, 2.1}}}
+soldiers := []Creature{{pos = [3]f32{6.0, 0.0, 7.0}}}
 soldier_selected := 0
 soldier_fire_at_will := false
 soldier_dead := false

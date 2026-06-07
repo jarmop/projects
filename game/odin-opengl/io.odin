@@ -100,11 +100,9 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 
 		// Check hit on ground if no hits on creatures
 		if (prev_selected != -1 && soldier_selected == -1) {
-			// bb_d := hit_distance(GROUND_BB, camera.pos, ray_world)
 			triangle_d: f32 = 0
 			triangle_i := 0
 			triangle: [3][3]f32
-			// if (bb_d > 0) {
 			// Get triangle hit distance
 			min_t: f32 = m.INF_F32
 			for ti := 0; ti < len(ground_vertices) / 3; ti += 1 {
@@ -123,7 +121,6 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 					}
 				}
 			}
-			// }
 
 			if (triangle_d > 0) {
 				entry_point := camera.pos + ray_world * triangle_d
@@ -146,13 +143,15 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 
 				if soldier_sees_target {
 					start_triangle := get_triangle(soldier.pos)
-					end_triangle := get_triangle(entry_point)
-					// start_triangle := get_triangle(entry_point)
-					// get_triangle(soldier.pos)
-					// fmt.println(start_triangle)
-					// fmt.println(end_triangle)
 
+					end_triangle := get_triangle(entry_point)
 					funnel(soldier.pos, entry_point, start_triangle, end_triangle)
+
+					// // This entry point provides a tricky corner case if
+					// // used with soldier position "6.0, 0.0, 7.0"
+					// e: [3]f32 = {8.5231419, 0.073619366, 4.2638073}
+					// end_triangle := get_triangle(e)
+					// funnel(soldier.pos, e, start_triangle, end_triangle)
 				}
 			}
 		}

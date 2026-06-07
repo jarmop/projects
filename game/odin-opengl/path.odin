@@ -95,19 +95,19 @@ get_triangle :: proc(p: [3]f32) -> ^Triangle {
 	cell := cell_table[cell_z * GRID_SIZE + cell_x]
 	triangles := cell.triangles
 
-	l: [4]f32
+	cell_corners_d: [4]f32
 	for triangle, i in triangles {
-		l[i] = linalg.length(p.xz - triangle.corners[0].xz)
+		cell_corners_d[i] = linalg.length(p.xz - triangle.corners[0].xz)
 	}
 
 	// Nearest edge is the one whose combined distance of vertices from the point is the shortest.
 	// Start by guessing that the last triangle has the nearest edge.
-	nearest_edge_d := l[3] + l[0]
+	nearest_cell_edge_d := cell_corners_d[3] + cell_corners_d[0]
 	triangle := triangles[3]
 	for i in 0 ..< 3 {
-		edge_d := l[i] + l[i + 1]
-		if edge_d < nearest_edge_d {
-			nearest_edge_d = edge_d
+		cell_edge_d := cell_corners_d[i] + cell_corners_d[i + 1]
+		if cell_edge_d < nearest_cell_edge_d {
+			nearest_cell_edge_d = cell_edge_d
 			triangle = triangles[i]
 		}
 	}
@@ -160,12 +160,28 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		edge1_xz_start_to_isect_length := linalg.length(isect_xz1 - p0_1.xz)
 
 		edge1_isect_is_valid: bool
-		if abs(edge1_xz_length - edge1_xz_start_to_isect_length) < EPSILON {
+		// Need to use a bit bigger EPSILON than in the ray-triangle hit check
+		if abs(edge1_xz_length - edge1_xz_start_to_isect_length) < 0.00001 {
 			isect_xz1 := p1.xz
 			edge1_isect_is_valid = true
 		} else {
 			edge1_isect_is_valid = edge1_xz_start_to_isect_length < edge1_xz_length
 		}
+
+		// edge1_isect_is_valid: bool
+		// if abs(edge1_xz_length - edge1_xz_start_to_isect_length) < EPSILON {
+		// 	// isect_xz1 is so close to p1.xz that the computer can't tell the difference,
+		// 	// but may still mistakenly think that the diff is greater than the edge length
+		// 	isect_xz1 := p1.xz
+		// 	edge1_xz_start_to_isect_length := 0
+		// 	edge1_isect_is_valid = true
+		// } else {
+		// 	edge1_isect_is_valid = edge1_xz_start_to_isect_length < edge1_xz_length
+		// }
+
+		// edge1_isect_is_valid :=
+		// 	edge1_xz_start_to_isect_length <= edge1_xz_length ||
+		// 	abs(edge1_xz_length - edge1_xz_start_to_isect_length) < EPSILON
 
 		next_triangle: ^Triangle
 		p0 := p0_2
