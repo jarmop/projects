@@ -149,8 +149,6 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 
 		sorted := get_sorted_triangle_corners(end, start_triangle.corners)
 
-		// nearest_point_i := sorted[0]
-
 		p1 := start_triangle.corners[sorted[0]] // closest corner
 		p0_1 := start_triangle.corners[sorted[1]] // start of the closest edge
 		p0_2 := start_triangle.corners[sorted[2]] // start of the second closest edge
@@ -158,23 +156,16 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		// probably should check the epsilon here?
 		isect_xz1 := intersect_xz(start.xz, end.xz, p0_1.xz, p1.xz)
 
-		// edge1_xz := p1.xz - p0_1.xz
 		edge1_xz_length := linalg.length(p1.xz - p0_1.xz)
-		// edge1_xz_start_to_isect := isect_xz1 - p0_1.xz
 		edge1_xz_start_to_isect_length := linalg.length(isect_xz1 - p0_1.xz)
 
-		// isect_xz1 =
-		// 	isect_xz1 if abs(edge1_xz_length - edge1_xz_start_to_isect_length) > EPSILON else p1.xz
-
-		edge_start_to_isect_shorter_than_edge := edge1_xz_start_to_isect_length <= edge1_xz_length
-
+		edge1_isect_is_valid: bool
 		if abs(edge1_xz_length - edge1_xz_start_to_isect_length) < EPSILON {
 			isect_xz1 := p1.xz
-			edge1_xz_start_to_isect_length = linalg.length(isect_xz1 - p0_1.xz)
-			edge_start_to_isect_shorter_than_edge = true
+			edge1_isect_is_valid = true
+		} else {
+			edge1_isect_is_valid = edge1_xz_start_to_isect_length < edge1_xz_length
 		}
-
-		edge1_isect_is_valid := edge_start_to_isect_shorter_than_edge
 
 		next_triangle: ^Triangle
 		p0 := p0_2
@@ -225,10 +216,10 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 			// linalg.length(edge1_xz_start_to_isect) <= linalg.length(edge1_xz)
 			fmt.println("edge1_xz_start_to_isect_length:", edge1_xz_start_to_isect_length)
 			fmt.println("edge1_xz_length:", edge1_xz_length)
-			fmt.println(
-				"Check is edge1 intersection point valid:",
-				edge_start_to_isect_shorter_than_edge,
-			)
+			// fmt.println(
+			// 	"Check is edge1 intersection point valid:",
+			// 	edge_start_to_isect_shorter_than_edge,
+			// )
 			fmt.println("Next_triangle:", next_triangle.corners)
 			fmt.println("Waypoint:", p)
 		}
