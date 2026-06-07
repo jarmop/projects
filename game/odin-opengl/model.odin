@@ -126,6 +126,14 @@ get_center_y :: proc(top_left, top_right, bottom_left, bottom_right: f32) -> f32
 	// 	center.pos.y = y / 2
 	// }
 
+	// if top_left == bottom_right {
+	// 	return top_left
+	// }
+	// if bottom_left == top_right {
+	// 	return top_right
+	// }
+	// return min(top_left + bottom_right, bottom_left + top_right) / 2
+
 	total_h := top_left + top_right + bottom_left + bottom_right
 	// // max_h := max(top_left.pos.y, top_right.pos.y, bottom_left.pos.y, bottom_right.pos.y)
 	// // if (max_h != total_h) {
@@ -155,8 +163,7 @@ get_center_y :: proc(top_left, top_right, bottom_left, bottom_right: f32) -> f32
 	// }
 
 	// Y is the average of the highest two opposing corners
-	// center.pos.y =
-	// 	max(top_left.pos.y + bottom_right.pos.y, bottom_left.pos.y + top_right.pos.y) / 2
+	// return max(top_left + bottom_right, bottom_left + top_right) / 2
 }
 
 create_cuboid :: proc(
