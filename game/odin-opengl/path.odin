@@ -116,16 +116,12 @@ get_triangle :: proc(p: [3]f32) -> ^Triangle {
 }
 
 funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle) {
-	fmt.println("########################")
+	// fmt.println("########################")
 	start_triangle := triangle
-	// fmt.println(soldiers[0].path[0:10])
-	fmt.println("start:", start)
-	fmt.println("end:", end)
-	fmt.println("start_triangle", start_triangle.corners)
-	fmt.println("end_triangle:", end_triangle.corners)
-	// fmt.println(soldiers[0].path_len)
-	// fmt.println(soldiers[0].path_i)
-	// fmt.println(soldiers[0].pos)
+	// fmt.println("start:", start)
+	// fmt.println("end:", end)
+	// fmt.println("start_triangle", start_triangle.corners)
+	// fmt.println("end_triangle:", end_triangle.corners)
 
 	soldiers[0].path_i = 0
 	soldiers[0].path_len = 0
@@ -142,8 +138,6 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 
 			soldiers[0].path[i] = end
 			soldiers[0].path_len += 1
-			// soldiers[0].path_len += 1
-			// soldiers[0].target = soldiers[0].path[0]
 			break
 		}
 
@@ -220,31 +214,26 @@ funnel :: proc(start, end: [3]f32, triangle: ^Triangle, end_triangle: ^Triangle)
 		// This can point in the wrong direction
 		entrance_edge = {p0, p1}
 
-		// if (i < 10) {
-		if (i == 0) {
-			fmt.println("------------- loop", i, "-------------")
-			fmt.println("sorted", sorted)
-			fmt.println("p1:", p1)
-			fmt.println("p0:", p0)
-			fmt.println("p1_i:", p1_i)
-			fmt.println("p0_i:", p0_i)
-			fmt.println("edge1_isect_is_valid:", edge1_isect_is_valid)
-			// linalg.length(edge1_xz_start_to_isect) <= linalg.length(edge1_xz)
-			fmt.println("edge1_xz_start_to_isect_length:", edge1_xz_start_to_isect_length)
-			fmt.println("edge1_xz_length:", edge1_xz_length)
-			// fmt.println(
-			// 	"Check is edge1 intersection point valid:",
-			// 	edge_start_to_isect_shorter_than_edge,
-			// )
-			fmt.println("Next_triangle:", next_triangle.corners)
-			fmt.println("Waypoint:", p)
-		}
+		// // if (i < 10) {
+		// if (i == 0) {
+		// 	fmt.println("------------- loop", i, "-------------")
+		// 	fmt.println("sorted", sorted)
+		// 	fmt.println("p1:", p1)
+		// 	fmt.println("p0:", p0)
+		// 	fmt.println("p1_i:", p1_i)
+		// 	fmt.println("p0_i:", p0_i)
+		// 	fmt.println("edge1_isect_is_valid:", edge1_isect_is_valid)
+		// 	fmt.println("edge1_xz_start_to_isect_length:", edge1_xz_start_to_isect_length)
+		// 	fmt.println("edge1_xz_length:", edge1_xz_length)
+		// 	fmt.println("Next_triangle:", next_triangle.corners)
+		// 	fmt.println("Waypoint:", p)
+		// }
 	}
-	fmt.println("----- Path created -----")
-	fmt.println("Path (max 10):", soldiers[0].path[0:min(soldiers[0].path_len, 10)])
-	fmt.println("start_triangle.corners:", start_triangle.corners)
-	fmt.println("Path length:", soldiers[0].path_len)
-	fmt.println("path_i:", soldiers[0].path_i)
+	// fmt.println("----- Path created -----")
+	// fmt.println("Path (max 10):", soldiers[0].path[0:min(soldiers[0].path_len, 10)])
+	// fmt.println("start_triangle.corners:", start_triangle.corners)
+	// fmt.println("Path length:", soldiers[0].path_len)
+	// fmt.println("path_i:", soldiers[0].path_i)
 
 	soldiers[0].path_i = 0
 	soldiers[0].target = soldiers[0].path[0]
