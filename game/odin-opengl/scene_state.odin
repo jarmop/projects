@@ -84,6 +84,9 @@ height_map := [GRID_SIZE + 1][GRID_SIZE + 1]f32 {
 // 	{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 // }
 
+height_map_vao: u32
+height_map_pos: [3]f32 = {5, height_map[5][8], 8}
+
 CELL_SIZE :: 1.0
 GROUND_SIZE :: GRID_SIZE * CELL_SIZE
 GROUND_CENTER :: [3]f32{GROUND_SIZE / 2, 0.0, GROUND_SIZE / 2}
@@ -101,6 +104,7 @@ GRID_BBS: [GRID_SIZE * GRID_SIZE]BoundingBox
 
 GROUND_VERTICES_COUNT :: GRID_SIZE * GRID_SIZE * 12
 
+ground_vbo: u32
 ground_vao: u32
 ground_vao_grid: u32
 ground_vertices: [GROUND_VERTICES_COUNT]Vertex

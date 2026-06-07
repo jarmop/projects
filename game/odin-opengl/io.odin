@@ -9,6 +9,7 @@ import "vendor:glfw"
 
 mouse_sensitivity :: 0.1
 mouse_right_pressed := false
+mouse_left_pressed := false
 ctrl_pressed := false
 first_cursor_pos := true
 prev_cursor_x, prev_cursor_y: f64
@@ -60,164 +61,159 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			first_cursor_pos = true
 			glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 		}
-	} else if button == glfw.MOUSE_BUTTON_LEFT && action == glfw.PRESS {
-		context = runtime.default_context()
-		cursor_x, cursor_y := glfw.GetCursorPos(window)
-		window_width, window_height := glfw.GetWindowSize(window)
-
-		// Turn cursor coordinates into OpenGL normalized device coordinates
-		// by changing their range from [0,1] to [-1,1]), and flipping y:
-		x := f32(cursor_x / f64(window_width) * 2 - 1)
-		y := -f32(cursor_y / f64(window_height) * 2 - 1)
-
-		ray_clip := [4]f32{x, y, -1.0, 1.0}
-		proj := l.matrix4_perspective_f32(
-			l.to_radians(camera.fov),
-			f32(window_width) / f32(window_height),
-			camera.near,
-			camera.far,
-		)
-		invp := l.inverse(proj) * ray_clip
-		ray_eye := [4]f32{invp[0], invp[1], -1, 0}
-		view := l.matrix4_look_at_f32(camera.pos, camera.pos + camera.front, camera.up)
-		ray_world := l.normalize((l.inverse(view) * ray_eye).xyz)
-
-		// SELECT CREATURE
-		prev_selected := soldier_selected
-		soldier_selected = -1
-		prev_d: f32 = 9999999
-		for c, i in soldiers {
-			bb := BoundingBox {
-				min = c.pos,
-				max = c.pos + CREATURE_DIMENSIONS,
+	} else if button == glfw.MOUSE_BUTTON_LEFT {
+		if action == glfw.PRESS {
+			if (soldier_selected == -1) {
+				mouse_left_pressed = true
+				glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_DISABLED)
 			}
-			d := hit_distance(bb, camera.pos, ray_world)
-			if (d > 0 && d < prev_d) {
-				soldier_selected = i
-				prev_d = d
+
+			context = runtime.default_context()
+			cursor_x, cursor_y := glfw.GetCursorPos(window)
+			window_width, window_height := glfw.GetWindowSize(window)
+
+			// Turn cursor coordinates into OpenGL normalized device coordinates
+			// by changing their range from [0,1] to [-1,1]), and flipping y:
+			x := f32(cursor_x / f64(window_width) * 2 - 1)
+			y := -f32(cursor_y / f64(window_height) * 2 - 1)
+
+			ray_clip := [4]f32{x, y, -1.0, 1.0}
+			proj := l.matrix4_perspective_f32(
+				l.to_radians(camera.fov),
+				f32(window_width) / f32(window_height),
+				camera.near,
+				camera.far,
+			)
+			invp := l.inverse(proj) * ray_clip
+			ray_eye := [4]f32{invp[0], invp[1], -1, 0}
+			view := l.matrix4_look_at_f32(camera.pos, camera.pos + camera.front, camera.up)
+			ray_world := l.normalize((l.inverse(view) * ray_eye).xyz)
+
+			// SELECT CREATURE
+			new_soldier_selected := false
+			prev_d: f32 = 9999999
+			for c, i in soldiers {
+				bb := BoundingBox {
+					min = c.pos,
+					max = c.pos + CREATURE_DIMENSIONS,
+				}
+				d := hit_distance(bb, camera.pos, ray_world)
+				if (d > 0 && d < prev_d) {
+					soldier_selected = i
+					new_soldier_selected = true
+					prev_d = d
+				}
 			}
-		}
+			if new_soldier_selected {
+				return
+			}
 
-		// Check hit on ground if no hits on creatures
-		if (prev_selected != -1 && soldier_selected == -1) {
-			triangle_d: f32 = 0
-			triangle_i := 0
-			triangle: [3][3]f32
-			// Get triangle hit distance
-			min_t: f32 = m.INF_F32
-			for ti := 0; ti < len(ground_vertices) / 3; ti += 1 {
-				i := ti * 3
-				v0 := ground_vertices[i + 0].pos
-				v1 := ground_vertices[i + 1].pos
-				v2 := ground_vertices[i + 2].pos
+			// Check hit on ground if no hits on creatures
+			if (soldier_selected > -1) {
+				triangle_d: f32 = 0
+				triangle_i := 0
+				triangle: [3][3]f32
+				// Get triangle hit distance
+				min_t: f32 = m.INF_F32
+				for ti := 0; ti < len(ground_vertices) / 3; ti += 1 {
+					i := ti * 3
+					v0 := ground_vertices[i + 0].pos
+					v1 := ground_vertices[i + 1].pos
+					v2 := ground_vertices[i + 2].pos
 
-				t: f32 = 0
-				if ray_triangle_intersect(camera.pos, ray_world, v0, v1, v2, &t) {
-					min_t = min(min_t, t)
-					if min_t != triangle_d {
-						triangle_d = min_t
-						triangle_i = ti
-						triangle = {v0, v1, v2}
+					t: f32 = 0
+					if ray_triangle_intersect(camera.pos, ray_world, v0, v1, v2, &t) {
+						min_t = min(min_t, t)
+						if min_t != triangle_d {
+							triangle_d = min_t
+							triangle_i = ti
+							triangle = {v0, v1, v2}
+						}
 					}
 				}
-			}
 
-			if (triangle_d > 0) {
-				entry_point := camera.pos + ray_world * triangle_d
-				// entry_point := camera.pos + ray_world * t
-				target := entry_point - CREATURE_CENTER_XZ
+				if (triangle_d > 0) {
+					entry_point := camera.pos + ray_world * triangle_d
+					target := entry_point - CREATURE_CENTER_XZ
 
-				// fmt.println(entry_point)
+					soldier := soldiers[soldier_selected]
 
-				soldier_selected = prev_selected
-				soldier := soldiers[soldier_selected]
+					target_direction := l.normalize(target - soldier.pos)
+					target_d := l.length(target - soldier.pos)
 
-				target_direction := l.normalize(target - soldier.pos)
-				target_d := l.length(target - soldier.pos)
+					soldier_sees_target := !wall_blocks_ray(
+						soldier.pos + CREATURE_CENTER,
+						target_direction,
+						target_d,
+					)
 
-				soldier_sees_target := !wall_blocks_ray(
-					soldier.pos + CREATURE_CENTER,
-					target_direction,
-					target_d,
-				)
+					if soldier_sees_target {
+						start_triangle := get_triangle(soldier.pos)
 
-				if soldier_sees_target {
-					start_triangle := get_triangle(soldier.pos)
+						end_triangle := get_triangle(entry_point)
+						funnel(soldier.pos, entry_point, start_triangle, end_triangle)
 
-					end_triangle := get_triangle(entry_point)
-					funnel(soldier.pos, entry_point, start_triangle, end_triangle)
-
-					// // This entry point provides a tricky corner case if
-					// // used with soldier position "6.0, 0.0, 7.0"
-					// e: [3]f32 = {8.5231419, 0.073619366, 4.2638073}
-					// end_triangle := get_triangle(e)
-					// funnel(soldier.pos, e, start_triangle, end_triangle)
+						// // This entry point provides a tricky corner case if
+						// // used with soldier position "6.0, 0.0, 7.0"
+						// e: [3]f32 = {8.5231419, 0.073619366, 4.2638073}
+						// end_triangle := get_triangle(e)
+						// funnel(soldier.pos, e, start_triangle, end_triangle)
+					}
+				} else {
+					soldier_selected = -1
 				}
 			}
+		} else {
+			mouse_left_pressed = false
+			first_hover = true
+			glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 		}
 	}
 }
 
-// get_triangle :: proc(p: [3]f32) -> [3][3]f32 {
-// 	cell_min_x: f32 = m.floor(p.x)
-// 	cell_min_z: f32 = m.floor(p.z)
-
-// 	// Amount of vertices per cell row (3 vertices per triangle, 4 triangles per cell, 5 cells per row)
-// 	v_per_cell := 3 * 4
-// 	v_per_row := v_per_cell * 5
-// 	row := int(cell_min_z)
-// 	col := int(cell_min_x)
-// 	cell_i := row * v_per_row + col * v_per_cell
-
-
-// 	// Get the cell corners on the xz plane
-// 	cell_min_xz: [2]f32 = {cell_min_x, cell_min_z}
-// 	cell_center := cell_min_xz + {0.5, 0.5}
-// 	cell_xz: [4][2]f32 = {
-// 		cell_min_xz,
-// 		cell_min_xz + {1, 0},
-// 		cell_min_xz + {1, 1},
-// 		cell_min_xz + {0, 1},
-// 	}
-
-// 	// Get the distances of each cell corner from the point
-// 	l: [4]f32 = {
-// 		l.length(p.xz - cell_xz[0]),
-// 		l.length(p.xz - cell_xz[1]),
-// 		l.length(p.xz - cell_xz[2]),
-// 		l.length(p.xz - cell_xz[3]),
-// 	}
-
-// 	// Nearest edge is the one whose combined distance of vertices from the point is the shortest.
-// 	// Start by guessing that the last triangle has the nearest edge.
-// 	nearest_edge_d := l[3] + l[0]
-// 	triangle_i := cell_i + 3 * 3
-// 	for i in 0 ..< 3 {
-// 		edge_d := l[i] + l[i + 1]
-// 		if edge_d < nearest_edge_d {
-// 			nearest_edge_d = edge_d
-// 			triangle_i = cell_i + i * 3
-// 		}
-// 	}
-
-// 	// Get the triangle vertex positions
-// 	triangle: [3][3]f32
-// 	for i in 0 ..< 3 {
-// 		triangle[i] = ground_vertices[triangle_i + i].pos
-// 	}
-
-// 	// fmt.println(triangle)
-
-// 	return triangle
-// }
+first_hover := true
 
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
 	context = runtime.default_context()
 
-	if !mouse_right_pressed {
-		return
+	if mouse_right_pressed {
+		drag_on_right_press(x, y)
+	} else if mouse_left_pressed {
+		drag_on_left_press(x, y)
+	}
+}
+
+height_d := 0.0
+
+drag_on_left_press :: proc(x, y: f64) {
+	if first_hover {
+		prev_cursor_y = y
+		first_hover = false
 	}
 
+	height_d -= (y - prev_cursor_y) * 0.01
+	step :: 0.1
+	if (abs(height_d) > step) {
+		height_map_pos.y += f32(height_d / abs(height_d) * step)
+		height_map[int(height_map_pos.z)][int(height_map_pos.x)] = height_map_pos.y
+		create_grid(ground_vertices[:])
+		gl.BindVertexArray(ground_vao)
+		gl.BindBuffer(gl.ARRAY_BUFFER, ground_vbo)
+		gl.BufferData(
+			gl.ARRAY_BUFFER,
+			size_of(ground_vertices),
+			raw_data(&ground_vertices),
+			gl.STATIC_DRAW,
+		)
+
+		height_d = 0
+	}
+
+
+	prev_cursor_y = y
+}
+
+drag_on_right_press :: proc(x, y: f64) {
 	if first_cursor_pos {
 		prev_cursor_x = x
 		prev_cursor_y = y

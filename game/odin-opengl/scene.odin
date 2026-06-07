@@ -12,6 +12,7 @@ texture_shader_program: u32
 color_shader_program: u32
 path_shader_program: u32
 bullet_shader_program: u32
+line_shader_program: u32
 
 scene_texture: u32
 creature_texture: u32
@@ -49,6 +50,14 @@ init_scene :: proc() {
 		fmt.println("Bullet shader not ok")
 		os.exit(-1)
 	}
+	line_shader_program, shader_ok = gl.load_shaders_file(
+		"./shaders/bullet.vs",
+		"./shaders/bullet.fs",
+	)
+	if !shader_ok {
+		fmt.println("Bullet shader not ok")
+		os.exit(-1)
+	}
 
 	// GROUND
 	// for row in height_map {
@@ -59,7 +68,7 @@ init_scene :: proc() {
 	// 	}
 	// }
 
-	ground_vbo: u32
+	// ground_vbo: u32
 	create_grid(ground_vertices[:])
 	init_vertices(&ground_vbo, &ground_vao, raw_data(&ground_vertices), size_of(ground_vertices))
 
@@ -180,6 +189,27 @@ init_scene :: proc() {
 	// PATH
 	path_vertices: []Vertex
 	init_vertices(&path_vbo, &path_vao, raw_data(path_vertices), size_of(path_vertices))
+
+	// HEIGHT MAP
+	height_map_vbo: u32
+	gl.GenVertexArrays(1, &height_map_vao)
+	gl.BindVertexArray(height_map_vao)
+	gl.GenBuffers(1, &height_map_vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, height_map_vbo)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, size_of(LineVertex), 0)
+	gl.EnableVertexAttribArray(0)
+	height_map_vertices: []LineVertex = {
+		{pos = {-0.5, 0, 0}},
+		{pos = {0.5, 0, 0}},
+		{pos = {0, 0, -0.5}},
+		{pos = {0, 0, 0.5}},
+	}
+	gl.BufferData(
+		gl.ARRAY_BUFFER,
+		len(height_map_vertices) * size_of(LineVertex),
+		raw_data(height_map_vertices),
+		gl.STATIC_DRAW,
+	)
 
 	// TEXTURE
 	stbi.set_flip_vertically_on_load(1)
@@ -418,6 +448,26 @@ draw_scene :: proc() {
 			gl.DrawArrays(gl.LINE_STRIP, 0, i32(s.path_len + 1 - s.path_i))
 		}
 	}
+
+	// HEIGHT_MAP
+	gl.UseProgram(line_shader_program)
+	shader_set_mat4(line_shader_program, "view", view)
+	shader_set_mat4(line_shader_program, "projection", projection)
+	model = 1
+	model *= glsl.mat4Translate(height_map_pos)
+	shader_set_mat4(line_shader_program, "model", model)
+	shader_set_vec3(line_shader_program, "color", {1.0, 0.0, 0.0})
+	gl.BindVertexArray(height_map_vao)
+	// gl.BindBuffer(gl.ARRAY_BUFFER, bullet_path_vbo)
+	// gl.BufferData(
+	// 	gl.ARRAY_BUFFER,
+	// 	bullet_path_vertex_next * size_of(BulletVertex),
+	// 	raw_data(&bullet_path_vertices),
+	// 	gl.STATIC_DRAW,
+	// )
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+	gl.LineWidth(3.0)
+	gl.DrawArrays(gl.LINES, 0, 4)
 }
 
 get_soldier_color :: proc(X: int) -> glsl.vec3 {

@@ -50,6 +50,10 @@ BulletVertex :: struct {
 	pos: [3]f32,
 }
 
+LineVertex :: struct {
+	pos: [3]f32,
+}
+
 Face :: struct {
 	normal:    [3]f32,
 	textures:  [6][2]f32,
