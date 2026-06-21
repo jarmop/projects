@@ -1,5 +1,7 @@
 package terrain
 
+import "base:runtime"
+
 import "core:fmt"
 import "core:math"
 import "core:math/linalg/glsl"
@@ -33,6 +35,8 @@ init_io :: proc() {
 	glfw.SetScrollCallback(window, scroll_callback)
 
 	glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_DISABLED)
+
+	update_camera()
 }
 
 framebuffer_size_callback :: proc "c" (window: glfw.WindowHandle, width: i32, height: i32) {
@@ -69,7 +73,18 @@ processInput :: proc "c" (window: glfw.WindowHandle) {
 	}
 }
 
+update_camera :: proc() {
+	front := glsl.vec3 {
+		math.cos(glsl.radians(yaw)) * math.cos(glsl.radians(pitch)),
+		math.sin(glsl.radians(pitch)),
+		math.sin(glsl.radians(yaw)) * glsl.cos(glsl.radians(pitch)),
+	}
+	cameraFront = glsl.normalize(front)
+}
+
 mouse_callback :: proc "c" (window: glfw.WindowHandle, xposIn: f64, yposIn: f64) {
+	context = runtime.default_context()
+
 	xpos := f32(xposIn)
 	ypos := f32(yposIn)
 
@@ -98,12 +113,7 @@ mouse_callback :: proc "c" (window: glfw.WindowHandle, xposIn: f64, yposIn: f64)
 		pitch = -89
 	}
 
-	front := glsl.vec3 {
-		math.cos(glsl.radians(yaw)) * math.cos(glsl.radians(pitch)),
-		math.sin(glsl.radians(pitch)),
-		math.sin(glsl.radians(yaw)) * glsl.cos(glsl.radians(pitch)),
-	}
-	cameraFront = glsl.normalize(front)
+	update_camera()
 }
 
 scroll_callback := proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f64) {
@@ -119,13 +129,13 @@ scroll_callback := proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f
 SCR_WIDTH :: 800
 SCR_HEIGHT :: 600
 
-cameraPos := glsl.vec3{0, 0, 3}
+cameraPos := glsl.vec3{0, 3, 3}
 cameraFront := glsl.vec3{0, 0, -1}
 cameraUp := glsl.vec3{0, 1, 0}
 
 firstMouse := true
 yaw: f32 = -90
-pitch: f32 = 0
+pitch: f32 = -45
 lastX: f32 = 800 / 2
 lastY: f32 = 600 / 2
 fov: f32 = 45
