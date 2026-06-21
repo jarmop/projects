@@ -48,28 +48,28 @@ processInput :: proc "c" (window: glfw.WindowHandle) {
 		glfw.SetWindowShouldClose(window, true)
 	}
 
-	cameraSpeed := f32(deltaTime * 2.5)
+	camera_movement := deltaTime * camera_speed
 
 	// WASD
 	if glfw.GetKey(window, glfw.KEY_W) == glfw.PRESS {
-		cameraPos += cameraSpeed * cameraFront
+		cameraPos += camera_movement * cameraFront
 	}
 	if glfw.GetKey(window, glfw.KEY_S) == glfw.PRESS {
-		cameraPos -= cameraSpeed * cameraFront
+		cameraPos -= camera_movement * cameraFront
 	}
 	if glfw.GetKey(window, glfw.KEY_A) == glfw.PRESS {
-		cameraPos -= glsl.normalize(glsl.cross(cameraFront, cameraUp)) * cameraSpeed
+		cameraPos -= glsl.normalize(glsl.cross(cameraFront, cameraUp)) * camera_movement
 	}
 	if glfw.GetKey(window, glfw.KEY_D) == glfw.PRESS {
-		cameraPos += glsl.normalize(glsl.cross(cameraFront, cameraUp)) * cameraSpeed
+		cameraPos += glsl.normalize(glsl.cross(cameraFront, cameraUp)) * camera_movement
 	}
 
 	// Elevation
 	if glfw.GetKey(window, glfw.KEY_E) == glfw.PRESS {
-		cameraPos += cameraUp * cameraSpeed
+		cameraPos += cameraUp * camera_movement
 	}
 	if glfw.GetKey(window, glfw.KEY_C) == glfw.PRESS {
-		cameraPos -= cameraUp * cameraSpeed
+		cameraPos -= cameraUp * camera_movement
 	}
 }
 
@@ -129,7 +129,7 @@ scroll_callback := proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f
 SCR_WIDTH :: 800
 SCR_HEIGHT :: 600
 
-cameraPos := glsl.vec3{0, 3, 3}
+cameraPos := glsl.vec3{128, 250, 350}
 cameraFront := glsl.vec3{0, 0, -1}
 cameraUp := glsl.vec3{0, 1, 0}
 
@@ -142,3 +142,5 @@ fov: f32 = 45
 
 deltaTime: f32 = 0
 lastFrame: f32 = 0
+
+camera_speed: f32 = 100
