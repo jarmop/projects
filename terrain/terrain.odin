@@ -14,11 +14,13 @@ main :: proc() {
         -0.5, 0.0, -0.5,
          0.5, 0.0, -0.5,
          0.5, 0.0,  0.5,
-         0.5, 0.0,  0.5,
+        //  0.5, 0.0,  0.5,
         -0.5, 0.0,  0.5,
-        -0.5, 0.0, -0.5,
+        // -0.5, 0.0, -0.5,
 	}
 // odinfmt: enable
+
+	indices := [?]u32{0, 1, 2, 2, 3, 0}
 
 	gl.Enable(gl.DEPTH_TEST)
 
@@ -30,17 +32,24 @@ main :: proc() {
 		os.exit(-1)
 	}
 
-	VBO, VAO: u32
+	VBO, VAO, EBO: u32
 	gl.GenVertexArrays(1, &VAO)
 	gl.GenBuffers(1, &VBO)
+	gl.GenBuffers(1, &EBO)
 
 	gl.BindVertexArray(VAO)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, VBO)
 	gl.BufferData(gl.ARRAY_BUFFER, size_of(vertices), raw_data(&vertices), gl.STATIC_DRAW)
 
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, EBO)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, size_of(indices), raw_data(&indices), gl.STATIC_DRAW)
+
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 3 * size_of(f32), 0)
 	gl.EnableVertexAttribArray(0)
+
+	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+	gl.BindVertexArray(0)
 
 	gl.UseProgram(shaderProgram)
 
@@ -74,7 +83,8 @@ main :: proc() {
 		model: glsl.mat4 = 1
 		shader_set_mat4(shaderProgram, "model", model)
 
-		gl.DrawArrays(gl.TRIANGLES, 0, 36)
+		// gl.DrawArrays(gl.TRIANGLES, 0, 36)
+		gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, nil)
 
 		glfw.SwapBuffers(window)
 		glfw.PollEvents()
