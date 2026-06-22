@@ -13,5 +13,7 @@ void main()
 	gl_Position = projection * view * model * vec4(position, 1.0f);
 
 	// Max y = 200
-	Color = vec4(position.y / 200.0);
+	float c = position.y / 300.0;
+	// float c = 1.0;
+	Color = vec4(c, c, c, 1.0);
 }

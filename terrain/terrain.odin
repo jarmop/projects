@@ -8,10 +8,21 @@ import "core:slice"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
 
+// vertices_per_side :: 257
+vertices_per_side :: 256
+// vertices_per_side :: 4
+vertices: [vertices_per_side * vertices_per_side * 3]f32
+quads_per_side :: vertices_per_side - 1
+quad_count :: quads_per_side * quads_per_side
+indices_count :: quad_count * 6
+indices: [indices_count]u32
+scale :: 4
+
 main :: proc() {
 	init_io()
 
-	load_data()
+	// load_data()
+	generate_data()
 
 	// // odinfmt: disable
 	// 	vertices := [?]f32 {
@@ -73,8 +84,8 @@ main :: proc() {
 		projection *= glsl.mat4Perspective(
 			glsl.radians_f32(45),
 			f32(f32(SCR_WIDTH) / f32(SCR_HEIGHT)),
-			0.1,
-			1000,
+			near,
+			far,
 		)
 
 		shader_set_mat4(shaderProgram, "projection", projection)
@@ -95,60 +106,4 @@ main :: proc() {
 	gl.DeleteProgram(shaderProgram)
 
 	glfw.Terminate()
-}
-
-height_map_filename := "data/heightmap.save"
-
-vertices_per_side :: 257
-vertices: [vertices_per_side * vertices_per_side * 3]f32
-quads_per_side :: vertices_per_side - 1
-quad_count :: quads_per_side * quads_per_side
-indices_count :: quad_count * 6
-indices: [indices_count]u32
-scale :: 4
-
-load_data :: proc() {
-	data, read_err := os.read_entire_file(height_map_filename, context.allocator)
-	if (read_err != nil) {
-		fmt.println(read_err)
-	}
-	defer delete(data)
-
-	// terrain_size := math.sqrt(f32(len(data)) / size_of(f32))
-	// fmt.println(terrain_size)
-
-	// Fill vertices
-	index := 0
-	for z := 0; z < vertices_per_side; z += 1 {
-		for x := 0; x < vertices_per_side; x += 1 {
-			i := z * vertices_per_side * size_of(f32) + x * size_of(f32)
-			f := slice.to_type(data[i:(i + size_of(f32))], f32)
-			vertices[index] = f32(x)
-			vertices[index + 1] = f / scale
-			// vertices[index + 1] = 0.0
-			vertices[index + 2] = f32(z)
-
-			index += 3
-		}
-	}
-
-	// Fill indices
-	index = 0
-	for z: u32 = 0; z < quads_per_side; z += 1 {
-		for x: u32 = 0; x < quads_per_side; x += 1 {
-			top_left := z * vertices_per_side + x
-			top_right := z * vertices_per_side + x + 1
-			bottom_left := (z + 1) * vertices_per_side + x
-			bottom_right := (z + 1) * vertices_per_side + x + 1
-
-			indices[index] = top_left
-			indices[index + 1] = top_right
-			indices[index + 2] = bottom_right
-			indices[index + 3] = bottom_right
-			indices[index + 4] = bottom_left
-			indices[index + 5] = top_left
-
-			index += 6
-		}
-	}
 }

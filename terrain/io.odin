@@ -129,18 +129,20 @@ scroll_callback := proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f
 SCR_WIDTH :: 800
 SCR_HEIGHT :: 600
 
-cameraPos := glsl.vec3{128, 250, 350}
+cameraPos := glsl.vec3{250, 1000, 1500}
 cameraFront := glsl.vec3{0, 0, -1}
 cameraUp := glsl.vec3{0, 1, 0}
 
 firstMouse := true
-yaw: f32 = -90
+yaw: f32 = -70
 pitch: f32 = -45
 lastX: f32 = 800 / 2
 lastY: f32 = 600 / 2
 fov: f32 = 45
+near: f32 = 0.1
+far: f32 = 10000
 
 deltaTime: f32 = 0
 lastFrame: f32 = 0
 
-camera_speed: f32 = 100
+camera_speed: f32 = scale * 100
