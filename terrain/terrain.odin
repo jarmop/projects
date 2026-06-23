@@ -1,14 +1,12 @@
 package terrain
 
-import "core:fmt"
 import "core:math/linalg/glsl"
 import "core:os"
-import "core:slice"
 
 import gl "vendor:OpenGL"
 import "vendor:glfw"
 
-// vertices_per_side :: 257
+// vertices_per_side :: 257 // The height_map file has this size
 vertices_per_side :: 256
 // vertices_per_side :: 4
 vertices: [vertices_per_side * vertices_per_side * 3]f32

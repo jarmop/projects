@@ -1,12 +1,17 @@
 package terrain
 
+import "core:math"
+
 height_map: [vertices_per_side * vertices_per_side]f32
-size := vertices_per_side
+size :: vertices_per_side
 min_height: f32 = 0
-max_height: f32 = 300
+max_height: f32 = 250
 
 generate_data :: proc() {
-	create_fault_formation()
+	// create_fault_formation()
+	create_midpoint_displacement()
+
+	normalize_height_map()
 
 	// Fill vertices
 	index := 0
@@ -40,5 +45,18 @@ generate_data :: proc() {
 
 			index += 6
 		}
+	}
+}
+
+normalize_height_map :: proc() {
+	min_h: f32 = math.INF_F32
+	max_h: f32 = 0
+	for h in height_map {
+		min_h = math.min(h, min_h)
+		max_h = math.max(h, max_h)
+	}
+
+	for &h in height_map {
+		h = (h - min_h) / (max_h - min_h) * max_height
 	}
 }
