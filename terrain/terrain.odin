@@ -9,7 +9,7 @@ import "vendor:glfw"
 // vertices_per_side :: 257 // The height_map file has this size
 vertices_per_side :: 256
 // vertices_per_side :: 4
-vertices: [vertices_per_side * vertices_per_side * 3]f32
+vertices: [vertices_per_side * vertices_per_side]Vertex
 quads_per_side :: vertices_per_side - 1
 quad_count :: quads_per_side * quads_per_side
 indices_count :: quad_count * 6
@@ -44,24 +44,31 @@ main :: proc() {
 
 	VBO, VAO, EBO: u32
 	gl.GenVertexArrays(1, &VAO)
-	gl.GenBuffers(1, &VBO)
-	gl.GenBuffers(1, &EBO)
-
 	gl.BindVertexArray(VAO)
 
+	gl.GenBuffers(1, &VBO)
 	gl.BindBuffer(gl.ARRAY_BUFFER, VBO)
 	gl.BufferData(gl.ARRAY_BUFFER, size_of(vertices), raw_data(&vertices), gl.STATIC_DRAW)
 
+	gl.GenBuffers(1, &EBO)
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, EBO)
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, size_of(indices), raw_data(&indices), gl.STATIC_DRAW)
 
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 3 * size_of(f32), 0)
-	gl.EnableVertexAttribArray(0)
+	POS_LOC :: 0
+	gl.VertexAttribPointer(POS_LOC, 3, gl.FLOAT, gl.FALSE, size_of(Vertex), offset_of(Vertex, pos))
+	gl.EnableVertexAttribArray(POS_LOC)
+
+	TEX_LOC :: 1
+	gl.VertexAttribPointer(TEX_LOC, 2, gl.FLOAT, gl.FALSE, size_of(Vertex), offset_of(Vertex, uv))
+	gl.EnableVertexAttribArray(TEX_LOC)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 	gl.BindVertexArray(0)
 
+	init_texture()
+
 	gl.UseProgram(shaderProgram)
+	shader_set_int(shaderProgram, "texture1", 0)
 
 	// gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 
@@ -74,6 +81,9 @@ main :: proc() {
 
 		gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
+		gl.ActiveTexture(gl.TEXTURE0)
+		gl.BindTexture(gl.TEXTURE_2D, texture1)
 
 		view: glsl.mat4 = 1
 		view *= glsl.mat4LookAt(cameraPos, cameraPos + cameraFront, cameraUp)

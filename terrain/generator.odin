@@ -18,12 +18,12 @@ generate_data :: proc() {
 	for z := 0; z < vertices_per_side; z += 1 {
 		for x := 0; x < vertices_per_side; x += 1 {
 			f := height_map[z * vertices_per_side + x]
-
-			vertices[index] = f32(x) * scale
-			vertices[index + 1] = f
-			vertices[index + 2] = f32(z) * scale
-
-			index += 3
+			vertices[index] = {
+				pos = {f32(x) * scale, f, f32(z) * scale},
+				// uv  = {f32(x), f32(z)},
+				uv  = {f32(x) / f32(vertices_per_side), f32(z) / f32(vertices_per_side)},
+			}
+			index += 1
 		}
 	}
 

@@ -22,12 +22,11 @@ load_data :: proc() {
 		for x := 0; x < vertices_per_side; x += 1 {
 			i := z * vertices_per_side * size_of(f32) + x * size_of(f32)
 			f := slice.to_type(data[i:(i + size_of(f32))], f32)
-			vertices[index] = f32(x)
-			vertices[index + 1] = f / scale
-			// vertices[index + 1] = 0.0
-			vertices[index + 2] = f32(z)
+			vertices[index] = {
+				pos = {f32(x) * scale, f, f32(z) * scale},
+			}
 
-			index += 3
+			index += 1
 		}
 	}
 
