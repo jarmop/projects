@@ -62,6 +62,17 @@ main :: proc() {
 	gl.VertexAttribPointer(TEX_LOC, 2, gl.FLOAT, gl.FALSE, size_of(Vertex), offset_of(Vertex, uv))
 	gl.EnableVertexAttribArray(TEX_LOC)
 
+	NOR_LOC :: 2
+	gl.VertexAttribPointer(
+		NOR_LOC,
+		3,
+		gl.FLOAT,
+		gl.FALSE,
+		size_of(Vertex),
+		offset_of(Vertex, normal),
+	)
+	gl.EnableVertexAttribArray(NOR_LOC)
+
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 	gl.BindVertexArray(0)
 

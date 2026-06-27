@@ -1,6 +1,7 @@
 package terrain
 
 import "core:math"
+import "core:math/linalg"
 
 height_map: [vertices_per_side * vertices_per_side]f32
 size :: vertices_per_side
@@ -18,10 +19,15 @@ generate_data :: proc() {
 	for z := 0; z < vertices_per_side; z += 1 {
 		for x := 0; x < vertices_per_side; x += 1 {
 			f := height_map[z * vertices_per_side + x]
+			// f: f32 = 0.0
 			vertices[index] = {
 				pos = {f32(x) * scale, f, f32(z) * scale},
 				// uv  = {f32(x), f32(z)},
-				uv  = {f32(x) / f32(vertices_per_side), f32(z) / f32(vertices_per_side)},
+				// uv  = {f32(x) / f32(vertices_per_side), f32(z) / f32(vertices_per_side)},
+				uv  = {
+					f32(x) * scale / f32(vertices_per_side),
+					f32(z) * scale / f32(vertices_per_side),
+				},
 			}
 			index += 1
 		}
@@ -46,6 +52,8 @@ generate_data :: proc() {
 			index += 6
 		}
 	}
+
+	calculate_normals()
 }
 
 normalize_height_map :: proc() {
@@ -58,5 +66,20 @@ normalize_height_map :: proc() {
 
 	for &h in height_map {
 		h = (h - min_h) / (max_h - min_h) * max_height
+	}
+}
+
+calculate_normals :: proc() {
+	for i := 0; i < indices_count; i += 3 {
+		i0 := indices[i]
+		i1 := indices[i + 1]
+		i2 := indices[i + 2]
+		v0 := &vertices[i0]
+		v1 := &vertices[i1]
+		v2 := &vertices[i2]
+		normal := -linalg.normalize(linalg.cross(v1.pos - v0.pos, v2.pos - v0.pos))
+		v0.normal = normal
+		v1.normal = normal
+		v2.normal = normal
 	}
 }
