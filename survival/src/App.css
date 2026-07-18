@@ -1,0 +1,16 @@
+:root {
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+table {
+  border-collapse: collapse;
+  th, td {
+    padding: 4px;
+    border: 1px solid black;
+  }
+}
+
+tbody th {
+  text-align: left;
+}
