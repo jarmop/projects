@@ -16,6 +16,9 @@ void main()
 
 	// frag_color = vert_color;
 	frag_color = texture(texture1, vert_uv) * diffuse;
+	// vec4 color = vec4(0.8, 0.6, 0.4, 1.0);
+	// frag_color = color * diffuse;
+
 
 }
 

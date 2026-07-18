@@ -20,7 +20,8 @@ init_texture :: proc() {
 	width, height, nrChannels: i32
 	stbi.set_flip_vertically_on_load(1)
 
-	data := stbi.load("./textures/IMGP5525_seamless.jpg", &width, &height, &nrChannels, 0)
+	// data := stbi.load("./textures/IMGP5525_seamless.jpg", &width, &height, &nrChannels, 0)
+	data := stbi.load("./textures/tilable-IMG_0044-verydark.png", &width, &height, &nrChannels, 0)
 	if data == nil {
 		fmt.println("Failed to load texture")
 		os.exit(-1)

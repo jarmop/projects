@@ -78,8 +78,12 @@ calculate_normals :: proc() {
 		v1 := &vertices[i1]
 		v2 := &vertices[i2]
 		normal := -linalg.normalize(linalg.cross(v1.pos - v0.pos, v2.pos - v0.pos))
-		v0.normal = normal
-		v1.normal = normal
-		v2.normal = normal
+		v0.normal += normal
+		v1.normal += normal
+		v2.normal += normal
+	}
+
+	for &v in vertices {
+		v.normal = linalg.normalize(v.normal)
 	}
 }
