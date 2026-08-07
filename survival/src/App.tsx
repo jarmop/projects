@@ -1,12 +1,14 @@
 import "./App.css";
 import { World } from "./World.tsx";
-// import { Foo } from "./Foo.tsx";
+import { Products } from "./Products.tsx";
+import { Overview } from "./Overview.tsx";
 
 function App() {
   return (
     <div>
-      {/* <Foo /> */}
-      <World />
+      {/* <World /> */}
+      {/* <Products /> */}
+      <Overview />
     </div>
   );
 }

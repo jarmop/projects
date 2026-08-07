@@ -16,7 +16,7 @@ export const products: Product[] = [
     {
         name: "knife",
         materials: ["flint"],
-        tools: ["hammerstone"],
+        tools: ["hammerstone"], // deduced from the material
         description: "",
         category: "tool",
     },
@@ -55,6 +55,13 @@ export const products: Product[] = [
         description: "",
         category: "food",
     },
+    {
+        name: "house",
+        materials: ["Foundation", "Frame", "Roof", "Floor"],
+        tools: ["axe"],
+        description: "",
+        category: "housing",
+    },
 ];
 
 export const processes = [
@@ -84,11 +91,3 @@ export const animals = [
         ],
     },
 ];
-
-const humanCaloriesPerDay = 3000;
-const population = 1000;
-
-export const society = {
-    population: population,
-    caloriesPerYear: population * humanCaloriesPerDay * 365,
-};

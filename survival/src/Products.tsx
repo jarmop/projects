@@ -1,27 +1,13 @@
 import "./App.css";
-import { products, society } from "./data.ts";
+import { products } from "./data/data.ts";
 
 function toUpperCase(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export function Foo() {
+export function Products() {
   return (
     <div>
-      <h2>Minimal self-sustaining society</h2>
-      <table>
-        <tbody>
-          <tr>
-            <th>Population:</th>
-            <td>{society.population}</td>
-          </tr>
-          <tr>
-            <th>Calories per year:</th>
-            <td>{society.caloriesPerYear.toLocaleString()}</td>
-          </tr>
-        </tbody>
-      </table>
-
       <h3>Products</h3>
       <table>
         <thead>
