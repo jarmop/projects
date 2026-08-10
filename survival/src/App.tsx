@@ -3,7 +3,7 @@ import { World } from "./World.tsx";
 import { Products } from "./Products.tsx";
 import { Overview } from "./Overview.tsx";
 
-function App() {
+export function App() {
   return (
     <div>
       {/* <World /> */}
@@ -12,5 +12,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
