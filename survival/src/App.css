@@ -14,3 +14,39 @@ table {
 table tbody th {
   text-align: left;
 }
+
+.population-pyramid {
+  margin-left: 10px;
+  border: 1px solid black;
+  border-width: 0 1px 0 1px;
+  position: relative;
+
+  .row:hover .meter {
+      background-color: lightgreen !important;
+      /* cursor: pointer; */
+  }
+
+  .cell {
+    display: flex;
+    width: 100px;
+    border-bottom: 1px solid #444;
+    .meter {
+      height: 6px;
+    }
+  }
+  
+  .info {
+    position: absolute;
+    width: 130px;
+    right: -140px;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: lightgray;
+    border: 1px solid black;
+
+    th, td {
+      border: none;
+      padding: 0 2px;
+    }
+  }
+}
