@@ -2,7 +2,6 @@ import { useState } from "react";
 import "./App.css";
 import { type Population, PopulationPyramid } from "./PopulationPyramid.tsx";
 
-const portionOfWomen = 0.5;
 const ageOfNaturalDeath = 100;
 
 const defaultSociety = {
@@ -56,24 +55,33 @@ export function Overview() {
   );
 
   function increaseYear() {
+    // INCREASE YEAR
     const increase = 1;
     const newYear = year + increase;
-    setYear(newYear);
 
-    const women = Math.ceil(populationTotal * portionOfWomen);
-    const births = Math.floor(
-      society.birthsPerWoman / society.lifeExpectancy * women,
+    // UPDATE WHEAT STORAGE
+    const newWheatStorage = Math.max(0, wheatStorage - wheatDemandPerYear) +
+      wheatProductionPerYear;
+
+    // UPDATE BIRTHS
+    const populationAfforded = newWheatStorage * wheatCalories /
+      humanCalorieNeedPerYear;
+    const fertileWomenCount = sum(
+      society.population.slice(20, 30).map(({ women }) => women),
     );
+    const births = Math.min(
+      populationAfforded -
+        (populationTotal - populationTotalByAge[ageOfNaturalDeath - 1]),
+      fertileWomenCount,
+    );
+
     let deaths = populationTotalByAge[ageOfNaturalDeath - 1];
     let sumOfAgesOfDying = deaths * ageOfNaturalDeath;
 
     const newPopulation = [{
       men: Math.floor(births / 2),
       women: Math.ceil(births / 2),
-    }, ...society.population].slice(
-      0,
-      -1,
-    );
+    }, ...society.population].slice(0, -1);
 
     let peopleToStarve = starvingPeople;
 
@@ -98,7 +106,6 @@ export function Overview() {
         peopleToStarve = 0;
       }
     }
-    // console.log(births, deaths);
 
     const newPopulationTotal = sum(
       newPopulation.map(({ men, women }) => men + women),
@@ -119,11 +126,9 @@ export function Overview() {
         populationTotal * 100,
     };
 
+    setYear(newYear);
     setSociety(newSociety);
-
-    setWheatStorage(
-      Math.max(0, wheatStorage - wheatDemandPerYear) + wheatProductionPerYear,
-    );
+    setWheatStorage(newWheatStorage);
   }
 
   return (
