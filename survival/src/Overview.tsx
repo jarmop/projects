@@ -7,7 +7,7 @@ const ageOfNaturalDeath = 100;
 
 const defaultSociety = {
   population: [] as Population,
-  birthPerWoman: 2, // every woman gives birth once for every ten years they live
+  birthsPerWoman: 2, // every woman gives birth once for every ten years they live
   lifeExpectancy: ageOfNaturalDeath,
   birthRate: 0,
   deathRate: 0,
@@ -20,7 +20,7 @@ for (let i = 0; i < defaultSociety.lifeExpectancy; i++) {
 
 defaultSociety.birthRate =
   sum(defaultSociety.population.map(({ women }) => women)) *
-  defaultSociety.birthPerWoman / defaultSociety.lifeExpectancy;
+  defaultSociety.birthsPerWoman / defaultSociety.lifeExpectancy;
 defaultSociety.deathRate = 1000 / defaultSociety.lifeExpectancy;
 defaultSociety.populationGrowthRate =
   (defaultSociety.birthRate - defaultSociety.deathRate) / 1000;
@@ -34,21 +34,21 @@ const wheatProductionPerYear = humanCalorieNeedPerYear * 999 / wheatCalories;
 
 export function Overview() {
   const [society, setSociety] = useState(defaultSociety);
-  const totalPopulationByAge = society.population.map(({ men, women }) =>
+  const populationTotalByAge = society.population.map(({ men, women }) =>
     men + women
   );
-  const totalPopulation = sum(totalPopulationByAge);
+  const populationTotal = sum(populationTotalByAge);
   const [year, setYear] = useState(0);
   const [wheatStorage, setWheatStorage] = useState(
-    humanCalorieNeedPerYear * totalPopulation /
+    humanCalorieNeedPerYear * populationTotal /
       wheatCalories,
   );
-  const wheatDemandPerYear = humanCalorieNeedPerYear * totalPopulation /
+  const wheatDemandPerYear = humanCalorieNeedPerYear * populationTotal /
     wheatCalories;
 
   const calorieSupply = wheatStorage * wheatCalories;
   const populationCalorieNeedPerYear = humanCalorieNeedPerYear *
-    totalPopulation;
+    populationTotal;
   const populationCalorieBalance = calorieSupply - populationCalorieNeedPerYear;
 
   const starvingPeople = Math.min(
@@ -60,11 +60,11 @@ export function Overview() {
     const newYear = year + increase;
     setYear(newYear);
 
-    const women = Math.ceil(totalPopulation * portionOfWomen);
-    const births = Math.ceil(
-      society.birthPerWoman / society.lifeExpectancy * women,
+    const women = Math.ceil(populationTotal * portionOfWomen);
+    const births = Math.floor(
+      society.birthsPerWoman / society.lifeExpectancy * women,
     );
-    let deaths = totalPopulationByAge[ageOfNaturalDeath - 1];
+    let deaths = populationTotalByAge[ageOfNaturalDeath - 1];
     let sumOfAgesOfDying = deaths * ageOfNaturalDeath;
 
     const newPopulation = [{
@@ -100,10 +100,23 @@ export function Overview() {
     }
     // console.log(births, deaths);
 
+    const newPopulationTotal = sum(
+      newPopulation.map(({ men, women }) => men + women),
+    );
+    const newPopulationTotalWomen = sum(
+      newPopulation.map(({ women }) => women),
+    );
+
     const newSociety = {
       ...society,
-      lifeExpectancy: sumOfAgesOfDying / deaths,
       population: newPopulation,
+      // birthsPerWoman: births / newPopulationTotalWomen,
+      birthsPerWoman: 2,
+      birthRate: births / newPopulationTotal * 1000,
+      lifeExpectancy: sumOfAgesOfDying / deaths,
+      deathRate: deaths / newPopulationTotal * 1000,
+      populationGrowthRate: (newPopulationTotal - populationTotal) /
+        populationTotal * 100,
     };
 
     setSociety(newSociety);
@@ -121,15 +134,15 @@ export function Overview() {
           <tbody>
             <tr>
               <th>Population:</th>
-              <td>{totalPopulation}</td>
+              <td>{populationTotal}</td>
             </tr>
             <tr>
               <th>Births per woman:</th>
-              <td>{society.birthPerWoman}</td>
+              <td>{society.birthsPerWoman.toFixed(1)}</td>
             </tr>
             <tr>
               <th>Birth rate:</th>
-              <td>{society.birthRate}</td>
+              <td>{society.birthRate.toFixed(1)}</td>
             </tr>
             <tr>
               <th>Life expectancy:</th>
@@ -137,11 +150,11 @@ export function Overview() {
             </tr>
             <tr>
               <th>Death rate:</th>
-              <td>{society.deathRate}</td>
+              <td>{society.deathRate.toFixed(1)}</td>
             </tr>
             <tr>
               <th>Population growth rate:</th>
-              <td>{society.populationGrowthRate} %</td>
+              <td>{society.populationGrowthRate.toFixed(1)} %</td>
             </tr>
           </tbody>
         </table>
