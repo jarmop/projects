@@ -6,7 +6,6 @@ const ageOfNaturalDeath = 100;
 
 const defaultSociety = {
   population: [] as Population,
-  birthsPerWoman: 2, // every woman gives birth once for every ten years they live
   lifeExpectancy: ageOfNaturalDeath,
   birthRate: 0,
   deathRate: 0,
@@ -17,19 +16,12 @@ for (let i = 0; i < defaultSociety.lifeExpectancy; i++) {
   defaultSociety.population.push({ men: 5, women: 5 });
 }
 
-defaultSociety.birthRate =
-  sum(defaultSociety.population.map(({ women }) => women)) *
-  defaultSociety.birthsPerWoman / defaultSociety.lifeExpectancy;
-defaultSociety.deathRate = 1000 / defaultSociety.lifeExpectancy;
-defaultSociety.populationGrowthRate =
-  (defaultSociety.birthRate - defaultSociety.deathRate) / 1000;
-
 const humanWaterNeedPerDay = 3;
 const humanCalorieNeedPerDay = 3000;
 const wheatCalories = 3000;
 const humanCalorieNeedPerYear = humanCalorieNeedPerDay * 365;
 
-const wheatProductionPerYear = humanCalorieNeedPerYear * 999 / wheatCalories;
+const wheatProductionPerYear = humanCalorieNeedPerYear * 1000 / wheatCalories;
 
 export function Overview() {
   const [society, setSociety] = useState(defaultSociety);
@@ -42,6 +34,7 @@ export function Overview() {
     humanCalorieNeedPerYear * populationTotal /
       wheatCalories,
   );
+  const storageBuffer = humanCalorieNeedPerYear * populationTotal / 10;
   const wheatDemandPerYear = humanCalorieNeedPerYear * populationTotal /
     wheatCalories;
 
@@ -50,8 +43,9 @@ export function Overview() {
     populationTotal;
   const populationCalorieBalance = calorieSupply - populationCalorieNeedPerYear;
 
-  const starvingPeople = Math.min(
+  const starvingPeople = Math.max(
     Math.floor(-populationCalorieBalance / humanCalorieNeedPerYear),
+    0,
   );
 
   function increaseYear() {
@@ -64,24 +58,38 @@ export function Overview() {
       wheatProductionPerYear;
 
     // UPDATE BIRTHS
-    const populationAfforded = newWheatStorage * wheatCalories /
+    const populationAfforded =
+      (newWheatStorage * wheatCalories - storageBuffer) /
       humanCalorieNeedPerYear;
     const fertileWomenCount = sum(
       society.population.slice(20, 30).map(({ women }) => women),
     );
-    const births = Math.min(
-      populationAfforded -
-        (populationTotal - populationTotalByAge[ageOfNaturalDeath - 1]),
-      fertileWomenCount,
+    const births = Math.floor(
+      Math.min(
+        Math.max(
+          populationAfforded -
+            (populationTotal - populationTotalByAge[ageOfNaturalDeath - 1]),
+          populationAfforded / ageOfNaturalDeath,
+        ),
+        fertileWomenCount,
+      ),
     );
 
     let deaths = populationTotalByAge[ageOfNaturalDeath - 1];
     let sumOfAgesOfDying = deaths * ageOfNaturalDeath;
 
-    const newPopulation = [{
-      men: Math.floor(births / 2),
-      women: Math.ceil(births / 2),
-    }, ...society.population].slice(0, -1);
+    const lessBirths = Math.floor(births / 2);
+    const moreBirths = Math.ceil(births / 2);
+    const babies = Math.random() > 0.5
+      ? {
+        men: moreBirths,
+        women: lessBirths,
+      }
+      : {
+        men: lessBirths,
+        women: moreBirths,
+      };
+    const newPopulation = [babies, ...society.population].slice(0, -1);
 
     let peopleToStarve = starvingPeople;
 
@@ -110,17 +118,14 @@ export function Overview() {
     const newPopulationTotal = sum(
       newPopulation.map(({ men, women }) => men + women),
     );
-    const newPopulationTotalWomen = sum(
-      newPopulation.map(({ women }) => women),
-    );
 
     const newSociety = {
       ...society,
       population: newPopulation,
-      // birthsPerWoman: births / newPopulationTotalWomen,
-      birthsPerWoman: 2,
       birthRate: births / newPopulationTotal * 1000,
-      lifeExpectancy: sumOfAgesOfDying / deaths,
+      lifeExpectancy: deaths > 0
+        ? sumOfAgesOfDying / deaths
+        : ageOfNaturalDeath,
       deathRate: deaths / newPopulationTotal * 1000,
       populationGrowthRate: (newPopulationTotal - populationTotal) /
         populationTotal * 100,
@@ -142,16 +147,12 @@ export function Overview() {
               <td>{populationTotal}</td>
             </tr>
             <tr>
-              <th>Births per woman:</th>
-              <td>{society.birthsPerWoman.toFixed(1)}</td>
+              <th>Life expectancy:</th>
+              <td>{society.lifeExpectancy.toFixed(1)} years</td>
             </tr>
             <tr>
               <th>Birth rate:</th>
               <td>{society.birthRate.toFixed(1)}</td>
-            </tr>
-            <tr>
-              <th>Life expectancy:</th>
-              <td>{society.lifeExpectancy.toFixed(1)} years</td>
             </tr>
             <tr>
               <th>Death rate:</th>
@@ -163,18 +164,6 @@ export function Overview() {
             </tr>
           </tbody>
         </table>
-
-        {
-          /* <h3>Population per age</h3>
-      <table>
-        <tbody>
-          <tr>
-            <th>Fertile (20-29):</th>
-            <td>{sum(society.population.slice(20, 30))}</td>
-          </tr>
-        </tbody>
-      </table> */
-        }
 
         <h3>Needs per person per day</h3>
         <table>
@@ -209,9 +198,7 @@ export function Overview() {
           <thead>
             <tr>
               <th>Name</th>
-              {/* <th>Demand</th> */}
               <th>Amount</th>
-              {/* <th>Balance</th> */}
             </tr>
           </thead>
           <tbody>
@@ -219,19 +206,10 @@ export function Overview() {
               <td>
                 Grain (kg)
               </td>
-              {
-                /* <td>
-              {wheatDemandPerYear.toFixed(0)}
-            </td> */
-              }
+
               <td>
                 {wheatProductionPerYear.toFixed(0)}
               </td>
-              {
-                /* <td>
-              {(wheatProductionPerYear - wheatDemandPerYear).toFixed(0)}
-            </td> */
-              }
             </tr>
           </tbody>
         </table>
