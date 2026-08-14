@@ -1,8 +1,13 @@
 import { useState } from "react";
 import "./App.css";
 import { type Population, PopulationPyramid } from "./PopulationPyramid.tsx";
-
-const ageOfNaturalDeath = 100;
+import {
+  ageOfNaturalDeath,
+  humanCalorieNeedPerDay,
+  humanCalorieNeedPerYear,
+  humanWaterNeedPerDay,
+  wheatCalories,
+} from "./config.ts";
 
 const defaultSociety = {
   population: [] as Population,
@@ -15,11 +20,6 @@ const defaultSociety = {
 for (let i = 0; i < defaultSociety.lifeExpectancy; i++) {
   defaultSociety.population.push({ men: 5, women: 5 });
 }
-
-const humanWaterNeedPerDay = 3;
-const humanCalorieNeedPerDay = 3000;
-const wheatCalories = 3000;
-const humanCalorieNeedPerYear = humanCalorieNeedPerDay * 365;
 
 const wheatProductionPerYear = humanCalorieNeedPerYear * 1000 / wheatCalories;
 
