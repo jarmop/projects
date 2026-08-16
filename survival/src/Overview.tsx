@@ -1,17 +1,19 @@
 import { useState } from "react";
 import "./App.css";
 import { type Population, PopulationPyramid } from "./PopulationPyramid.tsx";
+import { ageOfNaturalDeath, humanCalorieNeedPerYear } from "./config.ts";
 import {
-  ageOfNaturalDeath,
-  humanCalorieNeedPerYear,
-  wheatCalories,
-} from "./config.ts";
+  fieldsByKey,
+  getFood,
+  kcalToUnit,
+  kgToUnit,
+} from "./data/food-production.ts";
 
 const defaultSociety = {
   population: [] as Population,
   lifeExpectancy: ageOfNaturalDeath,
-  birthRate: 0,
-  deathRate: 0,
+  birthRate: 10,
+  deathRate: 10,
   populationGrowthRate: 0,
 };
 
@@ -19,7 +21,16 @@ for (let i = 0; i < defaultSociety.lifeExpectancy; i++) {
   defaultSociety.population.push({ men: 5, women: 5 });
 }
 
-const wheatProductionPerYear = humanCalorieNeedPerYear * 1000 / wheatCalories;
+const fields = [{
+  name: "wheatfield",
+  amount: 5,
+}];
+
+const wheatProductionPerYear =
+  fields.find((field) => field.name = "wheatfield").amount *
+  fieldsByKey["wheatfield"].production;
+
+const wheat = getFood("wheat");
 
 export function Overview() {
   const [society, setSociety] = useState(defaultSociety);
@@ -28,18 +39,15 @@ export function Overview() {
   );
   const populationTotal = sum(populationTotalByAge);
   const [year, setYear] = useState(0);
-  const [wheatStorage, setWheatStorage] = useState(
-    humanCalorieNeedPerYear * populationTotal /
-      wheatCalories,
-  );
+  const [wheatStorage, setWheatStorage] = useState(wheatProductionPerYear);
   const storageBuffer = humanCalorieNeedPerYear * populationTotal / 10;
   const wheatDemandPerYear = humanCalorieNeedPerYear * populationTotal /
-    wheatCalories;
+    wheat.calories;
 
-  const calorieSupply = wheatStorage * wheatCalories;
   const populationCalorieNeedPerYear = humanCalorieNeedPerYear *
     populationTotal;
-  const populationCalorieBalance = calorieSupply - populationCalorieNeedPerYear;
+  const populationCalorieBalance = wheatStorage * wheat.calories -
+    populationCalorieNeedPerYear;
 
   const starvingPeople = Math.max(
     Math.floor(-populationCalorieBalance / humanCalorieNeedPerYear),
@@ -52,25 +60,19 @@ export function Overview() {
     const newYear = year + increase;
 
     // UPDATE WHEAT STORAGE
-    const newWheatStorage = Math.max(0, wheatStorage - wheatDemandPerYear) +
-      wheatProductionPerYear;
+    const newWheatStorage = wheatProductionPerYear;
 
     // HANDLE BIRTHS
     const populationAfforded =
-      (newWheatStorage * wheatCalories - storageBuffer) /
+      (newWheatStorage * wheat.calories - storageBuffer) /
       humanCalorieNeedPerYear;
     const fertileWomenCount = sum(
       society.population.slice(20, 30).map(({ women }) => women),
     );
-    const births = Math.floor(
-      Math.min(
-        Math.max(
-          populationAfforded -
-            (populationTotal - populationTotalByAge[ageOfNaturalDeath - 1]),
-          populationAfforded / ageOfNaturalDeath,
-        ),
-        fertileWomenCount,
-      ),
+    const births = Math.min(
+      // Round to the side of less births to make sure we avoid starvation
+      Math.floor(populationAfforded / society.lifeExpectancy),
+      fertileWomenCount,
     );
     const lessBirths = Math.floor(births / 2);
     const moreBirths = Math.ceil(births / 2);
@@ -167,16 +169,22 @@ export function Overview() {
             <tr>
               <th>Name</th>
               <th>Amount</th>
+              <th>Minus buffer</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>
-                Grain (kg)
+                Grain (unit)
               </td>
-
               <td>
-                {wheatProductionPerYear.toFixed(0)}
+                {kgToUnit(wheat, wheatProductionPerYear).toFixed(0)}
+              </td>
+              <td>
+                {kgToUnit(
+                  wheat,
+                  wheatProductionPerYear - storageBuffer / wheat.calories,
+                ).toFixed(0)}
               </td>
             </tr>
           </tbody>
@@ -195,23 +203,23 @@ export function Overview() {
           <tbody>
             <tr>
               <td>
-                Grain (kg)
+                Grain (unit)
               </td>
               <td>
-                {wheatStorage.toFixed(0)}
+                {kgToUnit(wheat, wheatStorage).toFixed(0)}
               </td>
               <td>
-                {wheatDemandPerYear.toFixed(0)}
+                {kgToUnit(wheat, wheatDemandPerYear).toFixed(0)}
               </td>
               <td>
-                {(wheatStorage - wheatDemandPerYear).toFixed(0)}
+                {kgToUnit(wheat, wheatStorage - wheatDemandPerYear).toFixed(0)}
               </td>
             </tr>
           </tbody>
         </table>
 
         <h3>Population calorie balance</h3>
-        {populationCalorieBalance}
+        {kcalToUnit(wheat, populationCalorieBalance).toFixed(0)}
 
         <p>
           Deficit of N human's yearly calorie needs will result in N deaths.
@@ -233,7 +241,7 @@ export function Overview() {
         </div>
       </div>
       <div>
-        {/* <PopulationPyramid population={society.population} /> */}
+        <PopulationPyramid population={society.population} />
       </div>
     </div>
   );
