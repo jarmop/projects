@@ -3,9 +3,7 @@ import "./App.css";
 import { type Population, PopulationPyramid } from "./PopulationPyramid.tsx";
 import {
   ageOfNaturalDeath,
-  humanCalorieNeedPerDay,
   humanCalorieNeedPerYear,
-  humanWaterNeedPerDay,
   wheatCalories,
 } from "./config.ts";
 
@@ -57,7 +55,7 @@ export function Overview() {
     const newWheatStorage = Math.max(0, wheatStorage - wheatDemandPerYear) +
       wheatProductionPerYear;
 
-    // UPDATE BIRTHS
+    // HANDLE BIRTHS
     const populationAfforded =
       (newWheatStorage * wheatCalories - storageBuffer) /
       humanCalorieNeedPerYear;
@@ -74,10 +72,6 @@ export function Overview() {
         fertileWomenCount,
       ),
     );
-
-    let deaths = populationTotalByAge[ageOfNaturalDeath - 1];
-    let sumOfAgesOfDying = deaths * ageOfNaturalDeath;
-
     const lessBirths = Math.floor(births / 2);
     const moreBirths = Math.ceil(births / 2);
     const babies = Math.random() > 0.5
@@ -91,8 +85,10 @@ export function Overview() {
       };
     const newPopulation = [babies, ...society.population].slice(0, -1);
 
+    // HANDLE DEATHS
     let peopleToStarve = starvingPeople;
-
+    let deaths = populationTotalByAge[ageOfNaturalDeath - 1];
+    let sumOfAgesOfDying = deaths * ageOfNaturalDeath;
     for (
       let age = newPopulation.length - 1;
       age >= 0 && peopleToStarve > 0;
@@ -161,34 +157,6 @@ export function Overview() {
             <tr>
               <th>Population growth rate:</th>
               <td>{society.populationGrowthRate.toFixed(1)} %</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h3>Needs per person per day</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                Water (l)
-              </td>
-              <td>
-                {humanWaterNeedPerDay}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Food (kcal)
-              </td>
-              <td>
-                {humanCalorieNeedPerDay}
-              </td>
             </tr>
           </tbody>
         </table>
@@ -265,7 +233,7 @@ export function Overview() {
         </div>
       </div>
       <div>
-        <PopulationPyramid population={society.population} />
+        {/* <PopulationPyramid population={society.population} /> */}
       </div>
     </div>
   );
