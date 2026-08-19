@@ -38,8 +38,6 @@ main :: proc() {
 		// draw_world()
 		draw_table()
 
-		draw_text("Hello from stb_truetype", 450, 300)
-
 		glfw.SwapBuffers(window)
 	}
 }

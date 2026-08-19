@@ -122,4 +122,6 @@ draw_table :: proc() {
 	gl.UseProgram(border_program)
 	gl.BindVertexArray(border_vao)
 	gl.DrawArrays(gl.LINE_LOOP, 0, i32(len(border_vertices)))
+
+	draw_text("Hello from stb_truetype", 650, 300)
 }
