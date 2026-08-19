@@ -190,7 +190,6 @@ draw_text :: proc(
 	}
 
 	gl.BindVertexArray(text_vao)
-	gl.BindBuffer(gl.ARRAY_BUFFER, text_vbo)
 
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
