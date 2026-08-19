@@ -22,7 +22,8 @@ main :: proc() {
 
 	init_io()
 
-	init_world()
+	// init_world()
+	init_table()
 
 	init_text()
 
@@ -34,9 +35,10 @@ main :: proc() {
 		gl.ClearColor(0.1, 0.1, 0.1, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
-		draw_world()
+		// draw_world()
+		draw_table()
 
-		draw_text("Hello from stb_truetype", 50, 100)
+		draw_text("Hello from stb_truetype", 450, 300)
 
 		glfw.SwapBuffers(window)
 	}

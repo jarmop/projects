@@ -9,6 +9,10 @@ import stbtt "vendor:stb/truetype"
 
 FONT_BITMAP_W :: 512
 FONT_BITMAP_H :: 512
+GLYPH_COUNT :: 96
+FONT_SIZE_PX :: 16
+FIRST_PRINTABLE_ASCII :: 32
+LAST_PRINTABLE_ASCII :: 127
 
 Glyph :: struct {
 	x0, y0:   f32,
@@ -18,9 +22,8 @@ Glyph :: struct {
 	xadvance: f32,
 }
 
-Glyph_Count :: 96
 // baked_chars := make([96]stbtt.bakedchar)
-baked_chars: [Glyph_Count]stbtt.bakedchar
+baked_chars: [GLYPH_COUNT]stbtt.bakedchar
 
 text_program: u32
 text_texture: u32
@@ -59,12 +62,12 @@ init_text :: proc() {
 	stbtt.BakeFontBitmap(
 		raw_data(font_data),
 		0,
-		32.0,
+		16.0,
 		raw_data(bitmap),
 		FONT_BITMAP_W,
 		FONT_BITMAP_H,
-		32,
-		Glyph_Count,
+		FIRST_PRINTABLE_ASCII,
+		GLYPH_COUNT,
 		&baked_chars[0],
 	)
 
@@ -130,8 +133,17 @@ draw_text :: proc(
 	vertices := make([dynamic]f32)
 	defer delete(vertices)
 
+	// fmt.println("x", x)
+
+	max_x: f32 = 100
+
 	for c in text {
-		if c < 32 || c >= 128 {
+		if x > start_x + max_x {
+			x = start_x
+			y = y + FONT_SIZE_PX + 4
+		}
+
+		if c < FIRST_PRINTABLE_ASCII || c > LAST_PRINTABLE_ASCII {
 			continue
 		}
 
@@ -141,7 +153,7 @@ draw_text :: proc(
 			&baked_chars[0],
 			FONT_BITMAP_W,
 			FONT_BITMAP_H,
-			i32(c - 32),
+			i32(c - FIRST_PRINTABLE_ASCII),
 			&x,
 			&y,
 			&q,
