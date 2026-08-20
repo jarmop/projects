@@ -22,13 +22,27 @@ main :: proc() {
 
 	init_io()
 
+
 	// init_world()
+
+	padding: [2]f32 = {4, 7}
+	font_size: f32 = 12
+	row_height: f32 = font_size + 2 * padding.y
+	col_width: f32 = 100
+	row_heights: []f32 = {row_height, row_height}
+	col_widths: []f32 = {col_width, col_width, col_width, col_width}
+	stb_pixel_height := 1.5 * font_size
+
+	init_text(stb_pixel_height)
+
 	init_table(
 		{100, 100},
-		{{"header-1", "header-2", "header-3", "header-4"}, {"row-1", "row-2", "row-3", "row-4"}},
+		row_heights,
+		col_widths,
+		padding,
+		font_size,
+		{{"Hheader-1", "header-2", "header-3", "header-4"}, {"row-1", "row-2", "row-3", "row-4"}},
 	)
-
-	init_text()
 
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()

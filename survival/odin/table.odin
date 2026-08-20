@@ -22,17 +22,21 @@ cell_vertices: [dynamic]PosVertex
 cell_indices: [dynamic]u32
 border_vertices: [dynamic]PosVertex
 
-init_table :: proc(start: [2]f32, data: [][]string) {
-	row_heights: []f32 = {100, 200}
-	col_widths: []f32 = {100, 100, 300, 100}
-
+init_table :: proc(
+	start: [2]f32,
+	row_heights: []f32,
+	col_widths: []f32,
+	padding: [2]f32,
+	font_size: f32,
+	data: [][]string,
+) {
 	indices: [6]u32 = {0, 2, 1, 0, 2, 3}
 	pos := start
 	for row, i in data {
 		height := row_heights[i]
 		pos.x = start.x
 
-		for cell, j in row {
+		for text, j in row {
 			width := col_widths[j]
 			cell_top_left: [2]f32 = pos
 			cell_top_right: [2]f32 = {pos.x + width, pos.y}
@@ -61,6 +65,9 @@ init_table :: proc(start: [2]f32, data: [][]string) {
 				PosVertex{pos = cell_bottom_left},
 				PosVertex{pos = cell_top_left},
 			)
+
+			text_pos := pos + {padding.x, padding.y + font_size - 1}
+			add_text_vertices(text, text_pos, font_size, width)
 
 			pos.x = pos.x + width
 		}
@@ -134,6 +141,7 @@ init_table :: proc(start: [2]f32, data: [][]string) {
 		raw_data(border_vertices),
 		gl.DYNAMIC_DRAW,
 	)
+
 }
 
 draw_table :: proc() {
@@ -152,5 +160,6 @@ draw_table :: proc() {
 	gl.DrawArrays(gl.LINES, 0, i32(len(border_vertices)))
 
 	// draw_text("Hello from stb_truetype", pos)
-	draw_text("Hello from stb_truetype", {100, 100})
+	// draw_text("Hello from stb_truetype", {100, 100})
+	draw_text()
 }

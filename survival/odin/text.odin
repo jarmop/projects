@@ -10,7 +10,6 @@ import stbtt "vendor:stb/truetype"
 FONT_BITMAP_W :: 512
 FONT_BITMAP_H :: 512
 GLYPH_COUNT :: 96
-FONT_SIZE_PX :: 16
 FIRST_PRINTABLE_ASCII :: 32
 LAST_PRINTABLE_ASCII :: 127
 
@@ -31,7 +30,9 @@ text_vao: u32
 text_vbo: u32
 screen_size_loc: i32
 
-init_text :: proc() {
+text_vertices: [dynamic]f32
+
+init_text :: proc(pixel_height: f32) {
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
@@ -62,7 +63,7 @@ init_text :: proc() {
 	stbtt.BakeFontBitmap(
 		raw_data(font_data),
 		0,
-		16.0,
+		pixel_height,
 		raw_data(bitmap),
 		FONT_BITMAP_W,
 		FONT_BITMAP_H,
@@ -115,32 +116,21 @@ init_text :: proc() {
 	screen_size_loc = gl.GetUniformLocation(text_program, "screen_size")
 }
 
-draw_text :: proc(
-	text: string, // chars: []stbtt.bakedchar,
-	start: [2]f32,
-) {
-	gl.UseProgram(text_program)
-
-	gl.Uniform2f(screen_size_loc, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
-
-	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, text_texture)
-
-
+add_text_vertices :: proc(text: string, start: [2]f32, font_size: f32, width: f32) {
 	x := start.x
 	y := start.y
 
-	vertices := make([dynamic]f32)
-	defer delete(vertices)
+	// vertices := make([dynamic]f32)
+	// vertices: [dynamic]f32
+	// defer delete(vertices)
 
 	// fmt.println("x", x)
 
-	max_x: f32 = 100
 
 	for c in text {
-		if x > start.x + max_x {
+		if x > start.x + width {
 			x = start.x
-			y = y + FONT_SIZE_PX + 4
+			y = y + font_size + 4
 		}
 
 		if c < FIRST_PRINTABLE_ASCII || c > LAST_PRINTABLE_ASCII {
@@ -161,7 +151,7 @@ draw_text :: proc(
 		)
 
 		append(
-			&vertices,
+			&text_vertices,
 			q.x0,
 			q.y0,
 			q.s0,
@@ -193,10 +183,24 @@ draw_text :: proc(
 
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
-		len(vertices) * size_of(f32),
-		raw_data(vertices),
+		len(text_vertices) * size_of(f32),
+		raw_data(text_vertices),
 		gl.DYNAMIC_DRAW,
 	)
 
-	gl.DrawArrays(gl.TRIANGLES, 0, i32(len(vertices) / 4))
+	// fmt.println(text_vertices[:])
+}
+
+draw_text :: proc() {
+	gl.UseProgram(text_program)
+
+	gl.Uniform2f(screen_size_loc, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
+
+	gl.ActiveTexture(gl.TEXTURE0)
+	gl.BindTexture(gl.TEXTURE_2D, text_texture)
+
+
+	gl.BindVertexArray(text_vao)
+
+	gl.DrawArrays(gl.TRIANGLES, 0, i32(len(text_vertices) / 4))
 }
