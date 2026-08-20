@@ -18,19 +18,54 @@ border_vao: u32
 border_vbo: u32
 screen_size_loc_table: i32
 
-cell_vertices: []PosVertex
-cell_indices: []u32
-border_vertices: []PosVertex
+cell_vertices: [dynamic]PosVertex
+cell_indices: [dynamic]u32
+border_vertices: [dynamic]PosVertex
 
-cell_top_left: [2]f32 = {100, 200}
-cell_top_right: [2]f32 = {200, 200}
-cell_bottom_right: [2]f32 = {200, 100}
-cell_bottom_left: [2]f32 = {100, 100}
+init_table :: proc(start: [2]f32, data: [][]string) {
+	row_heights: []f32 = {100, 200}
+	col_widths: []f32 = {100, 100, 300, 100}
 
-// x := 100
-// y := 200
+	indices: [6]u32 = {0, 2, 1, 0, 2, 3}
+	pos := start
+	for row, i in data {
+		height := row_heights[i]
+		pos.x = start.x
 
-init_table :: proc() {
+		for cell, j in row {
+			width := col_widths[j]
+			cell_top_left: [2]f32 = pos
+			cell_top_right: [2]f32 = {pos.x + width, pos.y}
+			cell_bottom_right: [2]f32 = {pos.x + width, pos.y + height}
+			cell_bottom_left: [2]f32 = {pos.x, pos.y + height}
+
+			append(
+				&cell_vertices,
+				PosVertex{pos = cell_top_left},
+				PosVertex{pos = cell_top_right},
+				PosVertex{pos = cell_bottom_right},
+				PosVertex{pos = cell_bottom_left},
+			)
+
+			append(&cell_indices, ..indices[:])
+			indices = indices + 4
+
+			append(
+				&border_vertices,
+				PosVertex{pos = cell_top_left},
+				PosVertex{pos = cell_top_right},
+				PosVertex{pos = cell_top_right},
+				PosVertex{pos = cell_bottom_right},
+				PosVertex{pos = cell_bottom_right},
+				PosVertex{pos = cell_bottom_left},
+				PosVertex{pos = cell_bottom_left},
+				PosVertex{pos = cell_top_left},
+			)
+
+			pos.x = pos.x + width
+		}
+		pos.y = pos.y + height
+	}
 
 	// -----------------------------------------
 	// Init cells
@@ -43,22 +78,12 @@ init_table :: proc() {
 		os.exit(-1)
 	}
 
-	cell_vertices = {
-		{pos = cell_top_left},
-		// {pos = cell_bottom_right},
-		{pos = cell_top_right},
-		// {pos = cell_top_left},
-		{pos = cell_bottom_right},
-		{pos = cell_bottom_left},
-	}
-
-	cell_indices = {0, 2, 1, 0, 2, 3}
-
 	gl.GenVertexArrays(1, &cell_vao)
 	gl.BindVertexArray(cell_vao)
 
 	gl.GenBuffers(1, &cell_vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, cell_vbo)
+
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
 		len(cell_vertices) * size_of(PosVertex),
@@ -103,13 +128,6 @@ init_table :: proc() {
 	gl.VertexAttribPointer(0, 2, gl.FLOAT, gl.FALSE, size_of(PosVertex), 0)
 	gl.EnableVertexAttribArray(0)
 
-	border_vertices = {
-		{pos = cell_top_left},
-		{pos = cell_top_right},
-		{pos = cell_bottom_right},
-		{pos = cell_bottom_left},
-	}
-
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
 		len(border_vertices) * size_of(PosVertex),
@@ -130,7 +148,9 @@ draw_table :: proc() {
 	gl.UseProgram(border_program)
 	gl.Uniform2f(screen_size_loc_table, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
 	gl.BindVertexArray(border_vao)
-	gl.DrawArrays(gl.LINE_LOOP, 0, i32(len(border_vertices)))
+	// gl.LineWidth(1.0)
+	gl.DrawArrays(gl.LINES, 0, i32(len(border_vertices)))
 
-	draw_text("Hello from stb_truetype", 650, 300)
+	// draw_text("Hello from stb_truetype", pos)
+	draw_text("Hello from stb_truetype", {100, 100})
 }

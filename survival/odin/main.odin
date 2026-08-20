@@ -23,7 +23,10 @@ main :: proc() {
 	init_io()
 
 	// init_world()
-	init_table()
+	init_table(
+		{100, 100},
+		{{"header-1", "header-2", "header-3", "header-4"}, {"row-1", "row-2", "row-3", "row-4"}},
+	)
 
 	init_text()
 

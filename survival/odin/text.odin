@@ -117,7 +117,7 @@ init_text :: proc() {
 
 draw_text :: proc(
 	text: string, // chars: []stbtt.bakedchar,
-	start_x, start_y: f32,
+	start: [2]f32,
 ) {
 	gl.UseProgram(text_program)
 
@@ -127,8 +127,8 @@ draw_text :: proc(
 	gl.BindTexture(gl.TEXTURE_2D, text_texture)
 
 
-	x := start_x
-	y := start_y
+	x := start.x
+	y := start.y
 
 	vertices := make([dynamic]f32)
 	defer delete(vertices)
@@ -138,8 +138,8 @@ draw_text :: proc(
 	max_x: f32 = 100
 
 	for c in text {
-		if x > start_x + max_x {
-			x = start_x
+		if x > start.x + max_x {
+			x = start.x
 			y = y + FONT_SIZE_PX + 4
 		}
 
