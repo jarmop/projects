@@ -6,7 +6,7 @@ import "core:os"
 import gl "vendor:OpenGL"
 
 PosVertex :: struct {
-	pos: [3]f32,
+	pos: [2]f32,
 }
 
 cell_program: u32
@@ -16,15 +16,19 @@ cell_ebo: u32
 border_program: u32
 border_vao: u32
 border_vbo: u32
+screen_size_loc_table: i32
 
 cell_vertices: []PosVertex
 cell_indices: []u32
 border_vertices: []PosVertex
 
-cell_top_left: [3]f32 = {0, 0.5, 0}
-cell_top_right: [3]f32 = {0.5, 0.5, 0}
-cell_bottom_right: [3]f32 = {0.5, 0, 0}
-cell_bottom_left: [3]f32 = {0, 0, 0}
+cell_top_left: [2]f32 = {100, 200}
+cell_top_right: [2]f32 = {200, 200}
+cell_bottom_right: [2]f32 = {200, 100}
+cell_bottom_left: [2]f32 = {100, 100}
+
+// x := 100
+// y := 200
 
 init_table :: proc() {
 
@@ -47,6 +51,7 @@ init_table :: proc() {
 		{pos = cell_bottom_right},
 		{pos = cell_bottom_left},
 	}
+
 	cell_indices = {0, 2, 1, 0, 2, 3}
 
 	gl.GenVertexArrays(1, &cell_vao)
@@ -70,8 +75,10 @@ init_table :: proc() {
 		gl.STATIC_DRAW,
 	)
 
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, size_of(PosVertex), 0)
+	gl.VertexAttribPointer(0, 2, gl.FLOAT, gl.FALSE, size_of(PosVertex), 0)
 	gl.EnableVertexAttribArray(0)
+
+	screen_size_loc_table = gl.GetUniformLocation(cell_program, "screen_size")
 
 	// -----------------------------------------
 	// Init borders
@@ -93,7 +100,7 @@ init_table :: proc() {
 	gl.GenBuffers(1, &border_vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, border_vbo)
 
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, size_of(PosVertex), 0)
+	gl.VertexAttribPointer(0, 2, gl.FLOAT, gl.FALSE, size_of(PosVertex), 0)
 	gl.EnableVertexAttribArray(0)
 
 	border_vertices = {
@@ -114,12 +121,14 @@ init_table :: proc() {
 draw_table :: proc() {
 	// draw cells
 	gl.UseProgram(cell_program)
+	gl.Uniform2f(screen_size_loc_table, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
 	gl.BindVertexArray(cell_vao)
 	// gl.DrawArrays(gl.TRIANGLES, 0, i32(len(cell_vertices)))
 	gl.DrawElements(gl.TRIANGLES, i32(len(cell_indices)), gl.UNSIGNED_INT, nil)
 
 	// draw borders
 	gl.UseProgram(border_program)
+	gl.Uniform2f(screen_size_loc_table, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
 	gl.BindVertexArray(border_vao)
 	gl.DrawArrays(gl.LINE_LOOP, 0, i32(len(border_vertices)))
 
