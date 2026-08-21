@@ -14,6 +14,7 @@ world_vao: u32
 world_vbo: u32
 world_ebo: u32
 
+world_pos := [2]f32{0, 0}
 world_width :: 8
 world_height :: 8
 tile_size :: 40
@@ -41,13 +42,12 @@ init_world :: proc() {
 	// Init tiles
 	// -----------------------------------------
 
-	origin: [2]f32 = {100, 100}
-	pos := origin
+	pos := world_pos
 	i := 0
 	idx := 0
 	indices: [indices_per_tile]u32 = {0, 2, 1, 0, 2, 3}
 	for row in 0 ..< world_height {
-		pos.x = origin.x
+		pos.x = world_pos.x
 		for col in 0 ..< world_width {
 			// fmt.println(col, i)
 			cell_top_left: [2]f32 = pos
@@ -90,9 +90,6 @@ init_world :: proc() {
 		pos.y = pos.y + tile_size
 	}
 
-	// fmt.println(world_vertices)
-	// fmt.println(world_indices)
-
 	gl.GenVertexArrays(1, &world_vao)
 	gl.BindVertexArray(world_vao)
 
@@ -106,7 +103,6 @@ init_world :: proc() {
 		gl.ARRAY_BUFFER,
 		len(world_vertices) * size_of(WorldVertex),
 		raw_data(&world_vertices),
-		// raw_data(world_vertices),
 		gl.DYNAMIC_DRAW,
 	)
 
@@ -127,7 +123,7 @@ init_world :: proc() {
 	// -----------------------------------------
 
 	// Horizontal gridlines
-	pos = origin
+	pos = world_pos
 	i = 0
 	for row in 0 ..= world_height {
 		start := pos
@@ -143,7 +139,7 @@ init_world :: proc() {
 		pos.y = pos.y + tile_size
 	}
 	// Vertical gridlines
-	pos = origin
+	pos = world_pos
 	for col in 0 ..= world_width {
 		start := pos
 		gridlines_vertices[i] = {
@@ -180,6 +176,7 @@ init_world :: proc() {
 draw_world :: proc() {
 	gl.UseProgram(world_program)
 	gl.Uniform2f(screen_size_loc_world, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
+	gl.Uniform2f(gl.GetUniformLocation(world_program, "world_pos"), world_pos.x, world_pos.y)
 
 	// Draw tiles
 	shader_set_vec3(world_program, "color", {1.0, 1.0, 1.0})
