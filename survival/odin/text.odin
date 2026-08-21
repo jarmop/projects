@@ -32,7 +32,7 @@ screen_size_loc: i32
 
 text_vertices: [dynamic]f32
 
-init_text :: proc(pixel_height: f32) {
+init_text :: proc(font_size: f32) {
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
@@ -63,7 +63,7 @@ init_text :: proc(pixel_height: f32) {
 	stbtt.BakeFontBitmap(
 		raw_data(font_data),
 		0,
-		pixel_height,
+		1.5 * font_size,
 		raw_data(bitmap),
 		FONT_BITMAP_W,
 		FONT_BITMAP_H,
@@ -116,7 +116,7 @@ init_text :: proc(pixel_height: f32) {
 	screen_size_loc = gl.GetUniformLocation(text_program, "screen_size")
 }
 
-add_text_vertices :: proc(text: string, start: [2]f32, font_size: f32, width: f32) {
+add_text_vertices :: proc(text: string, start: [2]f32, font_size: f32, width: f32) -> f32 {
 	x := start.x
 	y := start.y
 
@@ -126,11 +126,12 @@ add_text_vertices :: proc(text: string, start: [2]f32, font_size: f32, width: f3
 
 	// fmt.println("x", x)
 
-
+	height: f32 = font_size
 	for c in text {
 		if x > start.x + width {
 			x = start.x
 			y = y + font_size + 4
+			height = height + font_size + 4
 		}
 
 		if c < FIRST_PRINTABLE_ASCII || c > LAST_PRINTABLE_ASCII {
@@ -188,7 +189,7 @@ add_text_vertices :: proc(text: string, start: [2]f32, font_size: f32, width: f3
 		gl.DYNAMIC_DRAW,
 	)
 
-	// fmt.println(text_vertices[:])
+	return height
 }
 
 draw_text :: proc() {

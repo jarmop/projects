@@ -33,14 +33,26 @@ init_table :: proc(
 	indices: [6]u32 = {0, 2, 1, 0, 2, 3}
 	pos := start
 	for row, i in data {
-		height := row_heights[i]
 		pos.x = start.x
 
+		// Create text vertices first and set the row height based on the biggest number of lines
+		max_text_height: f32 = 0
 		for text, j in row {
-			width := col_widths[j]
+			col_width := col_widths[j]
+			text_width := col_widths[j] - 2 * padding.x
+			text_pos := pos + {padding.x, padding.y + font_size - 1}
+			current_text_height := add_text_vertices(text, text_pos, font_size, text_width)
+			max_text_height = max(current_text_height, max_text_height)
+			pos.x = pos.x + col_width
+		}
+		pos.x = start.x
+		height := max_text_height + 2 * padding.y
+
+		for text, j in row {
+			col_width := col_widths[j]
 			cell_top_left: [2]f32 = pos
-			cell_top_right: [2]f32 = {pos.x + width, pos.y}
-			cell_bottom_right: [2]f32 = {pos.x + width, pos.y + height}
+			cell_top_right: [2]f32 = {pos.x + col_width, pos.y}
+			cell_bottom_right: [2]f32 = {pos.x + col_width, pos.y + height}
 			cell_bottom_left: [2]f32 = {pos.x, pos.y + height}
 
 			append(
@@ -66,10 +78,10 @@ init_table :: proc(
 				PosVertex{pos = cell_top_left},
 			)
 
-			text_pos := pos + {padding.x, padding.y + font_size - 1}
-			add_text_vertices(text, text_pos, font_size, width)
+			// text_pos := pos + {padding.x, padding.y + font_size - 1}
+			// add_text_vertices(text, text_pos, font_size, width)
 
-			pos.x = pos.x + width
+			pos.x = pos.x + col_width
 		}
 		pos.y = pos.y + height
 	}
