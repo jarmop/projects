@@ -2,6 +2,7 @@ package survival
 
 import "base:runtime"
 import "core:fmt"
+import gl "vendor:OpenGL"
 import "vendor:glfw"
 
 window: glfw.WindowHandle
@@ -11,9 +12,16 @@ first_cursor_pos_right := true
 prev_cursor_x, prev_cursor_y: f64
 
 init_io :: proc() {
+	glfw.SetFramebufferSizeCallback(window, framebuffer_size_callback)
 	glfw.SetKeyCallback(window, key_callback)
 	glfw.SetMouseButtonCallback(window, mouse_button_callback)
 	glfw.SetCursorPosCallback(window, cursor_pos_callback)
+}
+
+framebuffer_size_callback :: proc "c" (window: glfw.WindowHandle, width: i32, height: i32) {
+	gl.Viewport(0, 0, width, height)
+	WINDOW_WIDTH = width
+	WINDOW_HEIGHT = height
 }
 
 key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {

@@ -3,13 +3,13 @@ package survival
 import gl "vendor:OpenGL"
 import glfw "vendor:glfw"
 
-WINDOW_WIDTH :: 1280
-WINDOW_HEIGHT :: 720
+WINDOW_WIDTH: i32 = 800
+WINDOW_HEIGHT: i32 = 600
 
 main :: proc() {
 	glfw.Init()
 
-	window = glfw.CreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Odin OpenGL Text", nil, nil)
+	window = glfw.CreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Survival", nil, nil)
 
 	glfw.WindowHint(glfw.CONTEXT_VERSION_MAJOR, 3)
 	glfw.WindowHint(glfw.CONTEXT_VERSION_MINOR, 3)
@@ -19,6 +19,7 @@ main :: proc() {
 
 	// Load OpenGL functions
 	gl.load_up_to(3, 3, glfw.gl_set_proc_address)
+	gl.Viewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
 
 	init_io()
 
@@ -45,8 +46,6 @@ main :: proc() {
 
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
-
-		gl.Viewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
 
 		gl.ClearColor(0.1, 0.1, 0.1, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
