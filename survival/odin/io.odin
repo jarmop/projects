@@ -41,6 +41,8 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			first_cursor_pos_right = true
 		}
 	}
+
+	dashboard_mouse_button_callback(window, button, action, mods)
 }
 
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {

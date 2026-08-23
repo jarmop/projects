@@ -120,12 +120,6 @@ add_text_vertices :: proc(text: string, start: [2]f32, font_size: f32, width: f3
 	x := start.x
 	y := start.y
 
-	// vertices := make([dynamic]f32)
-	// vertices: [dynamic]f32
-	// defer delete(vertices)
-
-	// fmt.println("x", x)
-
 	height: f32 = font_size
 	for c in text {
 		if x > start.x + width {
@@ -180,16 +174,19 @@ add_text_vertices :: proc(text: string, start: [2]f32, font_size: f32, width: f3
 		)
 	}
 
-	gl.BindVertexArray(text_vao)
+	return height
+}
 
+update_text_buffer_data :: proc() {
+	// gl.BindVertexArray(text_vao)
+	gl.BindBuffer(gl.ARRAY_BUFFER, text_vbo)
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
 		len(text_vertices) * size_of(f32),
 		raw_data(text_vertices),
 		gl.DYNAMIC_DRAW,
+		// gl.STATIC_DRAW,
 	)
-
-	return height
 }
 
 draw_text :: proc() {
