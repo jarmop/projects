@@ -32,7 +32,9 @@ screen_size_loc: i32
 
 text_vertices: [dynamic]f32
 
-init_text :: proc(font_size: f32) {
+font_size: f32 = 10
+
+text_init :: proc() {
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
@@ -116,7 +118,7 @@ init_text :: proc(font_size: f32) {
 	screen_size_loc = gl.GetUniformLocation(text_program, "screen_size")
 }
 
-add_text_vertices :: proc(text: string, start: [2]f32, font_size: f32, width: f32) -> f32 {
+text_add_vertices :: proc(text: string, start: [2]f32, width: f32) -> f32 {
 	x := start.x
 	y := start.y
 
@@ -177,7 +179,7 @@ add_text_vertices :: proc(text: string, start: [2]f32, font_size: f32, width: f3
 	return height
 }
 
-update_text_buffer_data :: proc() {
+text_set_buffer_data :: proc() {
 	// gl.BindVertexArray(text_vao)
 	gl.BindBuffer(gl.ARRAY_BUFFER, text_vbo)
 	gl.BufferData(
@@ -189,7 +191,7 @@ update_text_buffer_data :: proc() {
 	)
 }
 
-draw_text :: proc() {
+text_draw :: proc() {
 	gl.UseProgram(text_program)
 
 	gl.Uniform2f(screen_size_loc, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))

@@ -9,6 +9,13 @@ PosVertex :: struct {
 	pos: [2]f32,
 }
 
+Table :: struct {
+	start:      [2]f32,
+	col_widths: [dynamic]f32,
+	padding:    [2]f32,
+	data:       [dynamic][dynamic]string,
+}
+
 cell_program: u32
 cell_vao: u32
 cell_vbo: u32
@@ -21,10 +28,9 @@ screen_size_loc_table: i32
 cell_vertices: [dynamic]PosVertex
 cell_indices: [dynamic]u32
 border_vertices: [dynamic]PosVertex
+indices: [6]u32 = {0, 2, 1, 0, 2, 3}
 
-init_table :: proc() {
-	update_table()
-
+table_init :: proc() {
 	// -----------------------------------------
 	// Init cells
 	// -----------------------------------------
@@ -42,21 +48,8 @@ init_table :: proc() {
 	gl.GenBuffers(1, &cell_vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, cell_vbo)
 
-	gl.BufferData(
-		gl.ARRAY_BUFFER,
-		len(cell_vertices) * size_of(PosVertex),
-		raw_data(cell_vertices),
-		gl.DYNAMIC_DRAW,
-	)
-
 	gl.GenBuffers(1, &cell_ebo)
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, cell_ebo)
-	gl.BufferData(
-		gl.ELEMENT_ARRAY_BUFFER,
-		len(cell_indices) * size_of(u32),
-		raw_data(cell_indices),
-		gl.STATIC_DRAW,
-	)
 
 	gl.VertexAttribPointer(0, 2, gl.FLOAT, gl.FALSE, size_of(PosVertex), 0)
 	gl.EnableVertexAttribArray(0)
@@ -85,52 +78,40 @@ init_table :: proc() {
 
 	gl.VertexAttribPointer(0, 2, gl.FLOAT, gl.FALSE, size_of(PosVertex), 0)
 	gl.EnableVertexAttribArray(0)
-
-	gl.BufferData(
-		gl.ARRAY_BUFFER,
-		len(border_vertices) * size_of(PosVertex),
-		raw_data(border_vertices),
-		gl.DYNAMIC_DRAW,
-	)
-
 }
 
-update_table :: proc() {
+table_clear_vertices :: proc() {
 	clear(&text_vertices)
 	clear(&cell_vertices)
 	clear(&cell_indices)
 	clear(&border_vertices)
+	indices = {0, 2, 1, 0, 2, 3}
+}
 
-	start := dashboard.table.start
-	row_heights := dashboard.table.row_heights
-	col_widths := dashboard.table.col_widths
-	padding := dashboard.table.padding
-	font_size := dashboard.table.font_size
-	data := dashboard.table.data
+table_add_vertices :: proc(table: Table) {
+	start := table.start
+	col_widths := table.col_widths
+	padding := table.padding
+	data := table.data
 
-	indices: [6]u32 = {0, 2, 1, 0, 2, 3}
 	pos := start
-	for i in 0 ..< dashboard.table.row_count {
-		row := data[i]
+	for row, i in data {
 		pos.x = start.x
 
 		// Create text vertices first and set the row height based on the biggest number of lines
 		max_text_height: f32 = 0
-		for j in 0 ..< dashboard.table.col_count {
-			text := row[j]
+		for text, j in row {
 			col_width := col_widths[j]
 			text_width := col_widths[j] - 2 * padding.x
 			text_pos := pos + {padding.x, padding.y + font_size - 1}
-			current_text_height := add_text_vertices(text, text_pos, font_size, text_width)
+			current_text_height := text_add_vertices(text, text_pos, text_width)
 			max_text_height = max(current_text_height, max_text_height)
 			pos.x = pos.x + col_width
 		}
 		pos.x = start.x
 		height := max_text_height + 2 * padding.y
 
-		for j in 0 ..< dashboard.table.col_count {
-			text := row[j]
-			col_width := col_widths[j]
+		for col_width, j in col_widths {
 			cell_top_left: [2]f32 = pos
 			cell_top_right: [2]f32 = {pos.x + col_width, pos.y}
 			cell_bottom_right: [2]f32 = {pos.x + col_width, pos.y + height}
@@ -163,8 +144,34 @@ update_table :: proc() {
 		}
 		pos.y = pos.y + height
 	}
+}
 
-	update_text_buffer_data()
+table_set_buffer_data :: proc() {
+	gl.BindBuffer(gl.ARRAY_BUFFER, cell_vbo)
+	gl.BufferData(
+		gl.ARRAY_BUFFER,
+		len(cell_vertices) * size_of(PosVertex),
+		raw_data(cell_vertices),
+		gl.DYNAMIC_DRAW,
+	)
+
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, cell_ebo)
+	gl.BufferData(
+		gl.ELEMENT_ARRAY_BUFFER,
+		len(cell_indices) * size_of(u32),
+		raw_data(cell_indices),
+		gl.STATIC_DRAW,
+	)
+
+	gl.BindBuffer(gl.ARRAY_BUFFER, border_vbo)
+	gl.BufferData(
+		gl.ARRAY_BUFFER,
+		len(border_vertices) * size_of(PosVertex),
+		raw_data(border_vertices),
+		gl.DYNAMIC_DRAW,
+	)
+
+	text_set_buffer_data()
 }
 
 draw_table :: proc() {
@@ -182,5 +189,5 @@ draw_table :: proc() {
 	// gl.LineWidth(1.0)
 	gl.DrawArrays(gl.LINES, 0, i32(len(border_vertices)))
 
-	draw_text()
+	text_draw()
 }

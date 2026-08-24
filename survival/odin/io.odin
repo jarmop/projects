@@ -11,7 +11,7 @@ mouse_right_pressed := false
 first_cursor_pos_right := true
 prev_cursor_x, prev_cursor_y: f64
 
-init_io :: proc() {
+io_init :: proc() {
 	glfw.SetFramebufferSizeCallback(window, framebuffer_size_callback)
 	glfw.SetKeyCallback(window, key_callback)
 	glfw.SetMouseButtonCallback(window, mouse_button_callback)
