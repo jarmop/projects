@@ -23,8 +23,7 @@ main :: proc() {
 	gl.Viewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
 
 	io_init()
-	// init_world()
-
+	// world_init()
 	dashboard_init()
 
 	for !glfw.WindowShouldClose(window) {
@@ -33,7 +32,7 @@ main :: proc() {
 		gl.ClearColor(0.1, 0.1, 0.1, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
-		// draw_world()
+		// world_draw()
 		dashboard_draw()
 
 		glfw.SwapBuffers(window)

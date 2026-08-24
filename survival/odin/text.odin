@@ -32,7 +32,7 @@ screen_size_loc: i32
 
 text_vertices: [dynamic]f32
 
-font_size: f32 = 10
+font_size: f32 = 14
 
 text_init :: proc() {
 	gl.Enable(gl.BLEND)
@@ -65,7 +65,7 @@ text_init :: proc() {
 	stbtt.BakeFontBitmap(
 		raw_data(font_data),
 		0,
-		1.5 * font_size,
+		font_size,
 		raw_data(bitmap),
 		FONT_BITMAP_W,
 		FONT_BITMAP_H,

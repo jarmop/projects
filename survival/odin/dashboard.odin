@@ -12,9 +12,11 @@ Area :: struct {
 year_button_area: Area
 
 year := 0
+population := 1000
 
 Dashboard :: struct {
-	year: Table,
+	year:       Table,
+	population: Table,
 }
 
 dashboard: Dashboard
@@ -24,7 +26,17 @@ dashboard_init :: proc() {
 	text_init()
 	table_init()
 
-	padding: [2]f32 = {4, 6}
+	dashboard_init_year()
+	table_add_vertices(dashboard.year)
+
+	dashboard_init_population()
+	table_add_vertices(dashboard.population)
+
+	table_set_buffer_data()
+}
+
+dashboard_init_year :: proc() {
+	padding: [2]f32 = {4, 4}
 	col_widths: []f32 = {60, 20}
 	table_width: f32 = col_widths[0] + col_widths[1]
 	table_height := font_size + 2 * padding.y
@@ -46,15 +58,36 @@ dashboard_init :: proc() {
 	}
 
 	append(&dashboard.year.col_widths, ..col_widths[:])
+}
 
-	table_add_vertices(dashboard.year)
+dashboard_init_population :: proc() {
+	padding: [2]f32 = {4, 4}
+	col_widths: []f32 = {100, 40}
+	table_width: f32 = col_widths[0] + col_widths[1]
+	table_height := font_size + 2 * padding.y
+	// table_pos := [2]f32{f32(WINDOW_WIDTH) - table_width, 0}
+	table_pos := [2]f32{0, 0}
 
-	table_set_buffer_data()
+	dashboard.population = {
+		start   = table_pos,
+		padding = padding,
+	}
+
+	data: [][]string = {{"Population:", fmt.tprintf("%d", population)}}
+
+	for row in data {
+		data_row: [dynamic]string
+		append(&data_row, ..row[:])
+		append(&dashboard.population.data, data_row)
+	}
+
+	append(&dashboard.population.col_widths, ..col_widths[:])
 }
 
 dashboard_update :: proc() {
 	table_clear_vertices()
 	table_add_vertices(dashboard.year)
+	table_add_vertices(dashboard.population)
 	table_set_buffer_data()
 }
 

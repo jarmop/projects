@@ -30,7 +30,7 @@ gridlines_vertices: [2 * (world_width + world_height + 2)]WorldVertex
 
 screen_size_loc_world: i32
 
-init_world :: proc() {
+world_init :: proc() {
 	shaders_ok: bool
 	world_program, shaders_ok = gl.load_shaders_file("./shaders/world.vs", "./shaders/world.fs")
 	if !shaders_ok {
@@ -173,7 +173,7 @@ init_world :: proc() {
 	screen_size_loc_world = gl.GetUniformLocation(world_program, "screen_size")
 }
 
-draw_world :: proc() {
+world_draw :: proc() {
 	gl.UseProgram(world_program)
 	gl.Uniform2f(screen_size_loc_world, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
 	gl.Uniform2f(gl.GetUniformLocation(world_program, "world_pos"), world_pos.x, world_pos.y)

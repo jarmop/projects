@@ -103,7 +103,7 @@ table_add_vertices :: proc(table: Table) {
 		for text, j in row {
 			col_width := col_widths[j]
 			text_width := col_widths[j] - 2 * padding.x
-			text_pos := pos + {padding.x, padding.y + font_size - 1}
+			text_pos := pos + {padding.x, padding.y + font_size * 0.8}
 			current_text_height := text_add_vertices(text, text_pos, text_width)
 			max_text_height = max(current_text_height, max_text_height)
 			pos.x = pos.x + col_width
