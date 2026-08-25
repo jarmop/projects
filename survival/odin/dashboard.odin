@@ -11,9 +11,6 @@ Area :: struct {
 
 year_button_area: Area
 
-year := 0
-population := 1000
-
 Dashboard :: struct {
 	year:       Table,
 	population: Table,
@@ -40,51 +37,51 @@ dashboard_init_year :: proc() {
 	col_widths: []f32 = {60, 20}
 	table_width: f32 = col_widths[0] + col_widths[1]
 	table_height := font_size + 2 * padding.y
-	table_pos := [2]f32{f32(WINDOW_WIDTH) - table_width, f32(WINDOW_HEIGHT) - table_height}
-	year_button_area.start = table_pos + {col_widths[0], 0}
-	year_button_area.end = year_button_area.start + {col_widths[1], table_height}
+	start := [2]f32{f32(WINDOW_WIDTH) - table_width, f32(WINDOW_HEIGHT) - table_height}
 
 	dashboard.year = {
-		start   = table_pos,
+		start   = start,
 		padding = padding,
 	}
 
-	data: [][]string = {{fmt.tprintf("%d", year), "+"}}
+	table_make(
+		table = &dashboard.year,
+		data = {{fmt.tprintf("%d", game.year), "+"}},
+		col_widths = col_widths,
+	)
 
-	for row in data {
-		data_row: [dynamic]string
-		append(&data_row, ..row[:])
-		append(&dashboard.year.data, data_row)
-	}
-
-	append(&dashboard.year.col_widths, ..col_widths[:])
+	// For detecting mouse clicks
+	year_button_area.start = start + {col_widths[0], 0}
+	year_button_area.end = year_button_area.start + {col_widths[1], table_height}
 }
 
 dashboard_init_population :: proc() {
-	padding: [2]f32 = {4, 4}
-	col_widths: []f32 = {100, 40}
-	table_width: f32 = col_widths[0] + col_widths[1]
-	table_height := font_size + 2 * padding.y
-	// table_pos := [2]f32{f32(WINDOW_WIDTH) - table_width, 0}
-	table_pos := [2]f32{0, 0}
-
 	dashboard.population = {
-		start   = table_pos,
-		padding = padding,
+		start   = {0, 0},
+		padding = {4, 4},
 	}
 
-	data: [][]string = {{"Population:", fmt.tprintf("%d", population)}}
-
-	for row in data {
-		data_row: [dynamic]string
-		append(&data_row, ..row[:])
-		append(&dashboard.population.data, data_row)
-	}
-
-	append(&dashboard.population.col_widths, ..col_widths[:])
+	table_make(
+		table = &dashboard.population,
+		data = {
+			{"Population:", fmt.tprintf("%d", game.population)},
+			{"Food demand:", fmt.tprintf("%d", game.food_demand)},
+			{"Food supply:", fmt.tprintf("%d", game.food_supply)},
+		},
+		col_widths = {100, 40},
+	)
 }
 
 dashboard_update :: proc() {
+	clear(&dashboard.year.col_widths)
+	clear(&dashboard.year.data)
+	dashboard_init_year()
+
+	clear(&dashboard.population.col_widths)
+	clear(&dashboard.population.data)
+	dashboard_init_population()
+
+	table_clear_vertices()
 	table_clear_vertices()
 	table_add_vertices(dashboard.year)
 	table_add_vertices(dashboard.population)
@@ -103,8 +100,7 @@ dashboard_mouse_button_callback :: proc(window: glfw.WindowHandle, button, actio
 		x, y := f32(x64), f32(y64)
 
 		if within(year_button_area, x, y) {
-			year += 1
-			dashboard.year.data[0][0] = fmt.tprintf("%d", year)
+			game_increment_year()
 			dashboard_update()
 		}
 	}

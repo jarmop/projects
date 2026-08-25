@@ -191,3 +191,13 @@ draw_table :: proc() {
 
 	text_draw()
 }
+
+table_make :: proc(table: ^Table, data: [][]string, col_widths: []f32) {
+	for row in data {
+		data_row: [dynamic]string
+		append(&data_row, ..row[:])
+		append(&table.data, data_row)
+	}
+
+	append(&table.col_widths, ..col_widths[:])
+}

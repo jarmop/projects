@@ -22,6 +22,7 @@ main :: proc() {
 	gl.load_up_to(3, 3, glfw.gl_set_proc_address)
 	gl.Viewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
 
+	game_init()
 	io_init()
 	// world_init()
 	dashboard_init()
