@@ -1,24 +1,39 @@
 package survival
 
+Settlement :: struct {
+	population:      int,
+	demand:          []struct {
+		product: string,
+		amount:  int,
+	},
+	food_demand:     int,
+	food_production: int,
+	food_import:     int,
+}
+
 Game :: struct {
 	year:        int,
-	population:  int,
-	food_demand: int,
-	food_supply: int,
+	settlements: []Settlement,
 }
 
 game: Game = {
 	year        = 0,
-	population  = 1000,
-	food_supply = 0,
+	settlements = {
+		Settlement{population = 1000, food_demand = 1000, food_production = 1000, food_import = 0},
+	},
 }
 
+settlement := game.settlements[0]
+
 game_init :: proc() {
-	game.food_demand = game.population
+
+	settlement.food_demand = settlement.population
 }
 
 game_increment_year :: proc() {
+	// settlement := settlement
+
 	game.year += 1
-	game.population = game.food_supply
-	game.food_demand = game.population
+	settlement.population = settlement.food_production + settlement.food_import
+	settlement.food_demand = settlement.population
 }

@@ -36,8 +36,9 @@ dashboard_init_year :: proc() {
 	padding: [2]f32 = {4, 4}
 	col_widths: []f32 = {60, 20}
 	table_width: f32 = col_widths[0] + col_widths[1]
-	table_height := font_size + 2 * padding.y
-	start := [2]f32{f32(WINDOW_WIDTH) - table_width, f32(WINDOW_HEIGHT) - table_height}
+	// table_height := font_size + 2 * padding.y
+	// start := [2]f32{f32(WINDOW_WIDTH) - table_width, f32(WINDOW_HEIGHT) - table_height}
+	start := [2]f32{f32(WINDOW_WIDTH) - table_width, 0}
 
 	dashboard.year = {
 		start   = start,
@@ -50,9 +51,14 @@ dashboard_init_year :: proc() {
 		col_widths = col_widths,
 	)
 
+	table_height := table_add_vertices(dashboard.year)
+
+
 	// For detecting mouse clicks
 	year_button_area.start = start + {col_widths[0], 0}
+	// table_height := font_size + 2 * padding.y
 	year_button_area.end = year_button_area.start + {col_widths[1], table_height}
+	// year_button_area.end = year_button_area.start + {col_widths[1], 0}
 }
 
 dashboard_init_population :: proc() {
@@ -60,19 +66,22 @@ dashboard_init_population :: proc() {
 		start   = {0, 0},
 		padding = {4, 4},
 	}
+	settlement := settlement
 
 	table_make(
 		table = &dashboard.population,
 		data = {
-			{"Population:", fmt.tprintf("%d", game.population)},
-			{"Food demand:", fmt.tprintf("%d", game.food_demand)},
-			{"Food supply:", fmt.tprintf("%d", game.food_supply)},
+			{"Population:", fmt.tprintf("%d", settlement.population)},
+			{"Food demand:", fmt.tprintf("%d", settlement.food_demand)},
+			{"Food production:", fmt.tprintf("%d", settlement.food_production)},
 		},
-		col_widths = {100, 40},
+		col_widths = {140, 40},
 	)
 }
 
 dashboard_update :: proc() {
+	table_clear_vertices()
+
 	clear(&dashboard.year.col_widths)
 	clear(&dashboard.year.data)
 	dashboard_init_year()
@@ -81,9 +90,6 @@ dashboard_update :: proc() {
 	clear(&dashboard.population.data)
 	dashboard_init_population()
 
-	table_clear_vertices()
-	table_clear_vertices()
-	table_add_vertices(dashboard.year)
 	table_add_vertices(dashboard.population)
 	table_set_buffer_data()
 }

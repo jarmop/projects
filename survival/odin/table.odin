@@ -88,13 +88,14 @@ table_clear_vertices :: proc() {
 	indices = {0, 2, 1, 0, 2, 3}
 }
 
-table_add_vertices :: proc(table: Table) {
+table_add_vertices :: proc(table: Table) -> f32 {
 	start := table.start
 	col_widths := table.col_widths
 	padding := table.padding
 	data := table.data
 
 	pos := start
+	table_height: f32 = 0
 	for row, i in data {
 		pos.x = start.x
 
@@ -110,6 +111,7 @@ table_add_vertices :: proc(table: Table) {
 		}
 		pos.x = start.x
 		height := max_text_height + 2 * padding.y
+		table_height += height
 
 		for col_width, j in col_widths {
 			cell_top_left: [2]f32 = pos
@@ -144,6 +146,8 @@ table_add_vertices :: proc(table: Table) {
 		}
 		pos.y = pos.y + height
 	}
+
+	return table_height
 }
 
 table_set_buffer_data :: proc() {
