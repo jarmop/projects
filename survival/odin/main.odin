@@ -22,19 +22,23 @@ main :: proc() {
 	gl.load_up_to(3, 3, glfw.gl_set_proc_address)
 	gl.Viewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
 
-	game_init()
+	// game_init()
 	io_init()
 	// world_init()
-	dashboard_init()
+	globe_init()
+	// dashboard_init()
+
+	gl.Enable(gl.DEPTH_TEST)
+	gl.ClearColor(0.1, 0.1, 0.1, 1.0)
 
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
 
-		gl.ClearColor(0.1, 0.1, 0.1, 1.0)
-		gl.Clear(gl.COLOR_BUFFER_BIT)
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		// world_draw()
-		dashboard_draw()
+		globe_draw()
+		// dashboard_draw()
 
 		glfw.SwapBuffers(window)
 	}

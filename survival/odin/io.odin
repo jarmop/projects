@@ -43,6 +43,7 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 	}
 
 	dashboard_mouse_button_callback(window, button, action, mods)
+	globe_io_mouse_button_callback(window, button, action, mods)
 }
 
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
@@ -60,4 +61,6 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
 		prev_cursor_x = x
 		prev_cursor_y = y
 	}
+
+	globe_io_cursor_pos_callback(window, x, y)
 }
