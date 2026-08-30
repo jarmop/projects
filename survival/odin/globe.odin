@@ -8,8 +8,10 @@ import gl "vendor:OpenGL"
 import glfw "vendor:glfw"
 import stbi "vendor:stb/image"
 
+Vec4 :: [4]f32
 Vec3 :: [3]f32
 Vec2 :: [2]f32
+Mat4 :: matrix[4, 4]f32
 
 Vertex :: struct {
 	position: Vec3,
@@ -27,7 +29,8 @@ globe_vao: u32
 globe_mesh: Sphere_Mesh
 globe_rings := 32
 globe_radius: f32 = 1
-globe_spin_angle: f32 = -90
+// globe_spin_angle: f32 = -90
+globe_spin_angle: f32 = 0
 globe_tilt_angle: f32 = 0
 
 globe_grid_vao: u32
@@ -96,21 +99,11 @@ globe_draw :: proc() {
 
 	// shader_set_int(program, "texture_sampler", 0)
 
-	view: glsl.mat4 = 1
-	view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
+	view := get_view()
 
-	window_width, window_height := glfw.GetWindowSize(window)
-	projection: glsl.mat4 = 1
-	projection *= glsl.mat4Perspective(
-		glsl.radians_f32(camera.fov),
-		f32(window_width) / f32(window_height),
-		camera.near,
-		camera.far,
-	)
+	projection := get_projection()
 
-	model: glsl.mat4 = 1
-	model *= glsl.mat4Rotate({1.0, 0.0, 0.0}, glsl.radians(globe_tilt_angle))
-	model *= glsl.mat4Rotate({0.0, 1.0, 0.0}, glsl.radians(globe_spin_angle))
+	model := get_model()
 
 	shader_set_mat4(globe_program, "view", view)
 	shader_set_mat4(globe_program, "projection", projection)
