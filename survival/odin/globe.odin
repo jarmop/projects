@@ -25,11 +25,14 @@ Sphere_Mesh :: struct {
 globe_program: u32
 globe_vao: u32
 globe_mesh: Sphere_Mesh
-
 globe_rings := 32
-
+globe_radius: f32 = 1
 globe_spin_angle: f32 = -90
 globe_tilt_angle: f32 = 0
+
+globe_grid_vao: u32
+globe_grid_mesh: Sphere_Mesh
+globe_grid_radius: f32 = 1.01
 
 globe_init :: proc() {
 	shaders_ok: bool
@@ -39,30 +42,35 @@ globe_init :: proc() {
 		os.exit(-1)
 	}
 
-	globe_mesh = generate_uv_sphere(globe_rings * 2, globe_rings, 1.0)
+	globe_init_layer(&globe_vao, &globe_mesh, globe_radius)
+	globe_init_layer(&globe_grid_vao, &globe_grid_mesh, globe_grid_radius)
+}
+
+globe_init_layer :: proc(vao: ^u32, mesh: ^Sphere_Mesh, radius: f32) {
+	mesh^ = generate_uv_sphere(globe_rings * 2, globe_rings, radius)
 
 	vbo: u32
 	ebo: u32
 
-	gl.GenVertexArrays(1, &globe_vao)
+	gl.GenVertexArrays(1, vao)
 	gl.GenBuffers(1, &vbo)
 	gl.GenBuffers(1, &ebo)
 
-	gl.BindVertexArray(globe_vao)
+	gl.BindVertexArray(vao^)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
-		len(globe_mesh.vertices) * size_of(Vertex),
-		raw_data(globe_mesh.vertices),
+		len(mesh.vertices) * size_of(Vertex),
+		raw_data(mesh.vertices),
 		gl.STATIC_DRAW,
 	)
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
 	gl.BufferData(
 		gl.ELEMENT_ARRAY_BUFFER,
-		len(globe_mesh.indices) * size_of(u32),
-		raw_data(globe_mesh.indices),
+		len(mesh.indices) * size_of(u32),
+		raw_data(mesh.indices),
 		gl.STATIC_DRAW,
 	)
 
@@ -81,30 +89,6 @@ globe_init :: proc() {
 	gl.EnableVertexAttribArray(2)
 
 	gl.BindVertexArray(0)
-
-	globe_texture: u32
-
-	// TEXTURE
-	// gl.GenTextures(1, &globe_texture)
-	// gl.BindTexture(gl.TEXTURE_2D, globe_texture)
-	// gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-	// gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-	// gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	// gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-
-	// stbi.set_flip_vertically_on_load(1)
-	// width, height, nrChannels: i32
-	// data := stbi.load("./Ground075_1K-JPG_Color.jpg", &width, &height, &nrChannels, 0)
-	// data := stbi.load("./world.jpg", &width, &height, &nrChannels, 0)
-	// if data == nil {
-	// 	fmt.println("Failed to load texture")
-	// 	os.exit(-1)
-	// }
-
-	// gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_BYTE, data)
-	// gl.GenerateMipmap(gl.TEXTURE_2D)
-
-	// stbi.image_free(data)
 }
 
 globe_draw :: proc() {
@@ -132,11 +116,22 @@ globe_draw :: proc() {
 	shader_set_mat4(globe_program, "projection", projection)
 	shader_set_mat4(globe_program, "model", model)
 
+	globe_draw_ocean()
+	globe_draw_grid()
+}
+
+globe_draw_ocean :: proc() {
 	gl.BindVertexArray(globe_vao)
-
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+	shader_set_vec4(globe_program, "color", glsl.vec4({0.4, 0.9, 1, 1}))
 	gl.DrawElements(gl.TRIANGLES, i32(len(globe_mesh.indices)), gl.UNSIGNED_INT, nil)
+}
 
-	gl.BindVertexArray(0)
+globe_draw_grid :: proc() {
+	gl.BindVertexArray(globe_grid_vao)
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+	shader_set_vec4(globe_program, "color", glsl.vec4({0, 0, 0, 1}))
+	gl.DrawElements(gl.TRIANGLES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
 }
 
 generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Sphere_Mesh {
@@ -214,3 +209,29 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Sphere_Mes
 
 	return Sphere_Mesh{vertices = vertices, indices = indices}
 }
+
+// globe_init_texture :: proc() {
+// 	// TEXTURE
+// 	globe_texture: u32
+
+// 	gl.GenTextures(1, &globe_texture)
+// 	gl.BindTexture(gl.TEXTURE_2D, globe_texture)
+// 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
+// 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
+// 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+// 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+
+// 	stbi.set_flip_vertically_on_load(1)
+// 	width, height, nrChannels: i32
+// 	// data := stbi.load("./Ground075_1K-JPG_Color.jpg", &width, &height, &nrChannels, 0)
+// 	data := stbi.load("./world.jpg", &width, &height, &nrChannels, 0)
+// 	if data == nil {
+// 		fmt.println("Failed to load texture")
+// 		os.exit(-1)
+// 	}
+
+// 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_BYTE, data)
+// 	gl.GenerateMipmap(gl.TEXTURE_2D)
+
+// 	stbi.image_free(data)
+// }

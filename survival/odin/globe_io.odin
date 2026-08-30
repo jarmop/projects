@@ -19,7 +19,7 @@ Camera :: struct {
 }
 
 camera := Camera {
-	pos   = {0, 0, 4},
+	pos   = {0, 0, 3},
 	front = {0.0, 0.0, -1.0},
 	right = {1.0, 0.0, 0.0},
 	up    = {0.0, 1.0, 0.0},
@@ -28,7 +28,7 @@ camera := Camera {
 	speed = 80,
 	fov   = 45.0,
 	near  = 0.1,
-	far   = 10000.0,
+	far   = 3.0,
 }
 
 globe_io_mouse_left_pressed := false
@@ -70,4 +70,13 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 		globe_io_prev_cursor_x = x
 		globe_io_prev_cursor_y = y
 	}
+}
+
+globe_io_scroll_callback :: proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f64) {
+	context = runtime.default_context()
+
+	camera.pos.z = min(
+		max(camera.pos.z - f32(yoffset) * 0.05, globe_grid_radius + camera.near),
+		camera.far,
+	)
 }

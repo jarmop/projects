@@ -16,6 +16,7 @@ io_init :: proc() {
 	glfw.SetKeyCallback(window, key_callback)
 	glfw.SetMouseButtonCallback(window, mouse_button_callback)
 	glfw.SetCursorPosCallback(window, cursor_pos_callback)
+	glfw.SetScrollCallback(window, scroll_callback)
 }
 
 framebuffer_size_callback :: proc "c" (window: glfw.WindowHandle, width: i32, height: i32) {
@@ -63,4 +64,10 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
 	}
 
 	globe_io_cursor_pos_callback(window, x, y)
+}
+
+scroll_callback :: proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f64) {
+	context = runtime.default_context()
+	// fmt.println(xoffset, yoffset)
+	globe_io_scroll_callback(window, xoffset, yoffset)
 }
