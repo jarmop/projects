@@ -31,7 +31,7 @@ camera := Camera {
 	speed = 80,
 	fov   = 45.0,
 	near  = 0.1,
-	far   = 3.0,
+	far   = 10.0,
 }
 
 globe_io_mouse_right_pressed := false
@@ -65,12 +65,14 @@ globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, a
 			longitude := math.atan2(hit.z, -hit.x)
 
 			fmt.println("**********")
-			fmt.println("tilt:", globe_tilt_angle)
-			fmt.println("spin:", globe_spin_angle)
+			// fmt.println("tilt:", globe_tilt_angle)
+			// fmt.println("spin:", globe_spin_angle)
 			fmt.println("lat:", math.to_degrees(latitude))
 			fmt.println("lon:", math.to_degrees(longitude))
 			fmt.println("ring:", ring)
 			fmt.println("segment:", segment)
+			fmt.println("u:", uv.x)
+			fmt.println("v:", uv.y)
 		}
 	} else if button == glfw.MOUSE_BUTTON_RIGHT {
 		if action == glfw.PRESS {

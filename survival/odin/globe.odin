@@ -2,6 +2,7 @@ package survival
 
 import "core:fmt"
 import "core:math"
+import "core:math/fixed"
 import "core:math/linalg/glsl"
 import "core:os"
 import gl "vendor:OpenGL"
@@ -19,23 +20,22 @@ Vertex :: struct {
 	uv:       Vec2,
 }
 
-Sphere_Mesh :: struct {
+Mesh :: struct {
 	vertices: []Vertex,
 	indices:  []u32,
 }
 
 globe_program: u32
 globe_vao: u32
-globe_mesh: Sphere_Mesh
+globe_mesh: Mesh
 globe_rings := 32
 globe_radius: f32 = 1
-// globe_spin_angle: f32 = -90
 globe_spin_angle: f32 = 0
 globe_tilt_angle: f32 = 0
 
 globe_grid_vao: u32
-globe_grid_mesh: Sphere_Mesh
-globe_grid_radius: f32 = 1.01
+globe_grid_mesh: Mesh
+globe_grid_radius: f32 = globe_radius + 0.01
 
 globe_init :: proc() {
 	shaders_ok: bool
@@ -45,13 +45,13 @@ globe_init :: proc() {
 		os.exit(-1)
 	}
 
+	globe_mesh = generate_uv_sphere(globe_rings * 2, globe_rings, globe_radius)
 	globe_init_layer(&globe_vao, &globe_mesh, globe_radius)
+	globe_grid_mesh = globe_generate_grid(globe_rings * 2, globe_rings, globe_grid_radius)
 	globe_init_layer(&globe_grid_vao, &globe_grid_mesh, globe_grid_radius)
 }
 
-globe_init_layer :: proc(vao: ^u32, mesh: ^Sphere_Mesh, radius: f32) {
-	mesh^ = generate_uv_sphere(globe_rings * 2, globe_rings, radius)
-
+globe_init_layer :: proc(vao: ^u32, mesh: ^Mesh, radius: f32) {
 	vbo: u32
 	ebo: u32
 
@@ -122,15 +122,17 @@ globe_draw_ocean :: proc() {
 
 globe_draw_grid :: proc() {
 	gl.BindVertexArray(globe_grid_vao)
-	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+	// gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 	shader_set_vec4(globe_program, "color", glsl.vec4({0, 0, 0, 1}))
-	gl.DrawElements(gl.TRIANGLES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
+	// gl.DrawElements(gl.TRIANGLES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
+	gl.DrawElements(gl.LINES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
 }
 
-generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Sphere_Mesh {
+generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
+	indices_per_vertex := 6
 
 	vertex_count := (segments + 1) * (rings + 1)
-	index_count := segments * rings * 6
+	index_count := segments * rings * indices_per_vertex
 
 	vertices := make([]Vertex, vertex_count)
 	indices := make([]u32, index_count)
@@ -138,8 +140,84 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Sphere_Mes
 	vertex_index := 0
 
 	for y in 0 ..= rings {
-		// 0 = north pole
-		// 1 = south pole
+		// 0 = south pole
+		// 1 = nouth pole
+		v := f32(y) / f32(rings)
+
+		theta := v * math.PI
+		// fmt.printfln("%d: %.0f", y, lat_length(theta, 40000))
+
+		sin_theta := f32(math.sin(theta))
+		cos_theta := f32(math.cos(theta))
+
+		for x in 0 ..= segments {
+			u := f32(x) / f32(segments)
+
+			phi := u * 2.0 * math.PI
+
+			sin_phi := f32(math.sin(phi))
+			cos_phi := f32(math.cos(phi))
+
+			// Unit sphere position
+			px := -sin_theta * cos_phi
+			py := -cos_theta
+			pz := sin_theta * sin_phi
+
+
+			position := Vec3{px * radius, py * radius, pz * radius}
+
+			normal := Vec3{px, py, pz}
+
+			vertices[vertex_index] = Vertex {
+				position = position,
+				normal   = normal,
+				uv       = Vec2{u, v},
+			}
+
+			vertex_index += 1
+		}
+	}
+
+	index := 0
+
+	for y in 0 ..< rings {
+		for x in 0 ..< segments {
+			bottom_left := u32(y * (segments + 1) + x)
+			bottom_right := bottom_left + 1
+			top_left := u32((y + 1) * (segments + 1) + x)
+			top_right := top_left + 1
+
+			// First triangle
+			indices[index + 0] = bottom_left
+			indices[index + 1] = top_left
+			indices[index + 2] = bottom_right
+
+			// Second triangle
+			indices[index + 3] = bottom_right
+			indices[index + 4] = top_left
+			indices[index + 5] = top_right
+
+			index += indices_per_vertex
+		}
+	}
+
+	return Mesh{vertices = vertices, indices = indices}
+}
+
+globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
+	indices_per_vertex := 4
+
+	vertex_count := (segments + 1) * (rings + 1)
+	index_count := segments * rings * indices_per_vertex
+
+	vertices := make([]Vertex, vertex_count)
+	indices := make([]u32, index_count)
+
+	vertex_index := 0
+
+	for y in 0 ..= rings {
+		// 0 = south pole
+		// 1 = nouth pole
 		v := f32(y) / f32(rings)
 
 		theta := v * math.PI
@@ -159,7 +237,6 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Sphere_Mes
 			px := -sin_theta * cos_phi
 			py := -cos_theta
 			pz := sin_theta * sin_phi
-
 
 			position := Vec3{px * radius, py * radius, pz * radius}
 
@@ -181,26 +258,23 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Sphere_Mes
 
 	for y in 0 ..< rings {
 		for x in 0 ..< segments {
-			a := u32(y * (segments + 1) + x)
-			b := a + 1
-			c := u32((y + 1) * (segments + 1) + x)
-			d := c + 1
+			bottom_left := u32(y * (segments + 1) + x)
+			bottom_right := bottom_left + 1
+			top_left := u32((y + 1) * (segments + 1) + x)
+			top_right := top_left + 1
 
-			// First triangle
-			indices[index + 0] = a
-			indices[index + 1] = c
-			indices[index + 2] = b
+			// Meridian
+			indices[index + 0] = top_left
+			indices[index + 1] = bottom_left
+			// Parallel
+			indices[index + 2] = bottom_left
+			indices[index + 3] = bottom_right
 
-			// Second triangle
-			indices[index + 3] = b
-			indices[index + 4] = c
-			indices[index + 5] = d
-
-			index += 6
+			index += indices_per_vertex
 		}
 	}
 
-	return Sphere_Mesh{vertices = vertices, indices = indices}
+	return Mesh{vertices = vertices, indices = indices}
 }
 
 // globe_init_texture :: proc() {
