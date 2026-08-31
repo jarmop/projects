@@ -1,3 +1,5 @@
+#+feature dynamic-literals
+
 package survival
 
 import "base:runtime"
@@ -10,6 +12,7 @@ import glfw "vendor:glfw"
 
 Camera :: struct {
 	pos:   [3]f32,
+	max_z: f32,
 	front: [3]f32,
 	right: [3]f32,
 	up:    [3]f32,
@@ -23,16 +26,19 @@ Camera :: struct {
 
 camera := Camera {
 	pos   = {0, 0, 3},
+	max_z = 3,
 	front = {0.0, 0.0, -1.0},
 	right = {1.0, 0.0, 0.0},
 	up    = {0.0, 1.0, 0.0},
 	yaw   = -90,
 	pitch = -0,
-	speed = 80,
+	speed = 0.25,
 	fov   = 45.0,
 	near  = 0.1,
 	far   = 10.0,
 }
+
+globe_speed: f32 = 0.22
 
 globe_io_mouse_right_pressed := false
 globe_io_first_cursor_pos_right := true
@@ -94,9 +100,8 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 			globe_io_first_cursor_pos_right = false
 		}
 
-		speed: f32 = 0.22
-		globe_spin_angle += f32(x - globe_io_prev_cursor_x) * speed
-		globe_tilt_angle += f32(y - globe_io_prev_cursor_y) * speed
+		globe_spin_angle += f32(x - globe_io_prev_cursor_x) * globe_speed
+		globe_tilt_angle += f32(y - globe_io_prev_cursor_y) * globe_speed
 		if globe_tilt_angle > 90 {
 			globe_tilt_angle = 90
 		} else if globe_tilt_angle < -90 {
@@ -108,13 +113,25 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 	}
 }
 
+globe_speed_map := map[f32]f32 {
+	1.25 = 0.02,
+	1.5  = 0.04,
+	1.75 = 0.065,
+	2    = 0.09,
+	2.25 = 0.12,
+	2.5  = 0.15,
+	2.75 = 0.18,
+	3    = 0.21,
+}
+
 globe_io_scroll_callback :: proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f64) {
 	context = runtime.default_context()
-
 	camera.pos.z = min(
-		max(camera.pos.z - f32(yoffset) * 0.05, globe_grid_radius + camera.near),
-		camera.far,
+		max(camera.pos.z - f32(yoffset) * camera.speed, globe_radius + camera.speed),
+		camera.max_z,
 	)
+	globe_speed = globe_speed_map[camera.pos.z]
+	// fmt.println(camera.pos.z, globe_speed)
 }
 
 get_view :: proc() -> glsl.mat4 {
