@@ -102,10 +102,10 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 
 		globe_spin_angle += f32(x - globe_io_prev_cursor_x) * globe_speed
 		globe_tilt_angle += f32(y - globe_io_prev_cursor_y) * globe_speed
-		if globe_tilt_angle > 90 {
-			globe_tilt_angle = 90
-		} else if globe_tilt_angle < -90 {
-			globe_tilt_angle = -90
+		if globe_tilt_angle > globe_max_tilt_abs {
+			globe_tilt_angle = globe_max_tilt_abs
+		} else if globe_tilt_angle < -globe_max_tilt_abs {
+			globe_tilt_angle = -globe_max_tilt_abs
 		}
 
 		globe_io_prev_cursor_x = x

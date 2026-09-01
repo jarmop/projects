@@ -32,6 +32,7 @@ globe_rings := 32
 globe_radius: f32 = 1
 globe_spin_angle: f32 = 0
 globe_tilt_angle: f32 = 0
+globe_max_tilt_abs: f32 = 66
 
 globe_grid_vao: u32
 globe_grid_mesh: Mesh
