@@ -25,18 +25,25 @@ Mesh :: struct {
 	indices:  []u32,
 }
 
+globe_layer_separation: f32 = 0.0006
+
 globe_program: u32
 globe_vao: u32
 globe_mesh: Mesh
 globe_rings := 32
 globe_radius: f32 = 1
-globe_spin_angle: f32 = 0
+globe_spin_angle: f32 = 90
 globe_tilt_angle: f32 = 0
 globe_max_tilt_abs: f32 = 66
 
+globe_land_rings := 128
+globe_land_vao: u32
+globe_land_mesh: Mesh
+globe_land_radius: f32 = globe_radius + globe_layer_separation
+
 globe_grid_vao: u32
 globe_grid_mesh: Mesh
-globe_grid_radius: f32 = globe_radius + 0.01
+globe_grid_radius: f32 = globe_radius + globe_layer_separation * 2
 
 globe_init :: proc() {
 	shaders_ok: bool
@@ -48,6 +55,16 @@ globe_init :: proc() {
 
 	globe_mesh = generate_uv_sphere(globe_rings * 2, globe_rings, globe_radius)
 	globe_init_layer(&globe_vao, &globe_mesh, globe_radius)
+
+	globe_land_mesh = globe_generate_land(
+		globe_land_rings * 2,
+		globe_land_rings,
+		globe_land_radius,
+		1,
+		65,
+	)
+	globe_init_layer(&globe_land_vao, &globe_land_mesh, globe_land_radius)
+
 	globe_grid_mesh = globe_generate_grid(globe_rings * 2, globe_rings, globe_grid_radius)
 	globe_init_layer(&globe_grid_vao, &globe_grid_mesh, globe_grid_radius)
 }
@@ -110,15 +127,16 @@ globe_draw :: proc() {
 	shader_set_mat4(globe_program, "projection", projection)
 	shader_set_mat4(globe_program, "model", model)
 
-	globe_draw_ocean()
+	globe_draw_area(globe_vao, globe_mesh, {0.4, 0.9, 1, 1})
+	globe_draw_area(globe_land_vao, globe_land_mesh, {0.8, 0.6, 0.4, 1})
 	globe_draw_grid()
 }
 
-globe_draw_ocean :: proc() {
-	gl.BindVertexArray(globe_vao)
+globe_draw_area :: proc(vao: u32, mesh: Mesh, color: Vec4) {
+	gl.BindVertexArray(vao)
 	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
-	shader_set_vec4(globe_program, "color", glsl.vec4({0.4, 0.9, 1, 1}))
-	gl.DrawElements(gl.TRIANGLES, i32(len(globe_mesh.indices)), gl.UNSIGNED_INT, nil)
+	shader_set_vec4(globe_program, "color", color)
+	gl.DrawElements(gl.TRIANGLES, i32(len(mesh.indices)), gl.UNSIGNED_INT, nil)
 }
 
 globe_draw_grid :: proc() {
@@ -164,7 +182,6 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 			py := -cos_theta
 			pz := sin_theta * sin_phi
 
-
 			position := Vec3{px * radius, py * radius, pz * radius}
 
 			normal := Vec3{px, py, pz}
@@ -201,6 +218,101 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 			index += indices_per_vertex
 		}
 	}
+
+	return Mesh{vertices = vertices, indices = indices}
+}
+
+globe_generate_land :: proc(
+	segments: int,
+	rings: int,
+	radius: f32,
+	segment: int,
+	ring: int,
+) -> Mesh {
+	indices_per_vertex := 6
+
+	// vertex_count := (segments + 1) * (rings + 1)
+	vertex_count := 4
+	// index_count := segments * rings * indices_per_vertex
+	index_count := 6
+
+	vertices := make([]Vertex, vertex_count)
+	indices := make([]u32, index_count)
+
+	vertex_index := 0
+
+	// for y in 0 ..= rings {
+	for y in ring ..= ring + 1 {
+		// fmt.println(y)
+		// 0 = south pole
+		// 1 = nouth pole
+		v := f32(y) / f32(rings)
+
+		theta := v * math.PI
+
+		sin_theta := f32(math.sin(theta))
+		cos_theta := f32(math.cos(theta))
+
+		// for x in 0 ..= segments {
+		for x in segment ..= segment + 1 {
+			// fmt.println(x)
+
+			u := f32(x) / f32(segments)
+
+			phi := u * 2.0 * math.PI
+
+			sin_phi := f32(math.sin(phi))
+			cos_phi := f32(math.cos(phi))
+
+			// Unit sphere position
+			px := -sin_theta * cos_phi
+			py := -cos_theta
+			pz := sin_theta * sin_phi
+
+			position := Vec3{px * radius, py * radius, pz * radius}
+
+			normal := Vec3{px, py, pz}
+
+			vertices[vertex_index] = Vertex {
+				position = position,
+				normal   = normal,
+				uv       = Vec2{u, v},
+			}
+
+			vertex_index += 1
+		}
+	}
+
+	index := 0
+
+	// for y in 0 ..< rings {
+	// for y in rings / 2 ..= rings / 2 {
+	for y in 0 ..= 0 {
+		for x in 0 ..= 0 {
+			bottom_left := u32(y * (1 + 1) + x)
+			bottom_right := bottom_left + 1
+			top_left := u32((y + 1) * (1 + 1) + x)
+			top_right := top_left + 1
+
+			// First triangle
+			indices[index + 0] = bottom_left
+			indices[index + 1] = top_left
+			indices[index + 2] = bottom_right
+
+			// Second triangle
+			indices[index + 3] = bottom_right
+			indices[index + 4] = top_left
+			indices[index + 5] = top_right
+
+			index += indices_per_vertex
+		}
+	}
+
+	// for i in vertices {
+	// 	fmt.println(i.position)
+	// }
+	// fmt.println("*********")
+	// fmt.println(indices)
 
 	return Mesh{vertices = vertices, indices = indices}
 }

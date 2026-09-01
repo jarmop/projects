@@ -28,7 +28,6 @@ main :: proc() {
 	globe_init()
 	// dashboard_init()
 
-	gl.Enable(gl.DEPTH_TEST)
 	gl.ClearColor(0.1, 0.1, 0.1, 1.0)
 
 	for !glfw.WindowShouldClose(window) {
@@ -36,8 +35,13 @@ main :: proc() {
 
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-		// world_draw()
+		// 3D
+		gl.Enable(gl.DEPTH_TEST)
 		globe_draw()
+
+		// 2D
+		gl.Disable(gl.DEPTH_TEST)
+		// world_draw()
 		// dashboard_draw()
 
 		glfw.SwapBuffers(window)
