@@ -25,6 +25,9 @@ Mesh :: struct {
 	indices:  []u32,
 }
 
+earth_radius: f32 = 6371
+
+// globe_layer_separation: f32 = 0.01
 globe_layer_separation: f32 = 0.0006
 
 globe_program: u32
@@ -33,8 +36,8 @@ globe_mesh: Mesh
 globe_rings := 32
 globe_radius: f32 = 1
 globe_spin_angle: f32 = 90
-globe_tilt_angle: f32 = 0
-globe_max_tilt_abs: f32 = 66
+globe_tilt_angle: f32 = 60
+globe_max_tilt_abs: f32 = 90
 
 globe_land_rings := 128
 globe_land_vao: u32
@@ -44,6 +47,7 @@ globe_land_radius: f32 = globe_radius + globe_layer_separation
 globe_grid_vao: u32
 globe_grid_mesh: Mesh
 globe_grid_radius: f32 = globe_radius + globe_layer_separation * 2
+// globe_grid_radius: f32 = globe_radius + 0
 
 globe_init :: proc() {
 	shaders_ok: bool
@@ -61,7 +65,7 @@ globe_init :: proc() {
 		globe_land_rings,
 		globe_land_radius,
 		1,
-		65,
+		globe_land_rings / 2 + 36,
 	)
 	globe_init_layer(&globe_land_vao, &globe_land_mesh, globe_land_radius)
 
@@ -144,6 +148,7 @@ globe_draw_grid :: proc() {
 	// gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 	shader_set_vec4(globe_program, "color", glsl.vec4({0, 0, 0, 1}))
 	// gl.DrawElements(gl.TRIANGLES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
+	// gl.LineWidth(1.0)
 	gl.DrawElements(gl.LINES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
 }
 
@@ -318,19 +323,19 @@ globe_generate_land :: proc(
 }
 
 globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
-	indices_per_vertex := 4
-
+	// vertex_count := (segments1 + 1) * (rings1) + (segments2 + 1) * (rings2 + 1)
 	vertex_count := (segments + 1) * (rings + 1)
-	index_count := segments * rings * indices_per_vertex
+	// fmt.println(vertex_count)
 
 	vertices := make([]Vertex, vertex_count)
-	indices := make([]u32, index_count)
 
 	vertex_index := 0
 
 	for y in 0 ..= rings {
 		// 0 = south pole
 		// 1 = nouth pole
+
+		// relative height of a ring
 		v := f32(y) / f32(rings)
 
 		theta := v * math.PI
@@ -339,6 +344,7 @@ globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 		cos_theta := f32(math.cos(theta))
 
 		for x in 0 ..= segments {
+			// relative width of a segment
 			u := f32(x) / f32(segments)
 
 			phi := u * 2.0 * math.PI
@@ -367,9 +373,22 @@ globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 		}
 	}
 
+	indices_per_vertex := 4
+
+	// The middle half of the rings use all the segments.
+	// The rest of the rings (closer to the poles) use only half of the segments.
+	// index_count := (segments * rings / 2 + segments / 2 * rings / 2) * indices_per_vertex
+
+	index_count := segments * rings * indices_per_vertex
+	// fmt.println(index_count)
+
+	indices := make([]u32, index_count)
+
+
 	index := 0
 
 	for y in 0 ..< rings {
+		// if y > rings / 4 && y < (rings / 4 * 3) {
 		for x in 0 ..< segments {
 			bottom_left := u32(y * (segments + 1) + x)
 			bottom_right := bottom_left + 1
@@ -384,10 +403,50 @@ globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 			indices[index + 3] = bottom_right
 
 			index += indices_per_vertex
+
+			// if x == 0 {
+			// 	a := vertices[bottom_left].position
+			// 	b := vertices[top_left].position
+			// 	c := vertices[bottom_right].position
+
+			// 	// v := f32(y) / f32(rings)
+			// 	// theta := v * math.PI
+			// 	// sin_theta := f32(math.sin(theta))
+			// 	sin_theta := ring_len(y, rings)
+			// 	fmt.printfln(
+			// 		"%d: x %.0f, y %.0f",
+			// 		y,
+			// 		// the distance is relative to the radius
+			// 		sphere_points_d(radius, a, c) * earth_radius,
+			// 		sin_theta * 626,
+			// 	)
+			// }
 		}
+		// } else {
+		// 	for x := 0; x < segments; x += 2 {
+		// 		bottom_left := u32(y * (segments + 1) + x)
+		// 		bottom_right := bottom_left + 2
+		// 		top_left := u32((y + 1) * (segments + 1) + x)
+		// 		top_right := top_left + 2
+
+		// 		// Meridian
+		// 		indices[index + 0] = top_left
+		// 		indices[index + 1] = bottom_left
+		// 		// Parallel
+		// 		indices[index + 2] = bottom_left
+		// 		indices[index + 3] = bottom_right
+
+		// 		index += indices_per_vertex
+		// 	}
+		// }
 	}
 
 	return Mesh{vertices = vertices, indices = indices}
+}
+
+// Relative to equator length
+ring_len :: proc(ring: int, rings: int) -> f32 {
+	return math.sin(f32(ring) / f32(rings) * math.PI)
 }
 
 // globe_init_texture :: proc() {
