@@ -27,7 +27,7 @@ Camera :: struct {
 
 
 zoom_levels :: 8
-zoom_level_at_start :: 0
+zoom_level_at_start :: 1
 camera_zoom_positions := [zoom_levels]f32{0.05, 0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.75}
 globe_speeds := [zoom_levels]f32{0.004, 0.008, 0.02, 0.04, 0.065, 0.09, 0.12, 0.18}
 globe_speed: f32 = globe_speeds[zoom_level_at_start]
@@ -73,9 +73,12 @@ globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, a
 			projection,
 			view,
 			model,
-			globe_radius,
-			2 * globe_grid_rings,
-			globe_grid_rings,
+			// globe_radius,
+			// 2 * globe_grid_rings,
+			// globe_grid_rings,
+			globe_land_radius,
+			globe_land_segments,
+			globe_land_rings,
 		)
 		if is_hit {
 			latitude := math.asin(hit.y / globe_radius)

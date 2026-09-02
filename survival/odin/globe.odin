@@ -25,6 +25,7 @@ Mesh :: struct {
 }
 
 earth_radius: f32 = 6371
+earth_circumference: f32 = 40960
 
 // globe_layer_separation: f32 = 0.01
 globe_layer_separation: f32 = 0.0006
@@ -32,15 +33,16 @@ globe_layer_separation: f32 = 0.0006
 globe_program: u32
 globe_radius: f32 = 1
 globe_spin_angle: f32 = 90
-globe_tilt_angle: f32 = 80
+// globe_tilt_angle: f32 = 80
+globe_tilt_angle: f32 = 0
 globe_max_tilt_abs: f32 = 90
 
 globe_ocean_vao: u32
 globe_ocean_mesh: Mesh
 globe_ocean_radius: f32 = globe_radius - globe_layer_separation
 
-// globe_land_rings := 2048 // eq with 10 km tiles
-globe_land_rings := 256 // north with 10 km tiles
+globe_land_segments := 1024
+globe_land_rings := globe_land_segments / 2
 globe_land_vao: u32
 globe_land_mesh: Mesh
 globe_land_radius: f32 = globe_radius
@@ -67,12 +69,12 @@ globe_init :: proc() {
 	globe_init_layer(&globe_ocean_vao, &globe_ocean_mesh, globe_ocean_radius)
 
 	globe_land_mesh = globe_generate_land(
-		globe_land_rings * 2,
+		globe_land_segments,
 		globe_land_rings,
 		globe_land_radius,
 		1,
-		globe_land_rings - globe_land_rings / globe_grid_rings * 2,
-		// globe_land_rings / 2 + 1,
+		// globe_land_rings - globe_land_rings / globe_grid_rings * 2,
+		globe_land_rings / 2 + 1,
 	)
 	globe_init_layer(&globe_land_vao, &globe_land_mesh, globe_land_radius)
 
@@ -312,6 +314,45 @@ globe_generate_land :: proc(
 
 			index += indices_per_vertex
 		}
+	}
+
+	fmt.printfln("Ring\tR len\tT width 1\tT width 2\t Final W\tFinal T")
+	fmt.printfln("-------------------------")
+	segs := segments
+	step := 8
+	tile_size := earth_circumference / f32(segments)
+	for y := 256; y > 0; y -= step {
+		ring_length_bottom := ring_len(y, rings) * earth_circumference
+		ring_length_top := ring_len(y - step, rings) * earth_circumference
+		tile_width_bottom := ring_length_bottom / f32(segs)
+		tile_width_top := ring_length_top / f32(segs)
+
+		tile_width_bottom2 := ring_length_bottom / (f32(segs) / 2)
+		tile_width_top2 := ring_length_top / (f32(segs) / 2)
+		// tile_width3 := ring_length / (f32(seg) / 4)
+
+		diff1 := math.abs(40 - (tile_width_bottom + tile_width_top) / 2)
+		diff2 := math.abs(40 - (tile_width_bottom2 + tile_width_top2) / 2)
+		// conc := diff1 < diff2 ? tile_width_bottom : tile_width_bottom2
+		conc_width := tile_width_bottom
+		conc_tiles := ring_length_bottom / tile_width_bottom
+		if diff2 < diff1 {
+			conc_width = tile_width_bottom2
+			conc_tiles = ring_length_bottom / tile_width_bottom2
+			segs = segs / 2
+		}
+
+		fmt.printfln(
+			"%d:\t%.0f\t%.2f - %.2f\t%.2f - %.2f\t%.2f\t%.2f",
+			y,
+			ring_length_bottom,
+			tile_width_bottom,
+			tile_width_top,
+			tile_width_bottom2,
+			tile_width_top2,
+			conc_width,
+			conc_tiles,
+		)
 	}
 
 	// for i in vertices {
