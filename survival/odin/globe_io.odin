@@ -111,14 +111,19 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 			globe_io_first_cursor_pos_right = false
 		}
 
-		globe_speed_x := globe_speed
-		if camera.zoom == 0 {
+		window_width, window_height := glfw.GetWindowSize(window)
+		relative_window_height := f32(600) / f32(window_height)
+		// fmt.println(relative_window_height)
+		globe_speed_y := globe_speed * relative_window_height
+		globe_speed_x := globe_speed_y
+		z_rad_ratio := camera.pos.z / globe_radius
+		// fmt.println(camera.zoom, z_rad_ratio)
+		if z_rad_ratio <= 1.25 {
 			theta := globe_tilt_angle / 180 * math.PI
-			// fmt.println(math.cos(theta))
 			globe_speed_x = globe_speed_x / math.cos(theta)
 		}
 		globe_spin_angle += f32(x - globe_io_prev_cursor_x) * globe_speed_x
-		globe_tilt_angle += f32(y - globe_io_prev_cursor_y) * globe_speed
+		globe_tilt_angle += f32(y - globe_io_prev_cursor_y) * globe_speed_y
 		if globe_tilt_angle > globe_max_tilt_abs {
 			globe_tilt_angle = globe_max_tilt_abs
 		} else if globe_tilt_angle < -globe_max_tilt_abs {
