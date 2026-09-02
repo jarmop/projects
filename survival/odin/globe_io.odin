@@ -12,33 +12,44 @@ import glfw "vendor:glfw"
 
 Camera :: struct {
 	pos:   [3]f32,
+	min_z: f32,
 	max_z: f32,
 	front: [3]f32,
 	right: [3]f32,
 	up:    [3]f32,
 	yaw:   f32,
 	pitch: f32,
-	speed: f32,
 	fov:   f32,
 	near:  f32,
 	far:   f32,
+	zoom:  int,
 }
 
+
+zoom_levels :: 8
+zoom_level_at_start :: 0
+camera_zoom_positions := [zoom_levels]f32{0.05, 0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.75}
+globe_speeds := [zoom_levels]f32{0.004, 0.008, 0.02, 0.04, 0.065, 0.09, 0.12, 0.18}
+globe_speed: f32 = globe_speeds[zoom_level_at_start]
+
+// camera_zoom_positions := [zoom_levels]f32{0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2}
+// globe_speeds := [zoom_levels]f32{0.02, 0.04, 0.065, 0.09, 0.12, 0.15, 0.18, 0.21}
+
 camera := Camera {
-	pos   = {0, 0, 3},
+	pos   = {0, 0, globe_radius + camera_zoom_positions[zoom_level_at_start]},
+	min_z = 0.25,
 	max_z = 3,
 	front = {0.0, 0.0, -1.0},
 	right = {1.0, 0.0, 0.0},
 	up    = {0.0, 1.0, 0.0},
 	yaw   = -90,
 	pitch = -0,
-	speed = 0.25,
 	fov   = 45.0,
-	near  = 0.1,
-	far   = 10.0,
+	near  = 0.001,
+	far   = 3.0,
+	zoom  = zoom_level_at_start,
 }
 
-globe_speed: f32 = 0.22
 
 globe_io_mouse_right_pressed := false
 globe_io_first_cursor_pos_right := true
@@ -63,8 +74,8 @@ globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, a
 			view,
 			model,
 			globe_radius,
-			2 * globe_rings,
-			globe_rings,
+			2 * globe_grid_rings,
+			globe_grid_rings,
 		)
 		if is_hit {
 			latitude := math.asin(hit.y / globe_radius)
@@ -100,7 +111,13 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 			globe_io_first_cursor_pos_right = false
 		}
 
-		globe_spin_angle += f32(x - globe_io_prev_cursor_x) * globe_speed
+		globe_speed_x := globe_speed
+		if camera.zoom == 0 {
+			theta := globe_tilt_angle / 180 * math.PI
+			// fmt.println(math.cos(theta))
+			globe_speed_x = globe_speed_x / math.cos(theta)
+		}
+		globe_spin_angle += f32(x - globe_io_prev_cursor_x) * globe_speed_x
 		globe_tilt_angle += f32(y - globe_io_prev_cursor_y) * globe_speed
 		if globe_tilt_angle > globe_max_tilt_abs {
 			globe_tilt_angle = globe_max_tilt_abs
@@ -113,25 +130,18 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 	}
 }
 
-globe_speed_map := map[f32]f32 {
-	1.25 = 0.02,
-	1.5  = 0.04,
-	1.75 = 0.065,
-	2    = 0.09,
-	2.25 = 0.12,
-	2.5  = 0.15,
-	2.75 = 0.18,
-	3    = 0.21,
-}
 
 globe_io_scroll_callback :: proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f64) {
 	context = runtime.default_context()
-	camera.pos.z = min(
-		max(camera.pos.z - f32(yoffset) * camera.speed, globe_radius + camera.speed),
-		camera.max_z,
-	)
-	globe_speed = globe_speed_map[camera.pos.z]
-	// fmt.println(camera.pos.z, globe_speed)
+
+	new_zoom := yoffset < 0 ? camera.zoom + 1 : camera.zoom - 1
+	if new_zoom < 0 || new_zoom >= zoom_levels {
+		return
+	}
+
+	camera.zoom = new_zoom
+	camera.pos.z = globe_radius + camera_zoom_positions[camera.zoom]
+	globe_speed = globe_speeds[camera.zoom]
 }
 
 get_view :: proc() -> glsl.mat4 {

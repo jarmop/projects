@@ -31,23 +31,26 @@ earth_radius: f32 = 6371
 globe_layer_separation: f32 = 0.0006
 
 globe_program: u32
-globe_vao: u32
-globe_mesh: Mesh
-globe_rings := 32
 globe_radius: f32 = 1
 globe_spin_angle: f32 = 90
-globe_tilt_angle: f32 = 60
+globe_tilt_angle: f32 = 80
 globe_max_tilt_abs: f32 = 90
 
-globe_land_rings := 128
+globe_ocean_vao: u32
+globe_ocean_mesh: Mesh
+globe_ocean_radius: f32 = globe_radius - globe_layer_separation
+
+// globe_land_rings := 2048 // eq with 10 km tiles
+globe_land_rings := 256 // north with 10 km tiles
 globe_land_vao: u32
 globe_land_mesh: Mesh
-globe_land_radius: f32 = globe_radius + globe_layer_separation
+globe_land_radius: f32 = globe_radius
 
+globe_grid_rings := 32
 globe_grid_vao: u32
 globe_grid_mesh: Mesh
-globe_grid_radius: f32 = globe_radius + globe_layer_separation * 2
-// globe_grid_radius: f32 = globe_radius + 0
+globe_grid_radius: f32 = globe_radius + globe_layer_separation
+// globe_grid_radius: f32 = globe_radius
 
 globe_init :: proc() {
 	shaders_ok: bool
@@ -57,19 +60,28 @@ globe_init :: proc() {
 		os.exit(-1)
 	}
 
-	globe_mesh = generate_uv_sphere(globe_rings * 2, globe_rings, globe_radius)
-	globe_init_layer(&globe_vao, &globe_mesh, globe_radius)
+	globe_ocean_mesh = generate_uv_sphere(
+		globe_grid_rings * 2,
+		globe_grid_rings,
+		globe_ocean_radius,
+	)
+	globe_init_layer(&globe_ocean_vao, &globe_ocean_mesh, globe_ocean_radius)
 
 	globe_land_mesh = globe_generate_land(
 		globe_land_rings * 2,
 		globe_land_rings,
 		globe_land_radius,
 		1,
-		globe_land_rings / 2 + 36,
+		globe_land_rings - globe_land_rings / globe_grid_rings * 2,
+		// globe_land_rings / 2 + 1,
 	)
 	globe_init_layer(&globe_land_vao, &globe_land_mesh, globe_land_radius)
 
-	globe_grid_mesh = globe_generate_grid(globe_rings * 2, globe_rings, globe_grid_radius)
+	globe_grid_mesh = globe_generate_grid(
+		globe_grid_rings * 2,
+		globe_grid_rings,
+		globe_grid_radius,
+	)
 	globe_init_layer(&globe_grid_vao, &globe_grid_mesh, globe_grid_radius)
 }
 
@@ -131,7 +143,7 @@ globe_draw :: proc() {
 	shader_set_mat4(globe_program, "projection", projection)
 	shader_set_mat4(globe_program, "model", model)
 
-	globe_draw_area(globe_vao, globe_mesh, {0.4, 0.9, 1, 1})
+	globe_draw_area(globe_ocean_vao, globe_ocean_mesh, {0.4, 0.9, 1, 1})
 	globe_draw_area(globe_land_vao, globe_land_mesh, {0.8, 0.6, 0.4, 1})
 	globe_draw_grid()
 }
@@ -404,7 +416,7 @@ globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 
 			index += indices_per_vertex
 
-			// if x == 0 {
+			// if x == 0 && y <= rings / 2 {
 			// 	a := vertices[bottom_left].position
 			// 	b := vertices[top_left].position
 			// 	c := vertices[bottom_right].position
@@ -414,11 +426,11 @@ globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 			// 	// sin_theta := f32(math.sin(theta))
 			// 	sin_theta := ring_len(y, rings)
 			// 	fmt.printfln(
-			// 		"%d: x %.0f, y %.0f",
+			// 		"%d: %.0f",
 			// 		y,
 			// 		// the distance is relative to the radius
-			// 		sphere_points_d(radius, a, c) * earth_radius,
-			// 		sin_theta * 626,
+			// 		// sphere_points_d(radius, a, c) * earth_radius,
+			// 		sin_theta * 40960,
 			// 	)
 			// }
 		}
