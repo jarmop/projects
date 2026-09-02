@@ -16,7 +16,6 @@ Mat4 :: matrix[4, 4]f32
 
 Vertex :: struct {
 	position: Vec3,
-	normal:   Vec3,
 	uv:       Vec2,
 }
 
@@ -117,13 +116,9 @@ globe_init_layer :: proc(vao: ^u32, mesh: ^Mesh, radius: f32) {
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, stride, uintptr(0))
 	gl.EnableVertexAttribArray(0)
 
-	// normal
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, stride, uintptr(12))
-	gl.EnableVertexAttribArray(1)
-
 	// UV
-	gl.VertexAttribPointer(2, 2, gl.FLOAT, gl.FALSE, stride, uintptr(24))
-	gl.EnableVertexAttribArray(2)
+	gl.VertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, stride, uintptr(12))
+	gl.EnableVertexAttribArray(1)
 
 	gl.BindVertexArray(0)
 }
@@ -201,11 +196,8 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 
 			position := Vec3{px * radius, py * radius, pz * radius}
 
-			normal := Vec3{px, py, pz}
-
 			vertices[vertex_index] = Vertex {
 				position = position,
-				normal   = normal,
 				uv       = Vec2{u, v},
 			}
 
@@ -288,11 +280,8 @@ globe_generate_land :: proc(
 
 			position := Vec3{px * radius, py * radius, pz * radius}
 
-			normal := Vec3{px, py, pz}
-
 			vertices[vertex_index] = Vertex {
 				position = position,
-				normal   = normal,
 				uv       = Vec2{u, v},
 			}
 
@@ -371,13 +360,8 @@ globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 
 			position := Vec3{px * radius, py * radius, pz * radius}
 
-			// For a sphere centered at the origin,
-			// the normalized position is the normal.
-			normal := Vec3{px, py, pz}
-
 			vertices[vertex_index] = Vertex {
 				position = position,
-				normal   = normal,
 				uv       = Vec2{u, v},
 			}
 
