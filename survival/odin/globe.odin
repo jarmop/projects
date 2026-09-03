@@ -24,43 +24,107 @@ Mesh :: struct {
 	indices:  []u32,
 }
 
-earth_radius: f32 = 6371
-earth_circumference: f32 = 40960
+earth_radius: f32 : 6371
+earth_circumference: f32 : 40960
 
 // globe_layer_separation: f32 = 0.01
-globe_layer_separation: f32 = 0.0006
+globe_layer_separation: f32 : 0.0006
 
 globe_program: u32
-globe_radius: f32 = 1
+globe_radius: f32 : 1
 globe_spin_angle: f32 = 90
 globe_tilt_angle: f32 = 72
 // globe_tilt_angle: f32 = 0
-globe_max_tilt_abs: f32 = 90
+globe_max_tilt_abs: f32 : 90
 
 globe_ocean_vao: u32
 globe_ocean_mesh: Mesh
-globe_ocean_radius: f32 = globe_radius - globe_layer_separation
+globe_ocean_radius: f32 : globe_radius - globe_layer_separation
 
-globe_land_segments := 1024
-globe_land_rings := globe_land_segments / 2
+globe_land_segments :: 1024
+globe_land_rings :: globe_land_segments / 2
 globe_land_vao: u32
 globe_land_mesh: Mesh
-globe_land_radius: f32 = globe_radius
+globe_land_radius: f32 : globe_radius
 
-globe_edit_area_segments := globe_land_segments
-globe_edit_area_rings := globe_land_rings
+globe_edit_area_segments :: globe_land_segments
+globe_edit_area_rings :: globe_land_rings
 globe_edit_area_vao: u32
 globe_edit_area_mesh: Mesh
-globe_edit_area_radius: f32 = globe_land_radius + globe_layer_separation
+globe_edit_area_radius: f32 : globe_land_radius + globe_layer_separation
 // globe_edit_area_radius: f32 = globe_ocean_radius
 
-globe_grid_rings := 32
+globe_grid_rings :: 32
 globe_grid_vao: u32
 globe_grid_mesh: Mesh
-globe_grid_radius: f32 = globe_radius + globe_layer_separation
+globe_grid_radius: f32 : globe_radius + globe_layer_separation
 // globe_grid_radius: f32 = globe_radius
 
+// Width in segments
+tile_width_per_ring: [globe_land_rings]int
+
+globe_init_tiles :: proc() {
+	// fmt.printfln("Ring\tR len\tT width 1\tT width 2\t Final W\tFinal T")
+	// fmt.printfln("-------------------------")
+	rings := globe_land_rings
+	segs := globe_land_segments
+	segs_per_tile := 1
+	step := 1
+	// for y in 0 ..< globe_land_rings {
+	start_y := rings / 2
+	tile_width_per_ring[0] = 1
+	tile_width_per_ring[start_y] = 1
+	for i := 0; i < start_y; i += step {
+		y := start_y - i
+		ring_length_bottom := ring_len(y, rings) * earth_circumference
+		ring_length_top := ring_len(y - step, rings) * earth_circumference
+
+		tile_width_bottom := ring_length_bottom / f32(segs)
+		tile_width_top := ring_length_top / f32(segs)
+
+		tile_width_bottom2 := ring_length_bottom / (f32(segs) / 2)
+		tile_width_top2 := ring_length_top / (f32(segs) / 2)
+
+		diff1 := math.abs(40 - (tile_width_bottom + tile_width_top) / 2)
+		diff2 := math.abs(40 - (tile_width_bottom2 + tile_width_top2) / 2)
+
+		conc_width := tile_width_bottom
+		conc_tiles := int(ring_length_bottom / tile_width_bottom)
+		if diff2 < diff1 {
+			conc_width = tile_width_bottom2
+			conc_tiles = int(ring_length_bottom / tile_width_bottom2)
+			segs = segs / 2
+		}
+
+		// fmt.printfln(
+		// 	"%d:\t%.0f\t%.2f - %.2f\t%.2f - %.2f\t%.2f\t%d",
+		// 	y,
+		// 	ring_length_bottom,
+		// 	tile_width_bottom,
+		// 	tile_width_top,
+		// 	tile_width_bottom2,
+		// 	tile_width_top2,
+		// 	conc_width,
+		// 	conc_tiles,
+		// )
+
+		tile_width := globe_land_segments / conc_tiles
+
+		// fmt.println(y, segs, conc_tiles, tile_width)
+
+		tile_width_per_ring[start_y + i] = tile_width
+		tile_width_per_ring[y] = tile_width
+	}
+
+	// fmt.println(tile_width_per_ring)
+	// for width, y in tile_width_per_ring {
+	// 	fmt.println(y, width)
+	// }
+}
+
 globe_init :: proc() {
+	globe_init_tiles()
+
 	shaders_ok: bool
 	globe_program, shaders_ok = gl.load_shaders_file("./shaders/globe.vs", "./shaders/globe.fs")
 	if !shaders_ok {
@@ -362,7 +426,7 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) 
 	// fmt.printfln("Ring\tR len\tT width 1\tT width 2\t Final W\tFinal T")
 	// fmt.printfln("-------------------------")
 	// segs := segments
-	// step := 8
+	// step := 1
 	// tile_size := earth_circumference / f32(segments)
 	// for y := 256; y > 0; y -= step {
 	// 	ring_length_bottom := ring_len(y, rings) * earth_circumference
