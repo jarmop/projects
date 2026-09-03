@@ -33,8 +33,8 @@ globe_layer_separation: f32 = 0.0006
 globe_program: u32
 globe_radius: f32 = 1
 globe_spin_angle: f32 = 90
-// globe_tilt_angle: f32 = 80
-globe_tilt_angle: f32 = 0
+globe_tilt_angle: f32 = 72
+// globe_tilt_angle: f32 = 0
 globe_max_tilt_abs: f32 = 90
 
 globe_ocean_vao: u32
@@ -46,6 +46,13 @@ globe_land_rings := globe_land_segments / 2
 globe_land_vao: u32
 globe_land_mesh: Mesh
 globe_land_radius: f32 = globe_radius
+
+globe_edit_area_segments := globe_land_segments
+globe_edit_area_rings := globe_land_rings
+globe_edit_area_vao: u32
+globe_edit_area_mesh: Mesh
+globe_edit_area_radius: f32 = globe_land_radius + globe_layer_separation
+// globe_edit_area_radius: f32 = globe_ocean_radius
 
 globe_grid_rings := 32
 globe_grid_vao: u32
@@ -68,8 +75,33 @@ globe_init :: proc() {
 	)
 	globe_init_layer(&globe_ocean_vao, &globe_ocean_mesh, globe_ocean_radius)
 
-	globe_land_mesh = globe_generate_land(globe_land_segments, globe_land_rings, globe_land_radius)
+	land: Land = {
+		// start_ring    = globe_land_rings / 2 + 1,
+		start_ring    = globe_land_rings - globe_land_rings / 10,
+		start_segment = globe_land_segments - 2,
+		rows          = []LandRow {
+			{start = 0, width = 2},
+			{start = 1, width = 3},
+			{start = 0, width = 5},
+			{start = 1, width = 2},
+		},
+	}
+
+	globe_land_mesh = globe_generate_land(
+		globe_land_segments,
+		globe_land_rings,
+		globe_land_radius,
+		land,
+	)
 	globe_init_layer(&globe_land_vao, &globe_land_mesh, globe_land_radius)
+
+	globe_edit_area_mesh = globe_generate_edit_area(
+		globe_edit_area_segments,
+		globe_edit_area_rings,
+		globe_edit_area_radius,
+		land,
+	)
+	globe_init_layer(&globe_edit_area_vao, &globe_edit_area_mesh, globe_edit_area_radius)
 
 	globe_grid_mesh = globe_generate_grid(
 		globe_grid_rings * 2,
@@ -135,6 +167,7 @@ globe_draw :: proc() {
 
 	globe_draw_area(globe_ocean_vao, globe_ocean_mesh, {0.4, 0.9, 1, 1})
 	globe_draw_area(globe_land_vao, globe_land_mesh, {0.8, 0.6, 0.4, 1})
+	globe_draw_edit_area()
 	globe_draw_grid()
 }
 
@@ -143,6 +176,12 @@ globe_draw_area :: proc(vao: u32, mesh: Mesh, color: Vec4) {
 	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 	shader_set_vec4(globe_program, "color", color)
 	gl.DrawElements(gl.TRIANGLES, i32(len(mesh.indices)), gl.UNSIGNED_INT, nil)
+}
+
+globe_draw_edit_area :: proc() {
+	gl.BindVertexArray(globe_edit_area_vao)
+	shader_set_vec4(globe_program, "color", glsl.vec4({0, 0, 0, 1}))
+	gl.DrawElements(gl.LINES, i32(len(globe_edit_area_mesh.indices)), gl.UNSIGNED_INT, nil)
 }
 
 globe_draw_grid :: proc() {
@@ -226,27 +265,21 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 	return Mesh{vertices = vertices, indices = indices}
 }
 
-globe_generate_land :: proc(segments: int, rings: int, radius: f32) -> Mesh {
-	land: Land = {
-		start_ring    = globe_land_rings / globe_grid_rings * 16 + 1,
-		start_segment = segments - 2,
-		rows          = []LandRow {
-			{start = 0, width = 2},
-			{start = 1, width = 3},
-			{start = 0, width = 5},
-			{start = 1, width = 2},
-		},
+get_land_width :: proc(land: Land) -> int {
+	width := 0
+	for row in land.rows {
+		row_reach := row.start + row.width
+		width = max(width, row_reach)
 	}
+	return width
+}
 
+globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) -> Mesh {
 	area_start_ring := land.start_ring
 	area_start_segment := land.start_segment
 
 	area_rows := len(land.rows)
-	area_cols := 0
-	for row in land.rows {
-		row_reach := row.start + row.width
-		area_cols = max(area_cols, row_reach)
-	}
+	area_cols := get_land_width(land)
 
 	// fmt.println("area_start_ring", area_start_ring)
 	// fmt.println("area_rows", area_rows)
@@ -368,6 +401,104 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 	return Mesh{vertices = vertices, indices = indices}
 }
 
+globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: Land) -> Mesh {
+	buffer := 10
+	bottom_buffer := min(land.start_ring, buffer)
+	top_buffer := min(rings - land.start_ring + len(land.rows), buffer)
+	land_width := get_land_width(land)
+
+	edit_area_start_segment := land.start_segment - buffer
+	edit_area_start_ring := land.start_ring - bottom_buffer
+	edit_area_width := land_width + buffer * 2
+	edit_area_height := bottom_buffer + len(land.rows) + top_buffer
+
+	vertex_count := (edit_area_width + 1) * (edit_area_height + 1)
+
+	vertices := make([]Vertex, vertex_count)
+
+	vertex_index := 0
+
+	for y in edit_area_start_ring ..= edit_area_start_ring + edit_area_height {
+		// 0 = south pole
+		// 1 = nouth pole
+
+		v := f32(y) / f32(rings)
+
+		theta := v * math.PI
+
+		sin_theta := f32(math.sin(theta))
+		cos_theta := f32(math.cos(theta))
+
+		for x in edit_area_start_segment ..= edit_area_start_segment + edit_area_width {
+			u := f32(x) / f32(segments)
+
+			phi := u * 2.0 * math.PI
+
+			sin_phi := f32(math.sin(phi))
+			cos_phi := f32(math.cos(phi))
+
+			// Unit sphere position
+			px := -sin_theta * cos_phi
+			py := -cos_theta
+			pz := sin_theta * sin_phi
+
+			position := Vec3{px * radius, py * radius, pz * radius}
+
+			vertices[vertex_index] = Vertex {
+				position = position,
+				uv       = Vec2{u, v},
+			}
+
+			vertex_index += 1
+		}
+	}
+
+	indices_per_vertex := 4
+
+	// The middle half of the rings use all the segments.
+	// The rest of the rings (closer to the poles) use only half of the segments.
+	// index_count := (segments * rings / 2 + segments / 2 * rings / 2) * indices_per_vertex
+
+	index_count :=
+		edit_area_width * edit_area_height * indices_per_vertex +
+		(edit_area_width + edit_area_height) * 2
+	// fmt.println(index_count)
+
+	indices := make([]u32, index_count)
+
+	index := 0
+
+	for y in 0 ..< edit_area_height {
+		for x in 0 ..< edit_area_width {
+			bottom_left := u32(y * (edit_area_width + 1) + x)
+			bottom_right := bottom_left + 1
+			top_left := u32((y + 1) * (edit_area_width + 1) + x)
+			top_right := top_left + 1
+
+			indices[index + 0] = top_left
+			indices[index + 1] = bottom_left
+			indices[index + 2] = bottom_left
+			indices[index + 3] = bottom_right
+			index += indices_per_vertex
+
+			if y == edit_area_height - 1 {
+				indices[index + 0] = top_left
+				indices[index + 1] = top_right
+				index += 2
+			}
+
+			if x == edit_area_width - 1 {
+				indices[index + 0] = top_right
+				indices[index + 1] = bottom_right
+				index += 2
+
+			}
+		}
+	}
+
+	return Mesh{vertices = vertices, indices = indices}
+}
+
 globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 	// vertex_count := (segments1 + 1) * (rings1) + (segments2 + 1) * (rings2 + 1)
 	vertex_count := (segments + 1) * (rings + 1)
@@ -444,42 +575,7 @@ globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 			indices[index + 3] = bottom_right
 
 			index += indices_per_vertex
-
-			// if x == 0 && y <= rings / 2 {
-			// 	a := vertices[bottom_left].position
-			// 	b := vertices[top_left].position
-			// 	c := vertices[bottom_right].position
-
-			// 	// v := f32(y) / f32(rings)
-			// 	// theta := v * math.PI
-			// 	// sin_theta := f32(math.sin(theta))
-			// 	sin_theta := ring_len(y, rings)
-			// 	fmt.printfln(
-			// 		"%d: %.0f",
-			// 		y,
-			// 		// the distance is relative to the radius
-			// 		// sphere_points_d(radius, a, c) * earth_radius,
-			// 		sin_theta * 40960,
-			// 	)
-			// }
 		}
-		// } else {
-		// 	for x := 0; x < segments; x += 2 {
-		// 		bottom_left := u32(y * (segments + 1) + x)
-		// 		bottom_right := bottom_left + 2
-		// 		top_left := u32((y + 1) * (segments + 1) + x)
-		// 		top_right := top_left + 2
-
-		// 		// Meridian
-		// 		indices[index + 0] = top_left
-		// 		indices[index + 1] = bottom_left
-		// 		// Parallel
-		// 		indices[index + 2] = bottom_left
-		// 		indices[index + 3] = bottom_right
-
-		// 		index += indices_per_vertex
-		// 	}
-		// }
 	}
 
 	return Mesh{vertices = vertices, indices = indices}
