@@ -4,12 +4,12 @@ import "base:runtime"
 import "core:fmt"
 import "vendor:glfw"
 
-Area :: struct {
+DashboardArea :: struct {
 	start: [2]f32,
 	end:   [2]f32,
 }
 
-year_button_area: Area
+year_button_area: DashboardArea
 
 Dashboard :: struct {
 	year:       Table,
@@ -112,6 +112,6 @@ dashboard_mouse_button_callback :: proc(window: glfw.WindowHandle, button, actio
 	}
 }
 
-within :: proc(a: Area, x, y: f32) -> bool {
+within :: proc(a: DashboardArea, x, y: f32) -> bool {
 	return x > a.start.x && x < a.end.x && y > a.start.y && y < a.end.y
 }

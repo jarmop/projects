@@ -227,22 +227,45 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 }
 
 globe_generate_land :: proc(segments: int, rings: int, radius: f32) -> Mesh {
-	area_start_segment := 1
-	area_start_ring := globe_land_rings / 2 + 1
-	area_rows := 2
-	area_cols := 2
+	land: Land = {
+		start_ring    = globe_land_rings / globe_grid_rings * 16 + 1,
+		start_segment = segments - 2,
+		rows          = []LandRow {
+			{start = 0, width = 2},
+			{start = 1, width = 3},
+			{start = 0, width = 5},
+			{start = 1, width = 2},
+		},
+	}
 
-	indices_per_vertex := 6
+	area_start_ring := land.start_ring
+	area_start_segment := land.start_segment
+
+	area_rows := len(land.rows)
+	area_cols := 0
+	for row in land.rows {
+		row_reach := row.start + row.width
+		area_cols = max(area_cols, row_reach)
+	}
+
+	// fmt.println("area_start_ring", area_start_ring)
+	// fmt.println("area_rows", area_rows)
+	// fmt.println("area_cols", area_cols)
+
+	indices_per_tile := 6
 
 	vertex_count := (area_rows + 1) * (area_cols + 1)
-	index_count := area_rows * area_cols * indices_per_vertex
+	index_count := 0
+	for row, y in land.rows {
+		index_count += row.width * indices_per_tile
+	}
+	// fmt.println("index_count", index_count)
 
 	vertices := make([]Vertex, vertex_count)
 	indices := make([]u32, index_count)
 
 	vertex_index := 0
 
-	// for y in 0 ..= rings {
 	for y in area_start_ring ..= area_start_ring + area_rows {
 		// fmt.println(y)
 		// 0 = south pole
@@ -282,8 +305,8 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 
 	index := 0
 
-	for y in 0 ..< area_rows {
-		for x in 0 ..< area_cols {
+	for row, y in land.rows {
+		for x in row.start ..< row.start + row.width {
 			bottom_left := u32(y * (area_cols + 1) + x)
 			bottom_right := bottom_left + 1
 			top_left := u32((y + 1) * (area_cols + 1) + x)
@@ -299,48 +322,48 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 			indices[index + 4] = top_left
 			indices[index + 5] = top_right
 
-			index += indices_per_vertex
+			index += indices_per_tile
 		}
 	}
 
-	fmt.printfln("Ring\tR len\tT width 1\tT width 2\t Final W\tFinal T")
-	fmt.printfln("-------------------------")
-	segs := segments
-	step := 8
-	tile_size := earth_circumference / f32(segments)
-	for y := 256; y > 0; y -= step {
-		ring_length_bottom := ring_len(y, rings) * earth_circumference
-		ring_length_top := ring_len(y - step, rings) * earth_circumference
+	// fmt.printfln("Ring\tR len\tT width 1\tT width 2\t Final W\tFinal T")
+	// fmt.printfln("-------------------------")
+	// segs := segments
+	// step := 8
+	// tile_size := earth_circumference / f32(segments)
+	// for y := 256; y > 0; y -= step {
+	// 	ring_length_bottom := ring_len(y, rings) * earth_circumference
+	// 	ring_length_top := ring_len(y - step, rings) * earth_circumference
 
-		tile_width_bottom := ring_length_bottom / f32(segs)
-		tile_width_top := ring_length_top / f32(segs)
+	// 	tile_width_bottom := ring_length_bottom / f32(segs)
+	// 	tile_width_top := ring_length_top / f32(segs)
 
-		tile_width_bottom2 := ring_length_bottom / (f32(segs) / 2)
-		tile_width_top2 := ring_length_top / (f32(segs) / 2)
+	// 	tile_width_bottom2 := ring_length_bottom / (f32(segs) / 2)
+	// 	tile_width_top2 := ring_length_top / (f32(segs) / 2)
 
-		diff1 := math.abs(40 - (tile_width_bottom + tile_width_top) / 2)
-		diff2 := math.abs(40 - (tile_width_bottom2 + tile_width_top2) / 2)
+	// 	diff1 := math.abs(40 - (tile_width_bottom + tile_width_top) / 2)
+	// 	diff2 := math.abs(40 - (tile_width_bottom2 + tile_width_top2) / 2)
 
-		conc_width := tile_width_bottom
-		conc_tiles := ring_length_bottom / tile_width_bottom
-		if diff2 < diff1 {
-			conc_width = tile_width_bottom2
-			conc_tiles = ring_length_bottom / tile_width_bottom2
-			segs = segs / 2
-		}
+	// 	conc_width := tile_width_bottom
+	// 	conc_tiles := ring_length_bottom / tile_width_bottom
+	// 	if diff2 < diff1 {
+	// 		conc_width = tile_width_bottom2
+	// 		conc_tiles = ring_length_bottom / tile_width_bottom2
+	// 		segs = segs / 2
+	// 	}
 
-		fmt.printfln(
-			"%d:\t%.0f\t%.2f - %.2f\t%.2f - %.2f\t%.2f\t%.2f",
-			y,
-			ring_length_bottom,
-			tile_width_bottom,
-			tile_width_top,
-			tile_width_bottom2,
-			tile_width_top2,
-			conc_width,
-			conc_tiles,
-		)
-	}
+	// 	fmt.printfln(
+	// 		"%d:\t%.0f\t%.2f - %.2f\t%.2f - %.2f\t%.2f\t%.2f",
+	// 		y,
+	// 		ring_length_bottom,
+	// 		tile_width_bottom,
+	// 		tile_width_top,
+	// 		tile_width_bottom2,
+	// 		tile_width_top2,
+	// 		conc_width,
+	// 		conc_tiles,
+	// 	)
+	// }
 
 	return Mesh{vertices = vertices, indices = indices}
 }
