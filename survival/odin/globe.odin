@@ -68,14 +68,7 @@ globe_init :: proc() {
 	)
 	globe_init_layer(&globe_ocean_vao, &globe_ocean_mesh, globe_ocean_radius)
 
-	globe_land_mesh = globe_generate_land(
-		globe_land_segments,
-		globe_land_rings,
-		globe_land_radius,
-		1,
-		// globe_land_rings - globe_land_rings / globe_grid_rings * 2,
-		globe_land_rings / 2 + 1,
-	)
+	globe_land_mesh = globe_generate_land(globe_land_segments, globe_land_rings, globe_land_radius)
 	globe_init_layer(&globe_land_vao, &globe_land_mesh, globe_land_radius)
 
 	globe_grid_mesh = globe_generate_grid(
@@ -233,19 +226,16 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 	return Mesh{vertices = vertices, indices = indices}
 }
 
-globe_generate_land :: proc(
-	segments: int,
-	rings: int,
-	radius: f32,
-	segment: int,
-	ring: int,
-) -> Mesh {
+globe_generate_land :: proc(segments: int, rings: int, radius: f32) -> Mesh {
+	area_start_segment := 1
+	area_start_ring := globe_land_rings / 2 + 1
+	area_rows := 2
+	area_cols := 2
+
 	indices_per_vertex := 6
 
-	// vertex_count := (segments + 1) * (rings + 1)
-	vertex_count := 4
-	// index_count := segments * rings * indices_per_vertex
-	index_count := 6
+	vertex_count := (area_rows + 1) * (area_cols + 1)
+	index_count := area_rows * area_cols * indices_per_vertex
 
 	vertices := make([]Vertex, vertex_count)
 	indices := make([]u32, index_count)
@@ -253,7 +243,7 @@ globe_generate_land :: proc(
 	vertex_index := 0
 
 	// for y in 0 ..= rings {
-	for y in ring ..= ring + 1 {
+	for y in area_start_ring ..= area_start_ring + area_rows {
 		// fmt.println(y)
 		// 0 = south pole
 		// 1 = nouth pole
@@ -264,8 +254,7 @@ globe_generate_land :: proc(
 		sin_theta := f32(math.sin(theta))
 		cos_theta := f32(math.cos(theta))
 
-		// for x in 0 ..= segments {
-		for x in segment ..= segment + 1 {
+		for x in area_start_segment ..= area_start_segment + area_cols {
 			// fmt.println(x)
 
 			u := f32(x) / f32(segments)
@@ -293,13 +282,11 @@ globe_generate_land :: proc(
 
 	index := 0
 
-	// for y in 0 ..< rings {
-	// for y in rings / 2 ..= rings / 2 {
-	for y in 0 ..= 0 {
-		for x in 0 ..= 0 {
-			bottom_left := u32(y * (1 + 1) + x)
+	for y in 0 ..< area_rows {
+		for x in 0 ..< area_cols {
+			bottom_left := u32(y * (area_cols + 1) + x)
 			bottom_right := bottom_left + 1
-			top_left := u32((y + 1) * (1 + 1) + x)
+			top_left := u32((y + 1) * (area_cols + 1) + x)
 			top_right := top_left + 1
 
 			// First triangle
@@ -324,16 +311,16 @@ globe_generate_land :: proc(
 	for y := 256; y > 0; y -= step {
 		ring_length_bottom := ring_len(y, rings) * earth_circumference
 		ring_length_top := ring_len(y - step, rings) * earth_circumference
+
 		tile_width_bottom := ring_length_bottom / f32(segs)
 		tile_width_top := ring_length_top / f32(segs)
 
 		tile_width_bottom2 := ring_length_bottom / (f32(segs) / 2)
 		tile_width_top2 := ring_length_top / (f32(segs) / 2)
-		// tile_width3 := ring_length / (f32(seg) / 4)
 
 		diff1 := math.abs(40 - (tile_width_bottom + tile_width_top) / 2)
 		diff2 := math.abs(40 - (tile_width_bottom2 + tile_width_top2) / 2)
-		// conc := diff1 < diff2 ? tile_width_bottom : tile_width_bottom2
+
 		conc_width := tile_width_bottom
 		conc_tiles := ring_length_bottom / tile_width_bottom
 		if diff2 < diff1 {
@@ -354,12 +341,6 @@ globe_generate_land :: proc(
 			conc_tiles,
 		)
 	}
-
-	// for i in vertices {
-	// 	fmt.println(i.position)
-	// }
-	// fmt.println("*********")
-	// fmt.println(indices)
 
 	return Mesh{vertices = vertices, indices = indices}
 }
