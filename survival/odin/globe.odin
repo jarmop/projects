@@ -33,8 +33,7 @@ globe_layer_separation: f32 : 0.0006
 globe_program: u32
 globe_radius: f32 : 1
 globe_spin_angle: f32 = 90
-globe_tilt_angle: f32 = 72
-// globe_tilt_angle: f32 = 0
+globe_tilt_angle: f32 = 45
 globe_max_tilt_abs: f32 : 90
 
 globe_ocean_vao: u32
@@ -74,6 +73,8 @@ globe_init_tiles :: proc() {
 	start_y := rings / 2
 	tile_width_per_ring[0] = 1
 	tile_width_per_ring[start_y] = 1
+	tile_width := 0
+	max_tile_width := 8
 	for i := 0; i < start_y; i += step {
 		y := start_y - i
 		ring_length_bottom := ring_len(y, rings) * earth_circumference
@@ -90,10 +91,15 @@ globe_init_tiles :: proc() {
 
 		conc_width := tile_width_bottom
 		conc_tiles := int(ring_length_bottom / tile_width_bottom)
+
 		if diff2 < diff1 {
 			conc_width = tile_width_bottom2
 			conc_tiles = int(ring_length_bottom / tile_width_bottom2)
 			segs = segs / 2
+		}
+
+		if tile_width < max_tile_width {
+			tile_width = globe_land_segments / conc_tiles
 		}
 
 		// fmt.printfln(
@@ -108,15 +114,15 @@ globe_init_tiles :: proc() {
 		// 	conc_tiles,
 		// )
 
-		tile_width := globe_land_segments / conc_tiles
+		// tile_width = globe_land_segments / conc_tiles
 
 		// fmt.println(y, segs, conc_tiles, tile_width)
+		// fmt.println(y, globe_land_segments, conc_tiles, tile_width)
 
 		tile_width_per_ring[start_y + i] = tile_width
 		tile_width_per_ring[y] = tile_width
 	}
 
-	// fmt.println(tile_width_per_ring)
 	// for width, y in tile_width_per_ring {
 	// 	fmt.println(y, width)
 	// }
@@ -140,8 +146,9 @@ globe_init :: proc() {
 	globe_init_layer(&globe_ocean_vao, &globe_ocean_mesh, globe_ocean_radius)
 
 	land: Land = {
-		// start_ring    = globe_land_rings / 2 + 1,
-		start_ring    = globe_land_rings - globe_land_rings / 10,
+		start_ring    = 385,
+		// start_ring    = globe_land_rings - globe_land_rings / 5,
+
 		// Need to make sure the start segment is not inside of a tile
 		// start_segment = globe_land_segments - 2,
 		start_segment = 0,
@@ -494,9 +501,15 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) 
 }
 
 globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: Land) -> Mesh {
-	buffer := 10
+	// pole_rings := 10
+	// max_editable_ring := rings - pole_rings
+
+	buffer := 5
 	bottom_buffer := min(land.start_ring, buffer)
+	// bottom_buffer := min(land.start_ring, 60)
 	top_buffer := min(rings - land.start_ring + len(land.rows), buffer)
+	// top_buffer := min(rings - (land.start_ring + len(land.rows)), 80)
+	// top_buffer := min(max_editable_ring - (land.start_ring + len(land.rows)), 20)
 	land_width := get_land_width(land)
 	// fmt.println("land_width", land_width)
 
@@ -535,6 +548,7 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 
 		sin_theta := f32(math.sin(theta))
 		cos_theta := f32(math.cos(theta))
+		// fmt.println(edit_area_start_segment, edit_area_segments)
 
 		for x in edit_area_start_segment ..= edit_area_start_segment + edit_area_segments {
 			u := f32(x) / f32(segments)
@@ -568,7 +582,7 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 		ring := edit_area_start_ring + y
 		vertices_per_tile := tile_width_per_ring[ring]
 		row_width := vertices_per_tile
-		// fmt.println(vertices_per_tile)
+		// fmt.println(ring, vertices_per_tile)
 		for x in 0 ..< edit_area_width {
 			bottom_left := u32(y * vertices_per_row + x * vertices_per_tile)
 			bottom_right := bottom_left + u32(vertices_per_tile)
