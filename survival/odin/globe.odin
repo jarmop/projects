@@ -142,7 +142,9 @@ globe_init :: proc() {
 	land: Land = {
 		// start_ring    = globe_land_rings / 2 + 1,
 		start_ring    = globe_land_rings - globe_land_rings / 10,
-		start_segment = globe_land_segments - 2,
+		// Need to make sure the start segment is not inside of a tile
+		// start_segment = globe_land_segments - 2,
+		start_segment = 0,
 		rows          = []LandRow {
 			{start = 0, width = 2},
 			{start = 1, width = 3},
@@ -329,6 +331,7 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 	return Mesh{vertices = vertices, indices = indices}
 }
 
+// Returns the width in tiles
 get_land_width :: proc(land: Land) -> int {
 	width := 0
 	for row in land.rows {
@@ -343,23 +346,36 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) 
 	area_start_segment := land.start_segment
 
 	area_rows := len(land.rows)
-	area_cols := get_land_width(land)
+	area_cols_tiles := get_land_width(land)
 
 	// fmt.println("area_start_ring", area_start_ring)
 	// fmt.println("area_rows", area_rows)
 	// fmt.println("area_cols", area_cols)
 
 	indices_per_tile := 6
+	// vertex_count := (area_rows + 1) * (area_cols_tiles + 1)
 
-	vertex_count := (area_rows + 1) * (area_cols + 1)
 	index_count := 0
-	for row, y in land.rows {
+	area_cols_segments := 0
+	for row, i in land.rows {
+		// for y := area_start_ring; y < area_start_ring + len(land.rows); y += 1 {
+		ring := area_start_ring + i
 		index_count += row.width * indices_per_tile
+		segments_in_the_row := tile_width_per_ring[ring] * area_cols_tiles
+		// fmt.println(segments_in_the_row, tile_width_per_ring[ring], area_cols_tiles)
+		// fmt.println(ring, segments_in_the_row, tile_width_per_ring[ring], area_cols_tiles)
+		if segments_in_the_row > area_cols_segments {
+			area_cols_segments = segments_in_the_row
+		}
 	}
+	vertex_count := (area_rows + 1) * (area_cols_segments + 1)
+
 	// fmt.println("index_count", index_count)
 
 	vertices := make([]Vertex, vertex_count)
 	indices := make([]u32, index_count)
+
+	// fmt.println(vertex_count)
 
 	vertex_index := 0
 
@@ -374,7 +390,12 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) 
 		sin_theta := f32(math.sin(theta))
 		cos_theta := f32(math.cos(theta))
 
-		for x in area_start_segment ..= area_start_segment + area_cols {
+		// area_cols_segments := tile_width_per_ring[y] * area_cols_tiles
+		// segment := area_start_segment
+
+		// Either need to use the area_cols_segments here or make the vertices span multiple segments
+		// for x in area_start_segment ..= area_start_segment + area_cols_tiles {
+		for x in area_start_segment ..= area_start_segment + area_cols_segments {
 			// fmt.println(x)
 
 			u := f32(x) / f32(segments)
@@ -403,11 +424,18 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) 
 	index := 0
 
 	for row, y in land.rows {
+		// vertices_per_row := area_cols_tiles + 1
+		vertices_per_row := area_cols_segments + 1
+		ring := area_start_ring + y
+		vertices_per_tile := tile_width_per_ring[ring]
+		// fmt.println(vertices_per_tile)
 		for x in row.start ..< row.start + row.width {
-			bottom_left := u32(y * (area_cols + 1) + x)
-			bottom_right := bottom_left + 1
-			top_left := u32((y + 1) * (area_cols + 1) + x)
-			top_right := top_left + 1
+			bottom_left := u32(y * vertices_per_row + x * vertices_per_tile)
+			// bottom_right := bottom_left + 1
+			bottom_right := bottom_left + u32(vertices_per_tile)
+			top_left := u32((y + 1) * vertices_per_row + x * vertices_per_tile)
+			// top_right := top_left + 1
+			top_right := top_left + u32(vertices_per_tile)
 
 			// First triangle
 			indices[index + 0] = bottom_left
