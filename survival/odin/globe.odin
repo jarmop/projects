@@ -33,7 +33,7 @@ globe_layer_separation: f32 : 0.0006
 globe_program: u32
 globe_radius: f32 : 1
 globe_spin_angle: f32 = 90
-globe_tilt_angle: f32 = -45
+globe_tilt_angle: f32 = -60
 globe_max_tilt_abs: f32 : 90
 
 globe_ocean_vao: u32
@@ -505,7 +505,7 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 	max_editable_ring := rings - pole_rings
 
 	buffer := 10
-	buffer_y := 20
+	buffer_y := 10
 	// bottom_buffer := min(land.start_ring, buffer)
 	bottom_buffer := min(land.start_ring - pole_rings, buffer_y)
 	// bottom_buffer := min(land.start_ring, 60)
@@ -522,9 +522,9 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 	// fmt.println("edit_area_width", edit_area_width)
 
 	indices_per_vertex := 4
-	index_count :=
-		edit_area_width * edit_area_height * indices_per_vertex +
-		(edit_area_width + edit_area_height) * 2
+	// index_count :=
+	// 	edit_area_width * edit_area_height * indices_per_vertex +
+	// 	(edit_area_width + edit_area_height) * 2
 	max_segments_per_tile := 0
 	for ring in edit_area_start_ring ..< edit_area_start_ring + edit_area_height {
 		segments_per_tile := tile_width_per_ring[ring]
@@ -534,6 +534,19 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 	edit_area_start_segment := land.start_segment - buffer * max_segments_per_tile
 	edit_area_segments := edit_area_width * max_segments_per_tile
 
+	// index_count := (edit_area_width + edit_area_height) * 2
+	index_count := edit_area_height * 2
+	// index_count := 0
+	tiles_per_final_row := 0
+	for ring in edit_area_start_ring ..< edit_area_start_ring + edit_area_height {
+		segments_per_tile := tile_width_per_ring[ring]
+		tiles_per_row := edit_area_segments / segments_per_tile
+		index_count += tiles_per_row * indices_per_vertex
+		tiles_per_final_row = tiles_per_row
+	}
+	index_count += tiles_per_final_row * 2
+
+	fmt.println(index_count)
 	vertex_count := (edit_area_segments + 1) * (edit_area_height + 1)
 
 	indices := make([]u32, index_count)
@@ -584,9 +597,16 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 		vertices_per_row := edit_area_segments + 1
 		ring := edit_area_start_ring + y
 		vertices_per_tile := tile_width_per_ring[ring]
-		row_width := vertices_per_tile
+
+		segments_per_tile := tile_width_per_ring[ring]
+		tiles_per_row := edit_area_segments / segments_per_tile
+
+		// row_width := vertices_per_tile
 		// fmt.println(ring, vertices_per_tile)
-		for x in 0 ..< edit_area_width {
+		// for x in 0 ..< edit_area_width {
+		// fmt.println(y, tiles_per_row)
+		fmt.println(y, edit_area_height)
+		for x in 0 ..< tiles_per_row {
 			bottom_left := u32(y * vertices_per_row + x * vertices_per_tile)
 			bottom_right := bottom_left + u32(vertices_per_tile)
 			top_left := u32((y + 1) * vertices_per_row + x * vertices_per_tile)
@@ -604,7 +624,8 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 				index += 2
 			}
 
-			if x == edit_area_width - 1 {
+			// if x == edit_area_width - 1 {
+			if x == tiles_per_row - 1 {
 				indices[index + 0] = top_right
 				indices[index + 1] = bottom_right
 				index += 2
