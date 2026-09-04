@@ -234,7 +234,7 @@ globe_draw :: proc() {
 	globe_draw_area(globe_ocean_vao, globe_ocean_mesh, {0.4, 0.9, 1, 1})
 	globe_draw_area(globe_land_vao, globe_land_mesh, {0.8, 0.6, 0.4, 1})
 	globe_draw_edit_area()
-	globe_draw_grid()
+	// globe_draw_grid()
 }
 
 globe_draw_area :: proc(vao: u32, mesh: Mesh, color: Vec4) {
@@ -498,14 +498,29 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 	bottom_buffer := min(land.start_ring, buffer)
 	top_buffer := min(rings - land.start_ring + len(land.rows), buffer)
 	land_width := get_land_width(land)
+	// fmt.println("land_width", land_width)
 
-	edit_area_start_segment := land.start_segment - buffer
 	edit_area_start_ring := land.start_ring - bottom_buffer
 	edit_area_width := land_width + buffer * 2
 	edit_area_height := bottom_buffer + len(land.rows) + top_buffer
+	// fmt.println("edit_area_width", edit_area_width)
 
-	vertex_count := (edit_area_width + 1) * (edit_area_height + 1)
+	indices_per_vertex := 4
+	index_count :=
+		edit_area_width * edit_area_height * indices_per_vertex +
+		(edit_area_width + edit_area_height) * 2
+	max_segments_per_tile := 0
+	for ring in edit_area_start_ring ..< edit_area_start_ring + edit_area_height {
+		segments_per_tile := tile_width_per_ring[ring]
+		max_segments_per_tile = max(max_segments_per_tile, segments_per_tile)
+	}
 
+	edit_area_start_segment := land.start_segment - buffer * max_segments_per_tile
+	edit_area_segments := edit_area_width * max_segments_per_tile
+
+	vertex_count := (edit_area_segments + 1) * (edit_area_height + 1)
+
+	indices := make([]u32, index_count)
 	vertices := make([]Vertex, vertex_count)
 
 	vertex_index := 0
@@ -521,7 +536,7 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 		sin_theta := f32(math.sin(theta))
 		cos_theta := f32(math.cos(theta))
 
-		for x in edit_area_start_segment ..= edit_area_start_segment + edit_area_width {
+		for x in edit_area_start_segment ..= edit_area_start_segment + edit_area_segments {
 			u := f32(x) / f32(segments)
 
 			phi := u * 2.0 * math.PI
@@ -545,27 +560,20 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 		}
 	}
 
-	indices_per_vertex := 4
-
-	// The middle half of the rings use all the segments.
-	// The rest of the rings (closer to the poles) use only half of the segments.
-	// index_count := (segments * rings / 2 + segments / 2 * rings / 2) * indices_per_vertex
-
-	index_count :=
-		edit_area_width * edit_area_height * indices_per_vertex +
-		(edit_area_width + edit_area_height) * 2
-	// fmt.println(index_count)
-
-	indices := make([]u32, index_count)
-
 	index := 0
 
 	for y in 0 ..< edit_area_height {
+		// for y in 0 ..< 7 {
+		vertices_per_row := edit_area_segments + 1
+		ring := edit_area_start_ring + y
+		vertices_per_tile := tile_width_per_ring[ring]
+		row_width := vertices_per_tile
+		// fmt.println(vertices_per_tile)
 		for x in 0 ..< edit_area_width {
-			bottom_left := u32(y * (edit_area_width + 1) + x)
-			bottom_right := bottom_left + 1
-			top_left := u32((y + 1) * (edit_area_width + 1) + x)
-			top_right := top_left + 1
+			bottom_left := u32(y * vertices_per_row + x * vertices_per_tile)
+			bottom_right := bottom_left + u32(vertices_per_tile)
+			top_left := u32((y + 1) * vertices_per_row + x * vertices_per_tile)
+			top_right := top_left + u32(vertices_per_tile)
 
 			indices[index + 0] = top_left
 			indices[index + 1] = bottom_left
