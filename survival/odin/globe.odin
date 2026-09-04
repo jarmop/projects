@@ -33,7 +33,7 @@ globe_layer_separation: f32 : 0.0006
 globe_program: u32
 globe_radius: f32 : 1
 globe_spin_angle: f32 = 90
-globe_tilt_angle: f32 = 45
+globe_tilt_angle: f32 = -45
 globe_max_tilt_abs: f32 : 90
 
 globe_ocean_vao: u32
@@ -146,7 +146,7 @@ globe_init :: proc() {
 	globe_init_layer(&globe_ocean_vao, &globe_ocean_mesh, globe_ocean_radius)
 
 	land: Land = {
-		start_ring    = 385,
+		start_ring    = 60,
 		// start_ring    = globe_land_rings - globe_land_rings / 5,
 
 		// Need to make sure the start segment is not inside of a tile
@@ -501,13 +501,16 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) 
 }
 
 globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: Land) -> Mesh {
-	// pole_rings := 10
-	// max_editable_ring := rings - pole_rings
+	pole_rings := 10
+	max_editable_ring := rings - pole_rings
 
-	buffer := 5
-	bottom_buffer := min(land.start_ring, buffer)
+	buffer := 10
+	buffer_y := 20
+	// bottom_buffer := min(land.start_ring, buffer)
+	bottom_buffer := min(land.start_ring - pole_rings, buffer_y)
 	// bottom_buffer := min(land.start_ring, 60)
-	top_buffer := min(rings - land.start_ring + len(land.rows), buffer)
+	// top_buffer := min(rings - land.start_ring + len(land.rows), buffer)
+	top_buffer := min(rings - land.start_ring + len(land.rows), buffer_y)
 	// top_buffer := min(rings - (land.start_ring + len(land.rows)), 80)
 	// top_buffer := min(max_editable_ring - (land.start_ring + len(land.rows)), 20)
 	land_width := get_land_width(land)
