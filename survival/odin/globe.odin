@@ -28,13 +28,11 @@ earth_radius: f32 : 6371
 earth_circumference: f32 : 40960
 
 // globe_layer_separation: f32 = 0.01
-globe_layer_separation: f32 : 0.0006
+// globe_layer_separation: f32 : 0.0006
+globe_layer_separation: f32 : 0.00001
 
 globe_program: u32
 globe_radius: f32 : 1
-globe_spin_angle: f32 = 90
-globe_tilt_angle: f32 = -60
-globe_max_tilt_abs: f32 : 90
 
 globe_ocean_vao: u32
 globe_ocean_mesh: Mesh
@@ -51,6 +49,7 @@ globe_edit_area_rings :: globe_land_rings
 globe_edit_area_vao: u32
 globe_edit_area_mesh: Mesh
 globe_edit_area_radius: f32 : globe_land_radius + globe_layer_separation
+// globe_edit_area_radius: f32 : globe_land_radius
 // globe_edit_area_radius: f32 = globe_ocean_radius
 
 globe_grid_rings :: 32
@@ -61,6 +60,48 @@ globe_grid_radius: f32 : globe_radius + globe_layer_separation
 
 // Width in segments
 tile_width_per_ring: [globe_land_rings]int
+
+globe_init :: proc() {
+	land_init()
+	globe_init_tiles()
+
+	shaders_ok: bool
+	globe_program, shaders_ok = gl.load_shaders_file("./shaders/globe.vs", "./shaders/globe.fs")
+	if !shaders_ok {
+		fmt.println("Shaders not ok")
+		os.exit(-1)
+	}
+
+	globe_ocean_mesh = generate_uv_sphere(
+		globe_grid_rings * 2,
+		globe_grid_rings,
+		globe_ocean_radius,
+	)
+	globe_init_layer(&globe_ocean_vao, &globe_ocean_mesh, globe_ocean_radius)
+
+	globe_land_mesh = globe_generate_land(
+		globe_land_segments,
+		globe_land_rings,
+		globe_land_radius,
+		land,
+	)
+	globe_init_layer(&globe_land_vao, &globe_land_mesh, globe_land_radius)
+
+	globe_edit_area_mesh = globe_generate_edit_area(
+		globe_edit_area_segments,
+		globe_edit_area_rings,
+		globe_edit_area_radius,
+		land,
+	)
+	globe_init_layer(&globe_edit_area_vao, &globe_edit_area_mesh, globe_edit_area_radius)
+
+	globe_grid_mesh = globe_generate_grid(
+		globe_grid_rings * 2,
+		globe_grid_rings,
+		globe_grid_radius,
+	)
+	globe_init_layer(&globe_grid_vao, &globe_grid_mesh, globe_grid_radius)
+}
 
 globe_init_tiles :: proc() {
 	// fmt.printfln("Ring\tR len\tT width 1\tT width 2\t Final W\tFinal T")
@@ -126,62 +167,6 @@ globe_init_tiles :: proc() {
 	// for width, y in tile_width_per_ring {
 	// 	fmt.println(y, width)
 	// }
-}
-
-globe_init :: proc() {
-	globe_init_tiles()
-
-	shaders_ok: bool
-	globe_program, shaders_ok = gl.load_shaders_file("./shaders/globe.vs", "./shaders/globe.fs")
-	if !shaders_ok {
-		fmt.println("Shaders not ok")
-		os.exit(-1)
-	}
-
-	globe_ocean_mesh = generate_uv_sphere(
-		globe_grid_rings * 2,
-		globe_grid_rings,
-		globe_ocean_radius,
-	)
-	globe_init_layer(&globe_ocean_vao, &globe_ocean_mesh, globe_ocean_radius)
-
-	land: Land = {
-		start_ring    = 60,
-		// start_ring    = globe_land_rings - globe_land_rings / 5,
-
-		// Need to make sure the start segment is not inside of a tile
-		// start_segment = globe_land_segments - 2,
-		start_segment = 0,
-		rows          = []LandRow {
-			{start = 0, width = 2},
-			{start = 1, width = 3},
-			{start = 0, width = 5},
-			{start = 1, width = 2},
-		},
-	}
-
-	globe_land_mesh = globe_generate_land(
-		globe_land_segments,
-		globe_land_rings,
-		globe_land_radius,
-		land,
-	)
-	globe_init_layer(&globe_land_vao, &globe_land_mesh, globe_land_radius)
-
-	globe_edit_area_mesh = globe_generate_edit_area(
-		globe_edit_area_segments,
-		globe_edit_area_rings,
-		globe_edit_area_radius,
-		land,
-	)
-	globe_init_layer(&globe_edit_area_vao, &globe_edit_area_mesh, globe_edit_area_radius)
-
-	globe_grid_mesh = globe_generate_grid(
-		globe_grid_rings * 2,
-		globe_grid_rings,
-		globe_grid_radius,
-	)
-	globe_init_layer(&globe_grid_vao, &globe_grid_mesh, globe_grid_radius)
 }
 
 globe_init_layer :: proc(vao: ^u32, mesh: ^Mesh, radius: f32) {
@@ -252,8 +237,11 @@ globe_draw_area :: proc(vao: u32, mesh: Mesh, color: Vec4) {
 }
 
 globe_draw_edit_area :: proc() {
+	gl.Enable(gl.BLEND)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	gl.BindVertexArray(globe_edit_area_vao)
-	shader_set_vec4(globe_program, "color", glsl.vec4({0, 0, 0, 1}))
+	shader_set_vec4(globe_program, "color", glsl.vec4({0, 0, 0, 0.1}))
+	// gl.LineWidth(2.0)
 	gl.DrawElements(gl.LINES, i32(len(globe_edit_area_mesh.indices)), gl.UNSIGNED_INT, nil)
 }
 
@@ -336,16 +324,6 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 	}
 
 	return Mesh{vertices = vertices, indices = indices}
-}
-
-// Returns the width in tiles
-get_land_width :: proc(land: Land) -> int {
-	width := 0
-	for row in land.rows {
-		row_reach := row.start + row.width
-		width = max(width, row_reach)
-	}
-	return width
 }
 
 globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) -> Mesh {
@@ -546,7 +524,7 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 	}
 	index_count += tiles_per_final_row * 2
 
-	fmt.println(index_count)
+	// fmt.println(index_count)
 	vertex_count := (edit_area_segments + 1) * (edit_area_height + 1)
 
 	indices := make([]u32, index_count)
@@ -605,7 +583,7 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 		// fmt.println(ring, vertices_per_tile)
 		// for x in 0 ..< edit_area_width {
 		// fmt.println(y, tiles_per_row)
-		fmt.println(y, edit_area_height)
+		// fmt.println(y, edit_area_height)
 		for x in 0 ..< tiles_per_row {
 			bottom_left := u32(y * vertices_per_row + x * vertices_per_tile)
 			bottom_right := bottom_left + u32(vertices_per_tile)
