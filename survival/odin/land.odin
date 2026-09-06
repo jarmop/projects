@@ -14,31 +14,32 @@ land: Land = {
 	start_segment = 0,
 	rows          = []LandRow {
 		{start = 5, width = 20},
-		{start = 0, width = 30},
-		{start = 0, width = 30},
-		{start = 0, width = 30},
-		{start = 0, width = 30},
-		{start = 0, width = 30},
-		{start = 0, width = 30},
-		{start = 0, width = 30},
-		{start = 0, width = 30},
-		{start = 0, width = 30},
-		{start = 0, width = 30},
-		{start = 0, width = 15},
-		{start = 0, width = 15},
-		{start = 0, width = 15},
-		{start = 0, width = 15},
-		{start = 0, width = 15},
-		{start = 0, width = 15},
-		{start = 0, width = 15},
-		{start = 0, width = 15},
-		{start = 0, width = 15},
-		{start = 0, width = 15},
+		{start = 2, width = 31},
+		{start = 0, width = 36},
+		{start = 0, width = 37},
+		{start = 0, width = 36},
+		{start = 0, width = 34},
+		{start = 1, width = 32},
+		{start = 1, width = 30},
+		{start = 1, width = 30},
+		{start = 1, width = 30},
+		{start = 2, width = 30},
+		{start = 2, width = 15},
+		{start = 2, width = 15},
+		{start = 2, width = 15},
+		{start = 3, width = 15},
+		{start = 4, width = 15},
+		{start = 6, width = 15},
+		{start = 6, width = 15},
+		{start = 7, width = 15},
+		{start = 9, width = 15},
+		{start = 10, width = 10},
 	},
 }
 
 land_init :: proc() {
-	land.start_ring = lat_to_ring(land_northern_lat) + 12
+	// land.start_ring = lat_to_ring(land_northern_lat) + 12
+	land.start_ring = lat_to_ring(land_northern_lat)
 	globe_tilt_angle = ring_to_lat(land.start_ring + len(land.rows) / 2)
 	globe_spin_angle = segment_to_lon(land.start_segment + get_land_width(land) / 2)
 }
