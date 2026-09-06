@@ -5,6 +5,8 @@ import "core:math"
 
 land_northern_lat :: 40
 
+tile_width_avg_km: f32 = 40
+
 land: Land = {
 	// start_ring    = 40,
 	start_ring    = 0,
@@ -38,14 +40,25 @@ land: Land = {
 }
 
 land_init :: proc() {
-	// land.start_ring = lat_to_ring(land_northern_lat) + 12
-	land.start_ring = lat_to_ring(land_northern_lat)
+	land.start_ring = lat_to_ring(land_northern_lat) + 12
+	// land.start_ring = lat_to_ring(land_northern_lat) + 110
+	// land.start_ring = lat_to_ring(land_northern_lat) + 90
+	// land.start_ring = lat_to_ring(0)
 	globe_tilt_angle = ring_to_lat(land.start_ring + len(land.rows) / 2)
-	globe_spin_angle = segment_to_lon(land.start_segment + get_land_width(land) / 2)
+	// globe_spin_angle = segment_to_lon(land.start_segment + get_land_width(land) / 2)
+	// globe_spin_angle = segment_to_lon(land.start_segment + get_land_width_tiles(land) / 2)
+	globe_spin_angle = segment_to_lon(land.start_segment + get_land_width_segments(land) / 2)
+
+	// fmt.println(get_land_width_segments(land))
+
+	// fmt.println("ring_len(490", ring_len(490, globe_land_rings) * earth_circumference)
+
+	// land_width_km := get_land_width_km(land)
+	// globe_spin_angle = segment_to_lon(land.start_segment + get_land_width_segments(land) / 2)
 }
 
-lat_to_ring :: proc(lat: int) -> int {
-	return globe_land_rings / 2 + int(math.round(f32(globe_land_rings) / 180 * land_northern_lat))
+lat_to_ring :: proc(lat: f32) -> int {
+	return globe_land_rings / 2 + int(math.round(f32(globe_land_rings) / 180 * lat))
 }
 
 ring_to_lat :: proc(ring: int) -> f32 {
@@ -56,7 +69,7 @@ segment_to_lon :: proc(segment: int) -> f32 {
 	return -360 / f32(globe_land_segments) * f32(segment) + 90
 }
 
-// Returns the width in tiles
+// // Returns the width in tiles
 get_land_width :: proc(land: Land) -> int {
 	width := 0
 	for row in land.rows {
@@ -64,4 +77,49 @@ get_land_width :: proc(land: Land) -> int {
 		width = max(width, row_reach)
 	}
 	return width
+}
+
+// Returns the width in tiles
+// get_land_width_tiles :: proc(land: Land) -> int {
+// 	area_width_km := get_land_width_km(land)
+// 	width := 0
+// 	for row, y in land.rows {
+// 		ring := land.start_ring + y
+// 		tile_width_km := tile_width_per_ring_km[ring]
+// 		tiles := int(math.round(area_width_km / tile_width_km))
+// 		width = max(width, tiles)
+// 	}
+// 	return width
+// }
+
+get_land_width_segments :: proc(land: Land) -> int {
+	area_width_km := get_land_width_km(land)
+	width := 0
+	for row, y in land.rows {
+		ring := land.start_ring + y
+		segments_per_tile := tile_width_per_ring[ring]
+		tile_width_km := tile_width_per_ring_km[ring]
+		tiles := int(math.round(area_width_km / tile_width_km))
+		width = max(width, tiles * segments_per_tile)
+	}
+	return width
+}
+
+get_land_width_km :: proc(land: Land) -> f32 {
+	width_km: f32 = 0
+	for row, y in land.rows {
+		ring := land.start_ring + y
+		// tile_width_km := tile_width_per_ring_km[ring]
+		row_width_km := f32(row.width) * tile_width_avg_km
+		// tiles := int(math.round(row_width_km / tile_width_km))
+		start_km := f32(row.start) * tile_width_avg_km
+
+		row_reach := start_km + row_width_km
+		width_km = max(width_km, row_reach)
+
+
+		// row_reach := row.start + row.width
+		// width = max(width, row_reach)
+	}
+	return width_km
 }
