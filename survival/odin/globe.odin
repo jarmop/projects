@@ -117,7 +117,6 @@ globe_init_tiles :: proc() {
 	tile_width_per_ring[0] = 1
 	tile_width_per_ring[start_y] = 1
 	tile_width := 0
-	max_tile_width := 8
 	for i := 0; i < start_y; i += step {
 		y := start_y - i
 		ring_length_bottom := ring_len(y, rings) * earth_circumference
@@ -337,7 +336,7 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) 
 	area_rows := len(land.rows)
 	// area_width_tiles := get_land_width(land)
 	// area_width_tiles := get_land_width_tiles(land)
-	area_width_tiles_km := get_land_width_km(land)
+	area_width_km := get_land_width_km(land)
 
 	indices_per_tile := 6
 
@@ -356,10 +355,19 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) 
 		start_km := f32(row.start) * tile_width_avg_km
 		start_tile := int(math.round(start_km / tile_width_km))
 
-		// tiles_in_the_row := start_tile + tiles
-		tiles_in_the_row := int(math.round(area_width_tiles_km / tile_width_km))
+		tiles_in_the_row := start_tile + tiles
+
+		// tiles_in_the_row := int(math.round(area_width_km / tile_width_km))
+		// tiles_in_the_row := tiles
 
 		segments_in_the_row := tile_width_per_ring[ring] * tiles_in_the_row
+		// fmt.println(
+		// 	ring,
+		// 	tile_width_per_ring[ring],
+		// 	tiles_in_the_row,
+		// 	segments_in_the_row,
+		// 	tile_width_km,
+		// )
 		// segments_in_the_row2 := tile_width_per_ring[ring] * area_width_tiles
 
 		// segments_in_the_row2 := tile_width_per_ring[ring] * tiles
@@ -369,7 +377,8 @@ globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) 
 			// area_cols_segments2 = segments_in_the_row2
 		}
 	}
-	fmt.println("area_cols_segments", area_cols_segments)
+	// fmt.println("area_width_km", area_width_km)
+	// fmt.println("area_cols_segments", area_cols_segments)
 	// fmt.println(area_cols_segments, area_cols_segments2)
 	vertex_count := (area_rows + 1) * (area_cols_segments + 1)
 	vertices := make([]Vertex, vertex_count)
@@ -460,32 +469,43 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 	pole_rings := 10
 	max_editable_ring := rings - pole_rings
 
-	buffer := 10
-	// buffer_y := buffer
-	buffer_y := 500
-	bottom_buffer := min(land.start_ring - pole_rings, buffer_y)
-	top_buffer := min(rings - pole_rings - (land.start_ring + len(land.rows)), buffer_y)
-	land_width := get_land_width(land)
+	// The x buffer needs to be divisible by the biggest tile size (which is 8 segments currently)
+	buffer_segments_x := 0
+	// buffer_y := buffer_segments
+	buffer_segments_y := 500
+	bottom_buffer := min(land.start_ring - pole_rings, buffer_segments_y)
+	top_buffer := min(rings - pole_rings - (land.start_ring + len(land.rows)), buffer_segments_y)
+	// land_width := get_land_width(land)
+	// land_width_km := get_land_width_km(land)
+	land_width_segs := get_land_width_segments(land)
+	// fmt.println(land_width_segs)
 
 	edit_area_start_ring := land.start_ring - bottom_buffer
-	edit_area_width := land_width + buffer * 2
+
+	// edit_area_width2 := land_width + buffer * 2
+	// edit_area_width := land_width_segs + buffer * 2
+	edit_area_segments := land_width_segs + buffer_segments_x * 2
+	// fmt.println(edit_area_width, edit_area_width2)
+
 	edit_area_height := bottom_buffer + len(land.rows) + top_buffer
 
 	indices_per_vertex := 4
-	max_segments_per_tile := 0
-	for ring in edit_area_start_ring ..< edit_area_start_ring + edit_area_height {
-		segments_per_tile := tile_width_per_ring[ring]
-		max_segments_per_tile = max(max_segments_per_tile, segments_per_tile)
-	}
+	// max_segments_per_tile := 0
+	// for ring in edit_area_start_ring ..< edit_area_start_ring + edit_area_height {
+	// 	segments_per_tile := tile_width_per_ring[ring]
+	// 	max_segments_per_tile = max(max_segments_per_tile, segments_per_tile)
+	// }
 
-	edit_area_start_segment := land.start_segment - buffer * max_segments_per_tile
-	edit_area_segments := edit_area_width * max_segments_per_tile
+	// edit_area_start_segment := land.start_segment - buffer * max_segments_per_tile
+	edit_area_start_segment := land.start_segment - buffer_segments_x
+	// edit_area_segments := edit_area_width * max_segments_per_tile
 
 	index_count := edit_area_height * 2
 	tiles_per_final_row := 0
 	for ring in edit_area_start_ring ..< edit_area_start_ring + edit_area_height {
 		segments_per_tile := tile_width_per_ring[ring]
 		tiles_per_row := edit_area_segments / segments_per_tile
+		// fmt.println(tiles_per_row)
 		index_count += tiles_per_row * indices_per_vertex
 		tiles_per_final_row = tiles_per_row
 	}
