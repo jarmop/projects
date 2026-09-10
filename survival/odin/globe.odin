@@ -10,21 +10,6 @@ import gl "vendor:OpenGL"
 import glfw "vendor:glfw"
 import stbi "vendor:stb/image"
 
-Vec4 :: [4]f32
-Vec3 :: [3]f32
-Vec2 :: [2]f32
-Mat4 :: matrix[4, 4]f32
-
-Vertex :: struct {
-	position: Vec3,
-	uv:       Vec2,
-}
-
-Mesh :: struct {
-	vertices: []Vertex,
-	indices:  []u32,
-}
-
 earth_radius: f32 : 6371
 earth_circumference: f32 : 40960
 
@@ -47,6 +32,7 @@ globe_ocean_segments := globe_segments
 globe_land_segments :: 1024
 globe_land_rings :: globe_land_segments / 2
 globe_land_vao: u32
+globe_land_ebo: u32
 globe_land_mesh: Mesh
 globe_land_radius: f32 : globe_radius
 
@@ -69,6 +55,8 @@ tile_width_per_ring: [globe_land_rings]int
 tile_width_per_ring_km: [globe_land_rings]f32
 
 max_tile_width :: globe_land_segments / globe_segments
+rings_per_plane :: globe_land_rings / globe_rings
+segments_per_plane :: globe_land_segments / globe_segments
 
 globe_init :: proc() {
 	globe_init_tiles()
@@ -98,7 +86,7 @@ globe_init :: proc() {
 		// globe_land_radius,
 		land,
 	)
-	globe_init_layer(&globe_land_vao, &globe_land_mesh)
+	globe_init_land(&globe_land_mesh)
 
 	// globe_land_mesh = globe_generate_land(
 	// 	globe_land_segments,
@@ -230,6 +218,45 @@ globe_init_tiles :: proc() {
 	// for width, y in tile_width_per_ring {
 	// 	fmt.println(y, width)
 	// }
+}
+
+globe_init_land :: proc(mesh: ^Mesh) {
+	vbo: u32
+
+	// gl.GenVertexArrays(1, vao)
+	gl.GenVertexArrays(1, &globe_land_vao)
+	gl.GenBuffers(1, &vbo)
+	gl.GenBuffers(1, &globe_land_ebo)
+
+	gl.BindVertexArray(globe_land_vao)
+
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.BufferData(
+		gl.ARRAY_BUFFER,
+		len(mesh.vertices) * size_of(Vertex),
+		raw_data(mesh.vertices),
+		gl.STATIC_DRAW,
+	)
+
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebo)
+	gl.BufferData(
+		gl.ELEMENT_ARRAY_BUFFER,
+		len(mesh.indices) * size_of(u32),
+		raw_data(mesh.indices),
+		gl.STATIC_DRAW,
+	)
+
+	stride := i32(size_of(Vertex))
+
+	// position
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, stride, uintptr(0))
+	gl.EnableVertexAttribArray(0)
+
+	// UV
+	gl.VertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, stride, uintptr(12))
+	gl.EnableVertexAttribArray(1)
+
+	gl.BindVertexArray(0)
 }
 
 globe_init_layer :: proc(vao: ^u32, mesh: ^Mesh) {
@@ -393,22 +420,74 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 	return Mesh{vertices = vertices, indices = indices}
 }
 
-rings_per_plane :: globe_land_rings / globe_rings
-segments_per_plane :: globe_land_segments / globe_segments
+globe_generate_land_indices :: proc(land: Land) -> []u32 {
+	land_height_tiles := len(land.slices)
+	land_width_tile_segments := get_land_width_segments(land)
+
+	indices_per_vertex := 6
+
+	tile_rings := land_height_tiles
+
+	tile_segments := land_width_tile_segments
+
+	tile_vertex_count_x := tile_segments + 1
+	tile_vertex_count_y := tile_rings + 1
+
+	tile_vertex_count := tile_vertex_count_x * tile_vertex_count_y
+	tile_index_count := tile_segments * tile_rings * indices_per_vertex
+
+	tile_indices := make([]u32, tile_index_count)
+
+	tile_index := 0
+
+	land_width_tiles := get_land_width(land)
+
+	// fmt.println(land_width_tile_segments, land_width_tiles)
+
+	// for y in 0 ..< tile_rings {
+	for row in land.slices {
+		// fmt.println("-------")
+
+		y := row.ring
+
+		ring := land.ring + y
+		tile_width := tile_width_per_ring[ring]
+		tiles := row.width / tile_width
+		start_tile := row.segment / tile_width
+
+		for x in start_tile ..< start_tile + tiles {
+			// for x in start_tile ..< start_tile + 1 {
+			// for x in 0 ..< 1 {
+			bottom_left := u32(y * (tile_vertex_count_x) + x * tile_width)
+			// bottom_left := u32(y * (segments_per_plane + 1) + x)
+			bottom_right := bottom_left + u32(tile_width)
+			top_left := u32((y + 1) * (tile_vertex_count_x) + x * tile_width)
+			// top_left := u32((y + 1) * (segments_per_plane + 1) + x)
+			top_right := top_left + u32(tile_width)
+
+			// fmt.println(bottom_left, bottom_right, top_left, top_right)
+
+			tile_indices[tile_index + 0] = bottom_left
+			tile_indices[tile_index + 1] = top_left
+			tile_indices[tile_index + 2] = bottom_right
+
+			// Second triangle
+			tile_indices[tile_index + 3] = bottom_right
+			tile_indices[tile_index + 4] = top_left
+			tile_indices[tile_index + 5] = top_right
+
+			tile_index += indices_per_vertex
+		}
+	}
+
+	return tile_indices
+}
 
 // Plane_segments and plane_rings define a plane. Tile_segments and tile_rings define a tile.
 // Each plane is divided into 16 tile rings and 16/8/4/2/1 tile segments.
 globe_generate_land_on_planes :: proc(segments: int, rings: int, radius: f32, land: Land) -> Mesh {
-	// rings_per_plane := globe_land_rings / rings
-	// segments_per_plane := globe_land_segments / segments
-
 	land_height_tiles := len(land.slices)
-	// Segments per tile varies between rings so width needs to be in segments instead of in tiles
 	land_width_tile_segments := get_land_width_segments(land)
-
-	// ------------------------------
-	// ----------- PLANES -----------
-	// ------------------------------
 
 	start_plane_ring_f := f32(land.ring) / f32(globe_land_rings) * f32(rings)
 	start_plane_ring := int(start_plane_ring_f)
@@ -440,32 +519,16 @@ globe_generate_land_on_planes :: proc(segments: int, rings: int, radius: f32, la
 
 	plane_vertex_index := 0
 
-	// fmt.println(start_plane_ring, end_plane_ring)
-	// fmt.println(rings_per_plane, segments_per_plane)
-
-	// ------------------------------
-	// ---------- TILES ---------
-	// ------------------------------
-
-
-	// tile_rings := plane_rings * 16
-	// tile_rings :=
-	// 	plane_rings * rings_per_plane - start_tile_ring - (rings_per_plane - end_tile_ring)
 	tile_rings := land_height_tiles
 
-	// fmt.println(tile_rings, len(land.rows))
-	// tile_segments := plane_segments * 16
 	tile_segments := land_width_tile_segments
 
 	tile_vertex_count_x := tile_segments + 1
 	tile_vertex_count_y := tile_rings + 1
 
-	// tile_vertex_count := (tile_segments + 1) * (tile_rings + 1)
 	tile_vertex_count := tile_vertex_count_x * tile_vertex_count_y
-	tile_index_count := tile_segments * tile_rings * indices_per_vertex
 
 	tile_vertices := make([]Vertex, tile_vertex_count)
-	tile_indices := make([]u32, tile_index_count)
 
 	start_tile_ring := int(f32(rings_per_plane) * reminder)
 	end_tile_ring := int(f32(rings_per_plane) * reminder2)
@@ -473,12 +536,6 @@ globe_generate_land_on_planes :: proc(segments: int, rings: int, radius: f32, la
 	end_tile_segment := int(f32(segments_per_plane) * reminder_segment2)
 
 	t_ring_start := start_tile_ring
-	// t_ring_end := rings_per_plane
-	// t_segment_start := start_tile_segment
-	// t_segment_end := segments_per_plane
-	// t_segment_end := end_tile_segment
-
-	// t_ring := land.start_ring
 
 	tile_vertex_index := 0
 	tile_offset_y := 0
@@ -493,17 +550,9 @@ globe_generate_land_on_planes :: proc(segments: int, rings: int, radius: f32, la
 		sin_theta := f32(math.sin(theta))
 		cos_theta := f32(math.cos(theta))
 
-		// t_segment := land.start_segment
-
-
 		tile_offset_x := 0
 
-		// segments_per_plane_x := 16
-		// segments_per_plane_y := 16
 		segments_per_plane_f := f32(segments_per_plane)
-		// rings_per_plane_f := f32(rings_per_plane)
-
-		// fmt.println("############", tile_vertex_index, tile_offset_y)
 
 		t_ring_end := y == end_plane_ring + 1 ? end_tile_ring : (rings_per_plane - 1)
 
@@ -552,15 +601,9 @@ globe_generate_land_on_planes :: proc(segments: int, rings: int, radius: f32, la
 				top_step_right := (top_right.position - top_left.position) / segments_per_plane_f
 
 				for ty, ty_i in t_ring_start ..= t_ring_end {
-					// for ty, ty_i in start_tile_ring ..< start_tile_ring + 2 {
-
 					tile_vertex_index = tile_offset_y + ty_i * tile_vertex_count_x + tile_offset_x
 
-					// fmt.println(tile_vertex_index)
-
-					// for tx, tx_i in t_segment_start ..< tiles_per_plane_x {
 					for tx, tx_i in t_segment_start ..= t_segment_end {
-						// fmt.println(tile_vertex_index)
 						tile_u := f32(land.segment + tx_i) / f32(globe_land_segments)
 						tile_v := f32(land.ring + ty_i) / f32(globe_land_rings)
 
@@ -592,68 +635,10 @@ globe_generate_land_on_planes :: proc(segments: int, rings: int, radius: f32, la
 
 	land_width_tiles := get_land_width(land)
 
-	// fmt.println(land_width_tile_segments, land_width_tiles)
-
-	// for y in 0 ..< tile_rings {
-	for row in land.slices {
-		// fmt.println("-------")
-
-		y := row.ring
-
-		ring := land.ring + y
-		tile_width := tile_width_per_ring[ring]
-		tiles := row.width / tile_width
-		start_tile := row.segment / tile_width
-
-		for x in start_tile ..< start_tile + tiles {
-			// for x in start_tile ..< start_tile + 1 {
-			// for x in 0 ..< 1 {
-			bottom_left := u32(y * (tile_vertex_count_x) + x * tile_width)
-			// bottom_left := u32(y * (segments_per_plane + 1) + x)
-			bottom_right := bottom_left + u32(tile_width)
-			top_left := u32((y + 1) * (tile_vertex_count_x) + x * tile_width)
-			// top_left := u32((y + 1) * (segments_per_plane + 1) + x)
-			top_right := top_left + u32(tile_width)
-
-			// fmt.println(bottom_left, bottom_right, top_left, top_right)
-
-			tile_indices[tile_index + 0] = bottom_left
-			tile_indices[tile_index + 1] = top_left
-			tile_indices[tile_index + 2] = bottom_right
-
-			// Second triangle
-			tile_indices[tile_index + 3] = bottom_right
-			tile_indices[tile_index + 4] = top_left
-			tile_indices[tile_index + 5] = top_right
-
-			tile_index += indices_per_vertex
-		}
-	}
+	tile_indices := globe_generate_land_indices(land)
 
 	index := 0
 
-	for y in 0 ..< plane_rings {
-		for x in 0 ..< plane_segments {
-			bottom_left := u32(y * (plane_segments + 1) + x)
-			bottom_right := bottom_left + 1
-			top_left := u32((y + 1) * (plane_segments + 1) + x)
-			top_right := top_left + 1
-
-			// First triangle
-			plane_indices[index + 0] = bottom_left
-			plane_indices[index + 1] = top_left
-			plane_indices[index + 2] = bottom_right
-
-			// Second triangle
-			plane_indices[index + 3] = bottom_right
-			plane_indices[index + 4] = top_left
-			plane_indices[index + 5] = top_right
-
-			index += indices_per_vertex
-		}
-	}
-
-	// return Mesh{vertices = plane_vertices, indices = plane_indices}
 	return Mesh{vertices = tile_vertices, indices = tile_indices}
 }
 

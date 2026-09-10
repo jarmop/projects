@@ -6,6 +6,10 @@ import "core:math"
 tile_width_avg_km: f32 = 40
 
 land_init :: proc() {
+	land.slices = make([]LandRow, len(slices))
+	for slice, i in slices {
+		land.slices[i] = slice
+	}
 	// for &row in land.rows {
 	// 	row.width *= 8
 	// }

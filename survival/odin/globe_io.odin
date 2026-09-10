@@ -83,6 +83,24 @@ globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, a
 			globe_land_rings,
 		)
 		if is_hit {
+			land.slices = make([]LandRow, len(slices))
+			for slice, i in slices {
+				land.slices[i] = slice
+			}
+			land.slices[0].width = 10
+
+			globe_land_mesh.indices = globe_generate_land_indices(land)
+
+			gl.BindVertexArray(globe_land_vao)
+
+			gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebo)
+			gl.BufferData(
+				gl.ELEMENT_ARRAY_BUFFER,
+				len(globe_land_mesh.indices) * size_of(u32),
+				raw_data(globe_land_mesh.indices),
+				gl.STATIC_DRAW,
+			)
+
 			latitude := math.asin(hit.y / globe_radius)
 			longitude := math.atan2(hit.z, -hit.x)
 
