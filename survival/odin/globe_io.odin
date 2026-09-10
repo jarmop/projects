@@ -30,7 +30,7 @@ globe_tilt_angle: f32 = 0
 globe_max_tilt_abs: f32 : 90
 
 zoom_levels :: 8
-zoom_level_at_start :: 2
+zoom_level_at_start :: 4
 camera_zoom_positions := [zoom_levels]f32{0.05, 0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.75}
 globe_speeds := [zoom_levels]f32{0.004, 0.008, 0.02, 0.04, 0.065, 0.09, 0.12, 0.18}
 globe_speed: f32 = globe_speeds[zoom_level_at_start]
@@ -87,9 +87,13 @@ globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, a
 			for slice, i in slices {
 				land.slices[i] = slice
 			}
-			land.slices[0].width = 10
+			land.slices[0].width = 3
 
-			globe_land_mesh.indices = globe_generate_land_indices(land)
+			globe_land_mesh.indices = globe_generate_land_indices(
+				land,
+				globe_land_segments,
+				globe_land_rings,
+			)
 
 			gl.BindVertexArray(globe_land_vao)
 
