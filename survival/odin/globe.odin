@@ -54,15 +54,15 @@ globe_edit_area_segments :: globe_land_segments
 globe_edit_area_rings :: globe_land_rings
 globe_edit_area_vao: u32
 globe_edit_area_mesh: Mesh
-globe_edit_area_radius: f32 : globe_land_radius + globe_layer_separation
-// globe_edit_area_radius: f32 : globe_land_radius
+// globe_edit_area_radius: f32 : globe_land_radius + globe_layer_separation
+globe_edit_area_radius: f32 : globe_land_radius
 // globe_edit_area_radius: f32 = globe_ocean_radius
 
 globe_grid_rings := globe_rings
 globe_grid_vao: u32
 globe_grid_mesh: Mesh
-// globe_grid_radius: f32 : globe_radius + globe_layer_separation
-globe_grid_radius: f32 = globe_radius
+globe_grid_radius: f32 : globe_radius + globe_layer_separation
+// globe_grid_radius: f32 = globe_radius
 
 // Width in segments
 tile_width_per_ring: [globe_land_rings]int
@@ -402,7 +402,7 @@ globe_generate_land_on_planes :: proc(segments: int, rings: int, radius: f32, la
 	// rings_per_plane := globe_land_rings / rings
 	// segments_per_plane := globe_land_segments / segments
 
-	land_height_tiles := len(land.rows)
+	land_height_tiles := len(land.slices)
 	// Segments per tile varies between rings so width needs to be in segments instead of in tiles
 	land_width_tile_segments := get_land_width_segments(land)
 
@@ -410,23 +410,20 @@ globe_generate_land_on_planes :: proc(segments: int, rings: int, radius: f32, la
 	// ----------- PLANES -----------
 	// ------------------------------
 
-	start_plane_ring_f := f32(land.start_ring) / f32(globe_land_rings) * f32(rings)
+	start_plane_ring_f := f32(land.ring) / f32(globe_land_rings) * f32(rings)
 	start_plane_ring := int(start_plane_ring_f)
 	reminder := start_plane_ring_f - f32(start_plane_ring)
 
-	end_plane_ring_f :=
-		f32(land.start_ring + land_height_tiles) / f32(globe_land_rings) * f32(rings)
+	end_plane_ring_f := f32(land.ring + land_height_tiles) / f32(globe_land_rings) * f32(rings)
 	end_plane_ring := int(end_plane_ring_f)
 	reminder2 := end_plane_ring_f - f32(end_plane_ring)
 
-	start_plane_segment_f := f32(land.start_segment) / f32(globe_land_segments) * f32(segments)
+	start_plane_segment_f := f32(land.segment) / f32(globe_land_segments) * f32(segments)
 	start_plane_segment := int(start_plane_segment_f)
 	reminder_segment := start_plane_segment_f - f32(start_plane_segment)
 
 	end_plane_segment_f :=
-		f32(land.start_segment + land_width_tile_segments) /
-		f32(globe_land_segments) *
-		f32(segments)
+		f32(land.segment + land_width_tile_segments) / f32(globe_land_segments) * f32(segments)
 	end_plane_segment := int(end_plane_segment_f)
 	reminder_segment2 := end_plane_segment_f - f32(end_plane_segment)
 
@@ -564,8 +561,8 @@ globe_generate_land_on_planes :: proc(segments: int, rings: int, radius: f32, la
 					// for tx, tx_i in t_segment_start ..< tiles_per_plane_x {
 					for tx, tx_i in t_segment_start ..= t_segment_end {
 						// fmt.println(tile_vertex_index)
-						tile_u := f32(land.start_segment + tx_i) / f32(globe_land_segments)
-						tile_v := f32(land.start_ring + ty_i) / f32(globe_land_rings)
+						tile_u := f32(land.segment + tx_i) / f32(globe_land_segments)
+						tile_v := f32(land.ring + ty_i) / f32(globe_land_rings)
 
 						left_up := bottom_left.position + left_step_up * f32(ty)
 						right_up := bottom_right.position + right_step_up * f32(ty)
@@ -598,63 +595,15 @@ globe_generate_land_on_planes :: proc(segments: int, rings: int, radius: f32, la
 	// fmt.println(land_width_tile_segments, land_width_tiles)
 
 	// for y in 0 ..< tile_rings {
-	for row, y in land.rows {
+	for row in land.slices {
 		// fmt.println("-------")
 
-		// -------------------------
-		// The simple way
-		// -------------------------
+		y := row.ring
 
-		ring := land.start_ring + y
+		ring := land.ring + y
 		tile_width := tile_width_per_ring[ring]
 		tiles := row.width / tile_width
-		start_tile := row.start / tile_width
-
-		// -------------------------
-		// MAINTAIN LAND SIZE
-		// Maintain the land size as it moves towards the poles
-		// -------------------------
-
-		// ring := land.start_ring + y
-		// tile_width := tile_width_per_ring[ring]
-
-		// tile_width_km := tile_width_per_ring_km[ring]
-		// row_width_km := f32(row.width) * tile_width_km
-		// // row_width_km := f32(row.width) * tile_width_avg_km
-		// // tiles := int(math.round(row_width_km / tile_width_km))
-		// tiles := int(math.round(row_width_km / tile_width_km)) / tile_width
-
-		// start_km := f32(row.start) * tile_width_avg_km
-		// start_tile := int(math.round(start_km / tile_width_km))
-
-
-		// fmt.println(row.start, row.width)
-
-
-		// -------------------------
-		// STRAIGHTEN THE LAND
-		// Add buffer as needed to keep the start tile in the correct relative
-		// spot when the bigger tile sizes skew the land
-		// -------------------------
-
-		// foo := f32(row.start + row.width) / f32(land_width_tiles)
-		// // fmt.println(row.start, row.width, land_width_tiles)
-
-		// buffer := max(
-		// 	0,
-		// 	int(
-		// 		(foo * f32(land_width_tile_segments) / f32(tile_width) - f32(start_tile + tiles)) /
-		// 		2,
-		// 	),
-		// )
-		// // buffer := int((foo * f32(land_width_tile_segments) - f32(start_tile + tiles)) / 2)
-		// start_tile2 := start_tile + buffer
-
-		// // fmt.println(foo * f32(land_width_tile_segments), f32(start_tile + tiles))
-		// // fmt.println(foo, land_width_tile_segments, start_tile, tiles)
-		// // fmt.println(buffer)
-		// // fmt.println(buffer, start_tile2, tiles)
-		// start_tile = start_tile2
+		start_tile := row.segment / tile_width
 
 		for x in start_tile ..< start_tile + tiles {
 			// for x in start_tile ..< start_tile + 1 {
@@ -708,119 +657,119 @@ globe_generate_land_on_planes :: proc(segments: int, rings: int, radius: f32, la
 	return Mesh{vertices = tile_vertices, indices = tile_indices}
 }
 
-globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) -> Mesh {
-	area_start_ring := land.start_ring
-	area_start_segment := land.start_segment
+// globe_generate_land :: proc(segments: int, rings: int, radius: f32, land: Land) -> Mesh {
+// 	area_start_ring := land.ring
+// 	area_start_segment := land.segment
 
-	area_rows := len(land.rows)
-	area_width_km := get_land_width_km(land)
+// 	area_rows := len(land.rows)
+// 	area_width_km := get_land_width_km(land)
 
-	indices_per_tile := 6
+// 	indices_per_tile := 6
 
-	index_count := 0
-	area_cols_segments := 0
-	for row, i in land.rows {
-		ring := area_start_ring + i
-		tile_width_km := tile_width_per_ring_km[ring]
-		row_width_km := f32(row.width) * tile_width_avg_km
-		tiles := int(math.round(row_width_km / tile_width_km))
+// 	index_count := 0
+// 	area_cols_segments := 0
+// 	for row, i in land.rows {
+// 		ring := area_start_ring + i
+// 		tile_width_km := tile_width_per_ring_km[ring]
+// 		row_width_km := f32(row.width) * tile_width_avg_km
+// 		tiles := int(math.round(row_width_km / tile_width_km))
 
-		index_count += tiles * indices_per_tile
+// 		index_count += tiles * indices_per_tile
 
-		start_km := f32(row.start) * tile_width_avg_km
-		start_tile := int(math.round(start_km / tile_width_km))
+// 		start_km := f32(row.segment) * tile_width_avg_km
+// 		start_tile := int(math.round(start_km / tile_width_km))
 
-		tiles_in_the_row := start_tile + tiles
+// 		tiles_in_the_row := start_tile + tiles
 
-		segments_in_the_row := tile_width_per_ring[ring] * tiles_in_the_row
-		if segments_in_the_row > area_cols_segments {
-			area_cols_segments = segments_in_the_row
-		}
-	}
-	vertex_count := (area_rows + 1) * (area_cols_segments + 1)
-	vertices := make([]Vertex, vertex_count)
-	indices := make([]u32, index_count)
+// 		segments_in_the_row := tile_width_per_ring[ring] * tiles_in_the_row
+// 		if segments_in_the_row > area_cols_segments {
+// 			area_cols_segments = segments_in_the_row
+// 		}
+// 	}
+// 	vertex_count := (area_rows + 1) * (area_cols_segments + 1)
+// 	vertices := make([]Vertex, vertex_count)
+// 	indices := make([]u32, index_count)
 
-	vertex_index := 0
+// 	vertex_index := 0
 
-	for y in area_start_ring ..= area_start_ring + area_rows {
-		// 0 = south pole
-		// 1 = nouth pole
-		v := f32(y) / f32(rings)
+// 	for y in area_start_ring ..= area_start_ring + area_rows {
+// 		// 0 = south pole
+// 		// 1 = nouth pole
+// 		v := f32(y) / f32(rings)
 
-		theta := v * math.PI
+// 		theta := v * math.PI
 
-		sin_theta := f32(math.sin(theta))
-		cos_theta := f32(math.cos(theta))
+// 		sin_theta := f32(math.sin(theta))
+// 		cos_theta := f32(math.cos(theta))
 
-		// Either need to use the area_cols_segments here or make the vertices span multiple
-		// segments, but then would need to have extra vertices at the tile width zone borders
-		for x in area_start_segment ..= area_start_segment + area_cols_segments {
-			// fmt.println(x)
+// 		// Either need to use the area_cols_segments here or make the vertices span multiple
+// 		// segments, but then would need to have extra vertices at the tile width zone borders
+// 		for x in area_start_segment ..= area_start_segment + area_cols_segments {
+// 			// fmt.println(x)
 
-			u := f32(x) / f32(segments)
+// 			u := f32(x) / f32(segments)
 
-			phi := u * 2.0 * math.PI
+// 			phi := u * 2.0 * math.PI
 
-			sin_phi := f32(math.sin(phi))
-			cos_phi := f32(math.cos(phi))
+// 			sin_phi := f32(math.sin(phi))
+// 			cos_phi := f32(math.cos(phi))
 
-			// Unit sphere position
-			px := -sin_theta * cos_phi
-			py := -cos_theta
-			pz := sin_theta * sin_phi
+// 			// Unit sphere position
+// 			px := -sin_theta * cos_phi
+// 			py := -cos_theta
+// 			pz := sin_theta * sin_phi
 
-			position := Vec3{px * radius, py * radius, pz * radius}
+// 			position := Vec3{px * radius, py * radius, pz * radius}
 
-			vertices[vertex_index] = Vertex {
-				position = position,
-				uv       = Vec2{u, v},
-			}
+// 			vertices[vertex_index] = Vertex {
+// 				position = position,
+// 				uv       = Vec2{u, v},
+// 			}
 
-			vertex_index += 1
-		}
-	}
+// 			vertex_index += 1
+// 		}
+// 	}
 
-	vertices_per_row := area_cols_segments + 1
-	index := 0
-	for row, y in land.rows {
-		// vertices_per_row := area_cols_tiles + 1
-		ring := area_start_ring + y
-		vertices_per_tile := tile_width_per_ring[ring]
-		tile_width_km := tile_width_per_ring_km[ring]
-		// row_width_km := f32(row.width) * tile_width_km
-		row_width_km := f32(row.width) * tile_width_avg_km
-		tiles := int(math.round(row_width_km / tile_width_km))
+// 	vertices_per_row := area_cols_segments + 1
+// 	index := 0
+// 	for row, y in land.rows {
+// 		// vertices_per_row := area_cols_tiles + 1
+// 		ring := area_start_ring + y
+// 		vertices_per_tile := tile_width_per_ring[ring]
+// 		tile_width_km := tile_width_per_ring_km[ring]
+// 		// row_width_km := f32(row.width) * tile_width_km
+// 		row_width_km := f32(row.width) * tile_width_avg_km
+// 		tiles := int(math.round(row_width_km / tile_width_km))
 
-		start_km := f32(row.start) * tile_width_avg_km
-		start_tile := int(math.round(start_km / tile_width_km))
-		// fmt.println(vertices_per_tile)
-		// for x in row.start ..< row.start + row.width {
-		// for x in row.start ..< row.start + tiles {
-		for x in start_tile ..< start_tile + tiles {
-			bottom_left := u32(y * vertices_per_row + x * vertices_per_tile)
-			// bottom_right := bottom_left + 1
-			bottom_right := bottom_left + u32(vertices_per_tile)
-			top_left := u32((y + 1) * vertices_per_row + x * vertices_per_tile)
-			// top_right := top_left + 1
-			top_right := top_left + u32(vertices_per_tile)
+// 		start_km := f32(row.segment) * tile_width_avg_km
+// 		start_tile := int(math.round(start_km / tile_width_km))
+// 		// fmt.println(vertices_per_tile)
+// 		// for x in row.start ..< row.start + row.width {
+// 		// for x in row.start ..< row.start + tiles {
+// 		for x in start_tile ..< start_tile + tiles {
+// 			bottom_left := u32(y * vertices_per_row + x * vertices_per_tile)
+// 			// bottom_right := bottom_left + 1
+// 			bottom_right := bottom_left + u32(vertices_per_tile)
+// 			top_left := u32((y + 1) * vertices_per_row + x * vertices_per_tile)
+// 			// top_right := top_left + 1
+// 			top_right := top_left + u32(vertices_per_tile)
 
-			// First triangle
-			indices[index + 0] = bottom_left
-			indices[index + 1] = top_left
-			indices[index + 2] = bottom_right
+// 			// First triangle
+// 			indices[index + 0] = bottom_left
+// 			indices[index + 1] = top_left
+// 			indices[index + 2] = bottom_right
 
-			// Second triangle
-			indices[index + 3] = bottom_right
-			indices[index + 4] = top_left
-			indices[index + 5] = top_right
+// 			// Second triangle
+// 			indices[index + 3] = bottom_right
+// 			indices[index + 4] = top_left
+// 			indices[index + 5] = top_right
 
-			index += indices_per_tile
-		}
-	}
+// 			index += indices_per_tile
+// 		}
+// 	}
 
-	return Mesh{vertices = vertices, indices = indices}
-}
+// 	return Mesh{vertices = vertices, indices = indices}
+// }
 
 globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: Land) -> Mesh {
 	pole_rings := 10
@@ -830,20 +779,19 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 
 	// The x buffer needs to be divisible by the biggest tile size (which is 8 segments currently)
 	// buffer_segments_x := 16
-	buffer_segments_left := max_tile_width + land.start_segment % max_tile_width
-	buffer_segments_right :=
-		max_tile_width + (land.start_segment + land_width_segs) % max_tile_width
+	buffer_segments_left := max_tile_width + land.segment % max_tile_width
+	buffer_segments_right := max_tile_width + (land.segment + land_width_segs) % max_tile_width
 	buffer_segments_y := 500
-	bottom_buffer := min(land.start_ring - pole_rings, buffer_segments_y)
-	top_buffer := min(rings - pole_rings - (land.start_ring + len(land.rows)), buffer_segments_y)
+	bottom_buffer := min(land.ring - pole_rings, buffer_segments_y)
+	top_buffer := min(rings - pole_rings - (land.ring + len(land.slices)), buffer_segments_y)
 
-	edit_area_start_ring := land.start_ring - bottom_buffer
+	edit_area_start_ring := land.ring - bottom_buffer
 	// edit_area_segments := land_width_segs + buffer_segments_x * 2
 	edit_area_segments := land_width_segs + buffer_segments_left + buffer_segments_right
-	edit_area_height := bottom_buffer + len(land.rows) + top_buffer
+	edit_area_height := bottom_buffer + len(land.slices) + top_buffer
 
 	// edit_area_start_segment := land.start_segment - buffer_segments_x
-	edit_area_start_segment := land.start_segment - buffer_segments_left
+	edit_area_start_segment := land.segment - buffer_segments_left
 
 	// edit_area_start_segment :=
 	// 	((land.start_segment - buffer_segments_x) / max_tile_width) * max_tile_width

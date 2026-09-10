@@ -1,14 +1,13 @@
 package survival
 
 LandRow :: struct {
-	start: int,
-	width: int,
+	ring:    int,
+	segment: int,
+	width:   int,
 }
 
-
 Land :: struct {
-	start_ring:    int,
-	start_segment: int,
-	width:         int,
-	rows:          []LandRow,
+	ring:    int,
+	segment: int,
+	slices:  []LandRow,
 }
