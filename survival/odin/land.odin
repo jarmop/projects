@@ -5,6 +5,11 @@ import "core:math"
 
 tile_width_avg_km: f32 = 40
 
+TERRAIN_TYPE :: enum {
+	OCEAN,
+	FOREST,
+}
+
 land_init :: proc() {
 	lat: f32 = 40
 	ring := lat_to_ring(lat)

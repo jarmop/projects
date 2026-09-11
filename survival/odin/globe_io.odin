@@ -54,16 +54,17 @@ camera := Camera {
 }
 
 globe_io_mouse_left_pressed := false
-globe_io_first_cursor_pos_left := true
 
 globe_io_mouse_right_pressed := false
 globe_io_first_cursor_pos_right := true
+
+edit_mode := false
 
 globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
 
 brush := 30
 
-paint :: proc() {
+paint :: proc(terrain_type: TERRAIN_TYPE) {
 	cursor_x, cursor_y := glfw.GetCursorPos(window)
 	window_width, window_height := glfw.GetWindowSize(window)
 	view := get_view()
@@ -104,7 +105,7 @@ paint :: proc() {
 				}
 
 				tile_index := r * globe_land_segments + s / tile_width
-				land_segments[tile_index] = 1
+				land_segments[tile_index] = int(terrain_type)
 			}
 		}
 
@@ -142,15 +143,17 @@ globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, a
 	if button == glfw.MOUSE_BUTTON_LEFT {
 		if action == glfw.PRESS {
 			globe_io_mouse_left_pressed = true
-			paint()
+			paint(TERRAIN_TYPE.FOREST)
 		} else {
 			globe_io_mouse_left_pressed = false
-			globe_io_first_cursor_pos_left = true
 		}
 
 	} else if button == glfw.MOUSE_BUTTON_RIGHT {
 		if action == glfw.PRESS {
 			globe_io_mouse_right_pressed = true
+			if edit_mode {
+				paint(TERRAIN_TYPE.OCEAN)
+			}
 		} else {
 			globe_io_mouse_right_pressed = false
 			globe_io_first_cursor_pos_right = true
@@ -162,6 +165,11 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 	context = runtime.default_context()
 
 	if globe_io_mouse_right_pressed {
+		if edit_mode {
+			paint(TERRAIN_TYPE.OCEAN)
+			return
+		}
+
 		if globe_io_first_cursor_pos_right {
 			globe_io_prev_cursor_x = x
 			globe_io_prev_cursor_y = y
@@ -190,13 +198,7 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 		globe_io_prev_cursor_x = x
 		globe_io_prev_cursor_y = y
 	} else if globe_io_mouse_left_pressed {
-		if globe_io_first_cursor_pos_left {
-			globe_io_prev_cursor_x = x
-			globe_io_prev_cursor_y = y
-			globe_io_first_cursor_pos_left = false
-		}
-
-		paint()
+		paint(TERRAIN_TYPE.FOREST)
 	}
 }
 
@@ -212,6 +214,12 @@ globe_io_scroll_callback :: proc "c" (window: glfw.WindowHandle, xoffset: f64, y
 	camera.zoom = new_zoom
 	camera.pos.z = globe_radius + camera_zoom_positions[camera.zoom]
 	globe_speed = globe_speeds[camera.zoom]
+}
+
+globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
+	if key == glfw.KEY_E && action == glfw.PRESS {
+		edit_mode = !edit_mode
+	}
 }
 
 get_view :: proc() -> glsl.mat4 {

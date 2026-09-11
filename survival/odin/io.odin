@@ -29,6 +29,8 @@ key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode
 	if key == glfw.KEY_ESCAPE && action == glfw.PRESS {
 		glfw.SetWindowShouldClose(window, true)
 	}
+
+	globe_io_key_callback(window, key, scancode, action, mode)
 }
 
 mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
