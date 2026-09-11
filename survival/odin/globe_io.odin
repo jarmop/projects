@@ -30,7 +30,7 @@ globe_tilt_angle: f32 = 0
 globe_max_tilt_abs: f32 : 90
 
 zoom_levels :: 8
-zoom_level_at_start :: 1
+zoom_level_at_start :: 7
 camera_zoom_positions := [zoom_levels]f32{0.05, 0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.75}
 globe_speeds := [zoom_levels]f32{0.004, 0.008, 0.02, 0.04, 0.065, 0.09, 0.12, 0.18}
 globe_speed: f32 = globe_speeds[zoom_level_at_start]
@@ -61,6 +61,8 @@ globe_io_first_cursor_pos_right := true
 
 globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
 
+brush := 30
+
 paint :: proc() {
 	cursor_x, cursor_y := glfw.GetCursorPos(window)
 	window_width, window_height := glfw.GetWindowSize(window)
@@ -84,12 +86,27 @@ paint :: proc() {
 		globe_land_rings,
 	)
 	if is_hit {
-		tile_width := tile_width_per_ring[ring]
-		tile_index := ring * globe_land_segments + (segment / tile_width)
+		for y in -brush ..= brush {
+			r := ring + y
+			if r < 0 || r >= globe_land_rings {
+				continue
+			}
+			tile_width := tile_width_per_ring[r]
+			for x in -brush ..= brush {
+				if math.sqrt(f32(y * y + x * x)) > f32(brush) {
+					continue
+				}
+				s := segment + x
+				if s < 0 {
+					s += globe_land_segments
+				} else if s >= globe_land_segments {
+					s -= globe_land_segments
+				}
 
-		// fmt.println(tile_index)
-
-		land_segments[tile_index] = 1
+				tile_index := r * globe_land_segments + s / tile_width
+				land_segments[tile_index] = 1
+			}
+		}
 
 		delete(globe_land_mesh.indices)
 		globe_land_mesh.indices = globe_generate_land_indices()
