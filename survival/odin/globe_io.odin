@@ -53,69 +53,84 @@ camera := Camera {
 	zoom  = zoom_level_at_start,
 }
 
+globe_io_mouse_left_pressed := false
+globe_io_first_cursor_pos_left := true
+
 globe_io_mouse_right_pressed := false
 globe_io_first_cursor_pos_right := true
+
 globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
+
+paint :: proc() {
+	cursor_x, cursor_y := glfw.GetCursorPos(window)
+	window_width, window_height := glfw.GetWindowSize(window)
+	view := get_view()
+	projection := get_projection()
+	model := get_model()
+	// is_hit, uv, ring, segment, hit := raycast(
+	is_hit, uv, ring, segment, hit := pick_globe(
+		f32(cursor_x),
+		f32(cursor_y),
+		int(window_width),
+		int(window_height),
+		projection,
+		view,
+		model,
+		// globe_radius,
+		// 2 * globe_grid_rings,
+		// globe_grid_rings,
+		globe_land_radius,
+		globe_land_segments,
+		globe_land_rings,
+	)
+	if is_hit {
+		tile_width := tile_width_per_ring[ring]
+		tile_index := ring * globe_land_segments + (segment / tile_width)
+
+		// fmt.println(tile_index)
+
+		land_segments[tile_index] = 1
+
+		delete(globe_land_mesh.indices)
+		globe_land_mesh.indices = globe_generate_land_indices()
+
+		gl.BindVertexArray(globe_land_vao)
+
+		gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebo)
+		gl.BufferData(
+			gl.ELEMENT_ARRAY_BUFFER,
+			len(globe_land_mesh.indices) * size_of(u32),
+			raw_data(globe_land_mesh.indices),
+			gl.STATIC_DRAW,
+		)
+
+		latitude := math.asin(hit.y / globe_radius)
+		longitude := math.atan2(hit.z, -hit.x)
+
+		// fmt.println("**********")
+		// fmt.println("tilt:", globe_tilt_angle)
+		// fmt.println("spin:", globe_spin_angle)
+		// fmt.println("lat:", math.to_degrees(latitude))
+		// fmt.println("lon:", math.to_degrees(longitude))
+		// fmt.println("ring:", ring)
+		// fmt.println("segment:", segment)
+		// fmt.println("u:", uv.x)
+		// fmt.println("v:", uv.y)
+	}
+}
 
 globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
 	context = runtime.default_context()
 
-	if button == glfw.MOUSE_BUTTON_LEFT && action == glfw.PRESS {
-		cursor_x, cursor_y := glfw.GetCursorPos(window)
-		window_width, window_height := glfw.GetWindowSize(window)
-		view := get_view()
-		projection := get_projection()
-		model := get_model()
-		// is_hit, uv, ring, segment, hit := raycast(
-		is_hit, uv, ring, segment, hit := pick_globe(
-			f32(cursor_x),
-			f32(cursor_y),
-			int(window_width),
-			int(window_height),
-			projection,
-			view,
-			model,
-			// globe_radius,
-			// 2 * globe_grid_rings,
-			// globe_grid_rings,
-			globe_land_radius,
-			globe_land_segments,
-			globe_land_rings,
-		)
-		if is_hit {
-			tile_width := tile_width_per_ring[ring]
-			tile_index := ring * globe_land_segments + (segment / tile_width)
-
-			// fmt.println(tile_index)
-
-			land_segments[tile_index] = 1
-
-			delete(globe_land_mesh.indices)
-			globe_land_mesh.indices = globe_generate_land_indices()
-
-			gl.BindVertexArray(globe_land_vao)
-
-			gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebo)
-			gl.BufferData(
-				gl.ELEMENT_ARRAY_BUFFER,
-				len(globe_land_mesh.indices) * size_of(u32),
-				raw_data(globe_land_mesh.indices),
-				gl.STATIC_DRAW,
-			)
-
-			latitude := math.asin(hit.y / globe_radius)
-			longitude := math.atan2(hit.z, -hit.x)
-
-			// fmt.println("**********")
-			// fmt.println("tilt:", globe_tilt_angle)
-			// fmt.println("spin:", globe_spin_angle)
-			// fmt.println("lat:", math.to_degrees(latitude))
-			// fmt.println("lon:", math.to_degrees(longitude))
-			// fmt.println("ring:", ring)
-			// fmt.println("segment:", segment)
-			// fmt.println("u:", uv.x)
-			// fmt.println("v:", uv.y)
+	if button == glfw.MOUSE_BUTTON_LEFT {
+		if action == glfw.PRESS {
+			globe_io_mouse_left_pressed = true
+			paint()
+		} else {
+			globe_io_mouse_left_pressed = false
+			globe_io_first_cursor_pos_left = true
 		}
+
 	} else if button == glfw.MOUSE_BUTTON_RIGHT {
 		if action == glfw.PRESS {
 			globe_io_mouse_right_pressed = true
@@ -157,6 +172,14 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 
 		globe_io_prev_cursor_x = x
 		globe_io_prev_cursor_y = y
+	} else if globe_io_mouse_left_pressed {
+		if globe_io_first_cursor_pos_left {
+			globe_io_prev_cursor_x = x
+			globe_io_prev_cursor_y = y
+			globe_io_first_cursor_pos_left = false
+		}
+
+		paint()
 	}
 }
 
