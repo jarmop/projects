@@ -65,7 +65,7 @@ globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
 brush_max := 30
 brush := 30
 
-paint :: proc(terrain_type: TERRAIN_TYPE) {
+paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int) {
 	cursor_x, cursor_y := glfw.GetCursorPos(window)
 	window_width, window_height := glfw.GetWindowSize(window)
 	view := get_view()
@@ -106,29 +106,17 @@ paint :: proc(terrain_type: TERRAIN_TYPE) {
 				}
 
 				tile_index := r * globe_land_segments + s / tile_width
-				land_segments[tile_index] = int(terrain_type)
+				segments[tile_index] = int(terrain_type)
 			}
 		}
 
-		delete(globe_land_mesh.indices)
-		globe_land_mesh.indices = globe_generate_land_indices()
-
-		gl.BindVertexArray(globe_land_vao)
-
-		gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebo)
-		gl.BufferData(
-			gl.ELEMENT_ARRAY_BUFFER,
-			len(globe_land_mesh.indices) * size_of(u32),
-			raw_data(globe_land_mesh.indices),
-			gl.STATIC_DRAW,
-		)
-
-		latitude := math.asin(hit.y / globe_radius)
-		longitude := math.atan2(hit.z, -hit.x)
+		globe_update_land_indices(segments[:])
 
 		// fmt.println("**********")
 		// fmt.println("tilt:", globe_tilt_angle)
 		// fmt.println("spin:", globe_spin_angle)
+		// latitude := math.asin(hit.y / globe_radius)
+		// longitude := math.atan2(hit.z, -hit.x)
 		// fmt.println("lat:", math.to_degrees(latitude))
 		// fmt.println("lon:", math.to_degrees(longitude))
 		// fmt.println("ring:", ring)
@@ -138,68 +126,87 @@ paint :: proc(terrain_type: TERRAIN_TYPE) {
 	}
 }
 
+paint_brush :: proc() {
+	// Copy land segments over the brush segments to clear out the previous brush
+	for t, i in land_segments {
+		brush_segments[i] = t
+	}
+	paint(TERRAIN_TYPE.FOREST, brush_segments[:])
+}
+
 globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
 	context = runtime.default_context()
 
 	if button == glfw.MOUSE_BUTTON_LEFT {
 		if action == glfw.PRESS {
 			globe_io_mouse_left_pressed = true
-			paint(TERRAIN_TYPE.FOREST)
 		} else {
 			globe_io_mouse_left_pressed = false
 		}
-
 	} else if button == glfw.MOUSE_BUTTON_RIGHT {
 		if action == glfw.PRESS {
 			globe_io_mouse_right_pressed = true
-			if edit_mode {
-				paint(TERRAIN_TYPE.OCEAN)
-			}
 		} else {
 			globe_io_mouse_right_pressed = false
 			globe_io_first_cursor_pos_right = true
 		}
 	}
+
+	if edit_mode && action == glfw.PRESS {
+		if button == glfw.MOUSE_BUTTON_LEFT {
+			paint(TERRAIN_TYPE.FOREST, land_segments[:])
+		} else if button == glfw.MOUSE_BUTTON_RIGHT {
+			paint(TERRAIN_TYPE.OCEAN, land_segments[:])
+		}
+	}
+}
+
+rotate_globe :: proc(window: glfw.WindowHandle, x, y: f64) {
+	if globe_io_first_cursor_pos_right {
+		globe_io_prev_cursor_x = x
+		globe_io_prev_cursor_y = y
+		globe_io_first_cursor_pos_right = false
+	}
+
+	window_width, window_height := glfw.GetWindowSize(window)
+	relative_window_height := f32(600) / f32(window_height)
+	// fmt.println(relative_window_height)
+	globe_speed_y := globe_speed * relative_window_height
+	globe_speed_x := globe_speed_y
+	z_rad_ratio := camera.pos.z / globe_radius
+	// fmt.println(camera.zoom, z_rad_ratio)
+	if z_rad_ratio <= 1.25 {
+		theta := globe_tilt_angle / 180 * math.PI
+		globe_speed_x = globe_speed_x / math.cos(theta)
+	}
+	globe_spin_angle += f32(x - globe_io_prev_cursor_x) * globe_speed_x
+	globe_tilt_angle += f32(y - globe_io_prev_cursor_y) * globe_speed_y
+	if globe_tilt_angle > globe_max_tilt_abs {
+		globe_tilt_angle = globe_max_tilt_abs
+	} else if globe_tilt_angle < -globe_max_tilt_abs {
+		globe_tilt_angle = -globe_max_tilt_abs
+	}
+
+	globe_io_prev_cursor_x = x
+	globe_io_prev_cursor_y = y
 }
 
 globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) {
 	context = runtime.default_context()
 
-	if globe_io_mouse_right_pressed {
-		if edit_mode {
-			paint(TERRAIN_TYPE.OCEAN)
-			return
+	if edit_mode {
+		if globe_io_mouse_left_pressed {
+			// paint
+			paint(TERRAIN_TYPE.FOREST, land_segments[:])
+		} else if globe_io_mouse_right_pressed {
+			// erase
+			paint(TERRAIN_TYPE.OCEAN, land_segments[:])
+		} else {
+			// show cursor
+			paint_brush()
 		}
-
-		if globe_io_first_cursor_pos_right {
-			globe_io_prev_cursor_x = x
-			globe_io_prev_cursor_y = y
-			globe_io_first_cursor_pos_right = false
-		}
-
-		window_width, window_height := glfw.GetWindowSize(window)
-		relative_window_height := f32(600) / f32(window_height)
-		// fmt.println(relative_window_height)
-		globe_speed_y := globe_speed * relative_window_height
-		globe_speed_x := globe_speed_y
-		z_rad_ratio := camera.pos.z / globe_radius
-		// fmt.println(camera.zoom, z_rad_ratio)
-		if z_rad_ratio <= 1.25 {
-			theta := globe_tilt_angle / 180 * math.PI
-			globe_speed_x = globe_speed_x / math.cos(theta)
-		}
-		globe_spin_angle += f32(x - globe_io_prev_cursor_x) * globe_speed_x
-		globe_tilt_angle += f32(y - globe_io_prev_cursor_y) * globe_speed_y
-		if globe_tilt_angle > globe_max_tilt_abs {
-			globe_tilt_angle = globe_max_tilt_abs
-		} else if globe_tilt_angle < -globe_max_tilt_abs {
-			globe_tilt_angle = -globe_max_tilt_abs
-		}
-
-		globe_io_prev_cursor_x = x
-		globe_io_prev_cursor_y = y
-	} else if globe_io_mouse_left_pressed {
-		paint(TERRAIN_TYPE.FOREST)
+	} else if globe_io_mouse_right_pressed {
+		rotate_globe(window, x, y)
 	}
 }
 
@@ -208,8 +215,8 @@ adjust_brush_size :: proc(yoffset: f64) {
 	if new_brush < 0 || new_brush >= brush_max {
 		return
 	}
-
 	brush = new_brush
+	paint_brush()
 }
 
 adjust_zoom_level :: proc(yoffset: f64) {
@@ -234,8 +241,16 @@ globe_io_scroll_callback :: proc "c" (window: glfw.WindowHandle, xoffset: f64, y
 }
 
 globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
+	context = runtime.default_context()
+
 	if key == glfw.KEY_E && action == glfw.PRESS {
 		edit_mode = !edit_mode
+		if edit_mode {
+			paint_brush()
+		} else {
+			// erase brush
+			globe_update_land_indices(land_segments[:])
+		}
 	}
 }
 
