@@ -62,6 +62,7 @@ edit_mode := false
 
 globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
 
+brush_max := 30
 brush := 30
 
 paint :: proc(terrain_type: TERRAIN_TYPE) {
@@ -202,10 +203,16 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 	}
 }
 
+adjust_brush_size :: proc(yoffset: f64) {
+	new_brush := yoffset < 0 ? brush + 1 : brush - 1
+	if new_brush < 0 || new_brush >= brush_max {
+		return
+	}
 
-globe_io_scroll_callback :: proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f64) {
-	context = runtime.default_context()
+	brush = new_brush
+}
 
+adjust_zoom_level :: proc(yoffset: f64) {
 	new_zoom := yoffset < 0 ? camera.zoom + 1 : camera.zoom - 1
 	if new_zoom < 0 || new_zoom >= zoom_levels {
 		return
@@ -214,6 +221,16 @@ globe_io_scroll_callback :: proc "c" (window: glfw.WindowHandle, xoffset: f64, y
 	camera.zoom = new_zoom
 	camera.pos.z = globe_radius + camera_zoom_positions[camera.zoom]
 	globe_speed = globe_speeds[camera.zoom]
+}
+
+globe_io_scroll_callback :: proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f64) {
+	context = runtime.default_context()
+
+	if edit_mode {
+		adjust_brush_size(yoffset)
+	} else {
+		adjust_zoom_level(yoffset)
+	}
 }
 
 globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
