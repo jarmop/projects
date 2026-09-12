@@ -11,15 +11,7 @@ TERRAIN_TYPE :: enum {
 }
 
 land_init :: proc() {
-	lat: f32 = 40
-	ring := lat_to_ring(lat)
-	segment := 0
-
-	segment_index := ring * globe_land_segments + segment
-	land_segments[segment_index] = 1
-
-	globe_tilt_angle = lat
-	globe_spin_angle = segment_to_lon(segment)
+	load_land()
 }
 
 lat_to_ring :: proc(lat: f32) -> int {

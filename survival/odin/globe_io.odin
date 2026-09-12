@@ -25,8 +25,9 @@ Camera :: struct {
 	zoom:  int,
 }
 
-globe_spin_angle: f32 = 0
-globe_tilt_angle: f32 = 0
+globe_tilt_angle: f32 = 40 // -90 - 90
+globe_spin_angle: f32 = 0 // -180 - 180
+
 globe_max_tilt_abs: f32 : 90
 
 zoom_levels :: 8
@@ -251,6 +252,8 @@ globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, act
 			// erase brush
 			globe_update_land_indices(land_segments[:])
 		}
+	} else if key == glfw.KEY_S && action == glfw.PRESS {
+		save_land()
 	}
 }
 
