@@ -162,6 +162,9 @@ globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, a
 	if edit_mode && action == glfw.PRESS {
 		if button == glfw.MOUSE_BUTTON_LEFT {
 			paint(brush_type, land_segments[:])
+			if mask_ocean {
+				paint_brush()
+			}
 		} else if button == glfw.MOUSE_BUTTON_RIGHT {
 			paint(TERRAIN_TYPE.OCEAN, land_segments[:])
 		}
@@ -205,6 +208,9 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 		if globe_io_mouse_left_pressed {
 			// paint
 			paint(brush_type, land_segments[:])
+			if mask_ocean {
+				paint_brush()
+			}
 		} else if globe_io_mouse_right_pressed {
 			// erase
 			paint(TERRAIN_TYPE.OCEAN, land_segments[:])
