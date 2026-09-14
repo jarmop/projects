@@ -19,6 +19,7 @@ Land_Mesh :: struct {
 	vertices:       []Vertex,
 	forest_indices: []u32,
 	plain_indices:  []u32,
+	mask_indices:   []u32,
 }
 
 LandRow :: struct {

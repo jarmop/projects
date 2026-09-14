@@ -9,12 +9,14 @@ TERRAIN_TYPE :: enum {
 	OCEAN,
 	FOREST,
 	PLAIN,
+	MASK,
 }
 
 TERRAIN_COLORS :: [TERRAIN_TYPE]Vec4 {
 	.OCEAN  = {0.4, 0.9, 1, 1},
 	.FOREST = {0.2, 0.6, 0.4, 1},
 	.PLAIN  = {0.4, 0.8, 0.6, 1},
+	.MASK   = {0, 0, 0, 0.1},
 }
 
 land_init :: proc() {

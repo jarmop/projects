@@ -34,6 +34,7 @@ globe_land_rings :: globe_land_segments / 2
 globe_land_vao: u32
 globe_land_forest_ebo: u32
 globe_land_plain_ebo: u32
+globe_land_mask_ebo: u32
 globe_land_mesh: Land_Mesh
 globe_land_radius: f32 : globe_radius
 
@@ -215,6 +216,16 @@ globe_init_land :: proc(mesh: ^Land_Mesh) {
 		raw_data(mesh.plain_indices),
 		gl.STATIC_DRAW,
 	)
+
+	// mask indices
+	gl.GenBuffers(1, &globe_land_mask_ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_mask_ebo)
+	gl.BufferData(
+		gl.ELEMENT_ARRAY_BUFFER,
+		len(mesh.mask_indices) * size_of(u32),
+		raw_data(mesh.mask_indices),
+		gl.STATIC_DRAW,
+	)
 }
 
 globe_init_layer :: proc(vao: ^u32, mesh: ^Mesh) {
@@ -298,6 +309,10 @@ globe_draw_land :: proc(vao: u32, mesh: Land_Mesh) {
 	shader_set_vec4(globe_program, "color", TERRAIN_COLORS[TERRAIN_TYPE.PLAIN])
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_plain_ebo)
 	gl.DrawElements(gl.TRIANGLES, i32(len(mesh.plain_indices)), gl.UNSIGNED_INT, nil)
+
+	shader_set_vec4(globe_program, "color", TERRAIN_COLORS[TERRAIN_TYPE.MASK])
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_mask_ebo)
+	gl.DrawElements(gl.TRIANGLES, i32(len(mesh.mask_indices)), gl.UNSIGNED_INT, nil)
 }
 
 globe_draw_edit_area :: proc() {
@@ -504,18 +519,19 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 		tile_offset_y = tile_vertex_index
 	}
 
-	forest_indices, plain_indices := globe_generate_land_indices(land_segments[:])
+	forest_indices, plain_indices, mask_indices := globe_generate_land_indices(land_segments[:])
 
 	return Land_Mesh {
 		vertices = tile_vertices,
 		forest_indices = forest_indices,
 		plain_indices = plain_indices,
+		mask_indices = mask_indices,
 	}
 }
 
 indices_per_vertex := 6
 
-globe_generate_land_indices :: proc(segments: []int) -> ([]u32, []u32) {
+globe_generate_land_indices :: proc(segments: []int) -> ([]u32, []u32, []u32) {
 	add_tile :: proc(indices: []u32, index: ^int, ring: int, segment: int, tile_width: int) {
 		bottom_left := u32(ring * (tile_vertex_count_x) + segment * tile_width)
 		bottom_right := bottom_left + u32(tile_width)
@@ -535,37 +551,45 @@ globe_generate_land_indices :: proc(segments: []int) -> ([]u32, []u32) {
 
 	forest_count := 0
 	plain_count := 0
+	mask_count := 0
 	for l in segments {
-		if l == 1 {
+		if l == int(TERRAIN_TYPE.FOREST) {
 			forest_count += 1
-		} else if l == 2 {
+		} else if l == int(TERRAIN_TYPE.PLAIN) {
 			plain_count += 1
+		} else if l == int(TERRAIN_TYPE.MASK) {
+			mask_count += 1
 		}
 	}
 
 	forest_indices := make([]u32, forest_count * indices_per_vertex)
 	plain_indices := make([]u32, plain_count * indices_per_vertex)
+	mask_indices := make([]u32, mask_count * indices_per_vertex)
 	forest_index := 0
 	plain_index := 0
+	mask_index := 0
 	for ring in 0 ..< globe_land_rings {
 		for segment in 0 ..< globe_land_segments {
 			terrain_type := segments[ring * globe_land_segments + segment]
-			if terrain_type == 1 {
+			if terrain_type == int(TERRAIN_TYPE.FOREST) {
 				add_tile(forest_indices, &forest_index, ring, segment, tile_width_per_ring[ring])
-			} else if terrain_type == 2 {
+			} else if terrain_type == int(TERRAIN_TYPE.PLAIN) {
 				add_tile(plain_indices, &plain_index, ring, segment, tile_width_per_ring[ring])
+			} else if terrain_type == int(TERRAIN_TYPE.MASK) {
+				add_tile(mask_indices, &mask_index, ring, segment, tile_width_per_ring[ring])
 			}
 		}
 	}
 
-	return forest_indices, plain_indices
+	return forest_indices, plain_indices, mask_indices
 }
 
 globe_update_land_indices :: proc(segments: []int) {
 	delete(globe_land_mesh.forest_indices)
-	globe_land_mesh.forest_indices, globe_land_mesh.plain_indices = globe_generate_land_indices(
-		segments[:],
-	)
+	delete(globe_land_mesh.plain_indices)
+	delete(globe_land_mesh.mask_indices)
+	globe_land_mesh.forest_indices, globe_land_mesh.plain_indices, globe_land_mesh.mask_indices =
+		globe_generate_land_indices(segments[:])
 
 	gl.BindVertexArray(globe_land_vao)
 
@@ -582,6 +606,14 @@ globe_update_land_indices :: proc(segments: []int) {
 		gl.ELEMENT_ARRAY_BUFFER,
 		len(globe_land_mesh.plain_indices) * size_of(u32),
 		raw_data(globe_land_mesh.plain_indices),
+		gl.STATIC_DRAW,
+	)
+
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_mask_ebo)
+	gl.BufferData(
+		gl.ELEMENT_ARRAY_BUFFER,
+		len(globe_land_mesh.mask_indices) * size_of(u32),
+		raw_data(globe_land_mesh.mask_indices),
 		gl.STATIC_DRAW,
 	)
 }
@@ -657,9 +689,9 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 			position := Vec3{px * radius, py * radius, pz * radius}
 
 			vertices[vertex_index] = Vertex {
-				position = position,
-				uv       = Vec2{u, v},
-			}
+					position = position,
+					uv       = Vec2{u, v},
+				}
 
 			vertex_index += 1
 		}
@@ -743,9 +775,9 @@ globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 			position := Vec3{px * radius, py * radius, pz * radius}
 
 			vertices[vertex_index] = Vertex {
-				position = position,
-				uv       = Vec2{u, v},
-			}
+					position = position,
+					uv       = Vec2{u, v},
+				}
 
 			vertex_index += 1
 		}

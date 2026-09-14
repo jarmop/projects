@@ -61,11 +61,11 @@ globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
 edit_mode := true
 
 brush_max := 30
-brush := 0
+brush := 10
 brush_type := TERRAIN_TYPE.PLAIN
 mask_ocean := true
 
-paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int) {
+paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int, use_mask_color := false) {
 	cursor_x, cursor_y := glfw.GetCursorPos(window)
 	window_width, window_height := glfw.GetWindowSize(window)
 	view := get_view()
@@ -105,6 +105,8 @@ paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int) {
 
 				if (!mask_ocean || segments[tile_index] != int(TERRAIN_TYPE.OCEAN)) {
 					segments[tile_index] = int(terrain_type)
+				} else if use_mask_color {
+					segments[tile_index] = int(TERRAIN_TYPE.MASK)
 				}
 			}
 		}
@@ -130,7 +132,7 @@ paint_brush :: proc() {
 	for t, i in land_segments {
 		brush_segments[i] = t
 	}
-	paint(brush_type, brush_segments[:])
+	paint(brush_type, brush_segments[:], true)
 }
 
 globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
