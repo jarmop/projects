@@ -63,7 +63,7 @@ edit_mode := true
 brush_max := 30
 brush := 10
 brush_type := TERRAIN_TYPE.PLAIN
-mask_ocean := true
+mask_ocean := false
 
 globe_io_init :: proc() {
 	if edit_mode {
@@ -271,6 +271,9 @@ globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, act
 		}
 	} else if key == glfw.KEY_S {
 		save_land()
+	} else if key == glfw.KEY_M {
+		mask_ocean = !mask_ocean
+		paint_brush()
 	} else if key in terrain_key_map {
 		brush_type = terrain_key_map[key]
 		paint_brush()
