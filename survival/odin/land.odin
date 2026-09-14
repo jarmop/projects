@@ -8,10 +8,19 @@ tile_width_avg_km: f32 = 40
 TERRAIN_TYPE :: enum {
 	OCEAN,
 	FOREST,
+	PLAIN,
+}
+
+TERRAIN_COLORS :: [TERRAIN_TYPE]Vec4 {
+	.OCEAN  = {0.4, 0.9, 1, 1},
+	.FOREST = {0.2, 0.6, 0.4, 1},
+	.PLAIN  = {0.4, 0.8, 0.6, 1},
 }
 
 land_init :: proc() {
-	load_land()
+	// load_land()
+	land_segments[256 * globe_land_segments] = 1
+	land_segments[256 * globe_land_segments + 1] = 2
 }
 
 lat_to_ring :: proc(lat: f32) -> int {

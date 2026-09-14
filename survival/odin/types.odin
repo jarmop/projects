@@ -15,6 +15,12 @@ Mesh :: struct {
 	indices:  []u32,
 }
 
+Land_Mesh :: struct {
+	vertices:       []Vertex,
+	forest_indices: []u32,
+	plain_indices:  []u32,
+}
+
 LandRow :: struct {
 	ring:    int,
 	segment: int,
