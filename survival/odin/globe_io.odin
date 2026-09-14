@@ -36,9 +36,6 @@ camera_zoom_positions := [zoom_levels]f32{0.05, 0.1, 0.25, 0.5, 0.75, 1, 1.25, 1
 globe_speeds := [zoom_levels]f32{0.004, 0.008, 0.02, 0.04, 0.065, 0.09, 0.12, 0.18}
 globe_speed: f32 = globe_speeds[zoom_level_at_start]
 
-// camera_zoom_positions := [zoom_levels]f32{0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2}
-// globe_speeds := [zoom_levels]f32{0.02, 0.04, 0.065, 0.09, 0.12, 0.15, 0.18, 0.21}
-
 camera := Camera {
 	pos   = {0, 0, globe_radius + camera_zoom_positions[zoom_level_at_start]},
 	min_z = 0.25,
@@ -59,13 +56,14 @@ globe_io_mouse_left_pressed := false
 globe_io_mouse_right_pressed := false
 globe_io_first_cursor_pos_right := true
 
-edit_mode := false
-
 globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
+
+edit_mode := true
 
 brush_max := 30
 brush := 0
 brush_type := TERRAIN_TYPE.PLAIN
+mask_ocean := true
 
 paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int) {
 	cursor_x, cursor_y := glfw.GetCursorPos(window)
@@ -73,7 +71,6 @@ paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int) {
 	view := get_view()
 	projection := get_projection()
 	model := get_model()
-	// is_hit, uv, ring, segment, hit := raycast(
 	is_hit, uv, ring, segment, hit := pick_globe(
 		f32(cursor_x),
 		f32(cursor_y),
@@ -82,9 +79,6 @@ paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int) {
 		projection,
 		view,
 		model,
-		// globe_radius,
-		// 2 * globe_grid_rings,
-		// globe_grid_rings,
 		globe_land_radius,
 		globe_land_segments,
 		globe_land_rings,
@@ -108,7 +102,10 @@ paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int) {
 				}
 
 				tile_index := r * globe_land_segments + s / tile_width
-				segments[tile_index] = int(terrain_type)
+
+				if (!mask_ocean || segments[tile_index] != int(TERRAIN_TYPE.OCEAN)) {
+					segments[tile_index] = int(terrain_type)
+				}
 			}
 		}
 
