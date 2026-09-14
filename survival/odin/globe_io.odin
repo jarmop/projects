@@ -31,7 +31,7 @@ globe_spin_angle: f32 = 90 - 1.2 // -180 - 180
 globe_max_tilt_abs: f32 : 90
 
 zoom_levels :: 8
-zoom_level_at_start :: 0
+zoom_level_at_start :: 7
 camera_zoom_positions := [zoom_levels]f32{0.05, 0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.75}
 globe_speeds := [zoom_levels]f32{0.004, 0.008, 0.02, 0.04, 0.065, 0.09, 0.12, 0.18}
 globe_speed: f32 = globe_speeds[zoom_level_at_start]
@@ -65,6 +65,7 @@ globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
 
 brush_max := 30
 brush := 0
+brush_type := TERRAIN_TYPE.PLAIN
 
 paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int) {
 	cursor_x, cursor_y := glfw.GetCursorPos(window)
@@ -132,7 +133,7 @@ paint_brush :: proc() {
 	for t, i in land_segments {
 		brush_segments[i] = t
 	}
-	paint(TERRAIN_TYPE.FOREST, brush_segments[:])
+	paint(brush_type, brush_segments[:])
 }
 
 globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
@@ -155,7 +156,7 @@ globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, a
 
 	if edit_mode && action == glfw.PRESS {
 		if button == glfw.MOUSE_BUTTON_LEFT {
-			paint(TERRAIN_TYPE.FOREST, land_segments[:])
+			paint(brush_type, land_segments[:])
 		} else if button == glfw.MOUSE_BUTTON_RIGHT {
 			paint(TERRAIN_TYPE.OCEAN, land_segments[:])
 		}
@@ -198,7 +199,7 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 	if edit_mode {
 		if globe_io_mouse_left_pressed {
 			// paint
-			paint(TERRAIN_TYPE.FOREST, land_segments[:])
+			paint(brush_type, land_segments[:])
 		} else if globe_io_mouse_right_pressed {
 			// erase
 			paint(TERRAIN_TYPE.OCEAN, land_segments[:])
@@ -241,10 +242,19 @@ globe_io_scroll_callback :: proc "c" (window: glfw.WindowHandle, xoffset: f64, y
 	}
 }
 
+terrain_key_map := map[i32]TERRAIN_TYPE {
+	glfw.KEY_1 = .FOREST,
+	glfw.KEY_2 = .PLAIN,
+}
+
 globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
 	context = runtime.default_context()
 
-	if key == glfw.KEY_E && action == glfw.PRESS {
+	if action != glfw.PRESS {
+		return
+	}
+
+	if key == glfw.KEY_E {
 		edit_mode = !edit_mode
 		if edit_mode {
 			paint_brush()
@@ -252,8 +262,11 @@ globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, act
 			// erase brush
 			globe_update_land_indices(land_segments[:])
 		}
-	} else if key == glfw.KEY_S && action == glfw.PRESS {
+	} else if key == glfw.KEY_S {
 		save_land()
+	} else if key in terrain_key_map {
+		brush_type = terrain_key_map[key]
+		paint_brush()
 	}
 }
 

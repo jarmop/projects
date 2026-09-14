@@ -80,24 +80,8 @@ globe_init :: proc() {
 	)
 	globe_init_layer(&globe_ocean_vao, &globe_ocean_mesh)
 
-	// globe_land_mesh = globe_generate_land_on_planes(
-	globe_land_mesh = globe_generate_vertices(
-		globe_segments,
-		globe_rings,
-		globe_radius,
-		// globe_land_segments,
-		// globe_land_rings,
-		// globe_land_radius,
-	)
+	globe_land_mesh = globe_generate_vertices(globe_segments, globe_rings, globe_radius)
 	globe_init_land(&globe_land_mesh)
-
-	// globe_land_mesh = globe_generate_land(
-	// 	globe_land_segments,
-	// 	globe_land_rings,
-	// 	globe_land_radius,
-	// 	land,
-	// )
-	// globe_init_layer(&globe_land_vao, &globe_land_mesh)
 
 	globe_edit_area_mesh = globe_generate_edit_area(
 		globe_edit_area_segments,
@@ -114,39 +98,6 @@ globe_init :: proc() {
 	)
 	globe_init_layer(&globe_grid_vao, &globe_grid_mesh)
 }
-
-// globe_init_planes :: proc() {
-// 	for ring in 0 ..< globe_rings {
-// 		ring_length_bottom := ring_len(ring, globe_rings) * earth_circumference
-// 		ring_length_top := ring_len(ring + 1, globe_rings) * earth_circumference
-// 		ring_length_avg := (ring_length_bottom + ring_length_top) / 2
-
-// 		segment_width_avg := ring_length_avg / globe_land_segments
-// 		segments_per_tile_avg := tile_width_avg_km / segment_width_avg
-
-// 		segments_per_tile := 1
-// 		diff: f32 = 9999
-// 		for i := 1; i <= max_tile_width; i *= 2 {
-// 			d := math.abs(tile_width_avg_km - f32(i) * segment_width_avg)
-// 			if d < diff {
-// 				diff = d
-// 				segments_per_tile = i
-// 			}
-// 		}
-
-// 		// fmt.printfln("%d\t%d", ring, segments_per_tile)
-
-// 		tile_width_km := f32(segments_per_tile) * segment_width_avg
-
-// 		// for r in ring ..< ring + rings_per_plane {
-// 		for r in 0 ..< rings_per_plane {
-// 			i := ring * rings_per_plane + r
-// 			tile_width_per_ring[i] = segments_per_tile
-// 			tile_width_per_ring_km[i] = tile_width_km
-// 			// fmt.println(i, segments_per_tile, tile_width_km)
-// 		}
-// 	}
-// }
 
 globe_init_tiles :: proc() {
 	// fmt.printfln("Ring\tR len\tT width 1\tT width 2\t Final W\tFinal T")
@@ -623,6 +574,14 @@ globe_update_land_indices :: proc(segments: []int) {
 		gl.ELEMENT_ARRAY_BUFFER,
 		len(globe_land_mesh.forest_indices) * size_of(u32),
 		raw_data(globe_land_mesh.forest_indices),
+		gl.STATIC_DRAW,
+	)
+
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_plain_ebo)
+	gl.BufferData(
+		gl.ELEMENT_ARRAY_BUFFER,
+		len(globe_land_mesh.plain_indices) * size_of(u32),
+		raw_data(globe_land_mesh.plain_indices),
 		gl.STATIC_DRAW,
 	)
 }

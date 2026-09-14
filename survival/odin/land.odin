@@ -18,9 +18,7 @@ TERRAIN_COLORS :: [TERRAIN_TYPE]Vec4 {
 }
 
 land_init :: proc() {
-	// load_land()
-	land_segments[256 * globe_land_segments] = 1
-	land_segments[256 * globe_land_segments + 1] = 2
+	load_land()
 }
 
 lat_to_ring :: proc(lat: f32) -> int {
