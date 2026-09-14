@@ -12,6 +12,7 @@ first_cursor_pos_right := true
 prev_cursor_x, prev_cursor_y: f64
 
 io_init :: proc() {
+	globe_io_init()
 	glfw.SetFramebufferSizeCallback(window, framebuffer_size_callback)
 	glfw.SetKeyCallback(window, key_callback)
 	glfw.SetMouseButtonCallback(window, mouse_button_callback)

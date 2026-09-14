@@ -65,6 +65,12 @@ brush := 10
 brush_type := TERRAIN_TYPE.PLAIN
 mask_ocean := true
 
+globe_io_init :: proc() {
+	if edit_mode {
+		glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_HIDDEN)
+	}
+}
+
 paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int, use_mask_color := false) {
 	cursor_x, cursor_y := glfw.GetCursorPos(window)
 	window_width, window_height := glfw.GetWindowSize(window)
@@ -257,9 +263,11 @@ globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, act
 		edit_mode = !edit_mode
 		if edit_mode {
 			paint_brush()
+			glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_HIDDEN)
 		} else {
 			// erase brush
 			globe_update_land_indices(land_segments[:])
+			glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 		}
 	} else if key == glfw.KEY_S {
 		save_land()
