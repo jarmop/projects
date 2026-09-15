@@ -63,7 +63,7 @@ edit_mode := true
 brush_max := 30
 brush := 10
 brush_type := TERRAIN_TYPE.PLAIN
-mask_ocean := false
+mask_ocean := true
 
 globe_io_init :: proc() {
 	if edit_mode {
@@ -71,7 +71,7 @@ globe_io_init :: proc() {
 	}
 }
 
-paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int, use_mask_color := false) {
+paint :: proc(terrain_type: TERRAIN_TYPE, just_brush := false) {
 	cursor_x, cursor_y := glfw.GetCursorPos(window)
 	window_width, window_height := glfw.GetWindowSize(window)
 	view := get_view()
@@ -90,6 +90,8 @@ paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int, use_mask_color := fal
 		globe_land_rings,
 	)
 	if is_hit {
+		land_segments_backup := make(map[int]int)
+
 		for y in -brush ..= brush {
 			r := ring + y
 			if r < 0 || r >= globe_land_rings {
@@ -109,15 +111,27 @@ paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int, use_mask_color := fal
 
 				tile_index := r * globe_land_segments + s / tile_width
 
-				if (!mask_ocean || segments[tile_index] != int(TERRAIN_TYPE.OCEAN)) {
-					segments[tile_index] = int(terrain_type)
-				} else if use_mask_color {
-					segments[tile_index] = int(TERRAIN_TYPE.MASK)
+				if (mask_ocean && land_segments[tile_index] == int(TERRAIN_TYPE.OCEAN)) {
+					if tile_index not_in land_segments_backup {
+						land_segments_backup[tile_index] = land_segments[tile_index]
+					}
+					land_segments[tile_index] = int(TERRAIN_TYPE.MASK)
+				} else {
+					if just_brush && tile_index not_in land_segments_backup {
+						land_segments_backup[tile_index] = land_segments[tile_index]
+					}
+					land_segments[tile_index] = int(terrain_type)
+
 				}
 			}
 		}
 
-		globe_update_land_indices(segments[:])
+		globe_update_land_indices()
+
+		// Erase brush
+		for index, terrain_type in land_segments_backup {
+			land_segments[index] = terrain_type
+		}
 
 		// fmt.println("**********")
 		// fmt.println("tilt:", globe_tilt_angle)
@@ -134,11 +148,7 @@ paint :: proc(terrain_type: TERRAIN_TYPE, segments: []int, use_mask_color := fal
 }
 
 paint_brush :: proc() {
-	// Copy land segments over the brush segments to clear out the previous brush
-	for t, i in land_segments {
-		brush_segments[i] = t
-	}
-	paint(brush_type, brush_segments[:], true)
+	paint(brush_type, true)
 }
 
 globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
@@ -161,12 +171,10 @@ globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, a
 
 	if edit_mode && action == glfw.PRESS {
 		if button == glfw.MOUSE_BUTTON_LEFT {
-			paint(brush_type, land_segments[:])
-			if mask_ocean {
-				paint_brush()
-			}
+			paint(brush_type)
 		} else if button == glfw.MOUSE_BUTTON_RIGHT {
-			paint(TERRAIN_TYPE.OCEAN, land_segments[:])
+			// erase
+			paint(TERRAIN_TYPE.OCEAN)
 		}
 	}
 }
@@ -206,14 +214,10 @@ globe_io_cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, x, y: f64) 
 
 	if edit_mode {
 		if globe_io_mouse_left_pressed {
-			// paint
-			paint(brush_type, land_segments[:])
-			if mask_ocean {
-				paint_brush()
-			}
+			paint(brush_type)
 		} else if globe_io_mouse_right_pressed {
 			// erase
-			paint(TERRAIN_TYPE.OCEAN, land_segments[:])
+			paint(TERRAIN_TYPE.OCEAN)
 		} else {
 			// show cursor
 			paint_brush()
@@ -272,7 +276,7 @@ globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, act
 			glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_HIDDEN)
 		} else {
 			// erase brush
-			globe_update_land_indices(land_segments[:])
+			globe_update_land_indices()
 			glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 		}
 	} else if key == glfw.KEY_S {

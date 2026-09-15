@@ -519,7 +519,7 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 		tile_offset_y = tile_vertex_index
 	}
 
-	forest_indices, plain_indices, mask_indices := globe_generate_land_indices(land_segments[:])
+	forest_indices, plain_indices, mask_indices := globe_generate_land_indices()
 
 	return Land_Mesh {
 		vertices = tile_vertices,
@@ -531,7 +531,7 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 
 indices_per_vertex := 6
 
-globe_generate_land_indices :: proc(segments: []int) -> ([]u32, []u32, []u32) {
+globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32) {
 	add_tile :: proc(indices: []u32, index: ^int, ring: int, segment: int, tile_width: int) {
 		bottom_left := u32(ring * (tile_vertex_count_x) + segment * tile_width)
 		bottom_right := bottom_left + u32(tile_width)
@@ -552,7 +552,7 @@ globe_generate_land_indices :: proc(segments: []int) -> ([]u32, []u32, []u32) {
 	forest_count := 0
 	plain_count := 0
 	mask_count := 0
-	for l in segments {
+	for l in land_segments {
 		if l == int(TERRAIN_TYPE.FOREST) {
 			forest_count += 1
 		} else if l == int(TERRAIN_TYPE.PLAIN) {
@@ -570,7 +570,7 @@ globe_generate_land_indices :: proc(segments: []int) -> ([]u32, []u32, []u32) {
 	mask_index := 0
 	for ring in 0 ..< globe_land_rings {
 		for segment in 0 ..< globe_land_segments {
-			terrain_type := segments[ring * globe_land_segments + segment]
+			terrain_type := land_segments[ring * globe_land_segments + segment]
 			if terrain_type == int(TERRAIN_TYPE.FOREST) {
 				add_tile(forest_indices, &forest_index, ring, segment, tile_width_per_ring[ring])
 			} else if terrain_type == int(TERRAIN_TYPE.PLAIN) {
@@ -584,12 +584,13 @@ globe_generate_land_indices :: proc(segments: []int) -> ([]u32, []u32, []u32) {
 	return forest_indices, plain_indices, mask_indices
 }
 
-globe_update_land_indices :: proc(segments: []int) {
+globe_update_land_indices :: proc() {
+	// fmt.println("globe_update_land_indices")
 	delete(globe_land_mesh.forest_indices)
 	delete(globe_land_mesh.plain_indices)
 	delete(globe_land_mesh.mask_indices)
 	globe_land_mesh.forest_indices, globe_land_mesh.plain_indices, globe_land_mesh.mask_indices =
-		globe_generate_land_indices(segments[:])
+		globe_generate_land_indices()
 
 	gl.BindVertexArray(globe_land_vao)
 
