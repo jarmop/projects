@@ -98,6 +98,8 @@ globe_init :: proc() {
 		globe_grid_radius,
 	)
 	globe_init_layer(&globe_grid_vao, &globe_grid_mesh)
+
+	globe_init_texture()
 }
 
 globe_init_tiles :: proc() {
@@ -273,7 +275,7 @@ globe_draw :: proc() {
 
 	gl.UseProgram(globe_program)
 
-	// shader_set_int(program, "texture_sampler", 0)
+	shader_set_int(globe_program, "texture_sampler", 0)
 
 	view := get_view()
 
@@ -850,28 +852,27 @@ ring_len :: proc(ring: int, rings: int) -> f32 {
 	return math.sin(f32(ring) / f32(rings) * math.PI)
 }
 
-// globe_init_texture :: proc() {
-// 	// TEXTURE
-// 	globe_texture: u32
+globe_init_texture :: proc() {
+	// TEXTURE
+	globe_texture: u32
 
-// 	gl.GenTextures(1, &globe_texture)
-// 	gl.BindTexture(gl.TEXTURE_2D, globe_texture)
-// 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-// 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-// 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-// 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+	gl.GenTextures(1, &globe_texture)
+	gl.BindTexture(gl.TEXTURE_2D, globe_texture)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
-// 	stbi.set_flip_vertically_on_load(1)
-// 	width, height, nrChannels: i32
-// 	// data := stbi.load("./Ground075_1K-JPG_Color.jpg", &width, &height, &nrChannels, 0)
-// 	data := stbi.load("./world.jpg", &width, &height, &nrChannels, 0)
-// 	if data == nil {
-// 		fmt.println("Failed to load texture")
-// 		os.exit(-1)
-// 	}
+	stbi.set_flip_vertically_on_load(1)
+	width, height, nrChannels: i32
+	data := stbi.load("./textures/world.jpg", &width, &height, &nrChannels, 0)
+	if data == nil {
+		fmt.println("Failed to load texture")
+		os.exit(-1)
+	}
 
-// 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_BYTE, data)
-// 	gl.GenerateMipmap(gl.TEXTURE_2D)
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_BYTE, data)
+	gl.GenerateMipmap(gl.TEXTURE_2D)
 
-// 	stbi.image_free(data)
-// }
+	stbi.image_free(data)
+}
