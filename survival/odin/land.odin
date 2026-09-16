@@ -6,7 +6,6 @@ import "core:math"
 tile_width_avg_km: f32 = 40
 
 TERRAIN_TYPE :: enum {
-	VOID,
 	OCEAN,
 	FOREST,
 	PLAIN,
@@ -14,7 +13,6 @@ TERRAIN_TYPE :: enum {
 }
 
 TERRAIN_COLORS :: [TERRAIN_TYPE]Vec4 {
-	.VOID   = {1, 0, 0, 1},
 	.OCEAN  = {0.4, 0.9, 1, 1},
 	.FOREST = {0.2, 0.6, 0.4, 1},
 	.PLAIN  = {0.4, 0.8, 0.6, 1},
