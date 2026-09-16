@@ -7,6 +7,7 @@ import "core:fmt"
 import "core:math"
 import l "core:math/linalg"
 import "core:math/linalg/glsl"
+import "core:strconv/decimal"
 import gl "vendor:OpenGL"
 import glfw "vendor:glfw"
 
@@ -61,7 +62,7 @@ globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
 edit_mode := true
 
 brush_max := 30
-brush := 10
+brush := 2
 brush_type := TERRAIN_TYPE.PLAIN
 mask_ocean := true
 
@@ -92,13 +93,19 @@ paint :: proc(terrain_type: TERRAIN_TYPE, just_brush := false) {
 	if is_hit {
 		land_segments_backup := make(map[int]int)
 
+		wtf := 0
+		mask_count := 0
+		no_count := 0
 		for y in -brush ..= brush {
 			r := ring + y
 			if r < 0 || r >= globe_land_rings {
 				continue
 			}
 			tile_width := tile_width_per_ring[r]
-			for x in -brush ..= brush {
+			foo := brush % tile_width
+			brush_x :=
+				foo == 0 ? brush / tile_width * tile_width : (brush / tile_width + 1) * tile_width
+			for x := -brush_x; x <= brush_x; x += tile_width {
 				if math.sqrt(f32(y * y + x * x)) > f32(brush) {
 					continue
 				}
@@ -116,12 +123,15 @@ paint :: proc(terrain_type: TERRAIN_TYPE, just_brush := false) {
 						land_segments_backup[tile_index] = land_segments[tile_index]
 					}
 					land_segments[tile_index] = int(TERRAIN_TYPE.MASK)
+
+					mask_count += 1
 				} else {
 					if just_brush && tile_index not_in land_segments_backup {
 						land_segments_backup[tile_index] = land_segments[tile_index]
 					}
 					land_segments[tile_index] = int(terrain_type)
 
+					no_count += 1
 				}
 			}
 		}
@@ -279,14 +289,16 @@ globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, act
 			globe_update_land_indices()
 			glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 		}
-	} else if key == glfw.KEY_S {
-		save_land()
-	} else if key == glfw.KEY_M {
-		mask_ocean = !mask_ocean
-		paint_brush()
-	} else if key in terrain_key_map {
-		brush_type = terrain_key_map[key]
-		paint_brush()
+	} else if edit_mode {
+		if key == glfw.KEY_S {
+			save_land()
+		} else if key == glfw.KEY_M {
+			mask_ocean = !mask_ocean
+			paint_brush()
+		} else if key in terrain_key_map {
+			brush_type = terrain_key_map[key]
+			paint_brush()
+		}
 	}
 }
 
