@@ -406,7 +406,7 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 	return Mesh{vertices = vertices, indices = indices}
 }
 
-counted := [532480]int{}
+// counted := [532480]int{}
 
 globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_Mesh {
 	start_plane_ring := 0
@@ -431,7 +431,7 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 	tile_vertex_index := 0
 	tile_offset_y := 0
 
-	tile_vertices_count := 0
+	// tile_vertices_count := 0
 
 	for y, py in start_plane_ring ..= end_plane_ring + 1 {
 		v := f32(y) / f32(rings)
@@ -507,10 +507,10 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 
 						tile_vertices[tile_vertex_index] = vertice
 
-						if counted[tile_vertex_index] == 0 {
-							tile_vertices_count += 1
-							counted[tile_vertex_index] = 1
-						}
+						// if counted[tile_vertex_index] == 0 {
+						// 	tile_vertices_count += 1
+						// 	counted[tile_vertex_index] = 1
+						// }
 
 						tile_vertex_index += 1
 					}
@@ -571,14 +571,19 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32) {
 	plain_index := 0
 	mask_index := 0
 	for ring in 0 ..< globe_land_rings {
+		tile_width := tile_width_per_ring[ring]
 		for segment in 0 ..< globe_land_segments {
+			// if segment % tile_width != 0 {
+			// 	continue
+			// }
+
 			terrain_type := land_segments[ring * globe_land_segments + segment]
 			if terrain_type == int(TERRAIN_TYPE.FOREST) {
-				add_tile(forest_indices, &forest_index, ring, segment, tile_width_per_ring[ring])
+				add_tile(forest_indices, &forest_index, ring, segment, tile_width)
 			} else if terrain_type == int(TERRAIN_TYPE.PLAIN) {
-				add_tile(plain_indices, &plain_index, ring, segment, tile_width_per_ring[ring])
+				add_tile(plain_indices, &plain_index, ring, segment, tile_width)
 			} else if terrain_type == int(TERRAIN_TYPE.MASK) {
-				add_tile(mask_indices, &mask_index, ring, segment, tile_width_per_ring[ring])
+				add_tile(mask_indices, &mask_index, ring, segment, tile_width)
 			}
 		}
 	}
