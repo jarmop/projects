@@ -12,7 +12,7 @@ land_segments_filename := "data/texture"
 save_land :: proc() {
 	land_count := 0
 	for s in land_segments {
-		if s == 1 {
+		if s > TERRAIN_TYPE.OCEAN {
 			land_count += 1
 		}
 	}
@@ -38,7 +38,7 @@ load_land :: proc() {
 	}
 	defer delete(data_bytes)
 
-	data_integers := slice.reinterpret([]int, data_bytes)
+	data_integers := slice.reinterpret([]TERRAIN_TYPE, data_bytes)
 	// land_count := 0
 	for s, i in data_integers {
 		land_segments[i] = s

@@ -554,11 +554,11 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32) {
 	plain_count := 0
 	mask_count := 0
 	for l in land_segments {
-		if l == int(TERRAIN_TYPE.FOREST) {
+		if l == TERRAIN_TYPE.FOREST {
 			forest_count += 1
-		} else if l == int(TERRAIN_TYPE.PLAIN) {
+		} else if l == TERRAIN_TYPE.PLAIN {
 			plain_count += 1
-		} else if l == int(TERRAIN_TYPE.MASK) {
+		} else if l == TERRAIN_TYPE.MASK {
 			mask_count += 1
 		}
 	}
@@ -577,11 +577,11 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32) {
 			// }
 
 			terrain_type := land_segments[ring * globe_land_segments + segment]
-			if terrain_type == int(TERRAIN_TYPE.FOREST) {
+			if terrain_type == TERRAIN_TYPE.FOREST {
 				add_tile(forest_indices, &forest_index, ring, segment, tile_width)
-			} else if terrain_type == int(TERRAIN_TYPE.PLAIN) {
+			} else if terrain_type == TERRAIN_TYPE.PLAIN {
 				add_tile(plain_indices, &plain_index, ring, segment, tile_width)
-			} else if terrain_type == int(TERRAIN_TYPE.MASK) {
+			} else if terrain_type == TERRAIN_TYPE.MASK {
 				add_tile(mask_indices, &mask_index, ring, segment, tile_width)
 			}
 		}

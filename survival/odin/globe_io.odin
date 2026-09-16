@@ -91,7 +91,7 @@ paint :: proc(terrain_type: TERRAIN_TYPE, just_brush := false) {
 		globe_land_rings,
 	)
 	if is_hit {
-		land_segments_backup := make(map[int]int)
+		land_segments_backup := make(map[int]TERRAIN_TYPE)
 
 		wtf := 0
 		mask_count := 0
@@ -118,18 +118,18 @@ paint :: proc(terrain_type: TERRAIN_TYPE, just_brush := false) {
 
 				tile_index := r * globe_land_segments + s / tile_width
 
-				if (mask_ocean && land_segments[tile_index] == int(TERRAIN_TYPE.OCEAN)) {
+				if (mask_ocean && land_segments[tile_index] == TERRAIN_TYPE.OCEAN) {
 					if tile_index not_in land_segments_backup {
 						land_segments_backup[tile_index] = land_segments[tile_index]
 					}
-					land_segments[tile_index] = int(TERRAIN_TYPE.MASK)
+					land_segments[tile_index] = TERRAIN_TYPE.MASK
 
 					mask_count += 1
 				} else {
 					if just_brush && tile_index not_in land_segments_backup {
 						land_segments_backup[tile_index] = land_segments[tile_index]
 					}
-					land_segments[tile_index] = int(terrain_type)
+					land_segments[tile_index] = terrain_type
 
 					no_count += 1
 				}
