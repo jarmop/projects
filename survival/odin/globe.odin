@@ -275,7 +275,6 @@ globe_draw :: proc() {
 
 	gl.UseProgram(globe_program)
 
-	shader_set_int(globe_program, "texture_sampler", 0)
 
 	view := get_view()
 
@@ -287,8 +286,15 @@ globe_draw :: proc() {
 	shader_set_mat4(globe_program, "projection", projection)
 	shader_set_mat4(globe_program, "model", model)
 
+	// gl.BindTexture(gl.TEXTURE_2D, globe_texture)
+	// shader_set_int(globe_program, "texture_sampler", 0)
 	globe_draw_area(globe_ocean_vao, globe_ocean_mesh, TERRAIN_COLORS[TERRAIN_TYPE.OCEAN])
+
+	gl.BindTexture(gl.TEXTURE_2D, globe_texture)
+	shader_set_int(globe_program, "texture_sampler", 0)
 	globe_draw_land(globe_land_vao, globe_land_mesh)
+	gl.BindTexture(gl.TEXTURE_2D, 0)
+
 	// globe_draw_edit_area()
 	globe_draw_grid()
 }
@@ -406,8 +412,6 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 	return Mesh{vertices = vertices, indices = indices}
 }
 
-// counted := [532480]int{}
-
 globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_Mesh {
 	start_plane_ring := 0
 	end_plane_ring := globe_rings - 1
@@ -431,10 +435,9 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 	tile_vertex_index := 0
 	tile_offset_y := 0
 
-	// tile_vertices_count := 0
-
 	for y, py in start_plane_ring ..= end_plane_ring + 1 {
 		v := f32(y) / f32(rings)
+		prev_v := f32(y - 1) / f32(rings)
 
 		theta := v * math.PI
 
@@ -447,6 +450,7 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 
 		for x, px in start_plane_segment ..= end_plane_segment + 1 {
 			u := f32(x) / f32(segments)
+			prev_u := f32(x - 1) / f32(segments)
 
 			phi := u * 2.0 * math.PI
 
@@ -486,15 +490,16 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 
 				// add extra vertex at the end of the last plane ring
 				end_ring := y == end_plane_ring + 1 ? rings_per_plane : rings_per_plane - 1
-				for ty, ty_i in 0 ..= end_ring {
-					tile_vertex_index = tile_offset_y + ty_i * tile_vertex_count_x + tile_offset_x
+				for ty in 0 ..= end_ring {
+					tile_v := prev_v + (v - prev_v) * f32(ty) / f32(end_ring + 1)
+
+					tile_vertex_index = tile_offset_y + ty * tile_vertex_count_x + tile_offset_x
 
 					// add extra vertex at the end of the last plane segment
 					end_seg :=
 						x == end_plane_segment + 1 ? segments_per_plane : segments_per_plane - 1
-					for tx, tx_i in 0 ..= end_seg {
-						tile_u: f32 = 0
-						tile_v: f32 = 0
+					for tx in 0 ..= end_seg {
+						tile_u := prev_u + (u - prev_u) * f32(tx) / f32(end_seg + 1)
 
 						left_up := bottom_left.position + left_step_up * f32(ty)
 						right_up := bottom_right.position + right_step_up * f32(ty)
@@ -506,11 +511,6 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 						}
 
 						tile_vertices[tile_vertex_index] = vertice
-
-						// if counted[tile_vertex_index] == 0 {
-						// 	tile_vertices_count += 1
-						// 	counted[tile_vertex_index] = 1
-						// }
 
 						tile_vertex_index += 1
 					}
@@ -857,9 +857,11 @@ ring_len :: proc(ring: int, rings: int) -> f32 {
 	return math.sin(f32(ring) / f32(rings) * math.PI)
 }
 
+globe_texture: u32
+
+
 globe_init_texture :: proc() {
 	// TEXTURE
-	globe_texture: u32
 
 	gl.GenTextures(1, &globe_texture)
 	gl.BindTexture(gl.TEXTURE_2D, globe_texture)

@@ -26,8 +26,8 @@ Camera :: struct {
 	zoom:  int,
 }
 
-globe_tilt_angle: f32 = 1 // -90 - 90
-globe_spin_angle: f32 = 90 - 1.2 // -180 - 180
+globe_tilt_angle: f32 = 0 // -90 - 90
+globe_spin_angle: f32 = 90 // -180 - 180
 
 globe_max_tilt_abs: f32 : 90
 
@@ -59,12 +59,12 @@ globe_io_first_cursor_pos_right := true
 
 globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
 
-edit_mode := true
+edit_mode := false
 
 brush_max := 30
-brush := 2
+brush := 30
 brush_type := TERRAIN_TYPE.PLAIN
-mask_ocean := true
+mask_ocean := false
 
 globe_io_init :: proc() {
 	if edit_mode {
