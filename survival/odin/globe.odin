@@ -286,14 +286,9 @@ globe_draw :: proc() {
 	shader_set_mat4(globe_program, "projection", projection)
 	shader_set_mat4(globe_program, "model", model)
 
-	// gl.BindTexture(gl.TEXTURE_2D, globe_texture)
-	// shader_set_int(globe_program, "texture_sampler", 0)
 	globe_draw_area(globe_ocean_vao, globe_ocean_mesh, TERRAIN_COLORS[TERRAIN_TYPE.OCEAN])
 
-	gl.BindTexture(gl.TEXTURE_2D, globe_texture)
-	shader_set_int(globe_program, "texture_sampler", 0)
 	globe_draw_land(globe_land_vao, globe_land_mesh)
-	gl.BindTexture(gl.TEXTURE_2D, 0)
 
 	// globe_draw_edit_area()
 	globe_draw_grid()
@@ -310,13 +305,17 @@ globe_draw_land :: proc(vao: u32, mesh: Land_Mesh) {
 	gl.BindVertexArray(vao)
 	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 
+	gl.BindTexture(gl.TEXTURE_2D, forest_texture)
 	shader_set_vec4(globe_program, "color", TERRAIN_COLORS[TERRAIN_TYPE.FOREST])
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_forest_ebo)
 	gl.DrawElements(gl.TRIANGLES, i32(len(mesh.forest_indices)), gl.UNSIGNED_INT, nil)
 
+	gl.BindTexture(gl.TEXTURE_2D, plain_texture)
 	shader_set_vec4(globe_program, "color", TERRAIN_COLORS[TERRAIN_TYPE.PLAIN])
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_plain_ebo)
 	gl.DrawElements(gl.TRIANGLES, i32(len(mesh.plain_indices)), gl.UNSIGNED_INT, nil)
+
+	gl.BindTexture(gl.TEXTURE_2D, 0)
 
 	shader_set_vec4(globe_program, "color", TERRAIN_COLORS[TERRAIN_TYPE.MASK])
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_mask_ebo)
@@ -857,14 +856,16 @@ ring_len :: proc(ring: int, rings: int) -> f32 {
 	return math.sin(f32(ring) / f32(rings) * math.PI)
 }
 
-globe_texture: u32
-
+forest_texture: u32
+plain_texture: u32
 
 globe_init_texture :: proc() {
-	// TEXTURE
+	// --------------
+	// FOREST
+	// --------------
 
-	gl.GenTextures(1, &globe_texture)
-	gl.BindTexture(gl.TEXTURE_2D, globe_texture)
+	gl.GenTextures(1, &forest_texture)
+	gl.BindTexture(gl.TEXTURE_2D, forest_texture)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -873,6 +874,7 @@ globe_init_texture :: proc() {
 	stbi.set_flip_vertically_on_load(1)
 	width, height, nrChannels: i32
 	data := stbi.load("./textures/world.jpg", &width, &height, &nrChannels, 0)
+	// data := stbi.load("./textures/grass.jpg", &width, &height, &nrChannels, 0)
 	if data == nil {
 		fmt.println("Failed to load texture")
 		os.exit(-1)
@@ -882,4 +884,29 @@ globe_init_texture :: proc() {
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 
 	stbi.image_free(data)
+
+	// --------------
+	// PLAIN
+	// --------------
+
+	gl.GenTextures(1, &plain_texture)
+	gl.BindTexture(gl.TEXTURE_2D, plain_texture)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+
+	stbi.set_flip_vertically_on_load(1)
+	width2, height2, nrChannels2: i32
+	// data := stbi.load("./textures/world.jpg", &width, &height, &nrChannels, 0)
+	data2 := stbi.load("./textures/grass.jpg", &width2, &height2, &nrChannels2, 0)
+	if data2 == nil {
+		fmt.println("Failed to load texture")
+		os.exit(-1)
+	}
+
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, width2, height2, 0, gl.RGB, gl.UNSIGNED_BYTE, data2)
+	gl.GenerateMipmap(gl.TEXTURE_2D)
+
+	stbi.image_free(data2)
 }

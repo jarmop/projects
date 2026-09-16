@@ -6,7 +6,8 @@ import "core:slice"
 
 // land_segments_filename := "data/land_segments"
 // land_segments_filename := "data/custom"
-land_segments_filename := "data/full_of_land"
+// land_segments_filename := "data/full_of_land"
+land_segments_filename := "data/texture"
 
 save_land :: proc() {
 	land_count := 0
