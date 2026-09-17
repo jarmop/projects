@@ -59,7 +59,7 @@ globe_io_first_cursor_pos_right := true
 
 globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
 
-edit_mode := false
+edit_mode := true
 
 brush_max := 30
 brush := 30
@@ -91,47 +91,52 @@ paint :: proc(terrain_type: TERRAIN_TYPE, just_brush := false) {
 		globe_land_rings,
 	)
 	if is_hit {
+		// fmt.println("**********")
+
 		land_segments_backup := make(map[int]TERRAIN_TYPE)
 
-		wtf := 0
-		mask_count := 0
-		no_count := 0
 		for y in -brush ..= brush {
 			r := ring + y
 			if r < 0 || r >= globe_land_rings {
 				continue
 			}
 			tile_width := tile_width_per_ring[r]
-			foo := brush % tile_width
-			brush_x :=
-				foo == 0 ? brush / tile_width * tile_width : (brush / tile_width + 1) * tile_width
-			for x := -brush_x; x <= brush_x; x += tile_width {
-				if math.sqrt(f32(y * y + x * x)) > f32(brush) {
-					continue
-				}
-				s := segment + x
+
+			brush_at_y := int(math.sqrt(f32(brush * brush - y * y)))
+
+			start_segment := (segment - brush_at_y)
+			if start_segment < 0 {
+				start_segment += globe_land_segments
+			}
+
+			start_segment = start_segment / tile_width * tile_width
+			brush_width := max(
+				int(math.round(f32(2 * brush_at_y + 1) / f32(tile_width))) * tile_width,
+				1,
+			)
+			end_segment := start_segment + brush_width
+
+			for x := start_segment; x < end_segment; x += 1 {
+				s := x
 				if s < 0 {
 					s += globe_land_segments
 				} else if s >= globe_land_segments {
 					s -= globe_land_segments
 				}
 
-				tile_index := r * globe_land_segments + s / tile_width
+				s_index_on_ring := s
+				s_index := r * globe_land_segments + s_index_on_ring
 
-				if (mask_ocean && land_segments[tile_index] == TERRAIN_TYPE.OCEAN) {
-					if tile_index not_in land_segments_backup {
-						land_segments_backup[tile_index] = land_segments[tile_index]
+				if (mask_ocean && land_segments[s_index] == TERRAIN_TYPE.OCEAN) {
+					if s_index not_in land_segments_backup {
+						land_segments_backup[s_index] = land_segments[s_index]
 					}
-					land_segments[tile_index] = TERRAIN_TYPE.MASK
-
-					mask_count += 1
+					land_segments[s_index] = TERRAIN_TYPE.MASK
 				} else {
-					if just_brush && tile_index not_in land_segments_backup {
-						land_segments_backup[tile_index] = land_segments[tile_index]
+					if just_brush && s_index not_in land_segments_backup {
+						land_segments_backup[s_index] = land_segments[s_index]
 					}
-					land_segments[tile_index] = terrain_type
-
-					no_count += 1
+					land_segments[s_index] = terrain_type
 				}
 			}
 		}
@@ -143,7 +148,6 @@ paint :: proc(terrain_type: TERRAIN_TYPE, just_brush := false) {
 			land_segments[index] = terrain_type
 		}
 
-		// fmt.println("**********")
 		// fmt.println("tilt:", globe_tilt_angle)
 		// fmt.println("spin:", globe_spin_angle)
 		// latitude := math.asin(hit.y / globe_radius)

@@ -21,13 +21,8 @@ TERRAIN_COLORS :: [TERRAIN_TYPE]Vec4 {
 
 land_init :: proc() {
 	load_land()
-	// for r in 0 ..< globe_land_rings {
-	// 	tile_width := tile_width_per_ring[r]
-	// 	for s := 0; s < globe_land_segments; s += tile_width {
-	// 		tile_index := r * globe_land_segments + s / tile_width
-
-	// 		land_segments[tile_index] = int(TERRAIN_TYPE.FOREST)
-	// 	}
+	// for &s in land_segments {
+	// 	s = TERRAIN_TYPE.FOREST
 	// }
 }
 

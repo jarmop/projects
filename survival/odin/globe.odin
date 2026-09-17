@@ -534,9 +534,11 @@ indices_per_vertex := 6
 
 globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32) {
 	add_tile :: proc(indices: []u32, index: ^int, ring: int, segment: int, tile_width: int) {
-		bottom_left := u32(ring * (tile_vertex_count_x) + segment * tile_width)
+		// fmt.println("add_tile", ring, segment, tile_width)
+
+		bottom_left := u32(ring * (tile_vertex_count_x) + segment)
 		bottom_right := bottom_left + u32(tile_width)
-		top_left := u32((ring + 1) * (tile_vertex_count_x) + segment * tile_width)
+		top_left := u32((ring + 1) * (tile_vertex_count_x) + segment)
 		top_right := top_left + u32(tile_width)
 
 		indices[index^ + 0] = bottom_left
@@ -571,11 +573,7 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32) {
 	mask_index := 0
 	for ring in 0 ..< globe_land_rings {
 		tile_width := tile_width_per_ring[ring]
-		for segment in 0 ..< globe_land_segments {
-			// if segment % tile_width != 0 {
-			// 	continue
-			// }
-
+		for segment := 0; segment < globe_land_segments; segment += tile_width {
 			terrain_type := land_segments[ring * globe_land_segments + segment]
 			if terrain_type == TERRAIN_TYPE.FOREST {
 				add_tile(forest_indices, &forest_index, ring, segment, tile_width)
