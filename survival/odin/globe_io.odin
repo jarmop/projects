@@ -275,6 +275,7 @@ terrain_key_map := map[i32]TERRAIN_TYPE {
 	glfw.KEY_1 = .FOREST,
 	glfw.KEY_2 = .PLAIN,
 	glfw.KEY_3 = .ROCK,
+	glfw.KEY_4 = .SAND,
 }
 
 globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {

@@ -31,7 +31,8 @@ globe_ocean_radius: f32 : globe_radius - globe_layer_separation
 globe_ocean_rings := globe_rings
 globe_ocean_segments := globe_segments
 
-globe_land_segments :: 1024
+// globe_land_segments :: 1024
+globe_land_segments :: 512
 globe_land_rings :: globe_land_segments / 2
 globe_land_vao: u32
 globe_land_ebos: map[TERRAIN_TYPE]u32
@@ -200,7 +201,6 @@ globe_init_land :: proc(mesh: ^Land_Mesh) {
 	gl.VertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, stride, uintptr(12))
 	gl.EnableVertexAttribArray(1)
 
-	terrain_types := []TERRAIN_TYPE{.FOREST, .PLAIN, .ROCK, .MASK}
 	for terrain_type, i in terrain_types {
 		globe_land_ebos[terrain_type] = 0
 		gl.GenBuffers(1, &globe_land_ebos[terrain_type])
@@ -500,7 +500,8 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 		tile_offset_y = tile_vertex_index
 	}
 
-	forest_indices, plain_indices, rock_indices, mask_indices := globe_generate_land_indices()
+	forest_indices, plain_indices, rock_indices, sand_indices, mask_indices :=
+		globe_generate_land_indices()
 
 	return Land_Mesh {
 		vertices = tile_vertices,
@@ -508,6 +509,7 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 			.FOREST = forest_indices,
 			.PLAIN = plain_indices,
 			.ROCK = rock_indices,
+			.SAND = sand_indices,
 			.MASK = mask_indices,
 		},
 	}
@@ -515,7 +517,7 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 
 indices_per_vertex := 6
 
-globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32, []u32) {
+globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32, []u32, []u32) {
 	add_tile :: proc(indices: []u32, index: ^int, ring: int, segment: int, tile_width: int) {
 		// fmt.println("add_tile", ring, segment, tile_width)
 
@@ -538,6 +540,7 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32, []u32) {
 	forest_count := 0
 	plain_count := 0
 	rock_count := 0
+	sand_count := 0
 	mask_count := 0
 
 	for terrain_type in land_segments {
@@ -547,6 +550,8 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32, []u32) {
 			plain_count += 1
 		} else if terrain_type == TERRAIN_TYPE.ROCK {
 			rock_count += 1
+		} else if terrain_type == TERRAIN_TYPE.SAND {
+			sand_count += 1
 		} else if terrain_type == TERRAIN_TYPE.MASK {
 			mask_count += 1
 		}
@@ -555,11 +560,13 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32, []u32) {
 	forest_indices := make([]u32, forest_count * indices_per_vertex)
 	plain_indices := make([]u32, plain_count * indices_per_vertex)
 	rock_indices := make([]u32, rock_count * indices_per_vertex)
+	sand_indices := make([]u32, sand_count * indices_per_vertex)
 	mask_indices := make([]u32, mask_count * indices_per_vertex)
 
 	forest_index := 0
 	plain_index := 0
 	rock_index := 0
+	sand_index := 0
 	mask_index := 0
 
 	for ring in 0 ..< globe_land_rings {
@@ -572,20 +579,22 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32, []u32) {
 				add_tile(plain_indices, &plain_index, ring, segment, tile_width)
 			} else if terrain_type == TERRAIN_TYPE.ROCK {
 				add_tile(rock_indices, &rock_index, ring, segment, tile_width)
+			} else if terrain_type == TERRAIN_TYPE.SAND {
+				add_tile(sand_indices, &sand_index, ring, segment, tile_width)
 			} else if terrain_type == TERRAIN_TYPE.MASK {
 				add_tile(mask_indices, &mask_index, ring, segment, tile_width)
 			}
 		}
 	}
 
-	return forest_indices, plain_indices, rock_indices, mask_indices
+	return forest_indices, plain_indices, rock_indices, sand_indices, mask_indices
 }
 
 globe_update_land_indices :: proc() {
 	delete(globe_land_mesh.indice[.FOREST])
 	delete(globe_land_mesh.indice[.PLAIN])
 	delete(globe_land_mesh.indice[.MASK])
-	globe_land_mesh.indice[.FOREST], globe_land_mesh.indice[.PLAIN], globe_land_mesh.indice[.ROCK], globe_land_mesh.indice[.MASK] =
+	globe_land_mesh.indice[.FOREST], globe_land_mesh.indice[.PLAIN], globe_land_mesh.indice[.ROCK], globe_land_mesh.indice[.SAND], globe_land_mesh.indice[.MASK] =
 		globe_generate_land_indices()
 
 	gl.BindVertexArray(globe_land_vao)
