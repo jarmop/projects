@@ -200,7 +200,7 @@ globe_init_land :: proc(mesh: ^Land_Mesh) {
 	gl.VertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, stride, uintptr(12))
 	gl.EnableVertexAttribArray(1)
 
-	terrain_types := []TERRAIN_TYPE{.FOREST, .PLAIN, .MASK}
+	terrain_types := []TERRAIN_TYPE{.FOREST, .PLAIN, .ROCK, .MASK}
 	for terrain_type, i in terrain_types {
 		globe_land_ebos[terrain_type] = 0
 		gl.GenBuffers(1, &globe_land_ebos[terrain_type])
@@ -500,20 +500,22 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 		tile_offset_y = tile_vertex_index
 	}
 
-	forest_indices, plain_indices, mask_indices := globe_generate_land_indices()
+	forest_indices, plain_indices, rock_indices, mask_indices := globe_generate_land_indices()
 
 	return Land_Mesh {
 		vertices = tile_vertices,
-		// forest_indices = forest_indices,
-		// plain_indices = plain_indices,
-		// mask_indices = mask_indices,
-		indice = {.FOREST = forest_indices, .PLAIN = plain_indices, .MASK = mask_indices},
+		indice = {
+			.FOREST = forest_indices,
+			.PLAIN = plain_indices,
+			.ROCK = rock_indices,
+			.MASK = mask_indices,
+		},
 	}
 }
 
 indices_per_vertex := 6
 
-globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32) {
+globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32, []u32) {
 	add_tile :: proc(indices: []u32, index: ^int, ring: int, segment: int, tile_width: int) {
 		// fmt.println("add_tile", ring, segment, tile_width)
 
@@ -535,23 +537,31 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32) {
 
 	forest_count := 0
 	plain_count := 0
+	rock_count := 0
 	mask_count := 0
-	for l in land_segments {
-		if l == TERRAIN_TYPE.FOREST {
+
+	for terrain_type in land_segments {
+		if terrain_type == TERRAIN_TYPE.FOREST {
 			forest_count += 1
-		} else if l == TERRAIN_TYPE.PLAIN {
+		} else if terrain_type == TERRAIN_TYPE.PLAIN {
 			plain_count += 1
-		} else if l == TERRAIN_TYPE.MASK {
+		} else if terrain_type == TERRAIN_TYPE.ROCK {
+			rock_count += 1
+		} else if terrain_type == TERRAIN_TYPE.MASK {
 			mask_count += 1
 		}
 	}
 
 	forest_indices := make([]u32, forest_count * indices_per_vertex)
 	plain_indices := make([]u32, plain_count * indices_per_vertex)
+	rock_indices := make([]u32, rock_count * indices_per_vertex)
 	mask_indices := make([]u32, mask_count * indices_per_vertex)
+
 	forest_index := 0
 	plain_index := 0
+	rock_index := 0
 	mask_index := 0
+
 	for ring in 0 ..< globe_land_rings {
 		tile_width := tile_width_per_ring[ring]
 		for segment := 0; segment < globe_land_segments; segment += tile_width {
@@ -560,47 +570,35 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32) {
 				add_tile(forest_indices, &forest_index, ring, segment, tile_width)
 			} else if terrain_type == TERRAIN_TYPE.PLAIN {
 				add_tile(plain_indices, &plain_index, ring, segment, tile_width)
+			} else if terrain_type == TERRAIN_TYPE.ROCK {
+				add_tile(rock_indices, &rock_index, ring, segment, tile_width)
 			} else if terrain_type == TERRAIN_TYPE.MASK {
 				add_tile(mask_indices, &mask_index, ring, segment, tile_width)
 			}
 		}
 	}
 
-	return forest_indices, plain_indices, mask_indices
+	return forest_indices, plain_indices, rock_indices, mask_indices
 }
 
 globe_update_land_indices :: proc() {
 	delete(globe_land_mesh.indice[.FOREST])
 	delete(globe_land_mesh.indice[.PLAIN])
 	delete(globe_land_mesh.indice[.MASK])
-	globe_land_mesh.indice[.FOREST], globe_land_mesh.indice[.PLAIN], globe_land_mesh.indice[.MASK] =
+	globe_land_mesh.indice[.FOREST], globe_land_mesh.indice[.PLAIN], globe_land_mesh.indice[.ROCK], globe_land_mesh.indice[.MASK] =
 		globe_generate_land_indices()
 
 	gl.BindVertexArray(globe_land_vao)
 
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebos[.FOREST])
-	gl.BufferData(
-		gl.ELEMENT_ARRAY_BUFFER,
-		len(globe_land_mesh.indice[.FOREST]) * size_of(u32),
-		raw_data(globe_land_mesh.indice[.FOREST]),
-		gl.STATIC_DRAW,
-	)
-
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebos[.PLAIN])
-	gl.BufferData(
-		gl.ELEMENT_ARRAY_BUFFER,
-		len(globe_land_mesh.indice[.PLAIN]) * size_of(u32),
-		raw_data(globe_land_mesh.indice[.PLAIN]),
-		gl.STATIC_DRAW,
-	)
-
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebos[.MASK])
-	gl.BufferData(
-		gl.ELEMENT_ARRAY_BUFFER,
-		len(globe_land_mesh.indice[.MASK]) * size_of(u32),
-		raw_data(globe_land_mesh.indice[.MASK]),
-		gl.STATIC_DRAW,
-	)
+	for terrain_type, ebo in globe_land_ebos {
+		gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
+		gl.BufferData(
+			gl.ELEMENT_ARRAY_BUFFER,
+			len(globe_land_mesh.indice[terrain_type]) * size_of(u32),
+			raw_data(globe_land_mesh.indice[terrain_type]),
+			gl.STATIC_DRAW,
+		)
+	}
 }
 
 globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: Land) -> Mesh {
