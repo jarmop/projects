@@ -1,3 +1,5 @@
+#+feature dynamic-literals
+
 package survival
 
 import "core:fmt"
@@ -32,9 +34,8 @@ globe_ocean_segments := globe_segments
 globe_land_segments :: 1024
 globe_land_rings :: globe_land_segments / 2
 globe_land_vao: u32
-globe_land_forest_ebo: u32
-globe_land_plain_ebo: u32
-globe_land_mask_ebo: u32
+globe_land_ebos: map[TERRAIN_TYPE]u32
+
 globe_land_mesh: Land_Mesh
 globe_land_radius: f32 : globe_radius
 
@@ -199,35 +200,18 @@ globe_init_land :: proc(mesh: ^Land_Mesh) {
 	gl.VertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, stride, uintptr(12))
 	gl.EnableVertexAttribArray(1)
 
-	// forest indices
-	gl.GenBuffers(1, &globe_land_forest_ebo)
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_forest_ebo)
-	gl.BufferData(
-		gl.ELEMENT_ARRAY_BUFFER,
-		len(mesh.forest_indices) * size_of(u32),
-		raw_data(mesh.forest_indices),
-		gl.STATIC_DRAW,
-	)
-
-	// plain indices
-	gl.GenBuffers(1, &globe_land_plain_ebo)
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_plain_ebo)
-	gl.BufferData(
-		gl.ELEMENT_ARRAY_BUFFER,
-		len(mesh.plain_indices) * size_of(u32),
-		raw_data(mesh.plain_indices),
-		gl.STATIC_DRAW,
-	)
-
-	// mask indices
-	gl.GenBuffers(1, &globe_land_mask_ebo)
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_mask_ebo)
-	gl.BufferData(
-		gl.ELEMENT_ARRAY_BUFFER,
-		len(mesh.mask_indices) * size_of(u32),
-		raw_data(mesh.mask_indices),
-		gl.STATIC_DRAW,
-	)
+	terrain_types := []TERRAIN_TYPE{.FOREST, .PLAIN, .MASK}
+	for terrain_type, i in terrain_types {
+		globe_land_ebos[terrain_type] = 0
+		gl.GenBuffers(1, &globe_land_ebos[terrain_type])
+		gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebos[terrain_type])
+		gl.BufferData(
+			gl.ELEMENT_ARRAY_BUFFER,
+			len(globe_land_mesh.indice[terrain_type]) * size_of(u32),
+			raw_data(globe_land_mesh.indice[terrain_type]),
+			gl.STATIC_DRAW,
+		)
+	}
 }
 
 globe_init_layer :: proc(vao: ^u32, mesh: ^Mesh) {
@@ -305,21 +289,17 @@ globe_draw_land :: proc(vao: u32, mesh: Land_Mesh) {
 	gl.BindVertexArray(vao)
 	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 
-	gl.BindTexture(gl.TEXTURE_2D, forest_texture)
-	shader_set_vec4(globe_program, "color", TERRAIN_COLORS[TERRAIN_TYPE.FOREST])
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_forest_ebo)
-	gl.DrawElements(gl.TRIANGLES, i32(len(mesh.forest_indices)), gl.UNSIGNED_INT, nil)
-
-	gl.BindTexture(gl.TEXTURE_2D, plain_texture)
-	shader_set_vec4(globe_program, "color", TERRAIN_COLORS[TERRAIN_TYPE.PLAIN])
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_plain_ebo)
-	gl.DrawElements(gl.TRIANGLES, i32(len(mesh.plain_indices)), gl.UNSIGNED_INT, nil)
-
-	gl.BindTexture(gl.TEXTURE_2D, 0)
-
-	shader_set_vec4(globe_program, "color", TERRAIN_COLORS[TERRAIN_TYPE.MASK])
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_mask_ebo)
-	gl.DrawElements(gl.TRIANGLES, i32(len(mesh.mask_indices)), gl.UNSIGNED_INT, nil)
+	for terrain_type, ebo in globe_land_ebos {
+		gl.BindTexture(gl.TEXTURE_2D, globe_land_textures[terrain_type])
+		shader_set_vec4(globe_program, "color", TERRAIN_COLORS[terrain_type])
+		gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
+		gl.DrawElements(
+			gl.TRIANGLES,
+			i32(len(globe_land_mesh.indice[terrain_type])),
+			gl.UNSIGNED_INT,
+			nil,
+		)
+	}
 }
 
 globe_draw_edit_area :: proc() {
@@ -524,9 +504,10 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 
 	return Land_Mesh {
 		vertices = tile_vertices,
-		forest_indices = forest_indices,
-		plain_indices = plain_indices,
-		mask_indices = mask_indices,
+		// forest_indices = forest_indices,
+		// plain_indices = plain_indices,
+		// mask_indices = mask_indices,
+		indice = {.FOREST = forest_indices, .PLAIN = plain_indices, .MASK = mask_indices},
 	}
 }
 
@@ -589,36 +570,35 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32) {
 }
 
 globe_update_land_indices :: proc() {
-	// fmt.println("globe_update_land_indices")
-	delete(globe_land_mesh.forest_indices)
-	delete(globe_land_mesh.plain_indices)
-	delete(globe_land_mesh.mask_indices)
-	globe_land_mesh.forest_indices, globe_land_mesh.plain_indices, globe_land_mesh.mask_indices =
+	delete(globe_land_mesh.indice[.FOREST])
+	delete(globe_land_mesh.indice[.PLAIN])
+	delete(globe_land_mesh.indice[.MASK])
+	globe_land_mesh.indice[.FOREST], globe_land_mesh.indice[.PLAIN], globe_land_mesh.indice[.MASK] =
 		globe_generate_land_indices()
 
 	gl.BindVertexArray(globe_land_vao)
 
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_forest_ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebos[.FOREST])
 	gl.BufferData(
 		gl.ELEMENT_ARRAY_BUFFER,
-		len(globe_land_mesh.forest_indices) * size_of(u32),
-		raw_data(globe_land_mesh.forest_indices),
+		len(globe_land_mesh.indice[.FOREST]) * size_of(u32),
+		raw_data(globe_land_mesh.indice[.FOREST]),
 		gl.STATIC_DRAW,
 	)
 
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_plain_ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebos[.PLAIN])
 	gl.BufferData(
 		gl.ELEMENT_ARRAY_BUFFER,
-		len(globe_land_mesh.plain_indices) * size_of(u32),
-		raw_data(globe_land_mesh.plain_indices),
+		len(globe_land_mesh.indice[.PLAIN]) * size_of(u32),
+		raw_data(globe_land_mesh.indice[.PLAIN]),
 		gl.STATIC_DRAW,
 	)
 
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_mask_ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, globe_land_ebos[.MASK])
 	gl.BufferData(
 		gl.ELEMENT_ARRAY_BUFFER,
-		len(globe_land_mesh.mask_indices) * size_of(u32),
-		raw_data(globe_land_mesh.mask_indices),
+		len(globe_land_mesh.indice[.MASK]) * size_of(u32),
+		raw_data(globe_land_mesh.indice[.MASK]),
 		gl.STATIC_DRAW,
 	)
 }
@@ -854,16 +834,19 @@ ring_len :: proc(ring: int, rings: int) -> f32 {
 	return math.sin(f32(ring) / f32(rings) * math.PI)
 }
 
-forest_texture: u32
-plain_texture: u32
+globe_land_textures: map[TERRAIN_TYPE]u32
+
+// forest_texture: u32
+// plain_texture: u32
 
 globe_init_texture :: proc() {
 	// --------------
 	// FOREST
 	// --------------
 
-	gl.GenTextures(1, &forest_texture)
-	gl.BindTexture(gl.TEXTURE_2D, forest_texture)
+	globe_land_textures[.FOREST] = 0
+	gl.GenTextures(1, &globe_land_textures[.FOREST])
+	gl.BindTexture(gl.TEXTURE_2D, globe_land_textures[.FOREST])
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -886,9 +869,9 @@ globe_init_texture :: proc() {
 	// --------------
 	// PLAIN
 	// --------------
-
-	gl.GenTextures(1, &plain_texture)
-	gl.BindTexture(gl.TEXTURE_2D, plain_texture)
+	globe_land_textures[.PLAIN] = 0
+	gl.GenTextures(1, &globe_land_textures[.PLAIN])
+	gl.BindTexture(gl.TEXTURE_2D, globe_land_textures[.PLAIN])
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)

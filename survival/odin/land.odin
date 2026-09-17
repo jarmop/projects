@@ -9,13 +9,15 @@ TERRAIN_TYPE :: enum {
 	OCEAN,
 	FOREST,
 	PLAIN,
+	ROCK,
 	MASK,
 }
 
-TERRAIN_COLORS :: [TERRAIN_TYPE]Vec4 {
+TERRAIN_COLORS := [TERRAIN_TYPE]Vec4 {
 	.OCEAN  = {0.4, 0.9, 1, 1},
 	.FOREST = {0.2, 0.6, 0.4, 1},
 	.PLAIN  = {0.4, 0.8, 0.6, 1},
+	.ROCK   = {0.5, 0.5, 0.5, 1},
 	.MASK   = {0, 0, 0, 0.1},
 }
 
