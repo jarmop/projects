@@ -270,12 +270,12 @@ globe_draw :: proc() {
 	shader_set_mat4(globe_program, "projection", projection)
 	shader_set_mat4(globe_program, "model", model)
 
-	// globe_draw_area(globe_ocean_vao, globe_ocean_mesh, TERRAIN_COLORS[TERRAIN_TYPE.OCEAN])
+	globe_draw_area(globe_ocean_vao, globe_ocean_mesh, TERRAIN_COLORS[TERRAIN_TYPE.OCEAN])
 
 	globe_draw_land(globe_land_vao, globe_land_mesh)
 
 	// globe_draw_edit_area()
-	// globe_draw_grid()
+	globe_draw_grid()
 }
 
 globe_draw_area :: proc(vao: u32, mesh: Mesh, color: Vec4) {
@@ -436,15 +436,11 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 			sin_phi := f32(math.sin(phi))
 			cos_phi := f32(math.cos(phi))
 
-			// Make 2D
 			pos_x := -sin_theta * cos_phi
 			pos_y := -cos_theta
 			pos_z := sin_theta * sin_phi
 
-			// position := Vec3{pos_x * radius, pos_y * radius, pos_z * radius}
-			// position := Vec3{u, v, 0}
-			position := Vec3{u * 2 - 1, v * 2 - 1, 0.5}
-
+			position := Vec3{pos_x * radius, pos_y * radius, pos_z * radius}
 
 			plane_vertices[plane_vertex_index] = Vertex {
 				position = position,
