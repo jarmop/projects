@@ -60,7 +60,6 @@ tile_width_per_ring_km: [globe_land_rings]f32
 
 max_tile_width :: globe_land_segments / globe_segments
 rings_per_plane :: globe_land_rings / globe_rings
-segments_per_plane :: globe_land_segments / globe_segments
 tile_vertex_count_x := globe_land_segments + 1
 tile_vertex_count_y := globe_land_rings + 1
 
@@ -83,7 +82,8 @@ globe_init :: proc() {
 	)
 	globe_init_layer(&globe_ocean_vao, &globe_ocean_mesh)
 
-	globe_land_mesh = globe_generate_vertices(globe_segments, globe_rings, globe_radius)
+	globe_generate_vertices(globe_segments, globe_rings, globe_radius)
+	globe_generate_land_indices()
 	globe_init_land(&globe_land_mesh)
 
 	globe_edit_area_mesh = globe_generate_edit_area(
@@ -391,7 +391,7 @@ generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 	return Mesh{vertices = vertices, indices = indices}
 }
 
-globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_Mesh {
+globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) {
 	start_plane_ring := 0
 	end_plane_ring := globe_rings - 1
 
@@ -407,29 +407,16 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 
 	plane_vertex_index := 0
 
-	tile_vertex_count := tile_vertex_count_x * tile_vertex_count_y
-
-	tile_vertices := make([]Vertex, tile_vertex_count)
-
-	tile_vertex_index := 0
-	tile_offset_y := 0
-
 	for y, py in start_plane_ring ..= end_plane_ring + 1 {
 		v := f32(y) / f32(rings)
-		prev_v := f32(y - 1) / f32(rings)
 
 		theta := v * math.PI
 
 		sin_theta := f32(math.sin(theta))
 		cos_theta := f32(math.cos(theta))
 
-		tile_offset_x := 0
-
-		segments_per_plane_f := f32(segments_per_plane)
-
 		for x, px in start_plane_segment ..= end_plane_segment + 1 {
 			u := f32(x) / f32(segments)
-			prev_u := f32(x - 1) / f32(segments)
 
 			phi := u * 2.0 * math.PI
 
@@ -448,6 +435,29 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 			}
 
 			plane_vertex_index += 1
+		}
+	}
+
+	segments_per_plane :: globe_land_segments / globe_segments
+	segments_per_plane_f := f32(segments_per_plane)
+
+	tile_vertex_count := tile_vertex_count_x * tile_vertex_count_y
+
+	// tile_vertices := make([]Vertex, tile_vertex_count)
+	globe_land_mesh.vertices = make([]Vertex, tile_vertex_count)
+
+	tile_vertex_index := 0
+	tile_offset_y := 0
+
+	for y, py in start_plane_ring ..= end_plane_ring + 1 {
+		v := f32(y) / f32(rings)
+		prev_v := f32(y - 1) / f32(rings)
+
+		tile_offset_x := 0
+
+		for x, px in start_plane_segment ..= end_plane_segment + 1 {
+			u := f32(x) / f32(segments)
+			prev_u := f32(x - 1) / f32(segments)
 
 			if py > 0 && px > 0 {
 				bottom_left_i := (py - 1) * plane_vertex_count_x + px - 1
@@ -489,7 +499,7 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 							uv       = Vec2{tile_u, tile_v},
 						}
 
-						tile_vertices[tile_vertex_index] = vertice
+						globe_land_mesh.vertices[tile_vertex_index] = vertice
 
 						tile_vertex_index += 1
 					}
@@ -499,25 +509,11 @@ globe_generate_vertices :: proc(segments: int, rings: int, radius: f32) -> Land_
 		}
 		tile_offset_y = tile_vertex_index
 	}
-
-	forest_indices, plain_indices, rock_indices, sand_indices, mask_indices :=
-		globe_generate_land_indices()
-
-	return Land_Mesh {
-		vertices = tile_vertices,
-		indice = {
-			.FOREST = forest_indices,
-			.PLAIN = plain_indices,
-			.ROCK = rock_indices,
-			.SAND = sand_indices,
-			.MASK = mask_indices,
-		},
-	}
 }
 
 indices_per_vertex := 6
 
-globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32, []u32, []u32) {
+globe_generate_land_indices :: proc() {
 	add_tile :: proc(indices: []u32, index: ^int, ring: int, segment: int, tile_width: int) {
 		// fmt.println("add_tile", ring, segment, tile_width)
 
@@ -587,15 +583,21 @@ globe_generate_land_indices :: proc() -> ([]u32, []u32, []u32, []u32, []u32) {
 		}
 	}
 
-	return forest_indices, plain_indices, rock_indices, sand_indices, mask_indices
+	globe_land_mesh.indice = {
+		.FOREST = forest_indices,
+		.PLAIN  = plain_indices,
+		.ROCK   = rock_indices,
+		.SAND   = sand_indices,
+		.MASK   = mask_indices,
+	}
 }
 
 globe_update_land_indices :: proc() {
 	delete(globe_land_mesh.indice[.FOREST])
 	delete(globe_land_mesh.indice[.PLAIN])
 	delete(globe_land_mesh.indice[.MASK])
-	globe_land_mesh.indice[.FOREST], globe_land_mesh.indice[.PLAIN], globe_land_mesh.indice[.ROCK], globe_land_mesh.indice[.SAND], globe_land_mesh.indice[.MASK] =
-		globe_generate_land_indices()
+
+	globe_generate_land_indices()
 
 	gl.BindVertexArray(globe_land_vao)
 
@@ -681,9 +683,9 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 			position := Vec3{px * radius, py * radius, pz * radius}
 
 			vertices[vertex_index] = Vertex {
-					position = position,
-					uv       = Vec2{u, v},
-				}
+				position = position,
+				uv       = Vec2{u, v},
+			}
 
 			vertex_index += 1
 		}
@@ -767,9 +769,9 @@ globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 			position := Vec3{px * radius, py * radius, pz * radius}
 
 			vertices[vertex_index] = Vertex {
-					position = position,
-					uv       = Vec2{u, v},
-				}
+				position = position,
+				uv       = Vec2{u, v},
+			}
 
 			vertex_index += 1
 		}
