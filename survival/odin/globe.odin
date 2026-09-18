@@ -275,7 +275,7 @@ globe_draw :: proc() {
 	globe_draw_land(globe_land_vao, globe_land_mesh)
 
 	// globe_draw_edit_area()
-	globe_draw_grid()
+	// globe_draw_grid()
 }
 
 globe_draw_area :: proc(vao: u32, mesh: Mesh, color: Vec4) {

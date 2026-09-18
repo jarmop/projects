@@ -9,27 +9,53 @@ TERRAIN_TYPE :: enum {
 	OCEAN,
 	FOREST,
 	PLAIN,
-	ROCK,
+	MOUNTAIN,
 	SAND,
+	HILL_PLAIN,
+	HILL_FOREST,
+	HILL_SAND,
 	MASK,
 }
 
-terrain_types :: []TERRAIN_TYPE{.FOREST, .PLAIN, .ROCK, .SAND, .MASK}
+terrain_types :: []TERRAIN_TYPE {
+	.FOREST,
+	.PLAIN,
+	.MOUNTAIN,
+	.SAND,
+	.HILL_PLAIN,
+	.HILL_FOREST,
+	.HILL_SAND,
+	.MASK,
+}
 
 TERRAIN_COLORS := [TERRAIN_TYPE]Vec4 {
-	.OCEAN  = {0.4, 0.9, 1, 1},
-	.FOREST = {0.2, 0.6, 0.4, 1},
-	.PLAIN  = {0.4, 0.8, 0.6, 1},
-	.ROCK   = {0.5, 0.5, 0.5, 1},
-	.SAND   = {0.8, 0.9, 0.7, 1},
-	.MASK   = {0, 0, 0, 0.1},
+	.OCEAN       = {0.4, 0.9, 1, 1},
+	.FOREST      = {0.2, 0.6, 0.4, 1},
+	.PLAIN       = {0.4, 0.8, 0.6, 1},
+	.MOUNTAIN    = {0.5, 0.5, 0.5, 1},
+	.SAND        = {0.8, 0.8, 0.7, 1},
+	// .SAND        = {0.8, 0.9, 0.7, 1},
+	// .HILL_PLAIN  = {0.6, 0.85, 0.7, 1},
+	.HILL_PLAIN  = {0, 0, 0, 1},
+	// .HILL_FOREST = {0.4, 0.65, 0.5, 1},
+	.HILL_FOREST = {0, 0, 0, 1},
+	// .HILL_SAND   = {0.7, 0.7, 0.6, 1},
+	.HILL_SAND   = {0, 0, 0, 1},
+	.MASK        = {0, 0, 0, 0.1},
+}
+
+make_hill_color :: proc(terrain_type: TERRAIN_TYPE) -> Vec4 {
+	// return (TERRAIN_COLORS[terrain_type] + TERRAIN_COLORS[.MOUNTAIN]) / 2
+	return (TERRAIN_COLORS[terrain_type] + {0.7, 0.7, 0.7, 1}) / 2
+	// return (2 * TERRAIN_COLORS[terrain_type] + TERRAIN_COLORS[.MOUNTAIN]) / 3
 }
 
 land_init :: proc() {
 	load_land()
-	// for &s in land_segments {
-	// 	s = TERRAIN_TYPE.FOREST
-	// }
+
+	TERRAIN_COLORS[.HILL_PLAIN] = make_hill_color(.PLAIN)
+	TERRAIN_COLORS[.HILL_FOREST] = make_hill_color(.FOREST)
+	TERRAIN_COLORS[.HILL_SAND] = make_hill_color(.SAND)
 }
 
 lat_to_ring :: proc(lat: f32) -> int {

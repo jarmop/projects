@@ -274,8 +274,11 @@ globe_io_scroll_callback :: proc "c" (window: glfw.WindowHandle, xoffset: f64, y
 terrain_key_map := map[i32]TERRAIN_TYPE {
 	glfw.KEY_1 = .FOREST,
 	glfw.KEY_2 = .PLAIN,
-	glfw.KEY_3 = .ROCK,
+	glfw.KEY_3 = .MOUNTAIN,
 	glfw.KEY_4 = .SAND,
+	glfw.KEY_5 = .HILL_PLAIN,
+	glfw.KEY_6 = .HILL_FOREST,
+	glfw.KEY_7 = .HILL_SAND,
 }
 
 globe_io_key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
