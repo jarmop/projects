@@ -515,8 +515,6 @@ indices_per_vertex := 6
 
 globe_generate_land_indices :: proc() {
 	add_tile :: proc(indices: []u32, index: ^int, ring: int, segment: int, tile_width: int) {
-		// fmt.println("add_tile", ring, segment, tile_width)
-
 		bottom_left := u32(ring * (tile_vertex_count_x) + segment)
 		bottom_right := bottom_left + u32(tile_width)
 		top_left := u32((ring + 1) * (tile_vertex_count_x) + segment)
@@ -533,62 +531,43 @@ globe_generate_land_indices :: proc() {
 		index^ += indices_per_vertex
 	}
 
-	forest_count := 0
-	plain_count := 0
-	rock_count := 0
-	sand_count := 0
-	mask_count := 0
-
+	terrain_type_counts: [int(TERRAIN_TYPE.MASK) + 1]int
 	for terrain_type in land_segments {
-		if terrain_type == TERRAIN_TYPE.FOREST {
-			forest_count += 1
-		} else if terrain_type == TERRAIN_TYPE.PLAIN {
-			plain_count += 1
-		} else if terrain_type == TERRAIN_TYPE.ROCK {
-			rock_count += 1
-		} else if terrain_type == TERRAIN_TYPE.SAND {
-			sand_count += 1
-		} else if terrain_type == TERRAIN_TYPE.MASK {
-			mask_count += 1
+		if terrain_type == TERRAIN_TYPE.OCEAN {
+			continue
 		}
+		terrain_type_counts[terrain_type] += 1
 	}
 
-	forest_indices := make([]u32, forest_count * indices_per_vertex)
-	plain_indices := make([]u32, plain_count * indices_per_vertex)
-	rock_indices := make([]u32, rock_count * indices_per_vertex)
-	sand_indices := make([]u32, sand_count * indices_per_vertex)
-	mask_indices := make([]u32, mask_count * indices_per_vertex)
+	vertex_indices: [int(TERRAIN_TYPE.MASK) + 1][]u32
+	for terrain_type in terrain_types {
+		c := terrain_type_counts[terrain_type]
+		vertex_indices[terrain_type] = make([]u32, c * indices_per_vertex)
+	}
 
-	forest_index := 0
-	plain_index := 0
-	rock_index := 0
-	sand_index := 0
-	mask_index := 0
+	vertex_index_indices: [int(TERRAIN_TYPE.MASK) + 1]int
 
 	for ring in 0 ..< globe_land_rings {
 		tile_width := tile_width_per_ring[ring]
 		for segment := 0; segment < globe_land_segments; segment += tile_width {
 			terrain_type := land_segments[ring * globe_land_segments + segment]
-			if terrain_type == TERRAIN_TYPE.FOREST {
-				add_tile(forest_indices, &forest_index, ring, segment, tile_width)
-			} else if terrain_type == TERRAIN_TYPE.PLAIN {
-				add_tile(plain_indices, &plain_index, ring, segment, tile_width)
-			} else if terrain_type == TERRAIN_TYPE.ROCK {
-				add_tile(rock_indices, &rock_index, ring, segment, tile_width)
-			} else if terrain_type == TERRAIN_TYPE.SAND {
-				add_tile(sand_indices, &sand_index, ring, segment, tile_width)
-			} else if terrain_type == TERRAIN_TYPE.MASK {
-				add_tile(mask_indices, &mask_index, ring, segment, tile_width)
+
+			if terrain_type == TERRAIN_TYPE.OCEAN {
+				continue
 			}
+
+			add_tile(
+				vertex_indices[terrain_type],
+				&vertex_index_indices[terrain_type],
+				ring,
+				segment,
+				tile_width,
+			)
 		}
 	}
 
-	globe_land_mesh.indice = {
-		.FOREST = forest_indices,
-		.PLAIN  = plain_indices,
-		.ROCK   = rock_indices,
-		.SAND   = sand_indices,
-		.MASK   = mask_indices,
+	for t, i in terrain_types {
+		globe_land_mesh.indice[t] = vertex_indices[t]
 	}
 }
 
