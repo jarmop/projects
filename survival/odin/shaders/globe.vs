@@ -13,5 +13,6 @@ void main()
 {
     uv = a_uv;
 
-    gl_Position = projection * view * model * vec4(a_position, 1.0);
+    // gl_Position = projection * view * model * vec4(a_position, 1.0);
+    gl_Position = vec4(a_position, 1.0);
 }
