@@ -10,6 +10,11 @@ Vertex :: struct {
 	uv:       Vec2,
 }
 
+LatitudeVertex :: struct {
+	position: Vec3,
+	color:    Vec4,
+}
+
 Mesh :: struct {
 	vertices: []Vertex,
 	indices:  []u32,

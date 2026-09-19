@@ -54,6 +54,14 @@ globe_grid_mesh: Mesh
 globe_grid_radius: f32 : globe_radius + globe_layer_separation
 // globe_grid_radius: f32 = globe_radius
 
+globe_latitudes_program: u32
+globe_latitudes_vao: u32
+globe_latitudes_rings :: 5
+// globe_latitudes_vertices: [2 * (world_width + world_height + 2)]WorldVertex
+globe_latitudes_vertices_per_ring :: 2 * globe_land_segments
+globe_latitudes_vertices: [globe_latitudes_rings * globe_latitudes_vertices_per_ring]LatitudeVertex
+globe_latitudes_radius: f32 : globe_radius + globe_layer_separation
+
 // Width in segments
 tile_width_per_ring: [globe_land_rings]int
 tile_width_per_ring_km: [globe_land_rings]f32
@@ -100,6 +108,18 @@ globe_init :: proc() {
 		globe_grid_radius,
 	)
 	globe_init_layer(&globe_grid_vao, &globe_grid_mesh)
+
+	shaders_ok2: bool
+	globe_latitudes_program, shaders_ok2 = gl.load_shaders_file(
+		"./shaders/globe_latitudes.vs",
+		"./shaders/globe_latitudes.fs",
+	)
+	if !shaders_ok2 {
+		fmt.println("Shaders not ok")
+		os.exit(-1)
+	}
+	globe_generate_latitudes_vertices()
+	globe_init_latitudes()
 
 	globe_init_texture()
 }
@@ -214,6 +234,29 @@ globe_init_land :: proc(mesh: ^Land_Mesh) {
 	}
 }
 
+globe_init_latitudes :: proc() {
+	vbo: u32
+
+	gl.GenVertexArrays(1, &globe_latitudes_vao)
+	gl.BindVertexArray(globe_latitudes_vao)
+
+	gl.GenBuffers(1, &vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.BufferData(
+		gl.ARRAY_BUFFER,
+		len(globe_latitudes_vertices) * size_of(LatitudeVertex),
+		raw_data(globe_latitudes_vertices[:]),
+		gl.STATIC_DRAW,
+	)
+	stride := i32(size_of(LatitudeVertex))
+	// position
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, stride, uintptr(0))
+	gl.EnableVertexAttribArray(0)
+
+	gl.VertexAttribPointer(1, 4, gl.FLOAT, gl.FALSE, stride, uintptr(12))
+	gl.EnableVertexAttribArray(1)
+}
+
 globe_init_layer :: proc(vao: ^u32, mesh: ^Mesh) {
 	vbo: u32
 	ebo: u32
@@ -276,6 +319,8 @@ globe_draw :: proc() {
 
 	// globe_draw_edit_area()
 	// globe_draw_grid()
+
+	globe_draw_latitudes()
 }
 
 globe_draw_area :: proc(vao: u32, mesh: Mesh, color: Vec4) {
@@ -318,6 +363,30 @@ globe_draw_grid :: proc() {
 	// gl.DrawElements(gl.TRIANGLES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
 	gl.LineWidth(1.0)
 	gl.DrawElements(gl.LINES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
+}
+
+globe_draw_latitudes :: proc() {
+	gl.UseProgram(globe_latitudes_program)
+
+	view := get_view()
+	projection := get_projection()
+	model := get_model()
+
+	shader_set_mat4(globe_program, "view", view)
+	shader_set_mat4(globe_program, "projection", projection)
+	shader_set_mat4(globe_program, "model", model)
+
+	gl.BindVertexArray(globe_latitudes_vao)
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+	// color: f32 = 0
+	// shader_set_vec4(globe_program, "color", glsl.vec4({color, color, color, 1}))
+	// gl.DrawElements(gl.TRIANGLES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
+	// shader_set_vec4(globe_program, "color", {0, 0, 0, 1})
+
+	gl.LineWidth(1.0)
+	// gl.DrawElements(gl.LINES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
+
+	gl.DrawArrays(gl.LINES, 0, i32(len(globe_latitudes_vertices)))
 }
 
 generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
@@ -708,6 +777,50 @@ globe_generate_edit_area :: proc(segments: int, rings: int, radius: f32, land: L
 	}
 
 	return Mesh{vertices = vertices, indices = indices}
+}
+
+get_position :: proc(x: int, sin_theta: f32, cos_theta: f32) -> Vec3 {
+	u := f32(x) / f32(globe_segments)
+	phi := u * 2.0 * math.PI
+
+	sin_phi := f32(math.sin(phi))
+	cos_phi := f32(math.cos(phi))
+
+	// Unit sphere position
+	px := -sin_theta * cos_phi
+	py := -cos_theta
+	pz := sin_theta * sin_phi
+
+	return Vec3 {
+		px * globe_latitudes_radius,
+		py * globe_latitudes_radius,
+		pz * globe_latitudes_radius,
+	}
+}
+
+globe_generate_latitudes_vertices :: proc() {
+	index := 0
+	for y in 1 ..= globe_latitudes_rings {
+		v := f32(y) / 6
+		theta := v * math.PI
+		sin_theta := f32(math.sin(theta))
+		cos_theta := f32(math.cos(theta))
+		color: Vec4 = y % 2 == 0 ? {1, 0, 0, 1} : {0, 0, 0, 1}
+
+		for x in 0 ..< globe_segments {
+			globe_latitudes_vertices[index] = LatitudeVertex {
+				position = get_position(x, sin_theta, cos_theta),
+				color    = color,
+			}
+			index += 1
+
+			globe_latitudes_vertices[index] = LatitudeVertex {
+				position = get_position(x + 1, sin_theta, cos_theta),
+				color    = color,
+			}
+			index += 1
+		}
+	}
 }
 
 globe_generate_grid :: proc(segments: int, rings: int, radius: f32) -> Mesh {
