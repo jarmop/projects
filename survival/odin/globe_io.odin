@@ -59,7 +59,7 @@ globe_io_first_cursor_pos_right := true
 
 globe_io_prev_cursor_x, globe_io_prev_cursor_y: f64
 
-edit_mode := true
+edit_mode := false
 
 brush_max := 30
 brush := 30
@@ -165,12 +165,44 @@ paint_brush :: proc() {
 	paint(brush_type, true)
 }
 
+print_coordinates :: proc() {
+	cursor_x, cursor_y := glfw.GetCursorPos(window)
+	window_width, window_height := glfw.GetWindowSize(window)
+	view := get_view()
+	projection := get_projection()
+	model := get_model()
+	is_hit, uv, ring, segment, hit := pick_globe(
+		f32(cursor_x),
+		f32(cursor_y),
+		int(window_width),
+		int(window_height),
+		projection,
+		view,
+		model,
+		globe_land_radius,
+		globe_land_segments,
+		globe_land_rings,
+	)
+	// fmt.println("tilt:", globe_tilt_angle)
+	// fmt.println("spin:", globe_spin_angle)
+	latitude := math.asin(hit.y / globe_radius)
+	longitude := math.atan2(hit.z, -hit.x)
+	// fmt.println("lat:", math.to_degrees(latitude))
+	// fmt.println("lon:", math.to_degrees(longitude))
+	fmt.printfln("lat: %.1f, lon: %.1f", math.to_degrees(latitude), math.to_degrees(longitude))
+	// fmt.println("ring:", ring)
+	// fmt.println("segment:", segment)
+	// fmt.println("u:", uv.x)
+	// fmt.println("v:", uv.y)
+}
+
 globe_io_mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
 	context = runtime.default_context()
 
 	if button == glfw.MOUSE_BUTTON_LEFT {
 		if action == glfw.PRESS {
 			globe_io_mouse_left_pressed = true
+			print_coordinates()
 		} else {
 			globe_io_mouse_left_pressed = false
 		}
