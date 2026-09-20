@@ -10,7 +10,7 @@ Vertex :: struct {
 	uv:       Vec2,
 }
 
-LatitudeVertex :: struct {
+VertexColor :: struct {
 	position: Vec3,
 	color:    Vec4,
 }
@@ -22,9 +22,6 @@ Mesh :: struct {
 
 Land_Mesh :: struct {
 	vertices: []Vertex,
-	// forest_indices: []u32,
-	// plain_indices:  []u32,
-	// mask_indices:   []u32,
 	indice:   map[TERRAIN_TYPE][]u32,
 }
 

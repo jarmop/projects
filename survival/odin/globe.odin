@@ -20,6 +20,8 @@ globe_layer_separation: f32 : 0.0006
 // globe_layer_separation: f32 : 0.00001
 // globe_layer_separation: f32 : 0.001
 
+globe_program_texture: u32
+
 globe_program: u32
 globe_radius: f32 : 1
 globe_rings :: 32
@@ -59,7 +61,7 @@ globe_latitudes_vao: u32
 globe_latitudes_rings :: 5
 // globe_latitudes_vertices: [2 * (world_width + world_height + 2)]WorldVertex
 globe_latitudes_vertices_per_ring :: 2 * globe_land_segments
-globe_latitudes_vertices: [globe_latitudes_rings * globe_latitudes_vertices_per_ring]LatitudeVertex
+globe_latitudes_vertices: [globe_latitudes_rings * globe_latitudes_vertices_per_ring]VertexColor
 globe_latitudes_radius: f32 : globe_radius + globe_layer_separation
 
 // Width in segments
@@ -83,32 +85,6 @@ globe_init :: proc() {
 		os.exit(-1)
 	}
 
-	globe_ocean_mesh = generate_uv_sphere(
-		globe_ocean_segments,
-		globe_ocean_rings,
-		globe_ocean_radius,
-	)
-	globe_init_layer(&globe_ocean_vao, &globe_ocean_mesh)
-
-	globe_generate_vertices(globe_segments, globe_rings, globe_radius)
-	globe_generate_land_indices()
-	globe_init_land(&globe_land_mesh)
-
-	globe_edit_area_mesh = globe_generate_edit_area(
-		globe_edit_area_segments,
-		globe_edit_area_rings,
-		globe_edit_area_radius,
-		land,
-	)
-	globe_init_layer(&globe_edit_area_vao, &globe_edit_area_mesh)
-
-	globe_grid_mesh = globe_generate_grid(
-		globe_grid_rings * 2,
-		globe_grid_rings,
-		globe_grid_radius,
-	)
-	globe_init_layer(&globe_grid_vao, &globe_grid_mesh)
-
 	shaders_ok2: bool
 	globe_latitudes_program, shaders_ok2 = gl.load_shaders_file(
 		"./shaders/globe_latitudes.vs",
@@ -118,10 +94,46 @@ globe_init :: proc() {
 		fmt.println("Shaders not ok")
 		os.exit(-1)
 	}
+
+	shaders_ok3: bool
+	globe_program_texture, shaders_ok3 = gl.load_shaders_file(
+		"./shaders/texture.vs",
+		"./shaders/texture.fs",
+	)
+	if !shaders_ok3 {
+		fmt.println("Shaders not ok")
+		os.exit(-1)
+	}
+
+	globe_ocean_mesh = generate_uv_sphere(
+		globe_ocean_segments,
+		globe_ocean_rings,
+		globe_ocean_radius,
+	)
+	globe_init_ocean()
+
+	globe_generate_vertices(globe_segments, globe_rings, globe_radius)
+	globe_generate_land_indices()
+	globe_init_land(&globe_land_mesh)
+	// globe_init_texture_land()
+
+	// globe_edit_area_mesh = globe_generate_edit_area(
+	// 	globe_edit_area_segments,
+	// 	globe_edit_area_rings,
+	// 	globe_edit_area_radius,
+	// 	land,
+	// )
+	// globe_init_layer(&globe_edit_area_vao, &globe_edit_area_mesh)
+
+	globe_grid_mesh = globe_generate_grid(
+		globe_grid_rings * 2,
+		globe_grid_rings,
+		globe_grid_radius,
+	)
+	globe_init_layer(&globe_grid_vao, &globe_grid_mesh)
+
 	globe_generate_latitudes_vertices()
 	globe_init_latitudes()
-
-	globe_init_texture()
 }
 
 globe_init_tiles :: proc() {
@@ -244,11 +256,11 @@ globe_init_latitudes :: proc() {
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
-		len(globe_latitudes_vertices) * size_of(LatitudeVertex),
+		len(globe_latitudes_vertices) * size_of(VertexColor),
 		raw_data(globe_latitudes_vertices[:]),
 		gl.STATIC_DRAW,
 	)
-	stride := i32(size_of(LatitudeVertex))
+	stride := i32(size_of(VertexColor))
 	// position
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, stride, uintptr(0))
 	gl.EnableVertexAttribArray(0)
@@ -262,11 +274,10 @@ globe_init_layer :: proc(vao: ^u32, mesh: ^Mesh) {
 	ebo: u32
 
 	gl.GenVertexArrays(1, vao)
-	gl.GenBuffers(1, &vbo)
-	gl.GenBuffers(1, &ebo)
-
 	gl.BindVertexArray(vao^)
 
+	// Vertex buffers
+	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
@@ -274,7 +285,16 @@ globe_init_layer :: proc(vao: ^u32, mesh: ^Mesh) {
 		raw_data(mesh.vertices),
 		gl.STATIC_DRAW,
 	)
+	stride := i32(size_of(Vertex))
+	// position
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, stride, uintptr(0))
+	gl.EnableVertexAttribArray(0)
+	// UV
+	gl.VertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, stride, uintptr(12))
+	gl.EnableVertexAttribArray(1)
 
+	// Element buffers
+	gl.GenBuffers(1, &ebo)
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
 	gl.BufferData(
 		gl.ELEMENT_ARRAY_BUFFER,
@@ -283,40 +303,77 @@ globe_init_layer :: proc(vao: ^u32, mesh: ^Mesh) {
 		gl.STATIC_DRAW,
 	)
 
-	stride := i32(size_of(Vertex))
+	gl.BindVertexArray(0)
+}
 
+globe_init_vertex_buffers_texture :: proc(vertices: []Vertex) {
+	vbo: u32
+
+	gl.GenBuffers(1, &vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.BufferData(
+		gl.ARRAY_BUFFER,
+		len(vertices) * size_of(Vertex),
+		raw_data(vertices),
+		gl.STATIC_DRAW,
+	)
+	stride := i32(size_of(Vertex))
 	// position
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, stride, uintptr(0))
 	gl.EnableVertexAttribArray(0)
-
 	// UV
 	gl.VertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, stride, uintptr(12))
 	gl.EnableVertexAttribArray(1)
+}
+
+globe_init_ebo :: proc(indices: []u32) {
+	ebo: u32
+
+	gl.GenBuffers(1, &ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
+	gl.BufferData(
+		gl.ELEMENT_ARRAY_BUFFER,
+		len(indices) * size_of(u32),
+		raw_data(indices),
+		gl.STATIC_DRAW,
+	)
 
 	gl.BindVertexArray(0)
+}
+
+globe_init_ocean :: proc() {
+	gl.GenVertexArrays(1, &globe_ocean_vao)
+	gl.BindVertexArray(globe_ocean_vao)
+
+	globe_init_vertex_buffers_texture(globe_ocean_mesh.vertices)
+
+	globe_init_ebo(globe_ocean_mesh.indices)
+
+	globe_init_texture_ocean()
 }
 
 globe_draw :: proc() {
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
-	gl.UseProgram(globe_program)
-
-
 	view := get_view()
-
 	projection := get_projection()
-
 	model := get_model()
 
+	gl.UseProgram(globe_program_texture)
+	gl.BindTexture(gl.TEXTURE_2D, globe_ocean_texture)
 	shader_set_mat4(globe_program, "view", view)
 	shader_set_mat4(globe_program, "projection", projection)
 	shader_set_mat4(globe_program, "model", model)
 
 	globe_draw_area(globe_ocean_vao, globe_ocean_mesh, TERRAIN_COLORS[TERRAIN_TYPE.OCEAN])
 
-	globe_draw_land(globe_land_vao, globe_land_mesh)
+	gl.UseProgram(globe_program)
+	shader_set_mat4(globe_program, "view", view)
+	shader_set_mat4(globe_program, "projection", projection)
+	shader_set_mat4(globe_program, "model", model)
 
+	globe_draw_land(globe_land_vao, globe_land_mesh)
 	// globe_draw_edit_area()
 	// globe_draw_grid()
 
@@ -808,13 +865,13 @@ globe_generate_latitudes_vertices :: proc() {
 		color: Vec4 = y % 2 == 0 ? {1, 0, 0, 1} : {0, 0, 0, 1}
 
 		for x in 0 ..< globe_segments {
-			globe_latitudes_vertices[index] = LatitudeVertex {
+			globe_latitudes_vertices[index] = VertexColor {
 				position = get_position(x, sin_theta, cos_theta),
 				color    = color,
 			}
 			index += 1
 
-			globe_latitudes_vertices[index] = LatitudeVertex {
+			globe_latitudes_vertices[index] = VertexColor {
 				position = get_position(x + 1, sin_theta, cos_theta),
 				color    = color,
 			}
@@ -937,17 +994,14 @@ ring_len :: proc(ring: int, rings: int) -> f32 {
 
 globe_land_textures: map[TERRAIN_TYPE]u32
 
-// forest_texture: u32
-// plain_texture: u32
+globe_ocean_texture: u32
 
-globe_init_texture :: proc() {
-	// --------------
-	// FOREST
-	// --------------
+texture_filename_world: cstring = "./textures/world.jpg"
+texture_filename_grass: cstring = "./textures/grass.jpg"
 
-	globe_land_textures[.FOREST] = 0
-	gl.GenTextures(1, &globe_land_textures[.FOREST])
-	gl.BindTexture(gl.TEXTURE_2D, globe_land_textures[.FOREST])
+globe_init_texture :: proc(texture: ^u32, file: cstring) {
+	gl.GenTextures(1, texture)
+	gl.BindTexture(gl.TEXTURE_2D, texture^)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -955,8 +1009,7 @@ globe_init_texture :: proc() {
 
 	stbi.set_flip_vertically_on_load(1)
 	width, height, nrChannels: i32
-	data := stbi.load("./textures/world.jpg", &width, &height, &nrChannels, 0)
-	// data := stbi.load("./textures/grass.jpg", &width, &height, &nrChannels, 0)
+	data := stbi.load(file, &width, &height, &nrChannels, 0)
 	if data == nil {
 		fmt.println("Failed to load texture")
 		os.exit(-1)
@@ -966,29 +1019,16 @@ globe_init_texture :: proc() {
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 
 	stbi.image_free(data)
+}
 
-	// --------------
-	// PLAIN
-	// --------------
+globe_init_texture_ocean :: proc() {
+	globe_init_texture(&globe_ocean_texture, texture_filename_world)
+}
+
+globe_init_texture_land :: proc() {
+	globe_land_textures[.FOREST] = 0
+	globe_init_texture(&globe_land_textures[.FOREST], texture_filename_world)
+
 	globe_land_textures[.PLAIN] = 0
-	gl.GenTextures(1, &globe_land_textures[.PLAIN])
-	gl.BindTexture(gl.TEXTURE_2D, globe_land_textures[.PLAIN])
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-
-	stbi.set_flip_vertically_on_load(1)
-	width2, height2, nrChannels2: i32
-	// data := stbi.load("./textures/world.jpg", &width, &height, &nrChannels, 0)
-	data2 := stbi.load("./textures/grass.jpg", &width2, &height2, &nrChannels2, 0)
-	if data2 == nil {
-		fmt.println("Failed to load texture")
-		os.exit(-1)
-	}
-
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, width2, height2, 0, gl.RGB, gl.UNSIGNED_BYTE, data2)
-	gl.GenerateMipmap(gl.TEXTURE_2D)
-
-	stbi.image_free(data2)
+	globe_init_texture(&globe_land_textures[.PLAIN], texture_filename_grass)
 }
