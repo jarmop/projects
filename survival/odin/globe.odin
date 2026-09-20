@@ -21,6 +21,7 @@ globe_layer_separation: f32 : 0.0006
 // globe_layer_separation: f32 : 0.001
 
 globe_program_texture: u32
+globe_program_color: u32
 
 globe_program: u32
 globe_radius: f32 : 1
@@ -33,8 +34,8 @@ globe_ocean_radius: f32 : globe_radius - globe_layer_separation
 globe_ocean_rings := globe_rings
 globe_ocean_segments := globe_segments
 
-// globe_land_segments :: 1024
-globe_land_segments :: 512
+globe_land_segments :: 1024
+// globe_land_segments :: 512
 globe_land_rings :: globe_land_segments / 2
 globe_land_vao: u32
 globe_land_ebos: map[TERRAIN_TYPE]u32
@@ -105,11 +106,16 @@ globe_init :: proc() {
 		os.exit(-1)
 	}
 
-	globe_ocean_mesh = generate_uv_sphere(
-		globe_ocean_segments,
-		globe_ocean_rings,
-		globe_ocean_radius,
+	shaders_ok4: bool
+	globe_program_color, shaders_ok4 = gl.load_shaders_file(
+		"./shaders/color.vs",
+		"./shaders/color.fs",
 	)
+	if !shaders_ok4 {
+		fmt.println("Shaders not ok")
+		os.exit(-1)
+	}
+
 	globe_init_ocean()
 
 	globe_generate_vertices(globe_segments, globe_rings, globe_radius)
@@ -342,6 +348,12 @@ globe_init_ebo :: proc(indices: []u32) {
 }
 
 globe_init_ocean :: proc() {
+	globe_ocean_mesh = generate_uv_sphere(
+		globe_ocean_segments,
+		globe_ocean_rings,
+		globe_ocean_radius,
+	)
+
 	gl.GenVertexArrays(1, &globe_ocean_vao)
 	gl.BindVertexArray(globe_ocean_vao)
 
@@ -349,7 +361,7 @@ globe_init_ocean :: proc() {
 
 	globe_init_ebo(globe_ocean_mesh.indices)
 
-	globe_init_texture_ocean()
+	globe_init_texture(&globe_ocean_texture, texture_filename_world)
 }
 
 globe_draw :: proc() {
@@ -360,18 +372,19 @@ globe_draw :: proc() {
 	projection := get_projection()
 	model := get_model()
 
-	gl.UseProgram(globe_program_texture)
-	gl.BindTexture(gl.TEXTURE_2D, globe_ocean_texture)
-	shader_set_mat4(globe_program, "view", view)
-	shader_set_mat4(globe_program, "projection", projection)
-	shader_set_mat4(globe_program, "model", model)
+	// gl.UseProgram(globe_program_texture)
+	// gl.BindTexture(gl.TEXTURE_2D, globe_ocean_texture)
+	// shader_set_mat4(globe_program, "view", view)
+	// shader_set_mat4(globe_program, "projection", projection)
+	// shader_set_mat4(globe_program, "model", model)
+	// globe_draw_area(globe_ocean_vao, globe_ocean_mesh, TERRAIN_COLORS[TERRAIN_TYPE.OCEAN])
 
-	globe_draw_area(globe_ocean_vao, globe_ocean_mesh, TERRAIN_COLORS[TERRAIN_TYPE.OCEAN])
+	globe_draw_ocean()
 
 	gl.UseProgram(globe_program)
-	shader_set_mat4(globe_program, "view", view)
-	shader_set_mat4(globe_program, "projection", projection)
-	shader_set_mat4(globe_program, "model", model)
+	shader_set_mat4(globe_program, "view", get_view())
+	shader_set_mat4(globe_program, "projection", get_projection())
+	shader_set_mat4(globe_program, "model", get_model())
 
 	globe_draw_land(globe_land_vao, globe_land_mesh)
 	// globe_draw_edit_area()
@@ -380,7 +393,54 @@ globe_draw :: proc() {
 	globe_draw_latitudes()
 }
 
+globe_draw_ocean :: proc() {
+	globe_draw_texture(&globe_ocean_texture)
+	// globe_draw_color(TERRAIN_COLORS[TERRAIN_TYPE.OCEAN])
+
+	globe_draw_mvp()
+
+	gl.BindVertexArray(globe_ocean_vao)
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+	gl.DrawElements(gl.TRIANGLES, i32(len(globe_ocean_mesh.indices)), gl.UNSIGNED_INT, nil)
+}
+
+globe_draw_latitudes :: proc() {
+	gl.UseProgram(globe_latitudes_program)
+
+	globe_draw_mvp()
+
+	gl.BindVertexArray(globe_latitudes_vao)
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+	// color: f32 = 0
+	// shader_set_vec4(globe_program, "color", glsl.vec4({color, color, color, 1}))
+	// gl.DrawElements(gl.TRIANGLES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
+	// shader_set_vec4(globe_program, "color", {0, 0, 0, 1})
+
+	gl.LineWidth(1.0)
+	// gl.DrawElements(gl.LINES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
+
+	gl.DrawArrays(gl.LINES, 0, i32(len(globe_latitudes_vertices)))
+}
+
+globe_draw_texture :: proc(texture: ^u32) {
+	gl.UseProgram(globe_program_texture)
+	gl.BindTexture(gl.TEXTURE_2D, texture^)
+}
+
+globe_draw_color :: proc(color: Vec4) {
+	gl.UseProgram(globe_program_color)
+	shader_set_vec4(globe_program_color, "color", color)
+}
+
+globe_draw_mvp :: proc() {
+	shader_set_mat4(globe_program, "view", get_view())
+	shader_set_mat4(globe_program, "projection", get_projection())
+	shader_set_mat4(globe_program, "model", get_model())
+}
+
 globe_draw_area :: proc(vao: u32, mesh: Mesh, color: Vec4) {
+	gl.UseProgram(globe_program)
+
 	gl.BindVertexArray(vao)
 	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 	shader_set_vec4(globe_program, "color", color)
@@ -422,29 +482,6 @@ globe_draw_grid :: proc() {
 	gl.DrawElements(gl.LINES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
 }
 
-globe_draw_latitudes :: proc() {
-	gl.UseProgram(globe_latitudes_program)
-
-	view := get_view()
-	projection := get_projection()
-	model := get_model()
-
-	shader_set_mat4(globe_program, "view", view)
-	shader_set_mat4(globe_program, "projection", projection)
-	shader_set_mat4(globe_program, "model", model)
-
-	gl.BindVertexArray(globe_latitudes_vao)
-	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
-	// color: f32 = 0
-	// shader_set_vec4(globe_program, "color", glsl.vec4({color, color, color, 1}))
-	// gl.DrawElements(gl.TRIANGLES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
-	// shader_set_vec4(globe_program, "color", {0, 0, 0, 1})
-
-	gl.LineWidth(1.0)
-	// gl.DrawElements(gl.LINES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
-
-	gl.DrawArrays(gl.LINES, 0, i32(len(globe_latitudes_vertices)))
-}
 
 generate_uv_sphere :: proc(segments: int, rings: int, radius: f32) -> Mesh {
 	indices_per_vertex := 6
@@ -862,7 +899,7 @@ globe_generate_latitudes_vertices :: proc() {
 		theta := v * math.PI
 		sin_theta := f32(math.sin(theta))
 		cos_theta := f32(math.cos(theta))
-		color: Vec4 = y % 2 == 0 ? {1, 0, 0, 1} : {0, 0, 0, 1}
+		color: Vec4 = y % 2 == 0 ? {1, 0, 0, 1} : {1, 1, 0, 1}
 
 		for x in 0 ..< globe_segments {
 			globe_latitudes_vertices[index] = VertexColor {
@@ -1019,10 +1056,6 @@ globe_init_texture :: proc(texture: ^u32, file: cstring) {
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 
 	stbi.image_free(data)
-}
-
-globe_init_texture_ocean :: proc() {
-	globe_init_texture(&globe_ocean_texture, texture_filename_world)
 }
 
 globe_init_texture_land :: proc() {
