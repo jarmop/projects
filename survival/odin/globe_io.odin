@@ -94,6 +94,7 @@ paint :: proc(terrain_type: TERRAIN_TYPE, just_brush := false) {
 		// fmt.println("**********")
 
 		land_segments_backup := make(map[int]TERRAIN_TYPE)
+		defer delete(land_segments_backup)
 
 		for y in -brush ..= brush {
 			r := ring + y

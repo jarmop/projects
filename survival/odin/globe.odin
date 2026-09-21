@@ -735,9 +735,9 @@ globe_generate_land_indices :: proc() {
 }
 
 globe_update_land_indices :: proc() {
-	delete(globe_land_mesh.indice[.FOREST])
-	delete(globe_land_mesh.indice[.PLAIN])
-	delete(globe_land_mesh.indice[.MASK])
+	for terrain_type in globe_land_mesh.indice {
+		delete(globe_land_mesh.indice[terrain_type])
+	}
 
 	globe_generate_land_indices()
 
