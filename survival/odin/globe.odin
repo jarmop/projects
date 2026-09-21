@@ -388,7 +388,6 @@ globe_draw_ocean :: proc() {
 	globe_draw_mvp()
 
 	gl.BindVertexArray(globe_ocean_vao)
-	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 	gl.DrawElements(gl.TRIANGLES, i32(len(globe_ocean_mesh.indices)), gl.UNSIGNED_INT, nil)
 }
 
@@ -408,6 +407,9 @@ globe_draw_latitudes :: proc() {
 	// gl.DrawElements(gl.LINES, i32(len(globe_grid_mesh.indices)), gl.UNSIGNED_INT, nil)
 
 	gl.DrawArrays(gl.LINES, 0, i32(len(globe_latitudes_vertices)))
+
+	// Return to default polygon mode
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 }
 
 globe_draw_texture :: proc(texture: ^u32) {
@@ -430,7 +432,6 @@ globe_draw_area :: proc(vao: u32, mesh: Mesh, color: Vec4) {
 	gl.UseProgram(globe_program)
 
 	gl.BindVertexArray(vao)
-	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 	shader_set_vec4(globe_program, "color", color)
 	gl.DrawElements(gl.TRIANGLES, i32(len(mesh.indices)), gl.UNSIGNED_INT, nil)
 }
@@ -440,7 +441,6 @@ globe_draw_land :: proc(vao: u32, mesh: Land_Mesh) {
 	globe_draw_mvp()
 
 	gl.BindVertexArray(vao)
-	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 
 	for terrain_type, ebo in globe_land_ebos {
 		gl.BindTexture(gl.TEXTURE_2D, globe_land_textures[terrain_type])
