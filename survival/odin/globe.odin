@@ -171,13 +171,14 @@ globe_init_tiles :: proc() {
 		tile_width_bottom2 := ring_length_bottom / (f32(segs) / 2)
 		tile_width_top2 := ring_length_top / (f32(segs) / 2)
 
-		diff1 := math.abs(tile_width_avg_km - (tile_width_bottom + tile_width_top) / 2)
-		diff2 := math.abs(tile_width_avg_km - (tile_width_bottom2 + tile_width_top2) / 2)
+		// diff1 := math.abs(tile_width_avg_km - (tile_width_bottom + tile_width_top) / 2)
+		// diff2 := math.abs(tile_width_avg_km - (tile_width_bottom2 + tile_width_top2) / 2)
 
 		conc_width := tile_width_bottom
 		conc_tiles := int(ring_length_bottom / tile_width_bottom)
 
-		if diff2 < diff1 {
+		// if diff2 < diff1 {
+		if tile_width_bottom < tile_width_avg_km / 2 {
 			conc_width = tile_width_bottom2
 			conc_tiles = int(ring_length_bottom / tile_width_bottom2)
 			segs = segs / 2
@@ -465,7 +466,6 @@ globe_draw_land :: proc(vao: u32, mesh: Land_Mesh) {
 }
 
 globe_draw_edit_area :: proc() {
-
 	gl.BindVertexArray(globe_edit_area_vao)
 	shader_set_vec4(globe_program, "color", glsl.vec4({0, 0, 0, 0.1}))
 	gl.LineWidth(1.0)
