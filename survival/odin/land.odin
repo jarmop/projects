@@ -51,7 +51,8 @@ make_hill_color :: proc(terrain_type: TERRAIN_TYPE) -> Vec4 {
 }
 
 land_init :: proc() {
-	load_and_convert_land("data/earth512", "data/earth1024")
+	load_land()
+	// load_and_convert_land("data/earth512", "data/earth1024")
 
 	TERRAIN_COLORS[.HILL_PLAIN] = make_hill_color(.PLAIN)
 	TERRAIN_COLORS[.HILL_FOREST] = make_hill_color(.FOREST)

@@ -369,34 +369,21 @@ globe_draw :: proc() {
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
-	view := get_view()
-	projection := get_projection()
-	model := get_model()
-
-	// gl.UseProgram(globe_program_texture)
-	// gl.BindTexture(gl.TEXTURE_2D, globe_ocean_texture)
-	// shader_set_mat4(globe_program, "view", view)
-	// shader_set_mat4(globe_program, "projection", projection)
-	// shader_set_mat4(globe_program, "model", model)
-	// globe_draw_area(globe_ocean_vao, globe_ocean_mesh, TERRAIN_COLORS[TERRAIN_TYPE.OCEAN])
-
 	globe_draw_ocean()
 
-	gl.UseProgram(globe_program)
-	shader_set_mat4(globe_program, "view", get_view())
-	shader_set_mat4(globe_program, "projection", get_projection())
-	shader_set_mat4(globe_program, "model", get_model())
-
 	globe_draw_land(globe_land_vao, globe_land_mesh)
-	// globe_draw_edit_area()
-	// globe_draw_grid()
 
 	globe_draw_latitudes()
+
+	// gl.UseProgram(globe_program)
+	// globe_draw_mvp()
+	// globe_draw_edit_area()
+	// globe_draw_grid()
 }
 
 globe_draw_ocean :: proc() {
-	globe_draw_texture(&globe_ocean_texture)
-	// globe_draw_color(TERRAIN_COLORS[TERRAIN_TYPE.OCEAN])
+	// globe_draw_texture(&globe_ocean_texture)
+	globe_draw_color(TERRAIN_COLORS[TERRAIN_TYPE.OCEAN])
 
 	globe_draw_mvp()
 
@@ -449,6 +436,9 @@ globe_draw_area :: proc(vao: u32, mesh: Mesh, color: Vec4) {
 }
 
 globe_draw_land :: proc(vao: u32, mesh: Land_Mesh) {
+	gl.UseProgram(globe_program_color)
+	globe_draw_mvp()
+
 	gl.BindVertexArray(vao)
 	gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 
