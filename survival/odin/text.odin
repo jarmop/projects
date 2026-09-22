@@ -22,7 +22,8 @@ Glyph :: struct {
 }
 
 // baked_chars := make([96]stbtt.bakedchar)
-baked_chars: [GLYPH_COUNT]stbtt.bakedchar
+// baked_chars: [GLYPH_COUNT]stbtt.bakedchar
+packed_chars: [GLYPH_COUNT]stbtt.packedchar
 
 text_program: u32
 text_texture: u32
@@ -53,26 +54,21 @@ text_init :: proc() {
 	// Load font
 	// -----------------------------------------
 
-	font_data, err := os.read_entire_file_from_path(
-		"/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
-		context.allocator,
-	)
+	font_file := "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+	// font_file := "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+
+	font_data, err := os.read_entire_file_from_path(font_file, context.allocator)
+
 	assert(err == nil)
 
 	bitmap := make([]u8, FONT_BITMAP_W * FONT_BITMAP_H)
 
+	pc: stbtt.pack_context
 
-	stbtt.BakeFontBitmap(
-		raw_data(font_data),
-		0,
-		font_size,
-		raw_data(bitmap),
-		FONT_BITMAP_W,
-		FONT_BITMAP_H,
-		FIRST_PRINTABLE_ASCII,
-		GLYPH_COUNT,
-		&baked_chars[0],
-	)
+	stbtt.PackBegin(&pc, raw_data(bitmap), FONT_BITMAP_W, FONT_BITMAP_H, 0, 1, nil)
+	stbtt.PackSetOversampling(&pc, 2, 2)
+	stbtt.PackFontRange(&pc, raw_data(font_data), 0, font_size, 32, 95, &packed_chars[0])
+	stbtt.PackEnd(&pc)
 
 	// -----------------------------------------
 	// Upload texture
@@ -136,15 +132,15 @@ text_add_vertices :: proc(text: string, start: [2]f32, width: f32) -> f32 {
 
 		q: stbtt.aligned_quad
 
-		stbtt.GetBakedQuad(
-			&baked_chars[0],
+		stbtt.GetPackedQuad(
+			&packed_chars[0],
 			FONT_BITMAP_W,
 			FONT_BITMAP_H,
 			i32(c - FIRST_PRINTABLE_ASCII),
 			&x,
 			&y,
 			&q,
-			true,
+			false,
 		)
 
 		append(

@@ -26,7 +26,7 @@ main :: proc() {
 	io_init()
 	// world_init()
 	globe_init()
-	// dashboard_init()
+	dashboard_init()
 
 	gl.ClearColor(0.1, 0.1, 0.1, 1.0)
 
@@ -42,7 +42,7 @@ main :: proc() {
 		// 2D
 		gl.Disable(gl.DEPTH_TEST)
 		// world_draw()
-		// dashboard_draw()
+		dashboard_draw()
 
 		glfw.SwapBuffers(window)
 	}
