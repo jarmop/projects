@@ -3,6 +3,6 @@ package daw
 import "core:thread"
 
 main :: proc() {
-	// thread.run(play_sound)
+	thread.run(play_sound)
 	ui()
 }

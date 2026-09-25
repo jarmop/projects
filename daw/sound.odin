@@ -5,7 +5,7 @@ import "core:math"
 import ma "vendor:miniaudio"
 
 sample_rate: f32 = 48000
-frequency: f32 = 440
+frequency: f32 = 94
 amplitude: f32 = 0.5
 
 phase: f32 = 0
@@ -42,11 +42,30 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 	samples := cast([^]f32)output
 
 	for i in 0 ..< int(frame_count) {
-		samples[i] = math.sin(phase * 2 * math.PI) * amplitude
+		samples[i] = get_sine_sample(phase) * amplitude
+		// samples[i] = get_square_sample(phase) * amplitude
+		// samples[i] = get_triangle_sample(phase) * amplitude
+		// samples[i] = get_sawtooth_sample(phase) * amplitude
 
 		phase += frequency / sample_rate
 		if phase >= 1 {
 			phase -= 1
 		}
 	}
+}
+
+get_sine_sample :: proc "c" (phase: f32) -> f32 {
+	return math.sin(phase * 2 * math.PI)
+}
+
+get_square_sample :: proc "c" (phase: f32) -> f32 {
+	return phase < 0.5 ? 1 : -1
+}
+
+get_triangle_sample :: proc "c" (phase: f32) -> f32 {
+	return 2 / math.PI * math.asin(get_sine_sample(phase))
+}
+
+get_sawtooth_sample :: proc "c" (phase: f32) -> f32 {
+	return phase * 2 - 1
 }

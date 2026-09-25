@@ -50,7 +50,7 @@ update_vertices :: proc() {
 		s := get_sine_sample(phase)
 		// s := get_square_sample(phase)
 		// s := get_triangle_sample(phase)
-		// s := get_saw_sample(phase)
+		// s := get_sawtooth_sample(phase)
 
 		margin: f32 = 0.2
 
@@ -65,20 +65,4 @@ update_vertices :: proc() {
 		raw_data(vertices),
 		gl.STATIC_DRAW,
 	)
-}
-
-get_sine_sample :: proc(phase: f32) -> f32 {
-	return math.sin(phase * 2 * math.PI)
-}
-
-get_square_sample :: proc(phase: f32) -> f32 {
-	return phase < 0.5 ? 1 : -1
-}
-
-get_triangle_sample :: proc(phase: f32) -> f32 {
-	return 2 / math.PI * math.asin(get_sine_sample(phase))
-}
-
-get_saw_sample :: proc(phase: f32) -> f32 {
-	return phase * 2 - 1
 }
