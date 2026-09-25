@@ -46,6 +46,7 @@ key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode
 		glfw.SetWindowShouldClose(window, true)
 	} else if key in waveform_key_map {
 		selected_waveform = waveform_key_map[key]
-		update_vertices()
+		update_waveform_vertices()
+		update_text_vertices()
 	}
 }
