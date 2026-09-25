@@ -1,5 +1,8 @@
+#+feature dynamic-literals
+
 package daw
 
+import "base:runtime"
 import "core:fmt"
 import gl "vendor:OpenGL"
 import glfw "vendor:glfw"
@@ -8,6 +11,13 @@ WINDOW_WIDTH :: 800
 WINDOW_HEIGHT :: 600
 
 window: glfw.WindowHandle
+
+waveform_key_map := map[i32]Waveform {
+	glfw.KEY_1 = .Sine,
+	glfw.KEY_2 = .Square,
+	glfw.KEY_3 = .Triangle,
+	glfw.KEY_4 = .Sawtooth,
+}
 
 window_init :: proc() {
 	glfw.Init()
@@ -26,7 +36,16 @@ window_init :: proc() {
 }
 
 key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
-	if key == glfw.KEY_ESCAPE && action == glfw.PRESS {
+	context = runtime.default_context()
+
+	if action != glfw.PRESS {
+		return
+	}
+
+	if key == glfw.KEY_ESCAPE {
 		glfw.SetWindowShouldClose(window, true)
+	} else if key in waveform_key_map {
+		selected_waveform = waveform_key_map[key]
+		update_vertices()
 	}
 }

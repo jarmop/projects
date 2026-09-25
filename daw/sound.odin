@@ -1,13 +1,32 @@
+#+feature dynamic-literals
+
 package daw
 
 import "core:fmt"
 import "core:math"
 import ma "vendor:miniaudio"
 
+Waveform :: enum {
+	Sine,
+	Square,
+	Triangle,
+	Sawtooth,
+}
+
+WaveformFunc :: proc "c" (phase: f32) -> f32
+
+waveform_function_map := map[Waveform]WaveformFunc {
+	.Sine     = get_sine_sample,
+	.Square   = get_square_sample,
+	.Triangle = get_triangle_sample,
+	.Sawtooth = get_sawtooth_sample,
+}
+
+selected_waveform: Waveform = .Sine
+
 sample_rate: f32 = 48000
 frequency: f32 = 94
-amplitude: f32 = 0.5
-
+amplitude: f32 = 0.2
 phase: f32 = 0
 
 play_sound :: proc() {
@@ -42,10 +61,7 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 	samples := cast([^]f32)output
 
 	for i in 0 ..< int(frame_count) {
-		samples[i] = get_sine_sample(phase) * amplitude
-		// samples[i] = get_square_sample(phase) * amplitude
-		// samples[i] = get_triangle_sample(phase) * amplitude
-		// samples[i] = get_sawtooth_sample(phase) * amplitude
+		samples[i] = waveform_function_map[selected_waveform](phase) * amplitude
 
 		phase += frequency / sample_rate
 		if phase >= 1 {

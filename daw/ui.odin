@@ -33,8 +33,9 @@ ui :: proc() {
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
 
-		gl.BindVertexArray(vao)
+		gl.Clear(gl.COLOR_BUFFER_BIT)
 
+		gl.BindVertexArray(vao)
 		gl.DrawArrays(gl.LINE_STRIP, 0, i32(len(vertices)))
 
 		glfw.SwapBuffers(window)
@@ -47,10 +48,7 @@ update_vertices :: proc() {
 	for i in 0 ..< samples_count {
 		phase := f32(i) / f32(samples_count - 1)
 		x := phase * 2 - 1
-		s := get_sine_sample(phase)
-		// s := get_square_sample(phase)
-		// s := get_triangle_sample(phase)
-		// s := get_sawtooth_sample(phase)
+		s := waveform_function_map[selected_waveform](phase)
 
 		margin: f32 = 0.2
 
