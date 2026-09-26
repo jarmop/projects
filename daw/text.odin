@@ -112,6 +112,8 @@ text_init :: proc() {
 	gl.VertexAttribPointer(1, 2, gl.FLOAT, false, 4 * size_of(f32), uintptr(2 * size_of(f32)))
 
 	screen_size_loc = gl.GetUniformLocation(text_program, "screen_size")
+
+	update_text_vertices()
 }
 
 text_add_vertices :: proc(text: string, start: [2]f32, width: f32) -> f32 {

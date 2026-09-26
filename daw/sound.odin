@@ -29,6 +29,8 @@ frequency: f32 = 94
 amplitude: f32 = 0.1
 phase: f32 = 0
 
+max_frequency: f32 = 440
+
 play_sound :: proc() {
 	config := ma.device_config_init(ma.device_type.playback)
 
