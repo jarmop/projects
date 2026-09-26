@@ -4,6 +4,7 @@ package daw
 
 import "core:fmt"
 import "core:math"
+import "core:os"
 import ma "vendor:miniaudio"
 
 Waveform :: enum {
@@ -54,7 +55,8 @@ play_sound :: proc() {
 		return
 	}
 
-	for {}
+	buf: [256]byte
+	os.read(os.stdin, buf[:])
 
 	ma.device_uninit(&device)
 }
