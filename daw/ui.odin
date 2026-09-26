@@ -68,15 +68,12 @@ update_text_vertices :: proc() {
 	text_set_buffer_data()
 }
 
-h1: f32 = 2
-
 update_slider_vertices :: proc() {
-	w1: f32 = slider.width
-	slider_bar_vertices = make_quad(w1, h1)
+	slider_bar_vertices = make_quad(slider.bar_width, slider.bar_height)
 	update_buffer(&slider_bar_vbo, slider_bar_vertices[:])
 
-	x2: f32 = frequency / max_frequency * slider.width - slider.handle_size / 2
-	y2: f32 = (-slider.handle_size + h1) / 2
+	x2: f32 = frequency / max_frequency * slider.bar_width - slider.handle_size / 2
+	y2: f32 = (-slider.handle_size + slider.bar_height) / 2
 	slider_handle_vertices = make_quad(slider.handle_size, slider.handle_size, x2, y2)
 	update_buffer(&slider_handle_vbo, slider_handle_vertices[:])
 }

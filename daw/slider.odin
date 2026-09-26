@@ -17,7 +17,8 @@ slider_handle_vertices: [6]Vertex
 
 Slider :: struct {
 	pos:         Vec2,
-	width:       f32,
+	bar_width:   f32,
+	bar_height:  f32,
 	handle_size: f32,
 }
 
@@ -26,7 +27,8 @@ slider: Slider
 slider_init :: proc() {
 	slider = {
 		pos         = {100, 100},
-		width       = 100,
+		bar_width   = 100,
+		bar_height  = 2,
 		handle_size = 20,
 	}
 
