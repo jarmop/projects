@@ -24,6 +24,7 @@ left_mouse_first_press := true
 xpos_prev: f64 = 0
 slider_dragged: ^Slider
 slider_hovered: ^Slider
+button_hovered: ^Button
 
 window_init :: proc() {
 	glfw.Init()
@@ -68,6 +69,8 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 
 			if slider_hovered != nil {
 				slider_dragged = slider_hovered
+			} else if button_hovered != nil {
+				button_hovered.on_click()
 			}
 		} else {
 			left_mouse_pressed = false
@@ -94,9 +97,10 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xpos, ypos: f64) {
 
 		update_text_vertices()
 
-	} else if !left_mouse_pressed && slider_dragged == nil {
+	} else if !left_mouse_pressed {
 		slider_hovered = cursor_within_slider_handle()
-		if slider_hovered != nil {
+		button_hovered = cursor_within_button()
+		if slider_hovered != nil || button_hovered != nil {
 			glfw.SetCursor(window, glfw.CreateStandardCursor(glfw.POINTING_HAND_CURSOR))
 		} else {
 			glfw.SetCursor(window, nil)
@@ -131,4 +135,21 @@ cursor_within_slider_bar :: proc() -> bool {
 	y := f32(y64)
 	slider := slider_dragged
 	return x >= slider.pos.x && x <= slider.pos.x + bar_width
+}
+
+cursor_within_button :: proc() -> ^Button {
+	x64, y64 := glfw.GetCursorPos(window)
+	x := f32(x64)
+	y := f32(y64)
+
+	for &button in buttons {
+		if x >= button.pos.x &&
+		   x <= button.pos.x + button_width &&
+		   y >= button.pos.y &&
+		   y <= button.pos.y + button_height {
+			return &button
+		}
+	}
+
+	return nil
 }

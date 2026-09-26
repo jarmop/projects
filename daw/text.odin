@@ -117,16 +117,16 @@ text_init :: proc() {
 	update_text_vertices()
 }
 
-text_add_vertices :: proc(text: string, start: [2]f32, width: f32) -> f32 {
+text_add_vertices :: proc(text: string, start: [2]f32, max_width: f32) {
 	x := start.x
 	y := start.y
 
-	height: f32 = font_size
+	// height: f32 = font_size
 	for c in text {
-		if x > start.x + width {
+		if x > start.x + max_width {
 			x = start.x
 			y = y + font_size + 4
-			height = height + font_size + 4
+			// height = height + font_size + 4
 		}
 
 		if c < FIRST_PRINTABLE_ASCII || c > LAST_PRINTABLE_ASCII {
@@ -174,8 +174,40 @@ text_add_vertices :: proc(text: string, start: [2]f32, width: f32) -> f32 {
 			q.t1,
 		)
 	}
+}
 
-	return height
+get_text_dimensions :: proc(text: string, max_width: f32) -> (f32, f32) {
+	start: [2]f32 = {0, 0}
+	x := start.x
+	y := start.y
+
+	height: f32 = font_size
+	for c in text {
+		if x > start.x + max_width {
+			x = start.x
+			y = y + font_size + 4
+			height = height + font_size + 4
+		}
+
+		if c < FIRST_PRINTABLE_ASCII || c > LAST_PRINTABLE_ASCII {
+			continue
+		}
+
+		q: stbtt.aligned_quad
+
+		stbtt.GetPackedQuad(
+			&packed_chars[0],
+			FONT_BITMAP_W,
+			FONT_BITMAP_H,
+			i32(c - FIRST_PRINTABLE_ASCII),
+			&x,
+			&y,
+			&q,
+			false,
+		)
+	}
+
+	return x - start.x, height
 }
 
 text_set_buffer_data :: proc() {

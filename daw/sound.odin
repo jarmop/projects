@@ -28,9 +28,10 @@ selected_waveform: Waveform = .Sine
 sample_rate: f32 = 48000
 frequency: f32 = 94
 max_frequency: f32 = 440
-amplitude: f32 = 0.1
-max_amplitude: f32 = 1
+amplitude: f32 = 0.04
+max_amplitude: f32 = 0.2
 phase: f32 = 0
+playing := false
 
 play_sound :: proc() {
 	config := ma.device_config_init(ma.device_type.playback)
@@ -65,6 +66,11 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 	samples := cast([^]f32)output
 
 	for i in 0 ..< int(frame_count) {
+		if !playing {
+			samples[i] = 0
+			continue
+		}
+
 		samples[i] = waveform_function_map[selected_waveform](phase) * amplitude
 
 		phase += frequency / sample_rate
@@ -88,4 +94,8 @@ get_triangle_sample :: proc "c" (phase: f32) -> f32 {
 
 get_sawtooth_sample :: proc "c" (phase: f32) -> f32 {
 	return phase * 2 - 1
+}
+
+toggle_playback :: proc() {
+	playing = !playing
 }
