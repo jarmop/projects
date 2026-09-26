@@ -33,7 +33,8 @@ screen_size_loc: i32
 
 text_vertices: [dynamic]f32
 
-font_size: f32 = 14
+font_size :: 14
+line_height :: font_size + 2
 
 text_init :: proc() {
 	gl.Enable(gl.BLEND)

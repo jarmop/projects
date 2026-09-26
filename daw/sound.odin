@@ -27,10 +27,10 @@ selected_waveform: Waveform = .Sine
 
 sample_rate: f32 = 48000
 frequency: f32 = 94
-amplitude: f32 = 0.1
-phase: f32 = 0
-
 max_frequency: f32 = 440
+amplitude: f32 = 0.1
+max_amplitude: f32 = 1
+phase: f32 = 0
 
 play_sound :: proc() {
 	config := ma.device_config_init(ma.device_type.playback)

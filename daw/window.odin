@@ -22,7 +22,8 @@ waveform_key_map := map[i32]Waveform {
 left_mouse_pressed := false
 left_mouse_first_press := true
 xpos_prev: f64 = 0
-slider_drag := false
+slider_dragged: ^Slider
+slider_hovered: ^Slider
 
 window_init :: proc() {
 	glfw.Init()
@@ -64,24 +65,14 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 	if button == glfw.MOUSE_BUTTON_LEFT {
 		if action == glfw.PRESS {
 			left_mouse_pressed = true
-			x64, y64 := glfw.GetCursorPos(window)
-			x := f32(x64)
-			y := f32(y64)
-			handle_x := frequency / max_frequency * slider.width - slider.handle_size / 2
-			handle_y := (-slider.handle_size + h1) / 2
-			handle_pos := slider.pos + {handle_x, handle_y}
-			// fmt.println(handle_pos)
-			if x >= handle_pos.x &&
-			   x <= handle_pos.x + slider.handle_size &&
-			   y >= handle_pos.y &&
-			   y <= handle_pos.y + slider.handle_size {
-				// fmt.println("hit")
-				slider_drag = true
+
+			if slider_hovered != nil {
+				slider_dragged = slider_hovered
 			}
 		} else {
 			left_mouse_pressed = false
 			left_mouse_first_press = true
-			slider_drag = false
+			slider_dragged = nil
 		}
 	}
 }
@@ -89,7 +80,7 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xpos, ypos: f64) {
 	context = runtime.default_context()
 
-	if left_mouse_pressed && slider_drag {
+	if left_mouse_pressed && slider_dragged != nil && cursor_within_slider_bar() {
 		if left_mouse_first_press {
 			xpos_prev = xpos
 			left_mouse_first_press = false
@@ -98,10 +89,46 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xpos, ypos: f64) {
 		x_diff := xpos - xpos_prev
 		xpos_prev = xpos
 
-		new_frequency := frequency + (f32(x_diff) / slider.width * max_frequency)
-		frequency = min(max_frequency, max(0, new_frequency))
+		new_value := slider_dragged.value^ + (f32(x_diff) / bar_width * slider_dragged.max)
+		slider_dragged.value^ = min(slider_dragged.max, max(0, new_value))
 
 		update_text_vertices()
-		update_slider_vertices()
+
+	} else if !left_mouse_pressed && slider_dragged == nil {
+		slider_hovered = cursor_within_slider_handle()
+		if slider_hovered != nil {
+			glfw.SetCursor(window, glfw.CreateStandardCursor(glfw.POINTING_HAND_CURSOR))
+		} else {
+			glfw.SetCursor(window, nil)
+		}
 	}
+}
+
+cursor_within_slider_handle :: proc() -> ^Slider {
+	x64, y64 := glfw.GetCursorPos(window)
+	x := f32(x64)
+	y := f32(y64)
+	handle_y := (-handle_size + bar_height) / 2
+
+	for &slider, i in sliders {
+		handle_x := slider.value^ / slider.max * bar_width - handle_size / 2
+		handle_pos := slider.pos + {handle_x, handle_y}
+
+		if (x >= handle_pos.x &&
+			   x <= handle_pos.x + handle_size &&
+			   y >= handle_pos.y &&
+			   y <= handle_pos.y + handle_size) {
+			return &slider
+		}
+	}
+
+	return nil
+}
+
+cursor_within_slider_bar :: proc() -> bool {
+	x64, y64 := glfw.GetCursorPos(window)
+	x := f32(x64)
+	y := f32(y64)
+	slider := slider_dragged
+	return x >= slider.pos.x && x <= slider.pos.x + bar_width
 }

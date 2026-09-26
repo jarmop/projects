@@ -16,18 +16,21 @@ slider_handle_vbo: u32
 slider_handle_vertices: [6]Vertex
 
 Slider :: struct {
-	pos:         Vec2,
-	width:       f32,
-	handle_size: f32,
+	pos:   Vec2,
+	value: ^f32,
+	max:   f32,
 }
 
-slider: Slider
+sliders: [2]Slider
+
+bar_width: f32 = 100
+bar_height: f32 = 2
+handle_size: f32 = font_size
 
 slider_init :: proc() {
-	slider = {
-		pos         = {100, 100},
-		width       = 100,
-		handle_size = 20,
+	sliders = {
+		{pos = {110, (handle_size + 2) / 2}, value = &frequency, max = max_frequency},
+		{pos = {110, line_height + line_height / 2}, value = &amplitude, max = max_amplitude},
 	}
 
 	// -----------------------------------------
@@ -86,13 +89,24 @@ slider_draw :: proc() {
 
 	gl.Uniform2f(screen_size_loc, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
 
-	shader_set_vec2(ui_program, "model", slider.pos)
+	for slider in sliders {
+		shader_set_vec2(ui_program, "model", slider.pos)
 
-	shader_set_vec4(ui_program, "color", {0.2, 0.2, 0.2, 1})
-	gl.BindVertexArray(slider_bar_vao)
-	gl.DrawArrays(gl.TRIANGLES, 0, i32(len(slider_bar_vertices)))
+		shader_set_vec4(ui_program, "color", {0.2, 0.2, 0.2, 1})
+		gl.BindVertexArray(slider_bar_vao)
+		gl.DrawArrays(gl.TRIANGLES, 0, i32(len(slider_bar_vertices)))
 
-	shader_set_vec4(ui_program, "color", {0, 0, 0, 1})
-	gl.BindVertexArray(slider_handle_vao)
-	gl.DrawArrays(gl.TRIANGLES, 0, i32(len(slider_handle_vertices)))
+		// set handle model here
+		handle_x := slider.value^ / slider.max * bar_width
+		// - handle_size / 2
+		// handle_y := (-handle_size + bar_height) / 2
+		// handle_pos := slider.pos + {handle_x, handle_y}
+		handle_pos := slider.pos + {handle_x, 0}
+
+		shader_set_vec2(ui_program, "model", handle_pos)
+
+		shader_set_vec4(ui_program, "color", {0, 0, 0, 1})
+		gl.BindVertexArray(slider_handle_vao)
+		gl.DrawArrays(gl.TRIANGLES, 0, i32(len(slider_handle_vertices)))
+	}
 }
