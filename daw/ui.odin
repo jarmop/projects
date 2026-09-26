@@ -5,23 +5,17 @@ import "core:math"
 import gl "vendor:OpenGL"
 import glfw "vendor:glfw"
 
-Vec3 :: [3]f32
+Vec2 :: [2]f32
 
 Vertex :: struct {
-	pos: Vec3,
+	pos: Vec2,
 }
 
-waveform_vao: u32
-waveform_vbo: u32
-
-waveform_vertices: []Vertex
-
-ui_init :: proc() {
+ui_run :: proc() {
 	window_init()
 	waveform_init()
-
 	text_init()
-	update_text_vertices()
+	slider_init()
 
 	gl.ClearColor(0.5, 0.5, 0.5, 1)
 
@@ -34,28 +28,10 @@ ui_init :: proc() {
 
 		text_draw()
 
+		slider_draw()
+
 		glfw.SwapBuffers(window)
 	}
-}
-
-waveform_init :: proc() {
-	gl.GenVertexArrays(1, &waveform_vao)
-	gl.BindVertexArray(waveform_vao)
-
-	gl.GenBuffers(1, &waveform_vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, waveform_vbo)
-
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, size_of(Vertex), 0)
-	gl.EnableVertexAttribArray(0)
-
-	update_waveform_vertices()
-}
-
-waveform_draw :: proc() {
-	gl.UseProgram(0)
-
-	gl.BindVertexArray(waveform_vao)
-	gl.DrawArrays(gl.LINE_STRIP, 0, i32(len(waveform_vertices)))
 }
 
 update_waveform_vertices :: proc() {
@@ -69,17 +45,11 @@ update_waveform_vertices :: proc() {
 		margin: f32 = 0.2
 
 		waveform_vertices[i] = {
-			pos = ({x, s, 0} * (1 - margin)),
+			pos = ({x, s} * (1 - margin)),
 		}
 	}
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, waveform_vbo)
-	gl.BufferData(
-		gl.ARRAY_BUFFER,
-		len(waveform_vertices) * size_of(Vertex),
-		raw_data(waveform_vertices),
-		gl.STATIC_DRAW,
-	)
+	update_buffer(&waveform_vbo, waveform_vertices[:])
 }
 
 update_text_vertices :: proc() {
@@ -96,4 +66,38 @@ update_text_vertices :: proc() {
 	)
 
 	text_set_buffer_data()
+}
+
+h1: f32 = 2
+
+update_slider_vertices :: proc() {
+	w1: f32 = slider.width
+	slider_bar_vertices = make_quad(w1, h1)
+	update_buffer(&slider_bar_vbo, slider_bar_vertices[:])
+
+	x2: f32 = frequency / max_frequency * slider.width - slider.handle_size / 2
+	y2: f32 = (-slider.handle_size + h1) / 2
+	slider_handle_vertices = make_quad(slider.handle_size, slider.handle_size, x2, y2)
+	update_buffer(&slider_handle_vbo, slider_handle_vertices[:])
+}
+
+make_quad :: proc(w, h: f32, x: f32 = 0, y: f32 = 0) -> [6]Vertex {
+	return {
+		{pos = {x, y}},
+		{pos = {x + w, y}},
+		{pos = {x, y + h}},
+		{pos = {x, y + h}},
+		{pos = {x + w, y + h}},
+		{pos = {x + w, y}},
+	}
+}
+
+update_buffer :: proc(vbo: ^u32, vertices: []Vertex) {
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo^)
+	gl.BufferData(
+		gl.ARRAY_BUFFER,
+		len(vertices) * size_of(Vertex),
+		raw_data(vertices),
+		gl.STATIC_DRAW,
+	)
 }
