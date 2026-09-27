@@ -19,7 +19,7 @@ ui_run :: proc() {
 	slider_init()
 	button_init()
 
-	buttons = {{pos = {padding, 52}, on_click = handle_button_click}}
+	buttons = {{pos = {padding, 52}, on_click = ui_toggle_playback}}
 
 	text_init()
 
@@ -142,7 +142,7 @@ vbo_update :: proc(vbo: ^u32, vertices: []Vertex) {
 	)
 }
 
-handle_button_click :: proc() {
+ui_toggle_playback :: proc() {
 	toggle_playback()
 	update_text_vertices()
 }

@@ -19,12 +19,10 @@ button_width :: 50
 button_height :: 28
 
 button_init :: proc() {
-
-	vbo: u32
-
 	gl.GenVertexArrays(1, &button_vao)
 	gl.BindVertexArray(button_vao)
 
+	vbo: u32
 	vbo_init(&vbo)
 	button_vertices = make_quad_outline(button_width, button_height)
 	vbo_update(&vbo, button_vertices[:])
