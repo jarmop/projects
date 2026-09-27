@@ -2,9 +2,11 @@
 
 package daw
 
+import "base:runtime"
 import "core:fmt"
 import "core:math"
 import "core:os"
+import "core:time"
 import ma "vendor:miniaudio"
 
 Waveform :: enum {
@@ -62,7 +64,74 @@ play_sound :: proc() {
 	ma.device_uninit(&device)
 }
 
+sample_length: f64 = 400
+t: time.Tick
+
+attack: f64 = 50
+// attack_target is 1
+decay: f64 = 50
+// decay target is the sustain amplitude
+sustain: f64 = 200
+
+release: f64 = 100
+// release target is 0
+
+attack_amplitude := amplitude
+sustain_amplitude := attack_amplitude * 3 / 4
+decay_amplitude := attack_amplitude - sustain_amplitude
+release_amplitude := sustain_amplitude
+
+attacking := false
+decaying := false
+releasing := false
+sustaining := false
+
 data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, frame_count: u32) {
+	context = runtime.default_context()
+	amplitude_current: f32
+	if playing {
+		d := time.duration_milliseconds(time.tick_since(t))
+		if attacking {
+			if d >= attack {
+				amplitude_current = attack_amplitude
+				attacking = false
+				decaying = true
+				t = time.tick_now()
+				// fmt.println("decay")
+			} else {
+				amplitude_current = f32(d / attack) * attack_amplitude
+			}
+		} else if decaying {
+			if d >= decay {
+				amplitude_current = sustain_amplitude
+				decaying = false
+				sustaining = true
+				t = time.tick_now()
+				// fmt.println("sustain")
+			} else {
+				amplitude_current = attack_amplitude - f32(d / decay) * decay_amplitude
+			}
+		} else if sustaining {
+			if d >= sustain {
+				sustaining = false
+				releasing = true
+				t = time.tick_now()
+				// fmt.println("release")
+			}
+			amplitude_current = sustain_amplitude
+		} else if releasing {
+			if d >= release {
+				amplitude_current = 0
+				releasing = false
+				ui_toggle_playback()
+			} else {
+				amplitude_current = sustain_amplitude - f32(d / release) * release_amplitude
+			}
+		}
+
+		// ui_toggle_playback()
+	}
+
 	samples := cast([^]f32)output
 
 	for i in 0 ..< int(frame_count) {
@@ -71,7 +140,7 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 			continue
 		}
 
-		samples[i] = waveform_function_map[selected_waveform](phase) * amplitude
+		samples[i] = waveform_function_map[selected_waveform](phase) * amplitude_current
 
 		phase += frequency / sample_rate
 		if phase >= 1 {
@@ -98,4 +167,9 @@ get_sawtooth_sample :: proc "c" (phase: f32) -> f32 {
 
 toggle_playback :: proc() {
 	playing = !playing
+	if playing {
+		attacking = true
+		t = time.tick_now()
+		// fmt.println("attack")
+	}
 }
