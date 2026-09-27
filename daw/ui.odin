@@ -57,7 +57,7 @@ update_waveform_vertices :: proc() {
 		}
 	}
 
-	update_buffer(&waveform_vbo, waveform_vertices[:])
+	vbo_update(&waveform_vbo, waveform_vertices[:])
 }
 
 update_text_vertices :: proc() {
@@ -89,17 +89,6 @@ update_text_vertices :: proc() {
 	text_set_buffer_data()
 }
 
-update_slider_vertices :: proc() {
-	slider_bar_vertices = make_quad(bar_width, bar_height)
-	update_buffer(&slider_bar_vbo, slider_bar_vertices[:])
-
-	// x2: f32 = frequency / max_frequency * bar_width - handle_size / 2
-	x2: f32 = -handle_size / 2
-	y2: f32 = (-handle_size + bar_height) / 2
-	slider_handle_vertices = make_quad(handle_size, handle_size, x2, y2)
-	update_buffer(&slider_handle_vbo, slider_handle_vertices[:])
-}
-
 make_quad :: proc(w, h: f32, x: f32 = 0, y: f32 = 0) -> [6]Vertex {
 	bottom_left: Vec2 = {x, y}
 	bottom_right: Vec2 = {x + w, y}
@@ -127,7 +116,23 @@ make_quad_outline :: proc(w, h: f32, x: f32 = 0, y: f32 = 0) -> [4]Vertex {
 	return {{pos = bottom_left}, {pos = bottom_right}, {pos = top_right}, {pos = top_left}}
 }
 
-update_buffer :: proc(vbo: ^u32, vertices: []Vertex) {
+
+vbo_init :: proc(vbo: ^u32) {
+	gl.GenBuffers(1, vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo^)
+
+	gl.VertexAttribPointer(
+		0,
+		size_of(Vertex) / size_of(f32),
+		gl.FLOAT,
+		gl.FALSE,
+		size_of(Vertex),
+		0,
+	)
+	gl.EnableVertexAttribArray(0)
+}
+
+vbo_update :: proc(vbo: ^u32, vertices: []Vertex) {
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo^)
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
