@@ -35,7 +35,35 @@ max_amplitude: f32 = 0.2
 phase: f32 = 0
 playing := false
 
+Envelope_part :: struct {
+	duration:   f64,
+	amp_target: f32,
+}
+
+envelope: [4]Envelope_part
+
+envelope_i := 0
+
+t: time.Tick
+
 play_sound :: proc() {
+	envelope[0] = { 	// attack
+		duration   = 50,
+		amp_target = amplitude,
+	}
+	envelope[1] = { 	// decay
+		duration   = 50,
+		amp_target = envelope[0].amp_target * 3 / 4,
+	}
+	envelope[2] = { 	// sustain
+		duration   = 200,
+		amp_target = envelope[1].amp_target,
+	}
+	envelope[3] = { 	// release
+		duration   = 100,
+		amp_target = 0,
+	}
+
 	config := ma.device_config_init(ma.device_type.playback)
 
 	config.playback.format = ma.format.f32
@@ -64,72 +92,27 @@ play_sound :: proc() {
 	ma.device_uninit(&device)
 }
 
-sample_length: f64 = 400
-t: time.Tick
-
-attack: f64 = 50
-// attack_target is 1
-decay: f64 = 50
-// decay target is the sustain amplitude
-sustain: f64 = 200
-
-release: f64 = 100
-// release target is 0
-
-attack_amplitude := amplitude
-sustain_amplitude := attack_amplitude * 3 / 4
-decay_amplitude := attack_amplitude - sustain_amplitude
-release_amplitude := sustain_amplitude
-
-attacking := false
-decaying := false
-releasing := false
-sustaining := false
 
 data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, frame_count: u32) {
 	context = runtime.default_context()
 	amplitude_current: f32
+
 	if playing {
 		d := time.duration_milliseconds(time.tick_since(t))
-		if attacking {
-			if d >= attack {
-				amplitude_current = attack_amplitude
-				attacking = false
-				decaying = true
-				t = time.tick_now()
-				// fmt.println("decay")
-			} else {
-				amplitude_current = f32(d / attack) * attack_amplitude
-			}
-		} else if decaying {
-			if d >= decay {
-				amplitude_current = sustain_amplitude
-				decaying = false
-				sustaining = true
-				t = time.tick_now()
-				// fmt.println("sustain")
-			} else {
-				amplitude_current = attack_amplitude - f32(d / decay) * decay_amplitude
-			}
-		} else if sustaining {
-			if d >= sustain {
-				sustaining = false
-				releasing = true
-				t = time.tick_now()
-				// fmt.println("release")
-			}
-			amplitude_current = sustain_amplitude
-		} else if releasing {
-			if d >= release {
-				amplitude_current = 0
-				releasing = false
+		ep := envelope[envelope_i]
+		if d >= ep.duration {
+			amplitude_current = ep.amp_target
+			if envelope_i == 3 {
 				ui_toggle_playback()
 			} else {
-				amplitude_current = sustain_amplitude - f32(d / release) * release_amplitude
+				envelope_i += 1
 			}
+			t = time.tick_now()
+		} else {
+			prev_amp_target := envelope_i == 0 ? 0 : envelope[envelope_i - 1].amp_target
+			amp_diff := ep.amp_target - prev_amp_target
+			amplitude_current = prev_amp_target + f32(d / ep.duration) * amp_diff
 		}
-
-		// ui_toggle_playback()
 	}
 
 	samples := cast([^]f32)output
@@ -168,8 +151,7 @@ get_sawtooth_sample :: proc "c" (phase: f32) -> f32 {
 toggle_playback :: proc() {
 	playing = !playing
 	if playing {
-		attacking = true
+		envelope_i = 0
 		t = time.tick_now()
-		// fmt.println("attack")
 	}
 }
