@@ -55,8 +55,6 @@ key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode
 		glfw.SetWindowShouldClose(window, true)
 	} else if key in waveform_key_map {
 		selected_waveform = waveform_key_map[key]
-		update_waveform_vertices()
-		update_text_vertices()
 	} else if key == glfw.KEY_SPACE {
 		toggle_playback()
 	}
@@ -97,7 +95,6 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xpos, ypos: f64) {
 		new_value := slider_dragged.value^ + (f32(x_diff) / bar_width * slider_dragged.max)
 		slider_dragged.value^ = min(slider_dragged.max, max(0, new_value))
 
-		update_text_vertices()
 		update_envelope()
 
 	} else if !left_mouse_pressed {

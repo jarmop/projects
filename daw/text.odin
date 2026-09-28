@@ -110,8 +110,6 @@ text_init :: proc() {
 
 	gl.EnableVertexAttribArray(1)
 	gl.VertexAttribPointer(1, 2, gl.FLOAT, false, 4 * size_of(f32), uintptr(2 * size_of(f32)))
-
-	update_text_vertices()
 }
 
 text_add_vertices :: proc(text: string, start: [2]f32, max_width: f32) -> (f32, f32) {

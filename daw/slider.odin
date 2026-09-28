@@ -26,10 +26,6 @@ bar_height: f32 = 2
 handle_size: f32 = font_size
 
 slider_init :: proc() {
-	sliders = {
-		{pos = {110, (handle_size + 2) / 2}, value = &frequency, max = max_frequency},
-		{pos = {110, line_height + line_height / 2}, value = &amplitude, max = max_amplitude},
-	}
 
 	// -----------------------------------------
 	// Load shaders

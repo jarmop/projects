@@ -25,8 +25,6 @@ waveform_init :: proc() {
 		0,
 	)
 	gl.EnableVertexAttribArray(0)
-
-	update_waveform_vertices()
 }
 
 waveform_draw :: proc() {

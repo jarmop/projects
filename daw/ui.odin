@@ -16,9 +16,14 @@ padding :: 4
 ui_run :: proc() {
 	window_init()
 	waveform_init()
-	slider_init()
-	button_init()
 
+	slider_init()
+	sliders = {
+		{pos = {110, (handle_size + 2) / 2}, value = &frequency, max = max_frequency},
+		{pos = {110, line_height + line_height / 2}, value = &amplitude, max = max_amplitude},
+	}
+
+	button_init()
 	buttons = {
 		{pos = {WINDOW_WIDTH - button_width - padding, padding}, on_click = toggle_playback},
 	}
@@ -29,30 +34,31 @@ ui_run :: proc() {
 
 	prev_playing := playing
 	for !glfw.WindowShouldClose(window) {
+		defer free_all(context.temp_allocator)
+
 		glfw.PollEvents()
 
 		if prev_playing != playing {
 			prev_playing = playing
-			update_text_vertices()
 		}
 
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
+		ui_update()
+
 		waveform_draw()
-
 		slider_draw()
-
 		button_draw()
-
 		text_draw()
 
 		glfw.SwapBuffers(window)
 	}
 }
 
-update_waveform_vertices :: proc() {
+waveform_vertices_update :: proc() {
 	samples_count := 40
 	waveform_vertices = make([]Vertex, samples_count)
+	defer delete(waveform_vertices)
 
 	for i in 0 ..< samples_count {
 		phase := f32(i) / f32(samples_count - 1)
@@ -66,16 +72,18 @@ update_waveform_vertices :: proc() {
 	vbo_update(&waveform_vbo, waveform_vertices[:])
 }
 
-update_text_vertices :: proc() {
+ui_update :: proc() {
 	clear(&text_vertices)
 
-	width: f32 = 120
-
+	width :: 120
 	x :: padding
-	y: f32 = font_size
+	y: f32
+
+	y = font_size
 	text_add_vertices(fmt.tprintf("Frequency: %d", int(frequency)), {x, y}, width)
 	y += line_height
 	text_add_vertices(fmt.tprintf("Amplitude: %.2f", amplitude), {x, y}, width)
+
 	y += line_height
 	waveform_text_width, _ := text_add_vertices(
 		"Waveform: ",
@@ -84,6 +92,7 @@ update_text_vertices :: proc() {
 		width,
 	)
 	wave_form_pos = {x + waveform_text_width, y - waveform_size.y / 2}
+	waveform_vertices_update()
 
 	play_button_text := playing ? "Stop" : "Play"
 	play_button_text_max_width: f32 = button_width - 2 * button_padding_x
