@@ -29,7 +29,6 @@ text_program: u32
 text_texture: u32
 text_vao: u32
 text_vbo: u32
-screen_size_loc: i32
 
 text_vertices: [dynamic]f32
 
@@ -112,21 +111,19 @@ text_init :: proc() {
 	gl.EnableVertexAttribArray(1)
 	gl.VertexAttribPointer(1, 2, gl.FLOAT, false, 4 * size_of(f32), uintptr(2 * size_of(f32)))
 
-	screen_size_loc = gl.GetUniformLocation(text_program, "screen_size")
-
 	update_text_vertices()
 }
 
-text_add_vertices :: proc(text: string, start: [2]f32, max_width: f32) {
+text_add_vertices :: proc(text: string, start: [2]f32, max_width: f32) -> (f32, f32) {
 	x := start.x
 	y := start.y
 
-	// height: f32 = font_size
+	height: f32 = font_size
 	for c in text {
 		if x > start.x + max_width {
 			x = start.x
 			y = y + font_size + 4
-			// height = height + font_size + 4
+			height = height + font_size + 4
 		}
 
 		if c < FIRST_PRINTABLE_ASCII || c > LAST_PRINTABLE_ASCII {
@@ -174,6 +171,8 @@ text_add_vertices :: proc(text: string, start: [2]f32, max_width: f32) {
 			q.t1,
 		)
 	}
+
+	return x - start.x, height
 }
 
 get_text_dimensions :: proc(text: string, max_width: f32) -> (f32, f32) {
@@ -225,12 +224,11 @@ text_set_buffer_data :: proc() {
 text_draw :: proc() {
 	gl.UseProgram(text_program)
 
-	gl.Uniform2f(screen_size_loc, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
+	shader_set_vec2(ui_program, "screen_size", {f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT)})
 
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, text_texture)
 
 	gl.BindVertexArray(text_vao)
-
 	gl.DrawArrays(gl.TRIANGLES, 0, i32(len(text_vertices) / 4))
 }

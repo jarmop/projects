@@ -59,7 +59,6 @@ slider_init :: proc() {
 	// Slider handle
 	// --------------
 
-
 	gl.GenVertexArrays(1, &slider_handle_vao)
 	gl.BindVertexArray(slider_handle_vao)
 
@@ -75,7 +74,7 @@ slider_init :: proc() {
 slider_draw :: proc() {
 	gl.UseProgram(ui_program)
 
-	gl.Uniform2f(screen_size_loc, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
+	shader_set_vec2(ui_program, "screen_size", {f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT)})
 
 	for slider in sliders {
 		shader_set_vec2(ui_program, "model", slider.pos)

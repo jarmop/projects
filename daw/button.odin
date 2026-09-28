@@ -41,7 +41,7 @@ button_init :: proc() {
 button_draw :: proc() {
 	gl.UseProgram(ui_program)
 
-	gl.Uniform2f(screen_size_loc, f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT))
+	shader_set_vec2(ui_program, "screen_size", {f32(WINDOW_WIDTH), f32(WINDOW_HEIGHT)})
 
 	for button in buttons {
 		shader_set_vec2(ui_program, "model", button.pos)

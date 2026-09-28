@@ -19,7 +19,9 @@ ui_run :: proc() {
 	slider_init()
 	button_init()
 
-	buttons = {{pos = {padding, 52}, on_click = toggle_playback}}
+	buttons = {
+		{pos = {WINDOW_WIDTH - button_width - padding, padding}, on_click = toggle_playback},
+	}
 
 	text_init()
 
@@ -49,18 +51,16 @@ ui_run :: proc() {
 }
 
 update_waveform_vertices :: proc() {
-	samples_count := 400
+	samples_count := 40
 	waveform_vertices = make([]Vertex, samples_count)
+
 	for i in 0 ..< samples_count {
 		phase := f32(i) / f32(samples_count - 1)
-		x := phase * 2 - 1
-		s := waveform_function_map[selected_waveform](phase)
+		sample := waveform_function_map[selected_waveform](phase)
 
-		margin: f32 = 0.2
-
-		waveform_vertices[i] = {
-			pos = ({x, s} * (1 - margin)),
-		}
+		// Flip Y by using negative sample. Also divide Y by two so the total
+		// height of the waveform is equal to the length.
+		waveform_vertices[i].pos = Vec2{phase, -sample / 2} * waveform_size
 	}
 
 	vbo_update(&waveform_vbo, waveform_vertices[:])
@@ -77,13 +77,18 @@ update_text_vertices :: proc() {
 	y += line_height
 	text_add_vertices(fmt.tprintf("Amplitude: %.2f", amplitude), {x, y}, width)
 	y += line_height
-	text_add_vertices(fmt.tprintf("Waveform: %s", selected_waveform), {x, y}, width)
+	waveform_text_width, _ := text_add_vertices(
+		"Waveform: ",
+		// fmt.tprintf("Waveform: %s", selected_waveform),
+		{x, y},
+		width,
+	)
+	wave_form_pos = {x + waveform_text_width, y - waveform_size.y / 2}
 
 	play_button_text := playing ? "Stop" : "Play"
 	play_button_text_max_width: f32 = button_width - 2 * button_padding_x
 
 	text_width, text_height := get_text_dimensions(play_button_text, play_button_text_max_width)
-	// fmt.println(text_width, text_height)
 
 	button_padding :: padding
 	play_button := buttons[0]
