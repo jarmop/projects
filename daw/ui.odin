@@ -19,14 +19,20 @@ ui_run :: proc() {
 	slider_init()
 	button_init()
 
-	buttons = {{pos = {padding, 52}, on_click = ui_toggle_playback}}
+	buttons = {{pos = {padding, 52}, on_click = toggle_playback}}
 
 	text_init()
 
 	gl.ClearColor(0.5, 0.5, 0.5, 1)
 
+	prev_playing := playing
 	for !glfw.WindowShouldClose(window) {
 		glfw.PollEvents()
+
+		if prev_playing != playing {
+			prev_playing = playing
+			update_text_vertices()
+		}
 
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
@@ -140,9 +146,4 @@ vbo_update :: proc(vbo: ^u32, vertices: []Vertex) {
 		raw_data(vertices),
 		gl.STATIC_DRAW,
 	)
-}
-
-ui_toggle_playback :: proc() {
-	toggle_playback()
-	update_text_vertices()
 }

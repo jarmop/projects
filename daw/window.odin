@@ -58,7 +58,7 @@ key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode
 		update_waveform_vertices()
 		update_text_vertices()
 	} else if key == glfw.KEY_SPACE {
-		ui_toggle_playback()
+		toggle_playback()
 	}
 }
 

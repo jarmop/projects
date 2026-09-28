@@ -92,7 +92,6 @@ play_sound :: proc() {
 	ma.device_uninit(&device)
 }
 
-
 data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, frame_count: u32) {
 	context = runtime.default_context()
 	amplitude_current: f32
@@ -103,7 +102,7 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 		if d >= ep.duration {
 			amplitude_current = ep.amp_target
 			if envelope_i == 3 {
-				ui_toggle_playback()
+				toggle_playback()
 			} else {
 				envelope_i += 1
 			}
