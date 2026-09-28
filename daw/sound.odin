@@ -47,22 +47,7 @@ envelope_i := 0
 t: time.Tick
 
 play_sound :: proc() {
-	envelope[0] = { 	// attack
-		duration   = 50,
-		amp_target = amplitude,
-	}
-	envelope[1] = { 	// decay
-		duration   = 50,
-		amp_target = envelope[0].amp_target * 3 / 4,
-	}
-	envelope[2] = { 	// sustain
-		duration   = 200,
-		amp_target = envelope[1].amp_target,
-	}
-	envelope[3] = { 	// release
-		duration   = 100,
-		amp_target = 0,
-	}
+	update_envelope()
 
 	config := ma.device_config_init(ma.device_type.playback)
 
@@ -90,6 +75,25 @@ play_sound :: proc() {
 	os.read(os.stdin, buf[:])
 
 	ma.device_uninit(&device)
+}
+
+update_envelope :: proc() {
+	envelope[0] = { 	// attack
+		duration   = 50,
+		amp_target = amplitude,
+	}
+	envelope[1] = { 	// decay
+		duration   = 50,
+		amp_target = envelope[0].amp_target * 3 / 4,
+	}
+	envelope[2] = { 	// sustain
+		duration   = 200,
+		amp_target = envelope[1].amp_target,
+	}
+	envelope[3] = { 	// release
+		duration   = 100,
+		amp_target = 0,
+	}
 }
 
 data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, frame_count: u32) {

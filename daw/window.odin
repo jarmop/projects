@@ -98,6 +98,7 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xpos, ypos: f64) {
 		slider_dragged.value^ = min(slider_dragged.max, max(0, new_value))
 
 		update_text_vertices()
+		update_envelope()
 
 	} else if !left_mouse_pressed {
 		slider_hovered = cursor_within_slider_handle()
