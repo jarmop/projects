@@ -35,12 +35,14 @@ max_amplitude: f32 = 0.2
 phase: f32 = 0
 playing := false
 
-Envelope_part :: struct {
-	duration:   f64,
+EnvelopeSegment :: struct {
+	duration:   f32,
 	amp_target: f32,
 }
 
-envelope: [4]Envelope_part
+envelope_max_duration: f32 = 400
+
+envelope: [4]EnvelopeSegment
 
 envelope_i := 0
 
@@ -101,7 +103,7 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 	amplitude_current: f32
 
 	if playing {
-		d := time.duration_milliseconds(time.tick_since(t))
+		d := f32(time.duration_milliseconds(time.tick_since(t)))
 		ep := envelope[envelope_i]
 		if d >= ep.duration {
 			amplitude_current = ep.amp_target
@@ -114,7 +116,7 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 		} else {
 			prev_amp_target := envelope_i == 0 ? 0 : envelope[envelope_i - 1].amp_target
 			amp_diff := ep.amp_target - prev_amp_target
-			amplitude_current = prev_amp_target + f32(d / ep.duration) * amp_diff
+			amplitude_current = prev_amp_target + d / ep.duration * amp_diff
 		}
 	}
 

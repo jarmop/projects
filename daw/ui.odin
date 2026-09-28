@@ -19,8 +19,13 @@ ui_run :: proc() {
 
 	slider_init()
 	sliders = {
-		{pos = {110, (handle_size + 2) / 2}, value = &frequency, max = max_frequency},
+		{pos = {110, line_height / 2}, value = &frequency, max = max_frequency},
 		{pos = {110, line_height + line_height / 2}, value = &amplitude, max = max_amplitude},
+		{
+			pos = {110, 2 * line_height + line_height / 2},
+			value = &envelope[0].duration,
+			max = envelope_max_duration,
+		},
 	}
 
 	button_init()
@@ -81,8 +86,21 @@ ui_update :: proc() {
 
 	y = font_size
 	text_add_vertices(fmt.tprintf("Frequency: %d", int(frequency)), {x, y}, width)
+
 	y += line_height
 	text_add_vertices(fmt.tprintf("Amplitude: %.2f", amplitude), {x, y}, width)
+
+	y += line_height
+	text_add_vertices(fmt.tprintf("Attack: %.2f", envelope[0].duration), {x, y}, width)
+
+	y += line_height
+	text_add_vertices(fmt.tprintf("Decay: %.2f", envelope[1].duration), {x, y}, width)
+
+	y += line_height
+	text_add_vertices(fmt.tprintf("Sustain: %.2f", envelope[2].duration), {x, y}, width)
+
+	y += line_height
+	text_add_vertices(fmt.tprintf("Release: %.2f", envelope[3].duration), {x, y}, width)
 
 	y += line_height
 	waveform_text_width, _ := text_add_vertices(

@@ -19,7 +19,7 @@ Slider :: struct {
 	max:   f32,
 }
 
-sliders: [2]Slider
+sliders: [3]Slider
 
 bar_width: f32 = 100
 bar_height: f32 = 2
