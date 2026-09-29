@@ -93,14 +93,14 @@ ui_update :: proc() {
 	y += line_height
 	text_add_vertices(fmt.tprintf("Attack: %.2f", envelope[0].duration), {x, y}, width)
 
-	y += line_height
-	text_add_vertices(fmt.tprintf("Decay: %.2f", envelope[1].duration), {x, y}, width)
+	// y += line_height
+	// text_add_vertices(fmt.tprintf("Decay: %.2f", envelope[1].duration), {x, y}, width)
 
-	y += line_height
-	text_add_vertices(fmt.tprintf("Sustain: %.2f", envelope[2].duration), {x, y}, width)
+	// y += line_height
+	// text_add_vertices(fmt.tprintf("Sustain: %.2f", envelope[2].duration), {x, y}, width)
 
-	y += line_height
-	text_add_vertices(fmt.tprintf("Release: %.2f", envelope[3].duration), {x, y}, width)
+	// y += line_height
+	// text_add_vertices(fmt.tprintf("Release: %.2f", envelope[3].duration), {x, y}, width)
 
 	y += line_height
 	waveform_text_width, _ := text_add_vertices(
