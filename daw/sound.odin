@@ -98,18 +98,12 @@ update_envelope :: proc() {
 }
 
 frame_amplitude: f32 = 0
-
+segment: EnvelopeSegment
 segment_timer: f32 = 0
+amp_increment_per_frame: f32
 
 data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, frame_count: u32) {
 	context = runtime.default_context()
-
-	segment := envelope[envelope_i]
-	amp_start: f32 = envelope_i == 0 ? 0 : envelope[envelope_i - 1].amp_target
-	amp_end := segment.amp_target
-	amp_d := amp_end - amp_start
-	amp_increment_per_ms := amp_d / segment.duration
-	amp_increment_per_frame := amp_increment_per_ms / 48
 
 	samples := cast([^]f32)output
 	for i in 0 ..< int(frame_count) {
@@ -125,14 +119,7 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 				continue
 			} else {
 				envelope_i += 1
-				segment_timer = 0
-
-				segment = envelope[envelope_i]
-				amp_start = envelope_i == 0 ? 0 : envelope[envelope_i - 1].amp_target
-				amp_end = segment.amp_target
-				amp_d = amp_end - amp_start
-				amp_increment_per_ms = amp_d / segment.duration
-				amp_increment_per_frame = amp_increment_per_ms / 48
+				segment_start()
 			}
 		}
 
@@ -169,7 +156,17 @@ toggle_playback :: proc() {
 	playing = !playing
 	if playing {
 		envelope_i = 0
-		segment_timer = 0
 		frame_amplitude = 0
+		segment_start()
 	}
+}
+
+segment_start :: proc() {
+	segment = envelope[envelope_i]
+	segment_timer = 0
+	amp_start: f32 = envelope_i == 0 ? 0 : envelope[envelope_i - 1].amp_target
+	amp_end := segment.amp_target
+	amp_d := amp_end - amp_start
+	amp_increment_per_ms := amp_d / segment.duration
+	amp_increment_per_frame = amp_increment_per_ms / 48
 }
