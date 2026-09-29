@@ -30,8 +30,10 @@ selected_waveform: Waveform = .Sine
 sample_rate: f32 = 48000
 frequency: f32 = 94
 max_frequency: f32 = 440
-amplitude: f32 = 0.04
-max_amplitude: f32 = 0.2
+// amplitude: f32 = 0.04
+amplitude: f32 = 0.2
+// max_amplitude: f32 = 0.2
+max_amplitude: f32 = 1.0
 phase: f32 = 0
 playing := false
 
@@ -207,7 +209,10 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 
 		reached_time_target := time_d >= segment.duration
 
-		if reached_amp_target && reached_time_target {
+		if (reached_amp_target && reached_time_target) ||
+		   (amplitude_current + amp_increment_per_frame) < 0 {
+			// if (amp_increment_per_frame != 0 && reached_amp_target) || reached_time_target {
+			// if reached_time_target {
 			if envelope_i == len(envelope) - 1 {
 				fmt.println("a")
 				toggle_playback()
