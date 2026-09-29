@@ -6,7 +6,6 @@ import "base:runtime"
 import "core:fmt"
 import "core:math"
 import "core:os"
-import "core:time"
 import ma "vendor:miniaudio"
 
 Waveform :: enum {
@@ -28,11 +27,11 @@ waveform_function_map := map[Waveform]WaveformFunc {
 selected_waveform: Waveform = .Sine
 
 sample_rate :: 48000
-frequency: f32 = 94
+ms_per_frame :: 1000.0 / sample_rate
+
+frequency: f32 = 440
 max_frequency: f32 = 440
-// amplitude: f32 = 0.04
 amplitude: f32 = 0.2
-// max_amplitude: f32 = 0.2
 max_amplitude: f32 = 1.0
 phase: f32 = 0
 playing := false
@@ -45,9 +44,6 @@ EnvelopeSegment :: struct {
 envelope_max_duration: f32 = 400
 
 envelope_i := 0
-
-t: time.Tick
-t2: time.Tick
 
 play_sound :: proc() {
 	update_envelope()
@@ -84,7 +80,7 @@ envelope: [4]EnvelopeSegment
 
 update_envelope :: proc() {
 	envelope[0] = { 	// attack
-		duration   = 50,
+		duration   = 20,
 		amp_target = amplitude,
 	}
 	envelope[1] = { 	// decay
@@ -92,39 +88,18 @@ update_envelope :: proc() {
 		amp_target = envelope[0].amp_target * 3 / 4,
 	}
 	envelope[2] = { 	// sustain
-		duration   = 800,
+		duration   = 200,
 		amp_target = envelope[1].amp_target,
 	}
 	envelope[3] = { 	// release
-		duration   = 100,
+		duration   = 20,
 		amp_target = 0,
 	}
-
-	// envelope[0] = { 	// attack
-	// 	duration   = 50,
-	// 	amp_target = amplitude,
-	// }
-	// // envelope[1] = { 	// decay
-	// // 	duration   = 50,
-	// // 	amp_target = envelope[0].amp_target * 3 / 4,
-	// // }
-	// // envelope[2] = { 	// sustain
-	// // 	duration   = 200,
-	// // 	amp_target = envelope[1].amp_target,
-	// // }
-	// envelope[1] = { 	// release
-	// 	duration   = 50,
-	// 	amp_target = 0,
-	// }
 }
 
-amplitude_current: f64 = 0
+frame_amplitude: f32 = 0
 
-time_d2: f64 = 0
-
-time_current: f32 = 0
-
-ms_per_frame := f32(1000) / sample_rate
+segment_timer: f32 = 0
 
 data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, frame_count: u32) {
 	context = runtime.default_context()
@@ -133,8 +108,7 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 	amp_start: f32 = envelope_i == 0 ? 0 : envelope[envelope_i - 1].amp_target
 	amp_end := segment.amp_target
 	amp_d := amp_end - amp_start
-
-	amp_increment_per_ms := f64(amp_d / segment.duration)
+	amp_increment_per_ms := amp_d / segment.duration
 	amp_increment_per_frame := amp_increment_per_ms / 48
 
 	samples := cast([^]f32)output
@@ -144,61 +118,34 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 			continue
 		}
 
-		// reached_time_target := time_d >= segment.duration
-		reached_time_target := time_current >= segment.duration
-
-		// if (reached_amp_target && reached_time_target) ||
-		//    (amplitude_current + amp_increment_per_frame) < 0 {
-		// if (amp_increment_per_frame != 0 && reached_amp_target) || reached_time_target {
-		if reached_time_target {
+		if segment_timer >= segment.duration {
 			if envelope_i == len(envelope) - 1 {
-				fmt.println("a")
 				toggle_playback()
 				samples[i] = 0
 				continue
 			} else {
-				fmt.println("b")
-
-				time_current = 0
-
 				envelope_i += 1
-				t = time.tick_now()
+				segment_timer = 0
 
 				segment = envelope[envelope_i]
 				amp_start = envelope_i == 0 ? 0 : envelope[envelope_i - 1].amp_target
 				amp_end = segment.amp_target
 				amp_d = amp_end - amp_start
-
-				amp_increment_per_ms = f64(amp_d / segment.duration)
+				amp_increment_per_ms = amp_d / segment.duration
 				amp_increment_per_frame = amp_increment_per_ms / 48
-
-				// fmt.println(amp_increment_per_frame)
 			}
 		}
 
-		samples[i] = waveform_function_map[selected_waveform](phase) * f32(amplitude_current)
+		samples[i] = waveform_function_map[selected_waveform](phase) * frame_amplitude
 
 		phase += frequency / sample_rate
 		if phase >= 1 {
 			phase -= 1
 		}
 
-		amplitude_current += amp_increment_per_frame
+		frame_amplitude += amp_increment_per_frame
 
-		time_current += ms_per_frame
-	}
-
-
-	if playing {
-		// fmt.println(amp_increment, amplitude_current)
-		// fmt.println(time_d2)
-		// fmt.println(avg_samples_duration)
-		fmt.printfln(
-			"callback end: %.3f, %.3f, %.3f",
-			amplitude_current,
-			time_current,
-			ms_per_frame,
-		)
+		segment_timer += ms_per_frame
 	}
 }
 
@@ -207,7 +154,7 @@ get_sine_sample :: proc "c" (phase: f32) -> f32 {
 }
 
 get_square_sample :: proc "c" (phase: f32) -> f32 {
-	return phase < 0.5 ? 1 : -1
+	return (phase < 0.5 ? 1 : -1) * 0.4
 }
 
 get_triangle_sample :: proc "c" (phase: f32) -> f32 {
@@ -215,17 +162,14 @@ get_triangle_sample :: proc "c" (phase: f32) -> f32 {
 }
 
 get_sawtooth_sample :: proc "c" (phase: f32) -> f32 {
-	return phase * 2 - 1
+	return (phase * 2 - 1) * 0.4
 }
 
 toggle_playback :: proc() {
 	playing = !playing
 	if playing {
-		fmt.println("playing")
 		envelope_i = 0
-		amplitude_current = 0
-		time_current = 0
-		t = time.tick_now()
-		t2 = time.tick_now()
+		segment_timer = 0
+		frame_amplitude = 0
 	}
 }
