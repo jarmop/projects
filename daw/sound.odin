@@ -78,42 +78,42 @@ play_sound :: proc() {
 	ma.device_uninit(&device)
 }
 
-envelope: [2]EnvelopeSegment
+envelope: [4]EnvelopeSegment
 
 update_envelope :: proc() {
-	// envelope[0] = { 	// attack
-	// 	duration   = 50,
-	// 	amp_target = amplitude,
-	// }
-	// envelope[1] = { 	// decay
-	// 	duration   = 50,
-	// 	amp_target = envelope[0].amp_target * 3 / 4,
-	// }
-	// envelope[2] = { 	// sustain
-	// 	duration   = 200,
-	// 	amp_target = envelope[1].amp_target,
-	// }
-	// envelope[3] = { 	// release
-	// 	duration   = 100,
-	// 	amp_target = 0,
-	// }
-
 	envelope[0] = { 	// attack
 		duration   = 50,
 		amp_target = amplitude,
 	}
-	// envelope[1] = { 	// decay
-	// 	duration   = 50,
-	// 	amp_target = envelope[0].amp_target * 3 / 4,
-	// }
-	// envelope[2] = { 	// sustain
-	// 	duration   = 200,
-	// 	amp_target = envelope[1].amp_target,
-	// }
-	envelope[1] = { 	// release
+	envelope[1] = { 	// decay
 		duration   = 50,
+		amp_target = envelope[0].amp_target * 3 / 4,
+	}
+	envelope[2] = { 	// sustain
+		duration   = 800,
+		amp_target = envelope[1].amp_target,
+	}
+	envelope[3] = { 	// release
+		duration   = 100,
 		amp_target = 0,
 	}
+
+	// envelope[0] = { 	// attack
+	// 	duration   = 50,
+	// 	amp_target = amplitude,
+	// }
+	// // envelope[1] = { 	// decay
+	// // 	duration   = 50,
+	// // 	amp_target = envelope[0].amp_target * 3 / 4,
+	// // }
+	// // envelope[2] = { 	// sustain
+	// // 	duration   = 200,
+	// // 	amp_target = envelope[1].amp_target,
+	// // }
+	// envelope[1] = { 	// release
+	// 	duration   = 50,
+	// 	amp_target = 0,
+	// }
 }
 
 amplitude_current: f64 = 0
@@ -155,7 +155,7 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 
 	// time_d: f32
 	// if playing {
-	// 	time_d = f32(time.duration_milliseconds(time.tick_since(t)))
+	time_d := f32(time.duration_milliseconds(time.tick_since(t)))
 
 	// 	if time_d >= segment.duration {
 	// 		amplitude_current = f64(amp_end)
@@ -178,12 +178,13 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 	// tc := time_d2 / f64(segment.duration)
 
 	// avg_samples_duration := f64(frame_count) / f64(sample_rate) * 1000
+	ms_per_frame := 1000 / sample_rate
 	amp_increment_per_ms := f64(amp_d / segment.duration)
 	amp_increment_per_frame := amp_increment_per_ms / 48
 
 	if playing {
 		// fmt.println(amp_d, segment.duration)
-		fmt.println(amp_increment_per_frame)
+		// fmt.println(amp_increment_per_frame)
 	}
 
 	// amp_increment := 1 / f64(frame_count) * tc * f64(amp_d)
@@ -201,10 +202,12 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 		// 	}
 		// }
 
-		hitting_limit :=
+		reached_amp_target :=
 			amp_increment_per_frame >= 0 ? (amplitude_current + amp_increment_per_frame) >= f64(amp_end) : (amplitude_current + amp_increment_per_frame) < f64(amp_end)
 
-		if hitting_limit {
+		reached_time_target := time_d >= segment.duration
+
+		if reached_amp_target && reached_time_target {
 			if envelope_i == len(envelope) - 1 {
 				fmt.println("a")
 				toggle_playback()
@@ -230,7 +233,7 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 
 
 		amplitude_current += amp_increment_per_frame
-		fmt.println(amplitude_current)
+		// fmt.println(amplitude_current)
 
 
 		// amplitude_current =
@@ -252,7 +255,7 @@ data_callback :: proc "c" (device: ^ma.device, output: rawptr, input: rawptr, fr
 		// fmt.println(amp_increment, amplitude_current)
 		// fmt.println(time_d2)
 		// fmt.println(avg_samples_duration)
-		// fmt.printfln("callback end: %.3f", amplitude_current)
+		fmt.printfln("callback end: %.3f", amplitude_current)
 	}
 }
 
