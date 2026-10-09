@@ -1,7 +1,19 @@
 package main
 
-import gl "vendor:OpenGL"
 import "core:math/linalg/glsl"
+import "core:os"
+import gl "vendor:OpenGL"
+
+shaderProgram: u32
+
+shader_init :: proc() {
+	// The shader loading they create can be replaced with just this
+	loaded_ok: bool
+	shaderProgram, loaded_ok = gl.load_shaders_file("./shaders/vertex.vs", "./shaders/fragment.fs")
+	if !loaded_ok {
+		os.exit(-1)
+	}
+}
 
 shader_set_bool :: proc(id: u32, name: cstring, value: bool) {
 	gl.Uniform1i(gl.GetUniformLocation(id, name), i32(value))
