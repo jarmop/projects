@@ -3,7 +3,7 @@ package main
 import "core:fmt"
 import b3 "vendor:box3d"
 
-NUM_BOXES :: 2
+NUM_BOXES :: 1
 
 main :: proc() {
 	world_def := b3.DefaultWorldDef()
@@ -40,6 +40,9 @@ main :: proc() {
 
 	for box, i in boxes {
 		fmt.printfln("box %d center: %g", i, b3.Body_GetPosition(box))
+		rot := b3.Body_GetRotation(box)
+		angle, axis := b3.GetAxisAngle(rot)
+		fmt.println(angle, axis)
 	}
 
 	for i in 0 ..< 4 * 60 {
@@ -48,6 +51,9 @@ main :: proc() {
 
 	for box, i in boxes {
 		fmt.printfln("box %d center: %g", i, b3.Body_GetPosition(box))
+		rot := b3.Body_GetRotation(box)
+		angle, axis := b3.GetAxisAngle(rot)
+		fmt.println(angle, axis)
 	}
 
 	b3.DestroyWorld(world_id)
