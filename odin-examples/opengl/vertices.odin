@@ -5,7 +5,7 @@ import gl "vendor:OpenGL"
 
 vertices: [6 * 6 * 5]f32
 
-cubePositions: [10]glsl.vec3
+cubePositions: [2]glsl.vec3
 
 VBO, VAO: u32
 
@@ -56,18 +56,7 @@ vertices_init :: proc() {
 	}
 // odinfmt: enable
 
-	cubePositions = {
-		{0.0, 0.0, 0.0},
-		{2.0, 5.0, -15.0},
-		{-1.5, -2.2, -2.5},
-		{-3.8, -2.0, -12.3},
-		{2.4, -0.4, -3.5},
-		{-1.7, 3.0, -7.5},
-		{1.3, -2.0, -2.5},
-		{1.5, 2.0, -2.5},
-		{1.5, 0.2, -1.5},
-		{-1.3, 1.0, -1.5},
-	}
+	cubePositions = {{0.05, 2.0, 0.0}, {-0.05, 4.5, 0.0}}
 
 	gl.GenVertexArrays(1, &VAO)
 	gl.GenBuffers(1, &VBO)
@@ -88,14 +77,14 @@ vertices_draw :: proc() {
 	gl.UseProgram(shaderProgram)
 
 	view: glsl.mat4 = 1
-	view *= glsl.mat4LookAt(cameraPos, cameraPos + cameraFront, cameraUp)
+	view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
 
 	projection: glsl.mat4 = 1
 	projection *= glsl.mat4Perspective(
-		glsl.radians_f32(45),
+		glsl.radians_f32(camera.fov),
 		f32(f32(SCR_WIDTH) / f32(SCR_HEIGHT)),
-		0.1,
-		100,
+		camera.near,
+		camera.far,
 	)
 
 	shader_set_mat4(shaderProgram, "projection", projection)
@@ -105,8 +94,8 @@ vertices_draw :: proc() {
 	for position, i in cubePositions {
 		model: glsl.mat4 = 1
 		model *= glsl.mat4Translate(position)
-		angle := 20.0 * f32(i)
-		model *= glsl.mat4Rotate({1.0, 0.3, 0.5}, glsl.radians(angle))
+		// angle := 20.0 * f32(i)
+		// model *= glsl.mat4Rotate({1.0, 0.3, 0.5}, glsl.radians(angle))
 		shader_set_mat4(shaderProgram, "model", model)
 
 		gl.DrawArrays(gl.TRIANGLES, 0, 36)
