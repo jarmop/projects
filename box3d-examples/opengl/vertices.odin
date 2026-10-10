@@ -50,7 +50,7 @@ vertices_draw :: proc() {
 	projection: glsl.mat4 = 1
 	projection *= glsl.mat4Perspective(
 		glsl.radians_f32(camera.fov),
-		f32(f32(SCR_WIDTH) / f32(SCR_HEIGHT)),
+		f32(WINDOW_WIDTH) / f32(WINDOW_HEIGHT),
 		camera.near,
 		camera.far,
 	)
