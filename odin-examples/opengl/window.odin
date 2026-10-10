@@ -7,8 +7,8 @@ import "core:os"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
 
-SCR_WIDTH :: 800
-SCR_HEIGHT :: 600
+WINDOW_WIDTH: i32 = 800
+WINDOW_HEIGHT: i32 = 600
 
 mouse_sensitivity :: 0.1
 
@@ -56,7 +56,7 @@ window_init :: proc() {
 	glfw.WindowHint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
 	glfw.WindowHint(glfw.SAMPLES, 4)
 
-	window = glfw.CreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nil, nil)
+	window = glfw.CreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "LearnOpenGL", nil, nil)
 	if window == nil {
 		fmt.println("Failed to create GLFW window")
 		glfw.Terminate()
@@ -66,7 +66,7 @@ window_init :: proc() {
 
 	gl.load_up_to(3, 3, glfw.gl_set_proc_address)
 
-	gl.Viewport(0, 0, SCR_WIDTH, SCR_HEIGHT)
+	gl.Viewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
 
 	glfw.SetFramebufferSizeCallback(window, framebuffer_size_callback)
 	glfw.SetCursorPosCallback(window, cursor_pos_callback)
@@ -96,6 +96,8 @@ key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode
 
 framebuffer_size_callback :: proc "c" (window: glfw.WindowHandle, width: i32, height: i32) {
 	gl.Viewport(0, 0, width, height)
+	WINDOW_WIDTH = width
+	WINDOW_HEIGHT = height
 }
 
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xf64: f64, yf64: f64) {
