@@ -9,10 +9,22 @@ Vertex :: struct {
 	uv:  Vec2,
 }
 
+Face :: struct {
+	pos:    [6]Vec3,
+	uv:     [6]Vec2,
+	normal: Vec3,
+}
+
+CUBOID_VERTEX_COUNT :: 36
+
 VBO, VAO: u32
+
+vertices: [CUBOID_VERTEX_COUNT]Vertex
 
 vertices_init :: proc() {
 	physics_init()
+
+	make_vertices()
 
 	gl.GenVertexArrays(1, &VAO)
 	gl.GenBuffers(1, &VBO)
@@ -65,48 +77,101 @@ vertices_draw :: proc() {
 	}
 }
 
-// odinfmt: disable
-vertices: [6*6*5] f32 = {
-    -0.5, -0.5, -0.5,  0.0, 0.0,
-     0.5, -0.5, -0.5,  1.0, 0.0,
-     0.5,  0.5, -0.5,  1.0, 1.0,
-     0.5,  0.5, -0.5,  1.0, 1.0,
-    -0.5,  0.5, -0.5,  0.0, 1.0,
-    -0.5, -0.5, -0.5,  0.0, 0.0,
+make_vertices :: proc() {
+	d: Vec3 = {CUBE_SIZE, CUBE_SIZE, CUBE_SIZE}
+	uv_low: f32 = 0
+	uv_high: f32 = 1
 
-    -0.5, -0.5,  0.5,  0.0, 0.0,
-     0.5, -0.5,  0.5,  1.0, 0.0,
-     0.5,  0.5,  0.5,  1.0, 1.0,
-     0.5,  0.5,  0.5,  1.0, 1.0,
-    -0.5,  0.5,  0.5,  0.0, 1.0,
-    -0.5, -0.5,  0.5,  0.0, 0.0,
-
-    -0.5,  0.5,  0.5,  1.0, 0.0,
-    -0.5,  0.5, -0.5,  1.0, 1.0,
-    -0.5, -0.5, -0.5,  0.0, 1.0,
-    -0.5, -0.5, -0.5,  0.0, 1.0,
-    -0.5, -0.5,  0.5,  0.0, 0.0,
-    -0.5,  0.5,  0.5,  1.0, 0.0,
-
-     0.5,  0.5,  0.5,  1.0, 0.0,
-     0.5,  0.5, -0.5,  1.0, 1.0,
-     0.5, -0.5, -0.5,  0.0, 1.0,
-     0.5, -0.5, -0.5,  0.0, 1.0,
-     0.5, -0.5,  0.5,  0.0, 0.0,
-     0.5,  0.5,  0.5,  1.0, 0.0,
-
-    -0.5, -0.5, -0.5,  0.0, 1.0,
-     0.5, -0.5, -0.5,  1.0, 1.0,
-     0.5, -0.5,  0.5,  1.0, 0.0,
-     0.5, -0.5,  0.5,  1.0, 0.0,
-    -0.5, -0.5,  0.5,  0.0, 0.0,
-    -0.5, -0.5, -0.5,  0.0, 1.0,
-
-    -0.5,  0.5, -0.5,  0.0, 1.0,
-     0.5,  0.5, -0.5,  1.0, 1.0,
-     0.5,  0.5,  0.5,  1.0, 0.0,
-     0.5,  0.5,  0.5,  1.0, 0.0,
-    -0.5,  0.5,  0.5,  0.0, 0.0,
-    -0.5,  0.5, -0.5,  0.0, 1.0,
+	create_cuboid(d, &vertices, 1, {true, true, true})
 }
-// odinfmt: enable
+
+create_cuboid :: proc(
+	d: [3]f32,
+	vertices: ^[CUBOID_VERTEX_COUNT]Vertex,
+	texture_repeat: int,
+	texture_faces: [3]bool,
+) {
+	uv_low: f32 = 0.0
+	uv_high := f32(texture_repeat)
+	faces := []Face {
+		// left and right (YZ)
+		{
+			uv = {
+				{uv_low, uv_high},
+				{uv_high, uv_high},
+				{uv_high, uv_low},
+				{uv_high, uv_low},
+				{uv_low, uv_low},
+				{uv_low, uv_high},
+			},
+			pos = {
+				{0.0, 0.0, 0.0},
+				{0.0, d.y, 0.0},
+				{0.0, d.y, d.z},
+				{0.0, d.y, d.z},
+				{0.0, 0.0, d.z},
+				{0.0, 0.0, 0.0},
+			},
+			normal = {1.0, 0.0, 0.0},
+		},
+		// top and bottom (XZ)
+		{
+			uv = {
+				{uv_low, uv_high},
+				{uv_high, uv_high},
+				{uv_high, uv_low},
+				{uv_high, uv_low},
+				{uv_low, uv_low},
+				{uv_low, uv_high},
+			},
+			pos = {
+				{0.0, 0.0, 0.0},
+				{d.x, 0.0, 0.0},
+				{d.x, 0.0, d.z},
+				{d.x, 0.0, d.z},
+				{0.0, 0.0, d.z},
+				{0.0, 0.0, 0.0},
+			},
+			normal = {0.0, 1.0, 0.0},
+		},
+		// Front and back (XY)
+		{
+			uv = {
+				{uv_low, uv_high},
+				{uv_high, uv_high},
+				{uv_high, uv_low},
+				{uv_high, uv_low},
+				{uv_low, uv_low},
+				{uv_low, uv_high},
+			},
+			pos = {
+				{0.0, 0.0, 0.0},
+				{d.x, 0.0, 0.0},
+				{d.x, d.y, 0.0},
+				{d.x, d.y, 0.0},
+				{0.0, d.y, 0.0},
+				{0.0, 0.0, 0.0},
+			},
+			normal = {0.0, 0.0, 1.0},
+		},
+	}
+	i := 0
+	for f, fi in faces {
+		// The first side
+		for j in 0 ..= 5 {
+			vertices[i].pos = f.pos[j]
+			if texture_faces[fi] {
+				vertices[i].uv = f.uv[j]
+			}
+			i += 1
+		}
+		// The opposite side
+		for j in 0 ..= 5 {
+			vertices[i].pos = f.pos[j] + (d * f.normal)
+			if texture_faces[fi] {
+				vertices[i].uv = f.uv[j]
+			}
+			i += 1
+		}
+	}
+}
