@@ -12,13 +12,13 @@ import "vendor:glfw"
 SCR_WIDTH :: 800
 SCR_HEIGHT :: 600
 
-mouse_sensitivity :: 0.1
+mouse_sensitivity :: 0.08
 
 Camera :: struct {
-	pos:   [3]f32,
-	front: [3]f32,
-	right: [3]f32,
-	up:    [3]f32,
+	pos:   Vec3,
+	front: Vec3,
+	right: Vec3,
+	up:    Vec3,
 	yaw:   f32,
 	pitch: f32,
 	speed: f32,

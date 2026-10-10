@@ -4,6 +4,11 @@ import "core:fmt"
 import "core:math/linalg/glsl"
 import gl "vendor:OpenGL"
 
+Vertex :: struct {
+	pos: Vec3,
+	uv:  Vec2,
+}
+
 VBO, VAO: u32
 
 vertices_init :: proc() {
@@ -56,7 +61,7 @@ vertices_draw :: proc() {
 
 		shader_set_mat4(shaderProgram, "model", model)
 
-		gl.DrawArrays(gl.TRIANGLES, 0, 36)
+		gl.DrawArrays(gl.TRIANGLES, 0, len(vertices))
 	}
 }
 

@@ -5,11 +5,11 @@ import "core:os"
 import gl "vendor:OpenGL"
 import stbi "vendor:stb/image"
 
-texture1: u32
+texture_sampler: u32
 
 texture_init :: proc() {
-	gl.GenTextures(1, &texture1)
-	gl.BindTexture(gl.TEXTURE_2D, texture1)
+	gl.GenTextures(1, &texture_sampler)
+	gl.BindTexture(gl.TEXTURE_2D, texture_sampler)
 
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
@@ -32,10 +32,10 @@ texture_init :: proc() {
 	stbi.image_free(data)
 
 	gl.UseProgram(shaderProgram)
-	shader_set_int(shaderProgram, "texture1", 0)
+	shader_set_int(shaderProgram, "texture_sampler", 0)
 }
 
 texture_draw :: proc() {
 	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, texture1)
+	gl.BindTexture(gl.TEXTURE_2D, texture_sampler)
 }
