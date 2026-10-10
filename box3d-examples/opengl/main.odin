@@ -11,6 +11,7 @@ main :: proc() {
 	shader_init()
 
 	gl.Enable(gl.DEPTH_TEST)
+	gl.Enable(gl.MULTISAMPLE)
 
 	for !glfw.WindowShouldClose(window) {
 		gl.ClearColor(0.2, 0.2, 0.2, 1.0)
