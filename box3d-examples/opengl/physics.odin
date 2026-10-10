@@ -20,6 +20,9 @@ physics_init :: proc() {
 	world_def.gravity = {0, -10, 0}
 	world_id = b3.CreateWorld(world_def)
 
+	// fmt.println(b3.World_GetContactRecycleDistance(world_id))
+	// b3.World_SetContactRecycleDistance(world_id, 0.0)
+
 	ground_body_def := b3.DefaultBodyDef()
 	ground_body_def.position = {0, -GROUND_RADIUS.y, 0}
 	ground_id := b3.CreateBody(world_id, ground_body_def)
@@ -31,6 +34,7 @@ physics_init :: proc() {
 	for i in 0 ..< len(boxes) {
 		body_def := b3.DefaultBodyDef()
 		body_def.type = .dynamicBody
+		// body_def.enableContactRecycling = false
 
 		offset_x := f32((i % 2 == 0) ? .05 : -.05)
 		body_def.position = {offset_x, 2. + f32(i) * (CUBE_SIZE + .5), 0}
