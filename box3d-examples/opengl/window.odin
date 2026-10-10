@@ -2,9 +2,7 @@ package main
 
 import "base:runtime"
 import "core:fmt"
-import "core:math"
 import l "core:math/linalg"
-import "core:math/linalg/glsl"
 import "core:os"
 import gl "vendor:OpenGL"
 import "vendor:glfw"

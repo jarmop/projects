@@ -86,7 +86,7 @@ make_vertices :: proc() {
 }
 
 create_cuboid :: proc(
-	d: [3]f32,
+	d: Vec3,
 	vertices: ^[CUBOID_VERTEX_COUNT]Vertex,
 	texture_repeat: int,
 	texture_faces: [3]bool,
