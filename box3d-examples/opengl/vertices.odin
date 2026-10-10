@@ -159,7 +159,7 @@ create_cuboid :: proc(
 	for f, fi in faces {
 		// The first side
 		for j in 0 ..= 5 {
-			vertices[i].pos = f.pos[j]
+			vertices[i].pos = f.pos[j] - 0.5
 			if texture_faces[fi] {
 				vertices[i].uv = f.uv[j]
 			}
@@ -167,7 +167,7 @@ create_cuboid :: proc(
 		}
 		// The opposite side
 		for j in 0 ..= 5 {
-			vertices[i].pos = f.pos[j] + (d * f.normal)
+			vertices[i].pos = f.pos[j] + (d * f.normal) - 0.5
 			if texture_faces[fi] {
 				vertices[i].uv = f.uv[j]
 			}
