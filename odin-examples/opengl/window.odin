@@ -2,9 +2,7 @@ package main
 
 import "base:runtime"
 import "core:fmt"
-import "core:math"
 import l "core:math/linalg"
-import "core:math/linalg/glsl"
 import "core:os"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
@@ -15,10 +13,10 @@ SCR_HEIGHT :: 600
 mouse_sensitivity :: 0.1
 
 Camera :: struct {
-	pos:   [3]f32,
-	front: [3]f32,
-	right: [3]f32,
-	up:    [3]f32,
+	pos:   Vec3,
+	front: Vec3,
+	right: Vec3,
+	up:    Vec3,
 	yaw:   f32,
 	pitch: f32,
 	speed: f32,
@@ -42,7 +40,6 @@ camera := Camera {
 
 prev_cursor_x: f32 = 800 / 2
 prev_cursor_y: f32 = 600 / 2
-// fov: f32 = 45
 
 delta_time: f32 = 0
 last_frame: f32 = 0
