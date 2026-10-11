@@ -134,7 +134,7 @@ make_texture_cuboid :: proc(
 	for f, fi in faces {
 		// The first side
 		for j in 0 ..= 5 {
-			vertices[i].pos = f.pos[j] - 0.5
+			vertices[i].pos = f.pos[j]
 			if texture_faces[fi] {
 				vertices[i].uv = f.uv[j]
 			}
@@ -142,7 +142,7 @@ make_texture_cuboid :: proc(
 		}
 		// The opposite side
 		for j in 0 ..= 5 {
-			vertices[i].pos = f.pos[j] + (d * f.normal) - 0.5
+			vertices[i].pos = f.pos[j] + (d * f.normal)
 			if texture_faces[fi] {
 				vertices[i].uv = f.uv[j]
 			}
@@ -214,6 +214,13 @@ make_cuboid_faces :: proc(d: Vec3, faces: ^[3]Face) {
 		},
 		normal = {0.0, 0.0, 1.0},
 	}
+
+	// Put the center of the shape at [0,0,0]
+	for &f in faces {
+		for &p in f.pos {
+			p -= d / 2
+		}
+	}
 }
 
 vertices_draw :: proc() {
@@ -241,7 +248,7 @@ draw_ground :: proc() {
 	gl.BindVertexArray(ground_vao)
 
 	model: glsl.mat4 = 1
-	model *= glsl.mat4Translate(GROUND_CORNER_POSITION)
+	model *= glsl.mat4Translate(GROUND_CENTER_POSITION)
 	shader_set_mat4(shader_program_texture, "model", model)
 
 	gl.DrawArrays(gl.TRIANGLES, 0, len(ground_vertices))
