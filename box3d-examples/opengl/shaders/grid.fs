@@ -3,9 +3,9 @@
 in vec2 uv_vert;
 
 // Grid customization options
-uniform vec4 grid_color = vec4(0.2, 0.2, 0.2, 1.0); // White grid lines
+uniform vec4 grid_color = vec4(0.12, 0.12, 0.12, 1.0); // White grid lines
 uniform vec4 bg_color = vec4(0.1, 0.1, 0.1, 1.0);    // Dark grey background
-uniform float grid_scale = 50.0;                     // How many grid squares total
+uniform float grid_scale = 1.0;                     // How many grid squares total
 uniform float line_width_pixels = 1.0;                // Target line width in screen pixels
 
 out vec4 color_frag;
