@@ -1,19 +1,27 @@
 package main
 
+import "core:fmt"
 import "core:math/linalg/glsl"
 import "core:os"
 import gl "vendor:OpenGL"
 
+shader_program_basic: u32
 shader_program_texture: u32
 
 shader_init :: proc() {
-	// The shader loading they create can be replaced with just this
+	load_shader("basic", &shader_program_basic)
+	load_shader("texture", &shader_program_texture)
+}
+
+load_shader :: proc(filename: string, program: ^u32) {
+	filepath_vertex := fmt.tprintf("./shaders/%s.vs", filename)
+	filepath_fragment := fmt.tprintf("./shaders/%s.fs", filename)
+	defer free_all(context.temp_allocator)
+
 	loaded_ok: bool
-	shader_program_texture, loaded_ok = gl.load_shaders_file(
-		"./shaders/vertex.vs",
-		"./shaders/fragment.fs",
-	)
+	program^, loaded_ok = gl.load_shaders_file(filepath_vertex, filepath_fragment)
 	if !loaded_ok {
+		fmt.println("shader load fail: ", filename)
 		os.exit(-1)
 	}
 }
