@@ -106,7 +106,8 @@ vbo_init_uv :: proc(vbo: ^u32) {
 }
 
 make_cuboid :: proc(d: Vec3, vertices: ^[CUBOID_VERTEX_COUNT]Vertex) {
-	faces := make_cuboid_faces(d)
+	faces: [3]Face
+	make_cuboid_faces(d, &faces)
 	i := 0
 	for f, fi in faces {
 		// The first side
@@ -123,7 +124,8 @@ make_cuboid :: proc(d: Vec3, vertices: ^[CUBOID_VERTEX_COUNT]Vertex) {
 }
 
 make_texture_cuboid :: proc(d: Vec3, vertices: ^[CUBOID_VERTEX_COUNT]TextureVertex) {
-	faces := make_cuboid_faces(d)
+	faces: [3]Face
+	make_cuboid_faces(d, &faces)
 	i := 0
 	for f, fi in faces {
 		// The first side
@@ -145,74 +147,69 @@ make_texture_cuboid :: proc(d: Vec3, vertices: ^[CUBOID_VERTEX_COUNT]TextureVert
 	}
 }
 
-make_cuboid_faces :: proc(d: Vec3) -> []Face {
+make_cuboid_faces :: proc(d: Vec3, faces: ^[3]Face) {
 	uv_low: f32 = 0
 	uv_high: f32 = 1
-	faces := make([]Face, 3)
-	faces = {
-		// left and right (YZ)
-		{
-			uv = {
-				{uv_low, uv_high},
-				{uv_high, uv_high},
-				{uv_high, uv_low},
-				{uv_high, uv_low},
-				{uv_low, uv_low},
-				{uv_low, uv_high},
-			},
-			pos = {
-				{0.0, 0.0, 0.0},
-				{0.0, d.y, 0.0},
-				{0.0, d.y, d.z},
-				{0.0, d.y, d.z},
-				{0.0, 0.0, d.z},
-				{0.0, 0.0, 0.0},
-			},
-			normal = {1.0, 0.0, 0.0},
+	// left and right (YZ)
+	faces[0] = {
+		uv     = {
+			{uv_low, uv_high},
+			{uv_high, uv_high},
+			{uv_high, uv_low},
+			{uv_high, uv_low},
+			{uv_low, uv_low},
+			{uv_low, uv_high},
 		},
-		// top and bottom (XZ)
-		{
-			uv = {
-				{uv_low, uv_high},
-				{uv_high, uv_high},
-				{uv_high, uv_low},
-				{uv_high, uv_low},
-				{uv_low, uv_low},
-				{uv_low, uv_high},
-			},
-			pos = {
-				{0.0, 0.0, 0.0},
-				{d.x, 0.0, 0.0},
-				{d.x, 0.0, d.z},
-				{d.x, 0.0, d.z},
-				{0.0, 0.0, d.z},
-				{0.0, 0.0, 0.0},
-			},
-			normal = {0.0, 1.0, 0.0},
+		pos    = {
+			{0.0, 0.0, 0.0},
+			{0.0, d.y, 0.0},
+			{0.0, d.y, d.z},
+			{0.0, d.y, d.z},
+			{0.0, 0.0, d.z},
+			{0.0, 0.0, 0.0},
 		},
-		// Front and back (XY)
-		{
-			uv = {
-				{uv_low, uv_high},
-				{uv_high, uv_high},
-				{uv_high, uv_low},
-				{uv_high, uv_low},
-				{uv_low, uv_low},
-				{uv_low, uv_high},
-			},
-			pos = {
-				{0.0, 0.0, 0.0},
-				{d.x, 0.0, 0.0},
-				{d.x, d.y, 0.0},
-				{d.x, d.y, 0.0},
-				{0.0, d.y, 0.0},
-				{0.0, 0.0, 0.0},
-			},
-			normal = {0.0, 0.0, 1.0},
-		},
+		normal = {1.0, 0.0, 0.0},
 	}
-
-	return faces
+	// top and bottom (XZ)
+	faces[1] = {
+		uv     = {
+			{uv_low, uv_high},
+			{uv_high, uv_high},
+			{uv_high, uv_low},
+			{uv_high, uv_low},
+			{uv_low, uv_low},
+			{uv_low, uv_high},
+		},
+		pos    = {
+			{0.0, 0.0, 0.0},
+			{d.x, 0.0, 0.0},
+			{d.x, 0.0, d.z},
+			{d.x, 0.0, d.z},
+			{0.0, 0.0, d.z},
+			{0.0, 0.0, 0.0},
+		},
+		normal = {0.0, 1.0, 0.0},
+	}
+	// Front and back (XY)
+	faces[2] = {
+		uv     = {
+			{uv_low, uv_high},
+			{uv_high, uv_high},
+			{uv_high, uv_low},
+			{uv_high, uv_low},
+			{uv_low, uv_low},
+			{uv_low, uv_high},
+		},
+		pos    = {
+			{0.0, 0.0, 0.0},
+			{d.x, 0.0, 0.0},
+			{d.x, d.y, 0.0},
+			{d.x, d.y, 0.0},
+			{0.0, d.y, 0.0},
+			{0.0, 0.0, 0.0},
+		},
+		normal = {0.0, 0.0, 1.0},
+	}
 }
 
 vertices_draw :: proc() {
