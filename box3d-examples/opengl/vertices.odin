@@ -35,7 +35,7 @@ vertices_init :: proc() {
 }
 
 init_ground_vertices :: proc() {
-	make_texture_cuboid(GROUND_SIZE, &ground_vertices)
+	make_texture_cuboid(GROUND_SIZE, {false, true, false}, &ground_vertices)
 
 	gl.GenVertexArrays(1, &ground_vao)
 	gl.BindVertexArray(ground_vao)
@@ -51,7 +51,7 @@ init_ground_vertices :: proc() {
 }
 
 init_box_vertices :: proc() {
-	make_texture_cuboid({CUBE_SIZE, CUBE_SIZE, CUBE_SIZE}, &box_vertices)
+	make_texture_cuboid({CUBE_SIZE, CUBE_SIZE, CUBE_SIZE}, {true, true, true}, &box_vertices)
 
 	gl.GenVertexArrays(1, &box_vao)
 	gl.BindVertexArray(box_vao)
@@ -123,7 +123,11 @@ make_cuboid :: proc(d: Vec3, vertices: ^[CUBOID_VERTEX_COUNT]Vertex) {
 	}
 }
 
-make_texture_cuboid :: proc(d: Vec3, vertices: ^[CUBOID_VERTEX_COUNT]TextureVertex) {
+make_texture_cuboid :: proc(
+	d: Vec3,
+	texture_faces: [3]bool,
+	vertices: ^[CUBOID_VERTEX_COUNT]TextureVertex,
+) {
 	faces: [3]Face
 	make_cuboid_faces(d, &faces)
 	i := 0
@@ -131,17 +135,17 @@ make_texture_cuboid :: proc(d: Vec3, vertices: ^[CUBOID_VERTEX_COUNT]TextureVert
 		// The first side
 		for j in 0 ..= 5 {
 			vertices[i].pos = f.pos[j] - 0.5
-			// if texture_faces[fi] {
-			vertices[i].uv = f.uv[j]
-			// }
+			if texture_faces[fi] {
+				vertices[i].uv = f.uv[j]
+			}
 			i += 1
 		}
 		// The opposite side
 		for j in 0 ..= 5 {
 			vertices[i].pos = f.pos[j] + (d * f.normal) - 0.5
-			// if texture_faces[fi] {
-			vertices[i].uv = f.uv[j]
-			// }
+			if texture_faces[fi] {
+				vertices[i].uv = f.uv[j]
+			}
 			i += 1
 		}
 	}
