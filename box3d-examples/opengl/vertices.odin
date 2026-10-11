@@ -24,7 +24,7 @@ CUBOID_VERTEX_COUNT :: 36
 box_vbo, box_vao: u32
 ground_vbo, ground_vao: u32
 
-ground_vertices: [CUBOID_VERTEX_COUNT]Vertex
+ground_vertices: [CUBOID_VERTEX_COUNT]TextureVertex
 box_vertices: [CUBOID_VERTEX_COUNT]TextureVertex
 
 vertices_init :: proc() {
@@ -35,12 +35,12 @@ vertices_init :: proc() {
 }
 
 init_ground_vertices :: proc() {
-	make_cuboid(GROUND_SIZE, &ground_vertices)
+	make_texture_cuboid(GROUND_SIZE, &ground_vertices)
 
 	gl.GenVertexArrays(1, &ground_vao)
 	gl.BindVertexArray(ground_vao)
 
-	vbo_init_basic(&ground_vbo)
+	vbo_init_uv(&ground_vbo)
 
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
@@ -56,7 +56,7 @@ init_box_vertices :: proc() {
 	gl.GenVertexArrays(1, &box_vao)
 	gl.BindVertexArray(box_vao)
 
-	vbo_init_texture(&box_vbo)
+	vbo_init_uv(&box_vbo)
 
 	gl.BufferData(gl.ARRAY_BUFFER, size_of(box_vertices), raw_data(&box_vertices), gl.STATIC_DRAW)
 }
@@ -78,7 +78,7 @@ vbo_init_basic :: proc(vbo: ^u32) {
 	gl.EnableVertexAttribArray(0)
 }
 
-vbo_init_texture :: proc(vbo: ^u32) {
+vbo_init_uv :: proc(vbo: ^u32) {
 	gl.GenBuffers(1, vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo^)
 
@@ -221,7 +221,7 @@ vertices_draw :: proc() {
 }
 
 draw_ground :: proc() {
-	gl.UseProgram(shader_program_basic)
+	gl.UseProgram(shader_program_grid)
 
 	view: glsl.mat4 = 1
 	view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
@@ -234,8 +234,8 @@ draw_ground :: proc() {
 		camera.far,
 	)
 
-	shader_set_mat4(shader_program_basic, "projection", projection)
-	shader_set_mat4(shader_program_basic, "view", view)
+	shader_set_mat4(shader_program_grid, "projection", projection)
+	shader_set_mat4(shader_program_grid, "view", view)
 
 	gl.BindVertexArray(ground_vao)
 

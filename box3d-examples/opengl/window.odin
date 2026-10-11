@@ -26,7 +26,8 @@ Camera :: struct {
 }
 
 camera := Camera {
-	pos   = {24, 28, 24},
+	// pos   = {24, 28, 24},
+	pos   = {100, 50, 100},
 	front = {0, 0, -1},
 	right = {1, 0, 0},
 	up    = {0, 1, 0},
