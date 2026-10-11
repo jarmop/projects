@@ -1,6 +1,7 @@
 package main
 
 import "core:fmt"
+import "core:math/linalg/glsl"
 import b3 "vendor:box3d"
 
 box_count :: 25
@@ -54,14 +55,14 @@ physics_step :: proc() {
 	b3.World_Step(world_id, time_step, sub_step_count)
 }
 
-physics_get_box_data :: proc(i: int) -> (Vec3, Vec3, f32) {
+physics_get_model :: proc(i: int) -> mat4 {
 	box := boxes[i]
 
-	pos := b3.Body_GetPosition(box)
-	rot := b3.Body_GetRotation(box)
-	angle, axis := b3.GetAxisAngle(rot)
+	model: mat4 = 1
+	model *= glsl.mat4Translate(b3.Body_GetPosition(box))
+	model *= mat4(b3.MakeMatrixFromQuat(b3.Body_GetRotation(box)))
 
-	return pos, axis, angle
+	return model
 }
 
 physics_destroy :: proc() {

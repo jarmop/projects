@@ -280,16 +280,7 @@ draw_boxes :: proc() {
 
 	physics_step()
 	for i in 0 ..< box_count {
-		pos, axis, angle := physics_get_box_data(i)
-
-		model: glsl.mat4 = 1
-		model *= glsl.mat4Translate(pos)
-
-		if axis.x != 0 || axis.y != 0 || axis.z != 0 {
-			model *= glsl.mat4Rotate(axis, angle)
-		}
-
-		shader_set_mat4(shader_program_texture, "model", model)
+		shader_set_mat4(shader_program_texture, "model", physics_get_model(i))
 
 		gl.DrawArrays(gl.TRIANGLES, 0, len(box_vertices))
 	}
