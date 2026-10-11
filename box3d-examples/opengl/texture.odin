@@ -29,11 +29,11 @@ texture_init :: proc() {
 
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 
-	gl.UseProgram(shaderProgram)
-	shader_set_int(shaderProgram, "texture_sampler", 0)
+	gl.UseProgram(shader_program_texture)
+	shader_set_int(shader_program_texture, "texture_sampler", 0)
 }
 
-texture_draw :: proc() {
-	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, texture_sampler)
-}
+// texture_draw :: proc() {
+// 	gl.ActiveTexture(gl.TEXTURE0)
+// 	gl.BindTexture(gl.TEXTURE_2D, texture_sampler)
+// }

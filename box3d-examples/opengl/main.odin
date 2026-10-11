@@ -20,10 +20,4 @@ main :: proc() {
 
 		window_draw()
 	}
-
-	gl.DeleteVertexArrays(1, &VAO)
-	gl.DeleteBuffers(1, &VBO)
-	gl.DeleteProgram(shaderProgram)
-
-	glfw.Terminate()
 }

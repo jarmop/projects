@@ -4,12 +4,15 @@ import "core:math/linalg/glsl"
 import "core:os"
 import gl "vendor:OpenGL"
 
-shaderProgram: u32
+shader_program_texture: u32
 
 shader_init :: proc() {
 	// The shader loading they create can be replaced with just this
 	loaded_ok: bool
-	shaderProgram, loaded_ok = gl.load_shaders_file("./shaders/vertex.vs", "./shaders/fragment.fs")
+	shader_program_texture, loaded_ok = gl.load_shaders_file(
+		"./shaders/vertex.vs",
+		"./shaders/fragment.fs",
+	)
 	if !loaded_ok {
 		os.exit(-1)
 	}
