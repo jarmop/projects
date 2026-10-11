@@ -245,6 +245,10 @@ draw_ground :: proc() {
 
 	shader_set_mat4(shader_program_grid, "projection", projection)
 	shader_set_mat4(shader_program_grid, "view", view)
+	c: f32 = .26
+	shader_set_vec4(shader_program_grid, "bg_color", {c, c, c, 1})
+	c = .24
+	shader_set_vec4(shader_program_grid, "grid_color", {c, c, c, 1})
 
 	gl.BindVertexArray(ground_vao)
 
@@ -256,7 +260,7 @@ draw_ground :: proc() {
 }
 
 draw_boxes :: proc() {
-	gl.UseProgram(shader_program_texture)
+	gl.UseProgram(shader_program_grid)
 
 	view: glsl.mat4 = 1
 	view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
@@ -269,18 +273,19 @@ draw_boxes :: proc() {
 		camera.far,
 	)
 
-	shader_set_mat4(shader_program_texture, "projection", projection)
-	shader_set_mat4(shader_program_texture, "view", view)
-
+	shader_set_mat4(shader_program_grid, "projection", projection)
+	shader_set_mat4(shader_program_grid, "view", view)
+	shader_set_vec4(shader_program_grid, "bg_color", {0, .4, .8, 1})
+	shader_set_vec4(shader_program_grid, "grid_color", {0, .3, .6, 1})
 
 	gl.BindVertexArray(box_vao)
 
-	shader_set_int(shader_program_texture, "texture_sampler", 0)
+	shader_set_int(shader_program_grid, "texture_sampler", 0)
 
 
 	physics_step()
 	for i in 0 ..< box_count {
-		shader_set_mat4(shader_program_texture, "model", physics_get_model(i))
+		shader_set_mat4(shader_program_grid, "model", physics_get_model(i))
 
 		gl.DrawArrays(gl.TRIANGLES, 0, len(box_vertices))
 	}

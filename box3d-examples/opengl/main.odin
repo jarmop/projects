@@ -13,7 +13,8 @@ main :: proc() {
 	gl.Enable(gl.MULTISAMPLE)
 
 	for !glfw.WindowShouldClose(window) {
-		gl.ClearColor(0.2, 0.2, 0.2, 1.0)
+		c: f32 = 0.1
+		gl.ClearColor(c, c, c, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		vertices_draw()
