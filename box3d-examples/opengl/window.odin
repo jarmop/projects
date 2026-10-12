@@ -220,51 +220,34 @@ is_dragging: bool
 dragged_body_id: b3.BodyId
 mouse_joint_id: b3.JointId
 initial_grab_point: Vec3
+original_angular_damping: f32
 
 start_dragging :: proc(world_id: b3.WorldId, hit_body: b3.BodyId, hit_point: b3.Vec3) {
 	is_dragging = true
 	dragged_body_id = hit_body
 	initial_grab_point = hit_point
 
-	// 1. Get the static body ID (or create a dummy static body if you don't have one)
-	// For this example, assuming 'ground_body_id' is a persistent static body in your world
-
-	// 2. Initialize a Motor Joint definition
-	def := b3.DefaultMotorJointDef()
+	def := b3.DefaultSphericalJointDef()
 	def.bodyIdA = ground_id
 	def.bodyIdB = hit_body
 
-	// 3. Set up the local joint frames relative to each body's current position
-	transformA := b3.Body_GetTransform(ground_id)
-	transformB := b3.Body_GetTransform(hit_body)
-
-	// Compute local target transforms so the initial pull anchor aligns exactly with hit_point
+	// Lock the attachment anchors precisely at the intersection point
 	def.localFrameA.p = b3.Body_GetLocalPoint(ground_id, hit_point)
-	def.localFrameA.q = b3.Quat_identity // or keep the orientation matching
+	def.localFrameA.q = b3.Quat_identity
 
 	def.localFrameB.p = b3.Body_GetLocalPoint(hit_body, hit_point)
 	def.localFrameB.q = b3.Quat_identity
 
-	// 4. Tune responsiveness (Make it snappy but soft)
-	def.maxVelocityForce = 2000.0 // Tweak based on your object mass properties
-	def.maxVelocityTorque = 2000.0
+	// Make the connection rock-solid so there is zero gap/lag from the cursor
+	// By default, box3d joints use an explicit solver hertz. We crank this up
+	// so it acts like a rigid pin rather than an elastic band.
+	def.constraintHertz = 60.0
+	def.constraintDampingRatio = 1
 
-	// Position Spring configuration (Crucial for dragging!)
-	def.linearHertz = 100.0 // Frequency/Stiffness of the mouse pull
-	def.linearDampingRatio = 0.1 // Smoothness to prevent radical oscillation
-	def.maxSpringForce = 4000.0 // The maximum force allowed to snap it back to position
+	original_angular_damping = b3.Body_GetAngularDamping(hit_body)
+	b3.Body_SetAngularDamping(hit_body, 6)
 
-	def.constraintHertz = 5.0 // Softness frequency
-	def.constraintDampingRatio = 0.7
-
-	// (Optional) Angular Spring configuration
-	// If you want the object's orientation to smoothly match the original click rotation:
-	// def.angularHertz = 4.0
-	// def.angularDampingRatio = 0.7
-	// def.maxSpringTorque = 4000.0
-
-	// 5. Create the joint
-	mouse_joint_id = b3.CreateMotorJoint(world_id, def)
+	mouse_joint_id = b3.CreateSphericalJoint(world_id, def)
 
 	// Wake the body up so physics immediately takes over
 	b3.Body_SetAwake(hit_body, true)
@@ -274,6 +257,7 @@ stop_dragging :: proc() {
 	if !is_dragging do return
 
 	b3.DestroyJoint(mouse_joint_id, true)
+	b3.Body_SetAngularDamping(dragged_body_id, original_angular_damping)
 
 	is_dragging = false
 	mouse_joint_id = b3.nullJointId
