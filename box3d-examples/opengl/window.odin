@@ -5,6 +5,7 @@ import "core:fmt"
 import l "core:math/linalg"
 import "core:os"
 import gl "vendor:OpenGL"
+import b3 "vendor:box3d"
 import "vendor:glfw"
 
 WINDOW_WIDTH: i32 = 800
@@ -87,6 +88,18 @@ window_draw :: proc() {
 	last_frame = current_frame
 
 	handle_camera_movement_keys()
+
+	if is_dragging {
+		ray := get_ray()
+		mouse_world_target, success := get_drag_plane_intersection(
+			camera.pos,
+			ray,
+			initial_grab_point,
+			camera.front,
+		)
+
+		update_dragging(mouse_world_target)
+	}
 }
 
 key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
@@ -104,39 +117,75 @@ framebuffer_size_callback :: proc "c" (window: glfw.WindowHandle, width: i32, he
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xf64: f64, yf64: f64) {
 	context = runtime.default_context()
 
-	if !mouse_right_pressed {
-		return
-	}
+	if mouse_right_pressed {
+		x := f32(xf64)
+		y := f32(yf64)
 
-	x := f32(xf64)
-	y := f32(yf64)
+		if first_cursor_pos {
+			prev_cursor_x = x
+			prev_cursor_y = y
+			first_cursor_pos = false
+		}
 
-	if first_cursor_pos {
+		camera.yaw += f32((x - prev_cursor_x) * mouse_sensitivity)
+		if (camera.yaw > 180) {
+			camera.yaw -= 360
+		} else if (camera.yaw < -180) {
+			camera.yaw += 360
+		}
+		camera.pitch -= f32((y - prev_cursor_y) * mouse_sensitivity)
 		prev_cursor_x = x
 		prev_cursor_y = y
-		first_cursor_pos = false
-	}
 
-	camera.yaw += f32((x - prev_cursor_x) * mouse_sensitivity)
-	if (camera.yaw > 180) {
-		camera.yaw -= 360
-	} else if (camera.yaw < -180) {
-		camera.yaw += 360
-	}
-	camera.pitch -= f32((y - prev_cursor_y) * mouse_sensitivity)
-	prev_cursor_x = x
-	prev_cursor_y = y
+		if camera.pitch > 89.0 {
+			camera.pitch = 89.0
+		} else if camera.pitch < -89.0 {
+			camera.pitch = -89.0
+		}
 
-	if camera.pitch > 89.0 {
-		camera.pitch = 89.0
-	} else if camera.pitch < -89.0 {
-		camera.pitch = -89.0
+		update_camera()
 	}
+	// else if is_dragging {
+	// 	ray := get_ray()
+	// 	mouse_world_target, success := get_drag_plane_intersection(
+	// 		camera.pos,
+	// 		ray,
+	// 		initial_grab_point,
+	// 		camera.front,
+	// 	)
 
-	update_camera()
+	// 	fmt.println(mouse_world_target)
+	// 	update_dragging(mouse_world_target)
+	// }
+}
+
+get_ray :: proc() -> Vec3 {
+	cursor_x, cursor_y := glfw.GetCursorPos(window)
+	window_width, window_height := glfw.GetWindowSize(window)
+
+	// Turn cursor coordinates into OpenGL normalized device coordinates
+	// by changing their range from [0,1] to [-1,1]), and flipping y:
+	x := f32(cursor_x / f64(window_width) * 2 - 1)
+	y := -f32(cursor_y / f64(window_height) * 2 - 1)
+
+	ray_clip := [4]f32{x, y, -1.0, 1.0}
+	proj := l.matrix4_perspective_f32(
+		l.to_radians(camera.fov),
+		f32(window_width) / f32(window_height),
+		camera.near,
+		camera.far,
+	)
+	invp := l.inverse(proj) * ray_clip
+	ray_eye := [4]f32{invp[0], invp[1], -1, 0}
+	view := l.matrix4_look_at_f32(camera.pos, camera.pos + camera.front, camera.up)
+	ray_world := l.normalize((l.inverse(view) * ray_eye).xyz)
+
+	return ray_world
 }
 
 mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
+	context = runtime.default_context()
+
 	if button == glfw.MOUSE_BUTTON_RIGHT {
 		if action == glfw.PRESS {
 			mouse_right_pressed = true
@@ -146,8 +195,148 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 			first_cursor_pos = true
 			glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 		}
+	} else if button == glfw.MOUSE_BUTTON_LEFT {
+		if action == glfw.PRESS {
+			// fmt.println("left click")
+			// b3.Body_ApplyForceToCenter(boxes[0], {0, 1000, 0}, true)
+
+			ray := get_ray() * 100
+			filter := b3.DefaultQueryFilter()
+			ray_result := b3.World_CastRayClosest(world_id, camera.pos, ray, filter)
+			if !ray_result.hit {
+				return
+			}
+			body_id := b3.Shape_GetBody(ray_result.shapeId)
+			start_dragging(world_id, body_id, ray_result.point)
+
+			// b3.Body_ApplyForce(body_id, ray, ray_result.point, true)
+		} else {
+			stop_dragging()
+		}
 	}
 }
+
+is_dragging: bool
+dragged_body_id: b3.BodyId
+mouse_joint_id: b3.JointId
+initial_grab_point: Vec3
+
+start_dragging :: proc(world_id: b3.WorldId, hit_body: b3.BodyId, hit_point: b3.Vec3) {
+	is_dragging = true
+	dragged_body_id = hit_body
+	initial_grab_point = hit_point
+
+	// 1. Get the static body ID (or create a dummy static body if you don't have one)
+	// For this example, assuming 'ground_body_id' is a persistent static body in your world
+
+	// 2. Initialize a Motor Joint definition
+	def := b3.DefaultMotorJointDef()
+	def.bodyIdA = ground_id
+	def.bodyIdB = hit_body
+
+	// 3. Set up the local joint frames relative to each body's current position
+	transformA := b3.Body_GetTransform(ground_id)
+	transformB := b3.Body_GetTransform(hit_body)
+
+	// Compute local target transforms so the initial pull anchor aligns exactly with hit_point
+	def.localFrameA.p = b3.Body_GetLocalPoint(ground_id, hit_point)
+	def.localFrameA.q = b3.Quat_identity // or keep the orientation matching
+
+	def.localFrameB.p = b3.Body_GetLocalPoint(hit_body, hit_point)
+	def.localFrameB.q = b3.Quat_identity
+
+	// 4. Tune responsiveness (Make it snappy but soft)
+	def.maxVelocityForce = 2000.0 // Tweak based on your object mass properties
+	def.maxVelocityTorque = 2000.0
+
+	// Position Spring configuration (Crucial for dragging!)
+	def.linearHertz = 100.0 // Frequency/Stiffness of the mouse pull
+	def.linearDampingRatio = 0.1 // Smoothness to prevent radical oscillation
+	def.maxSpringForce = 4000.0 // The maximum force allowed to snap it back to position
+
+	def.constraintHertz = 5.0 // Softness frequency
+	def.constraintDampingRatio = 0.7
+
+	// (Optional) Angular Spring configuration
+	// If you want the object's orientation to smoothly match the original click rotation:
+	// def.angularHertz = 4.0
+	// def.angularDampingRatio = 0.7
+	// def.maxSpringTorque = 4000.0
+
+	// 5. Create the joint
+	mouse_joint_id = b3.CreateMotorJoint(world_id, def)
+
+	// Wake the body up so physics immediately takes over
+	b3.Body_SetAwake(hit_body, true)
+}
+
+stop_dragging :: proc() {
+	if !is_dragging do return
+
+	b3.DestroyJoint(mouse_joint_id, true)
+
+	is_dragging = false
+	mouse_joint_id = b3.nullJointId
+	dragged_body_id = b3.nullBodyId
+}
+
+get_drag_plane_intersection :: proc(
+	ray_origin, ray_direction: [3]f32,
+	initial_grab_point: [3]f32,
+	camera_forward: [3]f32,
+) -> (
+	mouse_world_target: [3]f32,
+	success: bool,
+) {
+	// The normal of the drag plane faces the camera
+	plane_normal := camera_forward
+
+	// Calculate distance denominator
+	denominator := l.vector_dot(plane_normal, ray_direction)
+
+	// Prevent division by zero if the ray runs parallel to the dragging plane
+	if abs(denominator) < 0.0001 do return {}, false
+
+	// Compute distance 't' along the ray to the intersection point
+	p0_minus_l0 := initial_grab_point - ray_origin
+	t := l.vector_dot(p0_minus_l0, plane_normal) / denominator
+
+	if t < 0.0 do return {}, false // Plane is behind the camera
+
+	// The exact 3D position to pass to Box3D's Joint update step
+	mouse_world_target = ray_origin + (ray_direction * t)
+	return mouse_world_target, true
+}
+
+update_dragging :: proc(mouse_world_target: b3.Vec3) {
+	if !is_dragging do return
+
+	// 1. Calculate the new local position on Body A (the static ground) matching the mouse
+	local_pos_A := b3.Body_GetLocalPoint(ground_id, mouse_world_target)
+
+	// 2. Build the updated target transform frame for the anchor body
+	new_frame_A := b3.Transform {
+		p = local_pos_A,
+		q = b3.Quat_identity,
+	}
+
+	// 3. Update the joint target frame directly using the generic joint frame function
+	b3.Joint_SetLocalFrameA(mouse_joint_id, new_frame_A)
+
+	// Explicitly wake the body so the physics solver processes the new constraint target
+	b3.Body_SetAwake(dragged_body_id, true)
+}
+
+// update_dragging :: proc(mouse_world_target: b3.Vec3) {
+// 	if !is_dragging do return
+
+// 	// Transform the mouse world target point relative to the static ground body
+// 	local_pos_A := b3.Body_GetLocalPoint(ground_id, mouse_world_target)
+
+// 	// Feed the updated local position to the solver
+// 	b3.MotorJoint_SetLinearOffset(mouse_joint_id, local_pos_A)
+// 	b3.motorjoint_set
+// }
 
 scroll_callback := proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f64) {
 	camera.fov -= f32(yoffset)
