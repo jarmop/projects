@@ -1,5 +1,6 @@
 package main
 
+import "core:fmt"
 import "core:math/linalg/glsl"
 import gl "vendor:OpenGL"
 
@@ -34,10 +35,11 @@ cubePositions: []Vec3 = {{0, CUBE_RADIUS, 0}}
 vertices_init :: proc() {
 	init_ground_vertices()
 	init_box_vertices()
+	humanoid_init()
 }
 
 init_ground_vertices :: proc() {
-	make_cuboid(&ground_vertices, GROUND_SIZE, {false, true, false}, int(GROUND_SIZE.x))
+	make_cuboid(ground_vertices[:], GROUND_SIZE, {false, true, false}, int(GROUND_SIZE.x))
 
 	gl.GenVertexArrays(1, &ground_vao)
 	gl.BindVertexArray(ground_vao)
@@ -53,7 +55,7 @@ init_ground_vertices :: proc() {
 }
 
 init_box_vertices :: proc() {
-	make_cuboid(&box_vertices, {CUBE_SIZE, CUBE_SIZE, CUBE_SIZE}, {true, true, true}, 1)
+	make_cuboid(box_vertices[:], {CUBE_SIZE, CUBE_SIZE, CUBE_SIZE}, {true, true, true}, 1)
 
 	gl.GenVertexArrays(1, &box_vao)
 	gl.BindVertexArray(box_vao)
@@ -91,10 +93,11 @@ vbo_init_uv :: proc(vbo: ^u32) {
 }
 
 make_cuboid :: proc(
-	vertices: ^[CUBOID_VERTEX_COUNT]TextureVertex,
+	vertices: []TextureVertex,
 	d: Vec3,
 	texture_faces: [3]bool,
 	texture_repeat: int,
+	center: Vec3 = {0, 0, 0},
 ) {
 	uv_low: f32 = 0.0
 	uv_high := f32(texture_repeat)
@@ -161,10 +164,10 @@ make_cuboid :: proc(
 		},
 	}
 
-	// Put the center of the shape at [0,0,0]
+	// Put the center of the shape at the given center
 	for &f in faces {
 		for &p in f.pos {
-			p -= d / 2
+			p = p - d / 2 + center
 		}
 	}
 
@@ -221,14 +224,18 @@ vertices_draw :: proc() {
 	gl.DrawArrays(gl.TRIANGLES, 0, len(ground_vertices))
 
 	// ------------------------------
-	// Box with grid texture
+	// Humanoid
 	// ------------------------------
 
-	model = 1
-	model *= glsl.mat4Translate(cubePositions[0])
-	shader_set_mat4(shader_program_grid, "model", model)
 	shader_set_vec4(shader_program_grid, "bg_color", {0, .4, .8, 1})
 	shader_set_vec4(shader_program_grid, "grid_color", {0, .3, .6, 1})
-	gl.BindVertexArray(box_vao)
-	gl.DrawArrays(gl.TRIANGLES, 0, len(box_vertices))
+	for bp in humanoid {
+		model: glsl.mat4 = 1
+		model *= glsl.mat4Translate(humanoid_position.whole)
+		model *= glsl.mat4Translate(bp.position)
+		model *= glsl.mat4Scale(bp.scale^)
+		shader_set_mat4(shader_program_grid, "model", model)
+		gl.BindVertexArray(box_vao)
+		gl.DrawArrays(gl.TRIANGLES, 0, len(box_vertices))
+	}
 }
