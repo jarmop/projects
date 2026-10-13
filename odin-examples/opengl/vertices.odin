@@ -148,6 +148,14 @@ create_cuboid :: proc(
 			normal = {0.0, 0.0, 1.0},
 		},
 	}
+
+	// Put the center of the shape at [0,0,0]
+	for &f in faces {
+		for &p in f.pos {
+			p -= d / 2
+		}
+	}
+
 	i := 0
 	for f, fi in faces {
 		// The first side
