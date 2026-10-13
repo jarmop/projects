@@ -6,7 +6,6 @@ import "vendor:glfw"
 main :: proc() {
 	window_init()
 	vertices_init()
-	texture_init()
 	shader_init()
 
 	gl.Enable(gl.DEPTH_TEST)
@@ -20,10 +19,4 @@ main :: proc() {
 
 		window_draw()
 	}
-
-	gl.DeleteVertexArrays(1, &box_vao)
-	gl.DeleteBuffers(1, &box_vbo)
-	gl.DeleteProgram(shader_program_texture)
-
-	glfw.Terminate()
 }

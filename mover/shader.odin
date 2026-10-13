@@ -5,11 +5,9 @@ import "core:math/linalg/glsl"
 import "core:os"
 import gl "vendor:OpenGL"
 
-shader_program_texture: u32
 shader_program_grid: u32
 
 shader_init :: proc() {
-	load_shader("texture", &shader_program_texture)
 	load_shader("grid", &shader_program_grid)
 }
 

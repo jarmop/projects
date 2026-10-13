@@ -22,7 +22,6 @@ GROUND_CENTER_POSITION: Vec3 = {0, -GROUND_RADIUS.y, 0}
 
 CUBE_SIZE: f32 : 1
 CUBE_RADIUS :: CUBE_SIZE / 2
-CUBE_RADIUS_VEC: Vec3 : {CUBE_RADIUS, CUBE_RADIUS, CUBE_RADIUS}
 
 ground_vbo, ground_vao: u32
 box_vbo, box_vao: u32
@@ -30,7 +29,7 @@ box_vbo, box_vao: u32
 ground_vertices: [CUBOID_VERTEX_COUNT]TextureVertex
 box_vertices: [CUBOID_VERTEX_COUNT]TextureVertex
 
-cubePositions: [2]Vec3 = {CUBE_RADIUS_VEC + {-1, 0, 0}, CUBE_RADIUS_VEC + {1, 0, 0}}
+cubePositions: []Vec3 = {{0, CUBE_RADIUS, 0}}
 
 vertices_init :: proc() {
 	init_ground_vertices()
@@ -230,21 +229,6 @@ vertices_draw :: proc() {
 	shader_set_mat4(shader_program_grid, "model", model)
 	shader_set_vec4(shader_program_grid, "bg_color", {0, .4, .8, 1})
 	shader_set_vec4(shader_program_grid, "grid_color", {0, .3, .6, 1})
-	gl.BindVertexArray(box_vao)
-	gl.DrawArrays(gl.TRIANGLES, 0, len(box_vertices))
-
-	// ------------------------------
-	// Box with container texture
-	// ------------------------------
-
-	gl.UseProgram(shader_program_texture)
-	shader_set_mat4(shader_program_texture, "projection", projection)
-	shader_set_mat4(shader_program_texture, "view", view)
-	model = 1
-	model *= glsl.mat4Translate(cubePositions[1])
-	// angle := 20.0 * f32(i)
-	// model *= glsl.mat4Rotate({1.0, 0.3, 0.5}, glsl.radians(angle))
-	shader_set_mat4(shader_program_texture, "model", model)
 	gl.BindVertexArray(box_vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, len(box_vertices))
 }
