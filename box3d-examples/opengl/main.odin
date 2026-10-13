@@ -6,7 +6,6 @@ import "vendor:glfw"
 main :: proc() {
 	window_init()
 	vertices_init()
-	texture_init()
 	shader_init()
 
 	gl.Enable(gl.DEPTH_TEST)
