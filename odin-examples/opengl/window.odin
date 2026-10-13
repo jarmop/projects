@@ -26,12 +26,12 @@ Camera :: struct {
 }
 
 camera := Camera {
-	pos   = {8, 8, 8},
+	pos   = {6, 3, 6},
 	front = {0, 0, -1},
 	right = {1, 0, 0},
 	up    = {0, 1, 0},
 	yaw   = -135,
-	pitch = -30,
+	pitch = -20,
 	speed = 2.5,
 	fov   = 45,
 	near  = 0.1,
