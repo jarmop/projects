@@ -1,6 +1,7 @@
 package main
 
 import "core:fmt"
+import "core:math"
 import "core:math/linalg/glsl"
 import gl "vendor:OpenGL"
 
@@ -229,13 +230,25 @@ vertices_draw :: proc() {
 
 	shader_set_vec4(shader_program_grid, "bg_color", {0, .4, .8, 1})
 	shader_set_vec4(shader_program_grid, "grid_color", {0, .3, .6, 1})
-	for bp in humanoid {
-		model: glsl.mat4 = 1
-		model *= glsl.mat4Translate(humanoid_position.whole)
-		model *= glsl.mat4Translate(bp.position)
+
+	base_model := glsl.mat4Translate(humanoid.position)
+	for &bp in humanoid.parts {
+		model := base_model
+		model *= translate_and_rotate_recursive(&bp)
 		model *= glsl.mat4Scale(bp.scale^)
 		shader_set_mat4(shader_program_grid, "model", model)
 		gl.BindVertexArray(box_vao)
 		gl.DrawArrays(gl.TRIANGLES, 0, len(box_vertices))
 	}
+}
+
+translate_and_rotate_recursive :: proc(bp: ^BodyPart) -> glsl.mat4 {
+	if bp == nil {
+		return 1
+	}
+	model := translate_and_rotate_recursive(bp.parent)
+	model *= glsl.mat4Translate(bp.position_joint)
+	model *= glsl.mat4Rotate(bp.rotation_axis, bp.rotation_angle)
+	model *= glsl.mat4Translate(bp.position)
+	return model
 }
