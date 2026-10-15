@@ -2,6 +2,7 @@ package main
 
 import "base:runtime"
 import "core:fmt"
+import "core:math"
 import l "core:math/linalg"
 import "core:os"
 import gl "vendor:OpenGL"
@@ -47,6 +48,7 @@ last_frame: f32 = 0
 window: glfw.WindowHandle
 
 mouse_right_pressed := false
+mouse_left_pressed := false
 first_cursor_pos := true
 
 window_init :: proc() {
@@ -136,7 +138,14 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xf64: f64, yf64: f64
 }
 
 mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
-	if button == glfw.MOUSE_BUTTON_RIGHT {
+	context = runtime.default_context()
+
+	if button == glfw.MOUSE_BUTTON_LEFT {
+		if action == glfw.PRESS {
+			mouse_left_pressed = true
+			check_body_part_hit()
+		}
+	} else if button == glfw.MOUSE_BUTTON_RIGHT {
 		if action == glfw.PRESS {
 			mouse_right_pressed = true
 			glfw.SetInputMode(window, glfw.CURSOR, glfw.CURSOR_DISABLED)
@@ -192,4 +201,45 @@ update_camera :: proc() {
 	camera.front = l.normalize(camera.front)
 	camera.right = l.cross(camera.front, camera.up)
 	camera.right = l.normalize(camera.right)
+}
+
+check_body_part_hit :: proc() {
+	ray := get_ray()
+	min_triangle_d: f32 = math.F32_MAX
+	for bp, i in humanoid.parts {
+		bb := humanoid.bbs[i]
+		bb_d := hit_distance(bb, camera.pos, ray)
+		if bb_d > 0 {
+			triangle_d: f32 = 0
+			triangle_i := 0
+			triangle: [3][3]f32
+			min_t: f32 = math.INF_F32
+			model := get_bp_model(&humanoid.parts[i])
+
+			for ti := 0; ti < len(box_vertices) / 3; ti += 1 {
+				i := ti * 3
+				v0 := box_vertices[i + 0].pos
+				v1 := box_vertices[i + 1].pos
+				v2 := box_vertices[i + 2].pos
+				v0 = (model * Vec4{v0.x, v0.y, v0.z, 1}).xyz
+				v1 = (model * Vec4{v1.x, v1.y, v1.z, 1}).xyz
+				v2 = (model * Vec4{v2.x, v2.y, v2.z, 1}).xyz
+				t: f32 = 0
+				if ray_triangle_intersect(camera.pos, ray, v0, v1, v2, &t) {
+					min_t = min(min_t, t)
+
+					if min_t != triangle_d {
+						triangle_d = min_t
+						triangle_i = ti
+						triangle = {v0, v1, v2}
+					}
+				}
+			}
+
+			if triangle_d != 0 && triangle_d < min_triangle_d {
+				min_triangle_d = triangle_d
+				selected_body_part = i
+			}
+		}
+	}
 }

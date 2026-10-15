@@ -3,6 +3,7 @@ package main
 import "core:fmt"
 import "core:math"
 import "core:math/linalg"
+import "core:math/linalg/glsl"
 
 HumanoidSize :: struct {
 	whole:   Vec3,
@@ -69,19 +70,22 @@ BodyPart :: struct {
 	rotation_angle: f32,
 	position_joint: Vec3,
 	position:       Vec3,
-	scale:          ^Vec3,
+	size:           ^Vec3,
 }
 
 Humanoid :: struct {
 	size:     Vec3,
 	position: Vec3,
 	parts:    [14]BodyPart,
+	bbs:      [14]BoundingBox,
 }
 
 humanoid: Humanoid = {
 	size     = humanoid_size.whole,
 	position = humanoid_position.whole,
 }
+
+selected_body_part := -1
 
 humanoid_init :: proc() {
 	humanoid_position.torso = {0, humanoid_size.torso.y / 2, 0}
@@ -171,7 +175,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(20)),
 		// rotation_angle = 0,
 		position       = humanoid_position.torso,
-		scale          = &humanoid_size.torso,
+		size           = &humanoid_size.torso,
 	}
 
 	// Head
@@ -181,7 +185,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(10)),
 		position_joint = humanoid_position.head_joint,
 		position       = humanoid_position.head,
-		scale          = &humanoid_size.head,
+		size           = &humanoid_size.head,
 	}
 
 	// --------------------
@@ -195,7 +199,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(80)),
 		position_joint = humanoid_position.bicep_right_joint,
 		position       = humanoid_position.bicep_right,
-		scale          = &humanoid_size.bicep,
+		size           = &humanoid_size.bicep,
 	}
 
 	// Right forearm
@@ -205,7 +209,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(-80)),
 		position_joint = humanoid_position.forearm_right_joint,
 		position       = humanoid_position.forearm_right,
-		scale          = &humanoid_size.forearm,
+		size           = &humanoid_size.forearm,
 	}
 
 	// Right hand
@@ -215,7 +219,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(-45)),
 		position_joint = humanoid_position.hand_right_joint,
 		position       = humanoid_position.hand_right,
-		scale          = &humanoid_size.hand,
+		size           = &humanoid_size.hand,
 	}
 
 	// --------------------
@@ -229,7 +233,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(-30)),
 		position_joint = humanoid_position.bicep_left_joint,
 		position       = humanoid_position.bicep_left,
-		scale          = &humanoid_size.bicep,
+		size           = &humanoid_size.bicep,
 	}
 
 	// Left forearm
@@ -239,7 +243,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(-100)),
 		position_joint = humanoid_position.forearm_left_joint,
 		position       = humanoid_position.forearm_left,
-		scale          = &humanoid_size.forearm,
+		size           = &humanoid_size.forearm,
 	}
 
 	// Left hand
@@ -249,7 +253,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(-45)),
 		position_joint = humanoid_position.hand_left_joint,
 		position       = humanoid_position.hand_left,
-		scale          = &humanoid_size.hand,
+		size           = &humanoid_size.hand,
 	}
 
 	// --------------------
@@ -263,7 +267,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(-80)),
 		position_joint = humanoid_position.thigh_right_joint,
 		position       = humanoid_position.thigh_right,
-		scale          = &humanoid_size.thigh,
+		size           = &humanoid_size.thigh,
 	}
 
 	// Right calf
@@ -273,7 +277,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(120)),
 		position_joint = humanoid_position.calf_right_joint,
 		position       = humanoid_position.calf_right,
-		scale          = &humanoid_size.calf,
+		size           = &humanoid_size.calf,
 	}
 
 	// Right foot
@@ -283,7 +287,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(10)),
 		position_joint = humanoid_position.foot_right_joint,
 		position       = humanoid_position.foot_right,
-		scale          = &humanoid_size.foot,
+		size           = &humanoid_size.foot,
 	}
 
 	// --------------------
@@ -297,7 +301,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(0)),
 		position_joint = humanoid_position.thigh_left_joint,
 		position       = humanoid_position.thigh_left,
-		scale          = &humanoid_size.thigh,
+		size           = &humanoid_size.thigh,
 	}
 
 	// Left calf
@@ -307,7 +311,7 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(10)),
 		position_joint = humanoid_position.calf_left_joint,
 		position       = humanoid_position.calf_left,
-		scale          = &humanoid_size.calf,
+		size           = &humanoid_size.calf,
 	}
 
 	// Left foot
@@ -317,6 +321,67 @@ humanoid_init :: proc() {
 		rotation_angle = linalg.to_radians(f32(-10)),
 		position_joint = humanoid_position.foot_left_joint,
 		position       = humanoid_position.foot_left,
-		scale          = &humanoid_size.foot,
+		size           = &humanoid_size.foot,
 	}
+
+	for &bp, i in humanoid.parts {
+		humanoid.bbs[i] = get_bb(&bp)
+	}
+
+	// init_bb_vertices(humanoid.bbs[0])
+}
+get_bp_model :: proc(bp: ^BodyPart) -> mat4 {
+	model: mat4 = 1
+	model *= glsl.mat4Translate(humanoid.position)
+	model *= translate_and_rotate_recursive(bp)
+	model *= glsl.mat4Scale(bp.size^)
+
+	return model
+}
+
+get_bb :: proc(bp: ^BodyPart) -> BoundingBox {
+	model: mat4 = 1
+	model *= glsl.mat4Translate(humanoid.position)
+	model *= translate_and_rotate_recursive(bp)
+	model *= glsl.mat4Scale(bp.size^)
+
+	s: Vec3 = 1
+	c: Vec3 = {0, 0, 0} - s / 2
+	bottom_corners: [4]Vec3 = {
+		c, // back left
+		c + {s.x, 0, 0}, // back right
+		c + {s.x, 0, s.z}, // front right
+		c + {0, 0, s.z}, // front left
+	}
+
+	c = c + {0, s.y, 0}
+	top_corners: [4]Vec3 = {
+		c, // back left
+		c + {s.x, 0, 0}, // back right
+		c + {s.x, 0, s.z}, // front right
+		c + {0, 0, s.z}, // front left
+	}
+
+	foo: [8]Vec3
+	mi: Vec3 = math.F32_MAX
+	ma: Vec3 = math.F32_MIN
+	for c, i in bottom_corners {
+		foo[i] = (model * Vec4{c.x, c.y, c.z, 1}).xyz
+	}
+
+	for c, i in top_corners {
+		foo[4 + i] = (model * Vec4{c.x, c.y, c.z, 1}).xyz
+	}
+
+	for c, i in foo {
+		mi.x = min(mi.x, c.x)
+		mi.y = min(mi.y, c.y)
+		mi.z = min(mi.z, c.z)
+
+		ma.x = max(ma.x, c.x)
+		ma.y = max(ma.y, c.y)
+		ma.z = max(ma.z, c.z)
+	}
+
+	return {min = mi, max = ma}
 }

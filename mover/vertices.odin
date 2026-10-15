@@ -66,6 +66,21 @@ init_box_vertices :: proc() {
 	gl.BufferData(gl.ARRAY_BUFFER, size_of(box_vertices), raw_data(&box_vertices), gl.STATIC_DRAW)
 }
 
+// bb_vertices: [CUBOID_VERTEX_COUNT]TextureVertex
+// bb_vao, bb_vbo: u32
+// init_bb_vertices :: proc(bb: BoundingBox) {
+// 	d := bb.max - bb.min
+// 	c := bb.min + d / 2
+// 	make_cuboid(bb_vertices[:], d, {true, true, true}, 1, c)
+
+// 	gl.GenVertexArrays(1, &bb_vao)
+// 	gl.BindVertexArray(bb_vao)
+
+// 	vbo_init_uv(&bb_vbo)
+
+// 	gl.BufferData(gl.ARRAY_BUFFER, size_of(bb_vertices), raw_data(&bb_vertices), gl.STATIC_DRAW)
+// }
+
 vbo_init_uv :: proc(vbo: ^u32) {
 	gl.GenBuffers(1, vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo^)
@@ -232,14 +247,29 @@ vertices_draw :: proc() {
 	shader_set_vec4(shader_program_grid, "grid_color", {0, .3, .6, 1})
 
 	base_model := glsl.mat4Translate(humanoid.position)
-	for &bp in humanoid.parts {
+	for &bp, i in humanoid.parts {
+		shader_set_vec4(
+			shader_program_grid,
+			"bg_color",
+			i == selected_body_part ? {.7, .8, .4, 1} : {0, .4, .8, 1},
+		)
+
 		model := base_model
 		model *= translate_and_rotate_recursive(&bp)
-		model *= glsl.mat4Scale(bp.scale^)
+		model *= glsl.mat4Scale(bp.size^)
 		shader_set_mat4(shader_program_grid, "model", model)
+
 		gl.BindVertexArray(box_vao)
 		gl.DrawArrays(gl.TRIANGLES, 0, len(box_vertices))
 	}
+
+
+	// // draw bb
+	// shader_set_vec4(shader_program_grid, "bg_color", {0, 1, 0, 1})
+	// model = 1
+	// shader_set_mat4(shader_program_grid, "model", model)
+	// gl.BindVertexArray(bb_vao)
+	// gl.DrawArrays(gl.TRIANGLES, 0, len(bb_vertices))
 }
 
 translate_and_rotate_recursive :: proc(bp: ^BodyPart) -> glsl.mat4 {
