@@ -195,20 +195,36 @@ text_draw :: proc() {
 update_text :: proc() {
 	clear(&text_vertices)
 
+	width :: 300
+	x :: 4
+	y: f32 = font_size
+	// text_add_vertices("Camera", {x, y}, width)
+
+	// y += line_height
+	// text_add_vertices(fmt.tprintf("- Pos: %.2f", camera.pos), {x, y}, width)
+
+	// y += line_height
+	// text_add_vertices(fmt.tprintf("- Front: %.2f", camera.front), {x, y}, width)
+
 	if selected_body_part == -1 {
+		// text_set_buffer_data()
 		return
 	}
 
 	bp := humanoid.parts[selected_body_part]
-	width :: 200
-	x :: 4
-	y: f32 = font_size
+
+	// y += 2 * line_height
+	text_add_vertices("Body part", {x, y}, width)
+
+	y += line_height
 	text_add_vertices(
-		fmt.tprintf("Angle: %.2f", linalg.to_degrees(bp.rotation_angle)),
+		fmt.tprintf("- Angle: %.2f", linalg.to_degrees(bp.rotation_angle)),
 		{x, y},
 		width,
 	)
+
 	y += line_height
-	text_add_vertices(fmt.tprintf("Axis: %.f", bp.rotation_axis), {x, y}, width)
+	text_add_vertices(fmt.tprintf("- Axis: %.f", bp.rotation_axis), {x, y}, width)
+
 	text_set_buffer_data()
 }

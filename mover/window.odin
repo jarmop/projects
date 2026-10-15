@@ -27,12 +27,12 @@ Camera :: struct {
 }
 
 camera := Camera {
-	pos   = {6, 3, 6},
+	pos   = humanoid.position + {-4, 0, 0},
 	front = {0, 0, -1},
 	right = {1, 0, 0},
 	up    = {0, 1, 0},
-	yaw   = -135,
-	pitch = -20,
+	yaw   = 0,
+	pitch = 0,
 	speed = 2.5,
 	fov   = 45,
 	near  = 0.1,
@@ -105,36 +105,62 @@ framebuffer_size_callback :: proc "c" (window: glfw.WindowHandle, width: i32, he
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xf64: f64, yf64: f64) {
 	context = runtime.default_context()
 
-	if !mouse_right_pressed {
-		return
-	}
+	if mouse_left_pressed {
+		if selected_body_part == -1 {
+			return
+		}
 
-	x := f32(xf64)
-	y := f32(yf64)
+		x := f32(xf64)
+		y := f32(yf64)
 
-	if first_cursor_pos {
+		if first_cursor_pos {
+			prev_cursor_x = x
+			prev_cursor_y = y
+			first_cursor_pos = false
+		}
+
+		bp := &humanoid.parts[selected_body_part]
+
+		// deg_diff := (x - prev_cursor_x) * humanoid_front.x * camera.front.x
+		deg_diff := (x - prev_cursor_x)
+
+		bp.rotation_angle = bp.rotation_angle + l.to_radians(deg_diff)
+
+		for &bp, i in humanoid.parts {
+			humanoid.bbs[i] = get_bb(&bp)
+		}
+
 		prev_cursor_x = x
 		prev_cursor_y = y
-		first_cursor_pos = false
-	}
 
-	camera.yaw += f32((x - prev_cursor_x) * mouse_sensitivity)
-	if (camera.yaw > 180) {
-		camera.yaw -= 360
-	} else if (camera.yaw < -180) {
-		camera.yaw += 360
-	}
-	camera.pitch -= f32((y - prev_cursor_y) * mouse_sensitivity)
-	prev_cursor_x = x
-	prev_cursor_y = y
+	} else if mouse_right_pressed {
+		x := f32(xf64)
+		y := f32(yf64)
 
-	if camera.pitch > 89.0 {
-		camera.pitch = 89.0
-	} else if camera.pitch < -89.0 {
-		camera.pitch = -89.0
-	}
+		if first_cursor_pos {
+			prev_cursor_x = x
+			prev_cursor_y = y
+			first_cursor_pos = false
+		}
 
-	update_camera()
+		camera.yaw += f32((x - prev_cursor_x) * mouse_sensitivity)
+		if (camera.yaw > 180) {
+			camera.yaw -= 360
+		} else if (camera.yaw < -180) {
+			camera.yaw += 360
+		}
+		camera.pitch -= f32((y - prev_cursor_y) * mouse_sensitivity)
+		prev_cursor_x = x
+		prev_cursor_y = y
+
+		if camera.pitch > 89.0 {
+			camera.pitch = 89.0
+		} else if camera.pitch < -89.0 {
+			camera.pitch = -89.0
+		}
+
+		update_camera()
+	}
 }
 
 mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mods: i32) {
@@ -144,6 +170,9 @@ mouse_button_callback :: proc "c" (window: glfw.WindowHandle, button, action, mo
 		if action == glfw.PRESS {
 			mouse_left_pressed = true
 			check_body_part_hit()
+		} else {
+			mouse_left_pressed = false
+			first_cursor_pos = true
 		}
 	} else if button == glfw.MOUSE_BUTTON_RIGHT {
 		if action == glfw.PRESS {

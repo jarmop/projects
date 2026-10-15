@@ -87,6 +87,8 @@ humanoid: Humanoid = {
 
 selected_body_part := -1
 
+// humanoid_front: Vec3 = {-1, 0, 0}
+
 humanoid_init :: proc() {
 	humanoid_position.torso = {0, humanoid_size.torso.y / 2, 0}
 
@@ -173,7 +175,6 @@ humanoid_init :: proc() {
 	humanoid.parts[0] = {
 		rotation_axis  = {1, 0, 0},
 		rotation_angle = linalg.to_radians(f32(20)),
-		// rotation_angle = 0,
 		position       = humanoid_position.torso,
 		size           = &humanoid_size.torso,
 	}
