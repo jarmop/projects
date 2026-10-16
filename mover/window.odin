@@ -85,8 +85,64 @@ key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode
 
 	if key == glfw.KEY_ESCAPE {
 		glfw.SetWindowShouldClose(window, true)
+
 	} else if key == glfw.KEY_SPACE {
 		playing = !playing
+
+	} else if key == glfw.KEY_S && mode == glfw.MOD_CONTROL {
+		angles := make([]HumanoidJointAngles, 4)
+		defer delete(angles)
+		for i in 0 ..< 4 {
+			// angles[i] = {
+			// 	torso           = h.parts[0].rotation_angle,
+			// 	head            = h.parts[13].rotation_angle,
+			// 	right_upper_arm = h.parts[7].rotation_angle,
+			// 	right_forearm   = h.parts[8].rotation_angle,
+			// 	right_hand      = h.parts[9].rotation_angle,
+			// 	left_upper_arm  = h.parts[10].rotation_angle,
+			// 	left_forearm    = h.parts[11].rotation_angle,
+			// 	left_hand       = h.parts[12].rotation_angle,
+			// 	right_thigh     = h.parts[1].rotation_angle,
+			// 	right_shin      = h.parts[2].rotation_angle,
+			// 	right_foot      = h.parts[3].rotation_angle,
+			// 	left_thigh      = h.parts[4].rotation_angle,
+			// 	left_shin       = h.parts[5].rotation_angle,
+			// 	left_foot       = h.parts[6].rotation_angle,
+			// }
+			h := animation.poses[i]
+			angles[i] = {
+				torso           = l.to_degrees(h.parts[0].rotation_angle),
+				head            = l.to_degrees(h.parts[13].rotation_angle),
+				right_upper_arm = l.to_degrees(h.parts[7].rotation_angle),
+				right_forearm   = l.to_degrees(h.parts[8].rotation_angle),
+				right_hand      = l.to_degrees(h.parts[9].rotation_angle),
+				left_upper_arm  = l.to_degrees(h.parts[10].rotation_angle),
+				left_forearm    = l.to_degrees(h.parts[11].rotation_angle),
+				left_hand       = l.to_degrees(h.parts[12].rotation_angle),
+				right_thigh     = l.to_degrees(h.parts[1].rotation_angle),
+				right_shin      = l.to_degrees(h.parts[2].rotation_angle),
+				right_foot      = l.to_degrees(h.parts[3].rotation_angle),
+				left_thigh      = l.to_degrees(h.parts[4].rotation_angle),
+				left_shin       = l.to_degrees(h.parts[5].rotation_angle),
+				left_foot       = l.to_degrees(h.parts[6].rotation_angle),
+			}
+		}
+		save(angles)
+
+	} else if key == glfw.KEY_LEFT || key == glfw.KEY_RIGHT {
+		increment := key == glfw.KEY_LEFT ? -1 : 1
+		current_pose += increment
+		if current_pose < 0 {
+			current_pose = len(animation.poses) - 1
+		} else if current_pose > len(animation.poses) - 1 {
+			current_pose = 0
+		}
+		// current_pose = current_pose < len(animation.poses) - 1 ? current_pose + increment : 0
+		humanoid = &animation.poses[current_pose]
+
+	} else if key >= glfw.KEY_1 && key <= glfw.KEY_4 {
+		current_pose = int(key - glfw.KEY_1)
+		humanoid = &animation.poses[current_pose]
 	}
 }
 
@@ -191,9 +247,11 @@ scroll_callback := proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f
 }
 
 handle_camera_movement_keys :: proc() {
-	// camera_d := camera.speed * (time_now - time_prev_frame)
-	// camera_d := delta_time * camera.speed
 	camera_d := time_delta * camera.speed
+
+	if glfw.GetKey(window, glfw.KEY_LEFT_CONTROL) == glfw.PRESS {
+		return
+	}
 
 	// WASD
 	if glfw.GetKey(window, glfw.KEY_W) == glfw.PRESS {

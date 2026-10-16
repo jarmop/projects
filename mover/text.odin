@@ -199,9 +199,13 @@ update_text :: proc() {
 	x :: 4
 	y: f32 = font_size
 
+	text_add_vertices(fmt.tprintf("Current pose: %d", current_pose), {x, y}, width)
+	y += line_height
+
 	if playing {
-		text_add_vertices("Playing", {x, y}, width)
-		y += line_height
+		w: f32 = 50
+		text_add_vertices("Playing", {f32(WINDOW_WIDTH) - w, font_size}, w)
+		// y += line_height
 	}
 
 	// text_add_vertices("Camera", {x, y}, width)

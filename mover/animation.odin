@@ -5,7 +5,7 @@ import "core:math/linalg/glsl"
 import gl "vendor:OpenGL"
 
 Animation :: struct {
-	poses:         [4]Humanoid,
+	poses:         [8]Humanoid,
 	time_per_pose: f32,
 }
 
@@ -33,38 +33,21 @@ current_pose := 0
 playing := false
 
 animation_init :: proc() {
-	animation.time_per_pose = 1
+	animation.time_per_pose = 0.1
 
 	humanoid_init()
 
 	angles := load()
 
-	// fmt.println(angles)
-
-	// angles: HumanoidJointAngles
-	// angles2: HumanoidJointAngles = {
-	// 	torso           = 20,
-	// 	head            = 10,
-	// 	right_upper_arm = 80,
-	// 	right_forearm   = -80,
-	// 	right_hand      = -45,
-	// 	left_upper_arm  = -30,
-	// 	left_forearm    = -100,
-	// 	left_hand       = -45,
-	// 	right_thigh     = -80,
-	// 	right_shin      = 120,
-	// 	right_foot      = 10,
-	// 	left_thigh      = 0,
-	// 	left_shin       = 10,
-	// 	left_foot       = -10,
-	// }
-
 	make_pose(&animation.poses[0], angles[0])
 	make_pose(&animation.poses[1], angles[1])
-	make_pose(&animation.poses[2], mirror_humanoid(angles[0]))
-	make_pose(&animation.poses[3], mirror_humanoid(angles[1]))
+	make_pose(&animation.poses[2], angles[2])
+	make_pose(&animation.poses[3], angles[3])
+	make_pose(&animation.poses[4], mirror_humanoid(angles[0]))
+	make_pose(&animation.poses[5], mirror_humanoid(angles[1]))
+	make_pose(&animation.poses[6], mirror_humanoid(angles[2]))
+	make_pose(&animation.poses[7], mirror_humanoid(angles[3]))
 
-	// save({angles, angles2})
 
 	humanoid = &animation.poses[current_pose]
 }

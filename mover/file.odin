@@ -4,7 +4,9 @@ import "core:encoding/json"
 import "core:fmt"
 import "core:os"
 
-filename := "data/animation.json"
+// filename := "data/animation.json"
+// filename := "data/walking.json"
+filename := "data/running.json"
 
 save :: proc(angles: []HumanoidJointAngles) {
 	data, json_err := json.marshal(angles)
@@ -16,6 +18,8 @@ save :: proc(angles: []HumanoidJointAngles) {
 	write_err := os.write_entire_file(filename, data)
 	if (write_err != nil) {
 		fmt.println(write_err)
+	} else {
+		fmt.printfln("saved %d postures (%d bytes)", len(angles), len(data))
 	}
 }
 
