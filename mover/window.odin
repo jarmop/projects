@@ -27,7 +27,7 @@ Camera :: struct {
 }
 
 camera := Camera {
-	pos   = humanoid.position + {-4, 0, 0},
+	pos   = humanoid_position.whole + {-4, 0, 0},
 	front = {0, 0, -1},
 	right = {1, 0, 0},
 	up    = {0, 1, 0},
@@ -41,9 +41,6 @@ camera := Camera {
 
 prev_cursor_x: f32 = 800 / 2
 prev_cursor_y: f32 = 600 / 2
-
-delta_time: f32 = 0
-last_frame: f32 = 0
 
 window: glfw.WindowHandle
 
@@ -79,20 +76,17 @@ window_init :: proc() {
 	update_camera()
 }
 
-window_draw :: proc() {
-	glfw.SwapBuffers(window)
-	glfw.PollEvents()
-
-	current_frame := f32(glfw.GetTime())
-	delta_time = current_frame - last_frame
-	last_frame = current_frame
-
-	handle_camera_movement_keys()
-}
-
 key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
-	if glfw.GetKey(window, glfw.KEY_ESCAPE) == glfw.PRESS {
+	context = runtime.default_context()
+
+	if action != glfw.PRESS {
+		return
+	}
+
+	if key == glfw.KEY_ESCAPE {
 		glfw.SetWindowShouldClose(window, true)
+	} else if key == glfw.KEY_SPACE {
+		playing = !playing
 	}
 }
 
@@ -127,7 +121,7 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xf64: f64, yf64: f64
 		bp.rotation_angle = bp.rotation_angle + l.to_radians(deg_diff)
 
 		for &bp, i in humanoid.parts {
-			humanoid.bbs[i] = get_bb(&bp)
+			humanoid.bbs[i] = get_bb(humanoid, &bp)
 		}
 
 		prev_cursor_x = x
@@ -198,7 +192,8 @@ scroll_callback := proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f
 
 handle_camera_movement_keys :: proc() {
 	// camera_d := camera.speed * (time_now - time_prev_frame)
-	camera_d := delta_time * camera.speed
+	// camera_d := delta_time * camera.speed
+	camera_d := time_delta * camera.speed
 
 	// WASD
 	if glfw.GetKey(window, glfw.KEY_W) == glfw.PRESS {

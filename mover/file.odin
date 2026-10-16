@@ -1,0 +1,36 @@
+package main
+
+import "core:encoding/json"
+import "core:fmt"
+import "core:os"
+
+filename := "data/animation.json"
+
+save :: proc(angles: []HumanoidJointAngles) {
+	data, json_err := json.marshal(angles)
+	defer delete(data)
+	if (json_err != nil) {
+		fmt.println(json_err)
+	}
+
+	write_err := os.write_entire_file(filename, data)
+	if (write_err != nil) {
+		fmt.println(write_err)
+	}
+}
+
+load :: proc() -> []HumanoidJointAngles {
+	data, read_err := os.read_entire_file(filename, context.allocator)
+	defer delete(data)
+	if (read_err != nil) {
+		fmt.println(read_err)
+	}
+
+	angles: []HumanoidJointAngles
+	json_err := json.unmarshal(data, &angles)
+	if (json_err != nil) {
+		fmt.println(json_err)
+	}
+
+	return angles
+}

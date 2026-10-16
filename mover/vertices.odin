@@ -36,7 +36,6 @@ cubePositions: []Vec3 = {{0, CUBE_RADIUS, 0}}
 vertices_init :: proc() {
 	init_ground_vertices()
 	init_box_vertices()
-	humanoid_init()
 }
 
 init_ground_vertices :: proc() {
@@ -238,38 +237,6 @@ vertices_draw :: proc() {
 	shader_set_vec4(shader_program_grid, "grid_color", {c, c, c, 1})
 	gl.BindVertexArray(ground_vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, len(ground_vertices))
-
-	// ------------------------------
-	// Humanoid
-	// ------------------------------
-
-	shader_set_vec4(shader_program_grid, "bg_color", {0, .4, .8, 1})
-	shader_set_vec4(shader_program_grid, "grid_color", {0, .3, .6, 1})
-
-	base_model := glsl.mat4Translate(humanoid.position)
-	for &bp, i in humanoid.parts {
-		shader_set_vec4(
-			shader_program_grid,
-			"bg_color",
-			i == selected_body_part ? {.7, .8, .4, 1} : {0, .4, .8, 1},
-		)
-
-		model := base_model
-		model *= translate_and_rotate_recursive(&bp)
-		model *= glsl.mat4Scale(bp.size^)
-		shader_set_mat4(shader_program_grid, "model", model)
-
-		gl.BindVertexArray(box_vao)
-		gl.DrawArrays(gl.TRIANGLES, 0, len(box_vertices))
-	}
-
-
-	// // draw bb
-	// shader_set_vec4(shader_program_grid, "bg_color", {0, 1, 0, 1})
-	// model = 1
-	// shader_set_mat4(shader_program_grid, "model", model)
-	// gl.BindVertexArray(bb_vao)
-	// gl.DrawArrays(gl.TRIANGLES, 0, len(bb_vertices))
 }
 
 translate_and_rotate_recursive :: proc(bp: ^BodyPart) -> glsl.mat4 {

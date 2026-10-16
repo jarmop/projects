@@ -198,6 +198,12 @@ update_text :: proc() {
 	width :: 300
 	x :: 4
 	y: f32 = font_size
+
+	if playing {
+		text_add_vertices("Playing", {x, y}, width)
+		y += line_height
+	}
+
 	// text_add_vertices("Camera", {x, y}, width)
 
 	// y += line_height
@@ -207,7 +213,7 @@ update_text :: proc() {
 	// text_add_vertices(fmt.tprintf("- Front: %.2f", camera.front), {x, y}, width)
 
 	if selected_body_part == -1 {
-		// text_set_buffer_data()
+		text_set_buffer_data()
 		return
 	}
 

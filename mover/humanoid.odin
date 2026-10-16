@@ -80,10 +80,7 @@ Humanoid :: struct {
 	bbs:      [14]BoundingBox,
 }
 
-humanoid: Humanoid = {
-	size     = humanoid_size.whole,
-	position = humanoid_position.whole,
-}
+humanoid: ^Humanoid
 
 selected_body_part := -1
 
@@ -170,11 +167,16 @@ humanoid_init :: proc() {
 		-humanoid_size.foot.y / 2,
 		humanoid_size.foot.z / 2 - humanoid_size.calf.z / 2,
 	}
+}
+
+make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
+	humanoid.size = humanoid_size.whole
+	humanoid.position = humanoid_position.whole
 
 	// Torso
 	humanoid.parts[0] = {
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(20)),
+		rotation_angle = linalg.to_radians(angles.torso),
 		position       = humanoid_position.torso,
 		size           = &humanoid_size.torso,
 	}
@@ -183,7 +185,7 @@ humanoid_init :: proc() {
 	humanoid.parts[13] = {
 		parent         = &humanoid.parts[0],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(10)),
+		rotation_angle = linalg.to_radians(angles.head),
 		position_joint = humanoid_position.head_joint,
 		position       = humanoid_position.head,
 		size           = &humanoid_size.head,
@@ -197,7 +199,7 @@ humanoid_init :: proc() {
 	humanoid.parts[7] = {
 		parent         = &humanoid.parts[0],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(80)),
+		rotation_angle = linalg.to_radians(angles.right_upper_arm),
 		position_joint = humanoid_position.bicep_right_joint,
 		position       = humanoid_position.bicep_right,
 		size           = &humanoid_size.bicep,
@@ -207,7 +209,7 @@ humanoid_init :: proc() {
 	humanoid.parts[8] = {
 		parent         = &humanoid.parts[7],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(-80)),
+		rotation_angle = linalg.to_radians(angles.right_forearm),
 		position_joint = humanoid_position.forearm_right_joint,
 		position       = humanoid_position.forearm_right,
 		size           = &humanoid_size.forearm,
@@ -217,7 +219,7 @@ humanoid_init :: proc() {
 	humanoid.parts[9] = {
 		parent         = &humanoid.parts[8],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(-45)),
+		rotation_angle = linalg.to_radians(angles.right_hand),
 		position_joint = humanoid_position.hand_right_joint,
 		position       = humanoid_position.hand_right,
 		size           = &humanoid_size.hand,
@@ -231,7 +233,7 @@ humanoid_init :: proc() {
 	humanoid.parts[10] = {
 		parent         = &humanoid.parts[0],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(-30)),
+		rotation_angle = linalg.to_radians(angles.left_upper_arm),
 		position_joint = humanoid_position.bicep_left_joint,
 		position       = humanoid_position.bicep_left,
 		size           = &humanoid_size.bicep,
@@ -241,7 +243,7 @@ humanoid_init :: proc() {
 	humanoid.parts[11] = {
 		parent         = &humanoid.parts[10],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(-100)),
+		rotation_angle = linalg.to_radians(angles.left_forearm),
 		position_joint = humanoid_position.forearm_left_joint,
 		position       = humanoid_position.forearm_left,
 		size           = &humanoid_size.forearm,
@@ -251,7 +253,7 @@ humanoid_init :: proc() {
 	humanoid.parts[12] = {
 		parent         = &humanoid.parts[11],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(-45)),
+		rotation_angle = linalg.to_radians(angles.left_hand),
 		position_joint = humanoid_position.hand_left_joint,
 		position       = humanoid_position.hand_left,
 		size           = &humanoid_size.hand,
@@ -265,7 +267,7 @@ humanoid_init :: proc() {
 	humanoid.parts[1] = {
 		parent         = &humanoid.parts[0],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(-80)),
+		rotation_angle = linalg.to_radians(angles.right_thigh),
 		position_joint = humanoid_position.thigh_right_joint,
 		position       = humanoid_position.thigh_right,
 		size           = &humanoid_size.thigh,
@@ -275,7 +277,7 @@ humanoid_init :: proc() {
 	humanoid.parts[2] = {
 		parent         = &humanoid.parts[1],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(120)),
+		rotation_angle = linalg.to_radians(angles.right_shin),
 		position_joint = humanoid_position.calf_right_joint,
 		position       = humanoid_position.calf_right,
 		size           = &humanoid_size.calf,
@@ -285,7 +287,7 @@ humanoid_init :: proc() {
 	humanoid.parts[3] = {
 		parent         = &humanoid.parts[2],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(10)),
+		rotation_angle = linalg.to_radians(angles.right_foot),
 		position_joint = humanoid_position.foot_right_joint,
 		position       = humanoid_position.foot_right,
 		size           = &humanoid_size.foot,
@@ -299,7 +301,7 @@ humanoid_init :: proc() {
 	humanoid.parts[4] = {
 		parent         = &humanoid.parts[0],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(0)),
+		rotation_angle = linalg.to_radians(angles.left_thigh),
 		position_joint = humanoid_position.thigh_left_joint,
 		position       = humanoid_position.thigh_left,
 		size           = &humanoid_size.thigh,
@@ -309,7 +311,7 @@ humanoid_init :: proc() {
 	humanoid.parts[5] = {
 		parent         = &humanoid.parts[4],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(10)),
+		rotation_angle = linalg.to_radians(angles.left_shin),
 		position_joint = humanoid_position.calf_left_joint,
 		position       = humanoid_position.calf_left,
 		size           = &humanoid_size.calf,
@@ -319,18 +321,19 @@ humanoid_init :: proc() {
 	humanoid.parts[6] = {
 		parent         = &humanoid.parts[5],
 		rotation_axis  = {1, 0, 0},
-		rotation_angle = linalg.to_radians(f32(-10)),
+		rotation_angle = linalg.to_radians(angles.left_foot),
 		position_joint = humanoid_position.foot_left_joint,
 		position       = humanoid_position.foot_left,
 		size           = &humanoid_size.foot,
 	}
 
 	for &bp, i in humanoid.parts {
-		humanoid.bbs[i] = get_bb(&bp)
+		humanoid.bbs[i] = get_bb(humanoid, &bp)
 	}
 
 	// init_bb_vertices(humanoid.bbs[0])
 }
+
 get_bp_model :: proc(bp: ^BodyPart) -> mat4 {
 	model: mat4 = 1
 	model *= glsl.mat4Translate(humanoid.position)
@@ -340,7 +343,7 @@ get_bp_model :: proc(bp: ^BodyPart) -> mat4 {
 	return model
 }
 
-get_bb :: proc(bp: ^BodyPart) -> BoundingBox {
+get_bb :: proc(humanoid: ^Humanoid, bp: ^BodyPart) -> BoundingBox {
 	model: mat4 = 1
 	model *= glsl.mat4Translate(humanoid.position)
 	model *= translate_and_rotate_recursive(bp)
