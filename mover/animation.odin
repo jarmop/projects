@@ -41,16 +41,16 @@ animation_init :: proc() {
 	angles := load()
 
 	make_pose(&animation.poses[0], angles[0])
-	// make_pose(&animation.poses[1], angles[1])
-	// // make_pose(&animation.poses[1], angles[0])
-	// make_pose(&animation.poses[2], angles[2])
-	// // make_pose(&animation.poses[2], angles[1])
-	// make_pose(&animation.poses[3], angles[3])
-	// // make_pose(&animation.poses[3], angles[2])
-	// make_pose(&animation.poses[4], mirror_humanoid(angles[0]))
-	// make_pose(&animation.poses[5], mirror_humanoid(angles[1]))
-	// make_pose(&animation.poses[6], mirror_humanoid(angles[2]))
-	// make_pose(&animation.poses[7], mirror_humanoid(angles[3]))
+	make_pose(&animation.poses[1], angles[1])
+	// make_pose(&animation.poses[1], angles[0])
+	make_pose(&animation.poses[2], angles[2])
+	// make_pose(&animation.poses[2], angles[1])
+	make_pose(&animation.poses[3], angles[3])
+	// make_pose(&animation.poses[3], angles[2])
+	make_pose(&animation.poses[4], mirror_humanoid(angles[0]))
+	make_pose(&animation.poses[5], mirror_humanoid(angles[1]))
+	make_pose(&animation.poses[6], mirror_humanoid(angles[2]))
+	make_pose(&animation.poses[7], mirror_humanoid(angles[3]))
 
 
 	humanoid = &animation.poses[current_pose]

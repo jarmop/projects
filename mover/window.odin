@@ -87,14 +87,23 @@ window_init :: proc() {
 key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
 	context = runtime.default_context()
 
+	if key == glfw.KEY_ESCAPE && action == glfw.PRESS {
+		glfw.SetWindowShouldClose(window, true)
+	}
+
+	if camera_mode == .Camera_3rd {
+		camera_3rd_key_callback(key, action, mode)
+	} else {
+		camera_basic_key_callback(key, action, mode)
+	}
+}
+
+camera_basic_key_callback :: proc(key, action, mode: i32) {
 	if action != glfw.PRESS {
 		return
 	}
 
-	if key == glfw.KEY_ESCAPE {
-		glfw.SetWindowShouldClose(window, true)
-
-	} else if key == glfw.KEY_SPACE {
+	if key == glfw.KEY_SPACE {
 		playing = !playing
 
 	} else if key == glfw.KEY_S && mode == glfw.MOD_CONTROL {
@@ -256,7 +265,12 @@ scroll_callback := proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f
 	}
 }
 
-handle_camera_movement_keys :: proc() {
+window_handle_frame :: proc() {
+	if camera_mode == .Camera_3rd {
+		camera_3rd_handle_frame()
+		return
+	}
+
 	camera_d := time_delta * camera.speed
 
 	if glfw.GetKey(window, glfw.KEY_LEFT_CONTROL) == glfw.PRESS {

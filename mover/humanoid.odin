@@ -215,7 +215,7 @@ make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
 
 	update_humanoid_orientation(humanoid)
 
-	fmt.println("hum front:", humanoid.front)
+	// fmt.println("hum front:", humanoid.front)
 
 	// humanoid.front = {1, 0, 1}
 

@@ -32,7 +32,7 @@ main :: proc() {
 		time_delta = time_now - time_prev_frame
 		time_prev_frame = time_now
 
-		handle_camera_movement_keys()
+		window_handle_frame()
 
 		vertices_draw()
 		animation_draw()
