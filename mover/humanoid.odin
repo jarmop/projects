@@ -195,7 +195,7 @@ update_humanoid_orientation :: proc(humanoid: ^Humanoid) {
 
 	front := Vec3{x, 0, z}
 
-	fmt.println(front)
+	// fmt.println(front)
 
 	humanoid.front = front
 }
@@ -203,7 +203,7 @@ update_humanoid_orientation :: proc(humanoid: ^Humanoid) {
 make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
 	humanoid.size = humanoid_size.whole
 	humanoid.position = humanoid_position.whole
-	humanoid.yaw = 10
+	humanoid.yaw = 20
 	// humanoid.yaw = 0
 	humanoid.pitch = 0
 	// humanoid.front = {0, 0, 1}
