@@ -82,7 +82,11 @@ window_init :: proc() {
 	glfw.SetScrollCallback(window, scroll_callback)
 	glfw.SetKeyCallback(window, key_callback)
 
-	update_camera()
+	if camera_mode == .Camera_3rd {
+		camera3rd_init()
+	} else {
+		update_camera()
+	}
 }
 
 key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
@@ -178,6 +182,11 @@ framebuffer_size_callback :: proc "c" (window: glfw.WindowHandle, width: i32, he
 
 cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xf64: f64, yf64: f64) {
 	context = runtime.default_context()
+
+	if camera_mode == .Camera_3rd {
+		camera_3rd_cursor_pos_callback(xf64, yf64)
+		return
+	}
 
 	if mouse_left_pressed {
 		if selected_body_part == -1 {
