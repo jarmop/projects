@@ -1,13 +1,34 @@
 package main
 
+import "base:runtime"
 import "core:fmt"
 import "core:math/linalg"
 import "core:math/linalg/glsl"
 import "vendor:glfw"
 
-camera_offset: Vec3 : {0, 2, -8}
+camera_d :: 5
+camera_offset: Vec3
+
+camera3rd_init :: proc() {
+	camera.yaw = humanoid.yaw
+	camera.pitch = -10
+	// camera_offset = calculate_orbit_offset(camera.yaw, camera.pitch, camera_d)
+}
+
+calculate_orbit_offset :: proc(camera_yaw, camera_pitch, camera_distance: f32) -> Vec3 {
+	fmt.println(camera_yaw)
+	fmt.println(camera_pitch)
+
+	yaw_r := linalg.to_radians(camera_yaw)
+	pitch_r := linalg.to_radians(camera_pitch)
+
+	fmt.println()
+
+	return {0, 2, -8}
+}
 
 camera3rd_update_position :: proc() {
+	camera_offset = calculate_orbit_offset(camera.yaw, camera.pitch, camera_d)
 
 	camera.pos = humanoid.position + rotate_vector(humanoid.yaw, camera_offset)
 }
@@ -68,7 +89,7 @@ camera_3rd_handle_frame :: proc() {
 		update_humanoid_orientation(&humanoid)
 	}
 
-	camera3rd_update_position()
+	// camera3rd_update_position()
 }
 
 movement_keys: []i32 : {glfw.KEY_W, glfw.KEY_A, glfw.KEY_S, glfw.KEY_D}
@@ -83,4 +104,35 @@ camera_3rd_key_callback :: proc(key, action, mode: i32) {
 	// 	fmt.println(playing)
 	// }
 
+}
+
+camera_3rd_cursor_pos_callback :: proc "c" (xf64: f64, yf64: f64) {
+	context = runtime.default_context()
+
+	x := f32(xf64)
+	y := f32(yf64)
+
+	if first_cursor_pos {
+		prev_cursor_x = x
+		prev_cursor_y = y
+		first_cursor_pos = false
+	}
+
+	camera.yaw += f32((x - prev_cursor_x) * mouse_sensitivity)
+	if (camera.yaw > 180) {
+		camera.yaw -= 360
+	} else if (camera.yaw < -180) {
+		camera.yaw += 360
+	}
+	camera.pitch -= f32((y - prev_cursor_y) * mouse_sensitivity)
+	prev_cursor_x = x
+	prev_cursor_y = y
+
+	if camera.pitch > 89.0 {
+		camera.pitch = 89.0
+	} else if camera.pitch < -89.0 {
+		camera.pitch = -89.0
+	}
+
+	update_camera()
 }
