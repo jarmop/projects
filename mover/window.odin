@@ -27,12 +27,12 @@ Camera :: struct {
 }
 
 camera := Camera {
-	pos   = humanoid_position.whole + {-4, 0, 0},
+	pos   = humanoid_position.whole + {-4, 2, 0},
 	front = {0, 0, -1},
 	right = {1, 0, 0},
 	up    = {0, 1, 0},
 	yaw   = 0,
-	pitch = 0,
+	pitch = -20,
 	speed = 2.5,
 	fov   = 45,
 	near  = 0.1,

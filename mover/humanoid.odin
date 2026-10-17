@@ -175,23 +175,39 @@ humanoid_init :: proc() {
 	}
 }
 
-update_humanoid_orientation :: proc(humanoid: ^Humanoid) {
-	humanoid.front[0] = l.cos(l.to_radians(humanoid.yaw)) * l.cos(l.to_radians(humanoid.pitch))
-	humanoid.front[1] = l.sin(l.to_radians(humanoid.pitch))
-	humanoid.front[2] = l.sin(l.to_radians(humanoid.yaw)) * l.cos(l.to_radians(humanoid.pitch))
+// update_humanoid_orientation :: proc(humanoid: ^Humanoid) {
+// 	humanoid.front[0] = l.cos(l.to_radians(humanoid.yaw)) * l.cos(l.to_radians(humanoid.pitch))
+// 	humanoid.front[1] = l.sin(l.to_radians(humanoid.pitch))
+// 	humanoid.front[2] = l.sin(l.to_radians(humanoid.yaw)) * l.cos(l.to_radians(humanoid.pitch))
 
-	humanoid.front = l.normalize(humanoid.front)
-	humanoid.right = l.cross(humanoid.front, humanoid.up)
-	humanoid.right = l.normalize(humanoid.right)
+// 	humanoid.front = l.normalize(humanoid.front)
+// 	humanoid.right = l.cross(humanoid.front, humanoid.up)
+// 	humanoid.right = l.normalize(humanoid.right)
+// }
+
+update_humanoid_orientation :: proc(humanoid: ^Humanoid) {
+	yaw_r := l.to_radians(humanoid.yaw)
+	// fmt.println(l.sin(yaw_r))
+	// fmt.println(l.cos(yaw_r))
+
+	z := l.sin(yaw_r)
+	x := l.cos(yaw_r)
+
+	front := Vec3{x, 0, z}
+
+	fmt.println(front)
+
+	humanoid.front = front
 }
 
 make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
 	humanoid.size = humanoid_size.whole
 	humanoid.position = humanoid_position.whole
-	humanoid.yaw = 0
+	humanoid.yaw = 10
 	// humanoid.yaw = 0
 	humanoid.pitch = 0
-	humanoid.front = {0, 0, 1}
+	// humanoid.front = {0, 0, 1}
+	humanoid.front = {1, 0, 0}
 	// humanoid.right = {-1, 0, 0}
 	humanoid.up = {0, 1, 0}
 
@@ -200,7 +216,7 @@ make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
 
 	update_humanoid_orientation(humanoid)
 
-	fmt.println(humanoid.front)
+	fmt.println("hum front:", humanoid.front)
 
 	// humanoid.front = {1, 0, 1}
 
