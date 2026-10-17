@@ -61,8 +61,8 @@ humanoid_size: HumanoidSize = {
 }
 
 humanoid_position: HumanoidPosition = {
-	whole = {2, humanoid_size.whole.y / 2, 0},
-	// whole = {0, 0, 0},
+	// whole = {2, humanoid_size.whole.y / 2, 0},
+	whole = {0, humanoid_size.whole.y / 2, 0},
 }
 
 BodyPart :: struct {
@@ -206,8 +206,8 @@ make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
 	humanoid.yaw = 20
 	// humanoid.yaw = 0
 	humanoid.pitch = 0
-	// humanoid.front = {0, 0, 1}
-	humanoid.front = {1, 0, 0}
+	humanoid.front = {0, 0, 1}
+	// humanoid.front = {1, 0, 0}
 	// humanoid.right = {-1, 0, 0}
 	humanoid.up = {0, 1, 0}
 

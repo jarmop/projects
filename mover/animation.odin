@@ -87,9 +87,9 @@ animation_draw :: proc() {
 	base_model := glsl.mat4Translate(humanoid.position)
 	// Get angle from the humanoid front
 	// base_model *= glsl.mat4Rotate({0, 1, 0}, linalg.to_radians(f32(45)))
-	base_model *= glsl.mat4Rotate({0, 1, 0}, linalg.to_radians(90 - humanoid.yaw))
+	// base_model *= glsl.mat4Rotate({0, 1, 0}, linalg.to_radians(90 - humanoid.yaw))
 	// base_model *= glsl.mat4Rotate({0, 1, 0}, linalg.to_radians(90 + humanoid.yaw))
-	// base_model *= glsl.mat4Rotate({0, 1, 0}, linalg.to_radians(humanoid.yaw))
+	base_model *= glsl.mat4Rotate({0, 1, 0}, linalg.to_radians(humanoid.yaw))
 	for &bp, i in humanoid.parts {
 		shader_set_vec4(
 			shader_program_grid,
