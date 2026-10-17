@@ -86,7 +86,7 @@ Humanoid :: struct {
 	bbs:      [14]BoundingBox,
 }
 
-humanoid: ^Humanoid
+humanoid: Humanoid
 
 selected_body_part := -1
 
@@ -203,7 +203,7 @@ update_humanoid_orientation :: proc(humanoid: ^Humanoid) {
 make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
 	humanoid.size = humanoid_size.whole
 	humanoid.position = humanoid_position.whole
-	humanoid.yaw = 370
+	humanoid.yaw = 0
 	humanoid.pitch = 0
 	humanoid.front = {0, 0, 1}
 	// humanoid.front = {1, 0, 0}
@@ -213,7 +213,7 @@ make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
 	// fmt.println(humanoid.up)
 	// fmt.println(humanoid.right)
 
-	update_humanoid_orientation(humanoid)
+	// update_humanoid_orientation(humanoid)
 
 	// fmt.println("hum front:", humanoid.front)
 

@@ -126,40 +126,44 @@ camera_basic_key_callback :: proc(key, action, mode: i32) {
 			// 	left_shin       = h.parts[5].rotation_angle,
 			// 	left_foot       = h.parts[6].rotation_angle,
 			// }
-			h := animation.poses[i]
-			angles[i] = {
-				torso           = l.to_degrees(h.parts[0].rotation_angle),
-				head            = l.to_degrees(h.parts[13].rotation_angle),
-				right_upper_arm = l.to_degrees(h.parts[7].rotation_angle),
-				right_forearm   = l.to_degrees(h.parts[8].rotation_angle),
-				right_hand      = l.to_degrees(h.parts[9].rotation_angle),
-				left_upper_arm  = l.to_degrees(h.parts[10].rotation_angle),
-				left_forearm    = l.to_degrees(h.parts[11].rotation_angle),
-				left_hand       = l.to_degrees(h.parts[12].rotation_angle),
-				right_thigh     = l.to_degrees(h.parts[1].rotation_angle),
-				right_shin      = l.to_degrees(h.parts[2].rotation_angle),
-				right_foot      = l.to_degrees(h.parts[3].rotation_angle),
-				left_thigh      = l.to_degrees(h.parts[4].rotation_angle),
-				left_shin       = l.to_degrees(h.parts[5].rotation_angle),
-				left_foot       = l.to_degrees(h.parts[6].rotation_angle),
-			}
+			// h := animation.poses[i]
+			// angles[i] = {
+			// 	torso           = l.to_degrees(h.parts[0].rotation_angle),
+			// 	head            = l.to_degrees(h.parts[13].rotation_angle),
+			// 	right_upper_arm = l.to_degrees(h.parts[7].rotation_angle),
+			// 	right_forearm   = l.to_degrees(h.parts[8].rotation_angle),
+			// 	right_hand      = l.to_degrees(h.parts[9].rotation_angle),
+			// 	left_upper_arm  = l.to_degrees(h.parts[10].rotation_angle),
+			// 	left_forearm    = l.to_degrees(h.parts[11].rotation_angle),
+			// 	left_hand       = l.to_degrees(h.parts[12].rotation_angle),
+			// 	right_thigh     = l.to_degrees(h.parts[1].rotation_angle),
+			// 	right_shin      = l.to_degrees(h.parts[2].rotation_angle),
+			// 	right_foot      = l.to_degrees(h.parts[3].rotation_angle),
+			// 	left_thigh      = l.to_degrees(h.parts[4].rotation_angle),
+			// 	left_shin       = l.to_degrees(h.parts[5].rotation_angle),
+			// 	left_foot       = l.to_degrees(h.parts[6].rotation_angle),
+			// }
 		}
 		save(angles)
 
 	} else if key == glfw.KEY_LEFT || key == glfw.KEY_RIGHT {
 		increment := key == glfw.KEY_LEFT ? -1 : 1
-		current_pose += increment
-		if current_pose < 0 {
-			current_pose = len(animation.poses) - 1
-		} else if current_pose > len(animation.poses) - 1 {
-			current_pose = 0
+		// current_pose += increment
+		new_pose := current_pose + increment
+		if new_pose < 0 {
+			new_pose = len(animation.poses) - 1
+		} else if new_pose > len(animation.poses) - 1 {
+			new_pose = 0
 		}
 		// current_pose = current_pose < len(animation.poses) - 1 ? current_pose + increment : 0
-		humanoid = &animation.poses[current_pose]
+		// humanoid = &animation.poses[new_pose]
+		animation_set_pose(new_pose)
 
 	} else if key >= glfw.KEY_1 && key <= glfw.KEY_4 {
-		current_pose = int(key - glfw.KEY_1)
-		humanoid = &animation.poses[current_pose]
+		// current_pose = int(key - glfw.KEY_1)
+		// humanoid = &animation.poses[current_pose]
+		animation_set_pose(int(key - glfw.KEY_1))
+
 	} else if key == glfw.KEY_C {
 
 	}
@@ -196,7 +200,7 @@ cursor_pos_callback :: proc "c" (window: glfw.WindowHandle, xf64: f64, yf64: f64
 		bp.rotation_angle = bp.rotation_angle + l.to_radians(deg_diff)
 
 		for &bp, i in humanoid.parts {
-			humanoid.bbs[i] = get_bb(humanoid, &bp)
+			humanoid.bbs[i] = get_bb(&humanoid, &bp)
 		}
 
 		prev_cursor_x = x
