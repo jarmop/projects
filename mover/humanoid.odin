@@ -203,8 +203,7 @@ update_humanoid_orientation :: proc(humanoid: ^Humanoid) {
 make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
 	humanoid.size = humanoid_size.whole
 	humanoid.position = humanoid_position.whole
-	humanoid.yaw = 20
-	// humanoid.yaw = 0
+	humanoid.yaw = 370
 	humanoid.pitch = 0
 	humanoid.front = {0, 0, 1}
 	// humanoid.front = {1, 0, 0}

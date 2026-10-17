@@ -45,19 +45,25 @@ import "core:math/linalg/glsl"
 
 camera3rd_update_position :: proc() {
 	camera_offset := Vec3{0, 2, -5}
+	// camera_offset := Vec3{-5, 2, 0}
 
 	// camera_position := humanoid.position + rotate_vector(humanoid.yaw, camera_offset)
 	camera.pos = humanoid.position + rotate_vector(humanoid.yaw, camera_offset)
 	// camera.pos = camera_offset
+	camera.yaw = 90 - humanoid.yaw
 	// camera.yaw = 90
+
+	update_camera()
 
 	target := humanoid.position + Vec3{0, 1.5, 0}
 
 }
 
+// Make sure yaw is in radians!!!
+
 rotate_vector :: proc(yaw: f32, pos: Vec3) -> Vec3 {
 	y_axis := Vec3{0, 1, 0}
-	model := glsl.mat4Rotate(y_axis, yaw)
+	model := glsl.mat4Rotate(y_axis, linalg.to_radians(yaw))
 
 	v := (model * Vec4{pos.x, pos.y, pos.z, 1}).xyz
 
