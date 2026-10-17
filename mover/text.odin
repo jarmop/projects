@@ -217,6 +217,9 @@ update_text :: proc() {
 	text_add_vertices(fmt.tprintf("- Front: %.2f", camera.front), {x, y}, width)
 	y += line_height
 
+	text_add_vertices(fmt.tprintf("- Yaw: %.2f", camera.yaw), {x, y}, width)
+	y += line_height
+
 	if selected_body_part == -1 {
 		text_set_buffer_data()
 		return
