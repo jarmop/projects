@@ -4,6 +4,7 @@ import "base:runtime"
 import "core:fmt"
 import "core:math"
 import l "core:math/linalg"
+import "core:math/linalg/glsl"
 import "core:os"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
@@ -333,4 +334,15 @@ check_body_part_hit :: proc() {
 			}
 		}
 	}
+}
+
+camera_get_view :: proc() -> Mat4 {
+	if camera_mode == .Camera_3rd {
+		return camera_3rd_get_view()
+	}
+
+	view: Mat4 = 1
+	view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
+
+	return view
 }

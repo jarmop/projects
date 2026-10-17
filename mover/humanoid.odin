@@ -380,8 +380,8 @@ make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
 	// init_bb_vertices(humanoid.bbs[0])
 }
 
-get_bp_model :: proc(bp: ^BodyPart) -> mat4 {
-	model: mat4 = 1
+get_bp_model :: proc(bp: ^BodyPart) -> Mat4 {
+	model: Mat4 = 1
 	model *= glsl.mat4Translate(humanoid.position)
 	model *= translate_and_rotate_recursive(bp)
 	model *= glsl.mat4Scale(bp.size^)
@@ -390,7 +390,7 @@ get_bp_model :: proc(bp: ^BodyPart) -> mat4 {
 }
 
 get_bb :: proc(humanoid: ^Humanoid, bp: ^BodyPart) -> BoundingBox {
-	model: mat4 = 1
+	model: Mat4 = 1
 	model *= glsl.mat4Translate(humanoid.position)
 	model *= translate_and_rotate_recursive(bp)
 	model *= glsl.mat4Scale(bp.size^)
