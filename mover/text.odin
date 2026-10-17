@@ -208,13 +208,14 @@ update_text :: proc() {
 		// y += line_height
 	}
 
-	// text_add_vertices("Camera", {x, y}, width)
+	text_add_vertices("Camera", {x, y}, width)
+	y += line_height
 
-	// y += line_height
-	// text_add_vertices(fmt.tprintf("- Pos: %.2f", camera.pos), {x, y}, width)
+	text_add_vertices(fmt.tprintf("- Pos: %.2f", camera.pos), {x, y}, width)
+	y += line_height
 
-	// y += line_height
-	// text_add_vertices(fmt.tprintf("- Front: %.2f", camera.front), {x, y}, width)
+	text_add_vertices(fmt.tprintf("- Front: %.2f", camera.front), {x, y}, width)
+	y += line_height
 
 	if selected_body_part == -1 {
 		text_set_buffer_data()
@@ -226,7 +227,6 @@ update_text :: proc() {
 	// y += 2 * line_height
 	text_add_vertices("Body part", {x, y}, width)
 
-	y += line_height
 	text_add_vertices(
 		fmt.tprintf("- Angle: %.2f", linalg.to_degrees(bp.rotation_angle)),
 		{x, y},

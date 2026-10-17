@@ -12,6 +12,11 @@ main :: proc() {
 	shader_init()
 	vertices_init()
 	animation_init()
+
+	if camera_mode == .Camera_3rd {
+		camera3rd_update_position()
+	}
+
 	text_init()
 
 	gl.Enable(gl.DEPTH_TEST)

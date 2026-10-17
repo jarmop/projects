@@ -62,6 +62,7 @@ humanoid_size: HumanoidSize = {
 
 humanoid_position: HumanoidPosition = {
 	whole = {2, humanoid_size.whole.y / 2, 0},
+	// whole = {0, 0, 0},
 }
 
 BodyPart :: struct {
@@ -76,6 +77,7 @@ BodyPart :: struct {
 Humanoid :: struct {
 	size:     Vec3,
 	position: Vec3,
+	front:    Vec3,
 	parts:    [14]BodyPart,
 	bbs:      [14]BoundingBox,
 }
@@ -172,6 +174,7 @@ humanoid_init :: proc() {
 make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
 	humanoid.size = humanoid_size.whole
 	humanoid.position = humanoid_position.whole
+	humanoid.front = {0, 0, 1}
 
 	// Torso
 	humanoid.parts[0] = {

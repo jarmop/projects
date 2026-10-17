@@ -48,6 +48,13 @@ mouse_right_pressed := false
 mouse_left_pressed := false
 first_cursor_pos := true
 
+CameraMode :: enum {
+	Basic,
+	Camera_3rd,
+}
+
+camera_mode: CameraMode = .Camera_3rd
+
 window_init :: proc() {
 	glfw.Init()
 	glfw.WindowHint(glfw.CONTEXT_VERSION_MAJOR, 3)
@@ -143,6 +150,8 @@ key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode
 	} else if key >= glfw.KEY_1 && key <= glfw.KEY_4 {
 		current_pose = int(key - glfw.KEY_1)
 		humanoid = &animation.poses[current_pose]
+	} else if key == glfw.KEY_C {
+
 	}
 }
 
