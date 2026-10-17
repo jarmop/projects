@@ -210,7 +210,10 @@ make_cuboid :: proc(
 vertices_draw :: proc() {
 
 	view: glsl.mat4 = 1
-	view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
+	// view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
+	target := humanoid.position + Vec3{0, 1.5, 0}
+	// view *= glsl.mat4LookAt(camera.pos, humanoid.position + target, camera.up)
+	view *= glsl.mat4LookAt(camera.pos, target, camera.up)
 
 	projection: glsl.mat4 = 1
 	projection *= glsl.mat4Perspective(

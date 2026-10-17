@@ -49,13 +49,26 @@ camera3rd_update_position :: proc() {
 
 	// camera_position := humanoid.position + rotate_vector(humanoid.yaw, camera_offset)
 	camera.pos = humanoid.position + rotate_vector(humanoid.yaw, camera_offset)
+
+	// camera.front = humanoid.position + Vec3{0, 1.5, 0}
+
 	// camera.pos = camera_offset
-	camera.yaw = 90 - humanoid.yaw
+	// camera.yaw = 90 - humanoid.yaw
 	// camera.yaw = 90
 
-	update_camera()
+	// target := humanoid.position + Vec3{0, 1.5, 0}
+	// view := glsl.mat4LookAt(camera.pos, target, Vec3{0, 1, 0})
 
-	target := humanoid.position + Vec3{0, 1.5, 0}
+	// // f := camera.front
+	// // f: Vec3 = 1
+	// f: Vec3 = {1, 0, 0}
+	// v := (view * Vec4{f.x, f.y, f.z, 1}).xyz
+
+	// fmt.println(f)
+	// fmt.println(v)
+
+	// update_camera()
+
 
 }
 
