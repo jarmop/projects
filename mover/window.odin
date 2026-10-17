@@ -54,7 +54,8 @@ CameraMode :: enum {
 	Camera_3rd,
 }
 
-camera_mode: CameraMode = .Camera_3rd
+// camera_mode: CameraMode = .Camera_3rd
+camera_mode: CameraMode = .Basic
 
 window_init :: proc() {
 	glfw.Init()

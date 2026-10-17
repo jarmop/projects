@@ -173,6 +173,8 @@ humanoid_init :: proc() {
 		-humanoid_size.foot.y / 2,
 		humanoid_size.foot.z / 2 - humanoid_size.calf.z / 2,
 	}
+
+	make_pose(&humanoid, animation.poses[current_pose])
 }
 
 // update_humanoid_orientation :: proc(humanoid: ^Humanoid) {
