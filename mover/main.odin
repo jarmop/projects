@@ -12,6 +12,11 @@ main :: proc() {
 	shader_init()
 	vertices_init()
 	animation_init()
+
+	if camera_mode == .Camera_3rd {
+		camera3rd_update_position()
+	}
+
 	text_init()
 
 	gl.Enable(gl.DEPTH_TEST)
@@ -27,7 +32,7 @@ main :: proc() {
 		time_delta = time_now - time_prev_frame
 		time_prev_frame = time_now
 
-		handle_camera_movement_keys()
+		window_handle_frame()
 
 		vertices_draw()
 		animation_draw()

@@ -4,6 +4,7 @@ import "base:runtime"
 import "core:fmt"
 import "core:math"
 import l "core:math/linalg"
+import "core:math/linalg/glsl"
 import "core:os"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
@@ -27,12 +28,12 @@ Camera :: struct {
 }
 
 camera := Camera {
-	pos   = humanoid_position.whole + {-4, 0, 0},
+	pos   = humanoid_position.whole + {-4, 2, 0},
 	front = {0, 0, -1},
 	right = {1, 0, 0},
 	up    = {0, 1, 0},
 	yaw   = 0,
-	pitch = 0,
+	pitch = -20,
 	speed = 2.5,
 	fov   = 45,
 	near  = 0.1,
@@ -47,6 +48,13 @@ window: glfw.WindowHandle
 mouse_right_pressed := false
 mouse_left_pressed := false
 first_cursor_pos := true
+
+CameraMode :: enum {
+	Basic,
+	Camera_3rd,
+}
+
+camera_mode: CameraMode = .Camera_3rd
 
 window_init :: proc() {
 	glfw.Init()
@@ -79,14 +87,23 @@ window_init :: proc() {
 key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode: i32) {
 	context = runtime.default_context()
 
+	if key == glfw.KEY_ESCAPE && action == glfw.PRESS {
+		glfw.SetWindowShouldClose(window, true)
+	}
+
+	if camera_mode == .Camera_3rd {
+		camera_3rd_key_callback(key, action, mode)
+	} else {
+		camera_basic_key_callback(key, action, mode)
+	}
+}
+
+camera_basic_key_callback :: proc(key, action, mode: i32) {
 	if action != glfw.PRESS {
 		return
 	}
 
-	if key == glfw.KEY_ESCAPE {
-		glfw.SetWindowShouldClose(window, true)
-
-	} else if key == glfw.KEY_SPACE {
+	if key == glfw.KEY_SPACE {
 		playing = !playing
 
 	} else if key == glfw.KEY_S && mode == glfw.MOD_CONTROL {
@@ -143,6 +160,8 @@ key_callback :: proc "c" (window: glfw.WindowHandle, key, scancode, action, mode
 	} else if key >= glfw.KEY_1 && key <= glfw.KEY_4 {
 		current_pose = int(key - glfw.KEY_1)
 		humanoid = &animation.poses[current_pose]
+	} else if key == glfw.KEY_C {
+
 	}
 }
 
@@ -246,7 +265,12 @@ scroll_callback := proc "c" (window: glfw.WindowHandle, xoffset: f64, yoffset: f
 	}
 }
 
-handle_camera_movement_keys :: proc() {
+window_handle_frame :: proc() {
+	if camera_mode == .Camera_3rd {
+		camera_3rd_handle_frame()
+		return
+	}
+
 	camera_d := time_delta * camera.speed
 
 	if glfw.GetKey(window, glfw.KEY_LEFT_CONTROL) == glfw.PRESS {
@@ -324,4 +348,15 @@ check_body_part_hit :: proc() {
 			}
 		}
 	}
+}
+
+camera_get_view :: proc() -> Mat4 {
+	if camera_mode == .Camera_3rd {
+		return camera_3rd_get_view()
+	}
+
+	view: Mat4 = 1
+	view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
+
+	return view
 }

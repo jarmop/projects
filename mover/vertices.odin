@@ -209,8 +209,13 @@ make_cuboid :: proc(
 
 vertices_draw :: proc() {
 
-	view: glsl.mat4 = 1
-	view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
+	// view: glsl.mat4 = 1
+	// // view *= glsl.mat4LookAt(camera.pos, camera.pos + camera.front, camera.up)
+	// target := humanoid.position + Vec3{0, 1.5, 0}
+	// // view *= glsl.mat4LookAt(camera.pos, humanoid.position + target, camera.up)
+	// view *= glsl.mat4LookAt(camera.pos, target, camera.up)
+
+	view := camera_get_view()
 
 	projection: glsl.mat4 = 1
 	projection *= glsl.mat4Perspective(
@@ -237,15 +242,4 @@ vertices_draw :: proc() {
 	shader_set_vec4(shader_program_grid, "grid_color", {c, c, c, 1})
 	gl.BindVertexArray(ground_vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, len(ground_vertices))
-}
-
-translate_and_rotate_recursive :: proc(bp: ^BodyPart) -> glsl.mat4 {
-	if bp == nil {
-		return 1
-	}
-	model := translate_and_rotate_recursive(bp.parent)
-	model *= glsl.mat4Translate(bp.position_joint)
-	model *= glsl.mat4Rotate(bp.rotation_axis, bp.rotation_angle)
-	model *= glsl.mat4Translate(bp.position)
-	return model
 }
