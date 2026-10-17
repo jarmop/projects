@@ -31,7 +31,7 @@ camera_3rd_get_view :: proc() -> Mat4 {
 }
 
 camera_3rd_handle_frame :: proc() {
-	// camera_d := time_delta * camera.speed
+	camera_d := time_delta * camera.speed
 
 	if glfw.GetKey(window, glfw.KEY_LEFT_CONTROL) == glfw.PRESS {
 		return
@@ -43,6 +43,9 @@ camera_3rd_handle_frame :: proc() {
 	if glfw.GetKey(window, glfw.KEY_W) == glfw.PRESS {
 		playing = true
 
+		humanoid.position += humanoid.front * camera_d
+
+		fmt.println(humanoid.front)
 		// camera.pos += camera.front * camera_d
 	}
 	if glfw.GetKey(window, glfw.KEY_S) == glfw.PRESS {
@@ -60,6 +63,8 @@ camera_3rd_handle_frame :: proc() {
 
 		// camera.pos += camera.right * camera_d
 	}
+
+	camera3rd_update_position()
 }
 
 movement_keys: []i32 : {glfw.KEY_W, glfw.KEY_A, glfw.KEY_S, glfw.KEY_D}

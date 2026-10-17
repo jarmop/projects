@@ -6,7 +6,7 @@ import "core:math/linalg/glsl"
 import gl "vendor:OpenGL"
 
 Animation :: struct {
-	poses:         [8]Humanoid,
+	poses:         []HumanoidJointAngles,
 	time_per_pose: f32,
 }
 
@@ -36,24 +36,51 @@ playing := false
 animation_init :: proc() {
 	animation.time_per_pose = 0.1
 
+
+	animation.poses = load()
+
+	// make_pose(&animation.poses[0], angles[0])
+	// make_pose(&animation.poses[1], angles[1])
+	// // make_pose(&animation.poses[1], angles[0])
+	// make_pose(&animation.poses[2], angles[2])
+	// // make_pose(&animation.poses[2], angles[1])
+	// make_pose(&animation.poses[3], angles[3])
+	// // make_pose(&animation.poses[3], angles[2])
+	// make_pose(&animation.poses[4], mirror_humanoid(angles[0]))
+	// make_pose(&animation.poses[5], mirror_humanoid(angles[1]))
+	// make_pose(&animation.poses[6], mirror_humanoid(angles[2]))
+	// make_pose(&animation.poses[7], mirror_humanoid(angles[3]))
+
 	humanoid_init()
 
-	angles := load()
+	// humanoid = &animation.poses[current_pose]
+	animation_set_pose(current_pose)
+}
 
-	make_pose(&animation.poses[0], angles[0])
-	make_pose(&animation.poses[1], angles[1])
-	// make_pose(&animation.poses[1], angles[0])
-	make_pose(&animation.poses[2], angles[2])
-	// make_pose(&animation.poses[2], angles[1])
-	make_pose(&animation.poses[3], angles[3])
-	// make_pose(&animation.poses[3], angles[2])
-	make_pose(&animation.poses[4], mirror_humanoid(angles[0]))
-	make_pose(&animation.poses[5], mirror_humanoid(angles[1]))
-	make_pose(&animation.poses[6], mirror_humanoid(angles[2]))
-	make_pose(&animation.poses[7], mirror_humanoid(angles[3]))
-
-
-	humanoid = &animation.poses[current_pose]
+animation_set_pose :: proc(pose: int) {
+	current_pose = pose
+	humanoid.parts[0].rotation_angle = linalg.to_radians(animation.poses[current_pose].torso)
+	humanoid.parts[13].rotation_angle = linalg.to_radians(animation.poses[current_pose].head)
+	humanoid.parts[7].rotation_angle = linalg.to_radians(
+		animation.poses[current_pose].right_upper_arm,
+	)
+	humanoid.parts[8].rotation_angle = linalg.to_radians(
+		animation.poses[current_pose].right_forearm,
+	)
+	humanoid.parts[9].rotation_angle = linalg.to_radians(animation.poses[current_pose].right_hand)
+	humanoid.parts[10].rotation_angle = linalg.to_radians(
+		animation.poses[current_pose].left_upper_arm,
+	)
+	humanoid.parts[11].rotation_angle = linalg.to_radians(
+		animation.poses[current_pose].left_forearm,
+	)
+	humanoid.parts[12].rotation_angle = linalg.to_radians(animation.poses[current_pose].left_hand)
+	humanoid.parts[1].rotation_angle = linalg.to_radians(animation.poses[current_pose].right_thigh)
+	humanoid.parts[2].rotation_angle = linalg.to_radians(animation.poses[current_pose].right_shin)
+	humanoid.parts[3].rotation_angle = linalg.to_radians(animation.poses[current_pose].right_foot)
+	humanoid.parts[4].rotation_angle = linalg.to_radians(animation.poses[current_pose].left_thigh)
+	humanoid.parts[5].rotation_angle = linalg.to_radians(animation.poses[current_pose].left_shin)
+	humanoid.parts[6].rotation_angle = linalg.to_radians(animation.poses[current_pose].left_foot)
 }
 
 mirror_humanoid :: proc(angles: HumanoidJointAngles) -> HumanoidJointAngles {
@@ -137,6 +164,8 @@ swap_pose :: proc() {
 		return
 	}
 	swap_timer = 0
-	current_pose = current_pose < len(animation.poses) - 1 ? current_pose + 1 : 0
-	humanoid = &animation.poses[current_pose]
+	new_pose := current_pose < len(animation.poses) - 1 ? current_pose + 1 : 0
+	// current_pose = current_pose < len(animation.poses) - 1 ? current_pose + 1 : 0
+	// humanoid = &animation.poses[current_pose]
+	animation_set_pose(new_pose)
 }
