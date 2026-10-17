@@ -1,6 +1,7 @@
 package main
 
 import "core:fmt"
+import "core:math/linalg"
 import "core:math/linalg/glsl"
 import gl "vendor:OpenGL"
 
@@ -82,7 +83,10 @@ animation_draw :: proc() {
 	shader_set_vec4(shader_program_grid, "bg_color", {0, .4, .8, 1})
 	shader_set_vec4(shader_program_grid, "grid_color", {0, .3, .6, 1})
 
+	// Take humanoid.front into account here some how
 	base_model := glsl.mat4Translate(humanoid.position)
+	// Get angle from the humanoid front
+	base_model *= glsl.mat4Rotate({0, 1, 0}, linalg.to_radians(f32(45)))
 	for &bp, i in humanoid.parts {
 		shader_set_vec4(
 			shader_program_grid,
@@ -109,6 +113,17 @@ animation_draw :: proc() {
 	// shader_set_mat4(shader_program_grid, "model", model)
 	// gl.BindVertexArray(bb_vao)
 	// gl.DrawArrays(gl.TRIANGLES, 0, len(bb_vertices))
+}
+
+translate_and_rotate_recursive :: proc(bp: ^BodyPart) -> glsl.mat4 {
+	if bp == nil {
+		return 1
+	}
+	model := translate_and_rotate_recursive(bp.parent)
+	model *= glsl.mat4Translate(bp.position_joint)
+	model *= glsl.mat4Rotate(bp.rotation_axis, bp.rotation_angle)
+	model *= glsl.mat4Translate(bp.position)
+	return model
 }
 
 swap_timer: f32 = 0

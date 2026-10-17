@@ -238,14 +238,3 @@ vertices_draw :: proc() {
 	gl.BindVertexArray(ground_vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, len(ground_vertices))
 }
-
-translate_and_rotate_recursive :: proc(bp: ^BodyPart) -> glsl.mat4 {
-	if bp == nil {
-		return 1
-	}
-	model := translate_and_rotate_recursive(bp.parent)
-	model *= glsl.mat4Translate(bp.position_joint)
-	model *= glsl.mat4Rotate(bp.rotation_axis, bp.rotation_angle)
-	model *= glsl.mat4Translate(bp.position)
-	return model
-}

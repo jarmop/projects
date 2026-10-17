@@ -174,7 +174,7 @@ humanoid_init :: proc() {
 make_pose :: proc(humanoid: ^Humanoid, angles: HumanoidJointAngles) {
 	humanoid.size = humanoid_size.whole
 	humanoid.position = humanoid_position.whole
-	humanoid.front = {0, 0, 1}
+	humanoid.front = {1, 0, 1}
 
 	// Torso
 	humanoid.parts[0] = {
