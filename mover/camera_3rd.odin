@@ -7,7 +7,6 @@ import "vendor:glfw"
 
 camera_offset: Vec3 : {0, 2, -8}
 
-
 camera3rd_update_position :: proc() {
 
 	camera.pos = humanoid.position + rotate_vector(humanoid.yaw, camera_offset)
@@ -30,6 +29,8 @@ camera_3rd_get_view :: proc() -> Mat4 {
 	return view
 }
 
+// rotate_dir: f32 = 1
+
 camera_3rd_handle_frame :: proc() {
 	camera_d := time_delta * camera.speed
 
@@ -39,26 +40,32 @@ camera_3rd_handle_frame :: proc() {
 
 	playing = false
 
+	rotate_dir: f32 = 1
+
 	// WASD
 	if glfw.GetKey(window, glfw.KEY_W) == glfw.PRESS {
 		playing = true
 		humanoid.position += humanoid.front * camera_d
+		// rotate_dir = 1
 	}
 	if glfw.GetKey(window, glfw.KEY_S) == glfw.PRESS {
 		playing = true
 		humanoid.position -= humanoid.front * camera_d
+		// Rotate the other way if on reverse
+		rotate_dir = -1
 	}
+
+	angle_increment := camera_d * 20 * rotate_dir
+
 	if glfw.GetKey(window, glfw.KEY_A) == glfw.PRESS {
 		playing = true
-
-		// fmt.println(humanoid.front)
-
-		// camera.pos -= camera.right * camera_d
+		humanoid.yaw += angle_increment
+		update_humanoid_orientation(&humanoid)
 	}
 	if glfw.GetKey(window, glfw.KEY_D) == glfw.PRESS {
 		playing = true
-
-		// camera.pos += camera.right * camera_d
+		humanoid.yaw -= angle_increment
+		update_humanoid_orientation(&humanoid)
 	}
 
 	camera3rd_update_position()
