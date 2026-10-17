@@ -42,19 +42,16 @@ camera_3rd_handle_frame :: proc() {
 	// WASD
 	if glfw.GetKey(window, glfw.KEY_W) == glfw.PRESS {
 		playing = true
-
 		humanoid.position += humanoid.front * camera_d
-
-		fmt.println(humanoid.front)
-		// camera.pos += camera.front * camera_d
 	}
 	if glfw.GetKey(window, glfw.KEY_S) == glfw.PRESS {
 		playing = true
-
-		// camera.pos -= camera.front * camera_d
+		humanoid.position -= humanoid.front * camera_d
 	}
 	if glfw.GetKey(window, glfw.KEY_A) == glfw.PRESS {
 		playing = true
+
+		// fmt.println(humanoid.front)
 
 		// camera.pos -= camera.right * camera_d
 	}
