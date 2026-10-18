@@ -28,14 +28,14 @@ load :: proc() -> []HumanoidJointAngles {
 	defer delete(data)
 	if (read_err != nil) {
 		fmt.println("Load failed", read_err)
-		return make([]HumanoidJointAngles, 8)
+		return make([]HumanoidJointAngles, 4)
 	}
 
 	angles: []HumanoidJointAngles
 	json_err := json.unmarshal(data, &angles)
 	if (json_err != nil) {
 		fmt.println(json_err)
-		return make([]HumanoidJointAngles, 8)
+		return make([]HumanoidJointAngles, 4)
 	}
 
 	return angles

@@ -36,24 +36,20 @@ playing := false
 animation_init :: proc() {
 	animation.time_per_pose = 0.1
 
+	loaded_poses := load()
+	defer delete(loaded_poses)
 
-	animation.poses = load()
+	animation.poses = make([]HumanoidJointAngles, 2 * len(loaded_poses))
+	for p, i in loaded_poses {
+		animation.poses[i] = p
+	}
 
-	// make_pose(&animation.poses[0], angles[0])
-	// make_pose(&animation.poses[1], angles[1])
-	// // make_pose(&animation.poses[1], angles[0])
-	// make_pose(&animation.poses[2], angles[2])
-	// // make_pose(&animation.poses[2], angles[1])
-	// make_pose(&animation.poses[3], angles[3])
-	// // make_pose(&animation.poses[3], angles[2])
-	// make_pose(&animation.poses[4], mirror_humanoid(angles[0]))
-	// make_pose(&animation.poses[5], mirror_humanoid(angles[1]))
-	// make_pose(&animation.poses[6], mirror_humanoid(angles[2]))
-	// make_pose(&animation.poses[7], mirror_humanoid(angles[3]))
+	for p, i in loaded_poses {
+		animation.poses[len(loaded_poses) + i] = mirror_humanoid_joint_angles(p)
+	}
 
 	humanoid_init()
 
-	// humanoid = &animation.poses[current_pose]
 	animation_set_pose(current_pose)
 }
 
@@ -83,7 +79,7 @@ animation_set_pose :: proc(pose: int) {
 	humanoid.parts[6].rotation_angle = linalg.to_radians(animation.poses[current_pose].left_foot)
 }
 
-mirror_humanoid :: proc(angles: HumanoidJointAngles) -> HumanoidJointAngles {
+mirror_humanoid_joint_angles :: proc(angles: HumanoidJointAngles) -> HumanoidJointAngles {
 	return {
 		torso = angles.torso,
 		head = angles.head,
