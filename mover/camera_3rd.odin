@@ -23,10 +23,11 @@ calculate_orbit_offset :: proc(camera_yaw, camera_pitch, camera_distance: f32) -
 	yaw_r := linalg.to_radians(camera_yaw)
 	pitch_r := linalg.to_radians(camera_pitch)
 
-	x := linalg.sin(yaw_r)
-	z := linalg.cos(yaw_r)
+	x := linalg.sin(yaw_r) * linalg.cos(pitch_r)
+	y := linalg.sin(pitch_r)
+	z := linalg.cos(yaw_r) * linalg.cos(pitch_r)
 
-	v := Vec3{x, 0, z} * camera_d
+	v := Vec3{x, y, z} * camera_d
 
 	// fmt.println(v)
 
@@ -85,7 +86,7 @@ camera_3rd_handle_frame :: proc() {
 		rotate_dir = -1
 	}
 
-	angle_increment := camera_d * 20 * rotate_dir
+	angle_increment := camera_d * 100 * rotate_dir
 
 	if glfw.GetKey(window, glfw.KEY_A) == glfw.PRESS {
 		playing = true
@@ -112,7 +113,6 @@ camera_3rd_key_callback :: proc(key, action, mode: i32) {
 	// 	}
 	// 	fmt.println(playing)
 	// }
-
 }
 
 camera_3rd_cursor_pos_callback :: proc "c" (xf64: f64, yf64: f64) {
@@ -142,6 +142,4 @@ camera_3rd_cursor_pos_callback :: proc "c" (xf64: f64, yf64: f64) {
 	} else if camera.pitch < -89.0 {
 		camera.pitch = -89.0
 	}
-
-	// update_camera()
 }
