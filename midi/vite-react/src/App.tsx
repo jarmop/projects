@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import {midiToText} from './midi.ts'
 import {findChords} from './chords.ts'
 
 let initialized = false;
@@ -14,50 +13,21 @@ function App() {
       const [status, data1, data2] = event.data;
 
       const command = status & 0xF0;
-      // const channel = (status & 0x0F) + 1;
-
-      // console.log(midiInput)
-
-      // const newMidiInput = [...midiInput];
 
       if (command === 0x90 && data2 > 0) {
-          // console.log(`Note ON: ${data1}, velocity: ${data2}, channel: ${channel}\n`);
-          // newMidiInput[data1] = 1;
-          setMidiInput((midiInput) => {
-            // console.log(midiInput)
-            
-            const newMidiInput = [...midiInput];
-            newMidiInput[data1] = 1;
-
-            return newMidiInput;
-          });
+        setMidiInput((midiInput) => {
+          const newMidiInput = [...midiInput];
+          newMidiInput[data1] = 1;
+          return newMidiInput;
+        });
       }
-      else if (command === 0x80 ||
-          (command === 0x90 && data2 === 0)) {
-          // console.log(`Note OFF: ${data1}, channel: ${channel}\n`);
-          // newMidiInput[data1] = 0;
-
-          setMidiInput((midiInput) => {
-            // console.log(midiInput)
-            
-            const newMidiInput = [...midiInput];
-            newMidiInput[data1] = 0;
-
-            return newMidiInput;
-          });
-        }
-      else {
-          // console.log(`MIDI: ${Array.from(event.data).join(", ")}\n`);
+      else if (command === 0x80 || (command === 0x90 && data2 === 0)) {
+        setMidiInput((midiInput) => {
+          const newMidiInput = [...midiInput];
+          newMidiInput[data1] = 0;
+          return newMidiInput;
+        });
       }
-
-      // console.log(newMidiInput)
-
-      midiToText(data1);
-
-      // setMidiInput(newMidiInput);
-      // setMidiInput(() => {
-      //   return []
-      // });
   }
 
   useEffect( function() {
@@ -66,18 +36,12 @@ function App() {
     }
     initialized = true;
 
-    async function foo() {
+    (async function foo() {
       midi = await navigator.requestMIDIAccess();
-
       for (const input of midi.inputs.values()) {
-        // console.log(input.name)
         input.onmidimessage = handleMIDI;
       }
-    }
-
-    foo();
-
-    // findChords([1,5,8]);
+    })();
   }, [])
 
   const activeNotes: number[] = [];
@@ -87,11 +51,6 @@ function App() {
     }
   });
   const chord = findChords(activeNotes);
-
-  console.log(midiInput);
-  console.log(activeNotes);
-  console.log(chord[0]);
-
   const chordName = chord[0] ? `${chord[0].name}` : ''
 
   return (
